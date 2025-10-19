@@ -1,0 +1,101 @@
+╔════════════════════════════════════════════════════════════════╗
+║           BOTTOM NAVIGATION BAR - QUICK REFERENCE             ║
+╚════════════════════════════════════════════════════════════════╝
+
+📱 MAIN PAGE
+   Location: lib/presentation/views/main/main_page.dart
+   Route: AppRoutes.main
+   Navigate: NavigationService.navigateTo(AppRoutes.main)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 SIX TABS
+
+┌─────┬────────────┬──────────────────────────────────────────┐
+│ Tab │    Name    │              Features                    │
+├─────┼────────────┼──────────────────────────────────────────┤
+│  0  │   💬 Chat  │ Conversations, Badges, Timestamps        │
+│  1  │   🤖 Bots  │ Grid View, Status, Search                │
+│  2  │ 🧠 Agents  │ List View, Metrics, Actions              │
+│  3  │ 📚 Know... │ Categories, Stats, Expandable            │
+│  4  │ 📝 Prompts │ Search, Filters, Ratings                 │
+│  5  │ 👤 Account │ Profile, Stats, Settings                 │
+└─────┴────────────┴──────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📂 FILE STRUCTURE
+
+lib/presentation/views/
+├── main/main_page.dart          ← Container with BottomNavBar
+├── chat/chat_page.dart          ← Tab 0
+├── bots/bots_page.dart          ← Tab 1
+├── agents/agents_page.dart      ← Tab 2
+├── knowledge/knowledge_page.dart ← Tab 3
+├── prompts/prompts_page.dart    ← Tab 4
+└── account/account_page.dart    ← Tab 5
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 RUN THE APP
+
+Terminal:
+  flutter run
+
+What happens:
+  1. Splash screen (2s)
+  2. MainPage opens
+  3. Chat tab selected by default
+  4. Tap tabs to switch
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎨 CUSTOMIZATION CHEAT SHEET
+
+Change Tab Order:
+  Edit _pages list in main_page.dart
+
+Change Tab Icons:
+  Edit BottomNavigationBarItem icon/activeIcon
+
+Change Colors:
+  selectedItemColor: Colors.yourColor
+
+Add New Tab:
+  1. Create page widget
+  2. Import in main_page.dart
+  3. Add to _pages list
+  4. Add BottomNavigationBarItem
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 QUICK CODE SNIPPETS
+
+Navigate to Main:
+  NavigationService.navigateTo(AppRoutes.main);
+
+Show Success:
+  NavigationService.showSuccess('Done!');
+
+Open Settings:
+  NavigationService.navigateTo(AppRoutes.settings);
+
+Logout:
+  NavigationService.navigateToAndRemoveUntil(AppRoutes.login);
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DOCUMENTATION
+
+Full Guide:        BOTTOM_NAVIGATION_SETUP.md
+Quick Summary:     BOTTOM_NAVIGATION_COMPLETE.md
+Navigation System: NAVIGATION_SETUP.md
+Architecture:      NAVIGATION_ARCHITECTURE.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ STATUS: Ready to Use!
+📅 Created: October 19, 2025
+🎯 Version: 1.0.0
+
+╚════════════════════════════════════════════════════════════════╝
