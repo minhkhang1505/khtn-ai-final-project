@@ -4,6 +4,7 @@ import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/main/main_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
 
 /// Centralized route generator for the application
 ///
@@ -64,7 +65,7 @@ class RouteGenerator {
       case AppRoutes.register:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Register'),
+          builder: (_) => const RegisterPage(),
         );
 
       case AppRoutes.forgotPassword:
