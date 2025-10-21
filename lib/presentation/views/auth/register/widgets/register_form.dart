@@ -4,8 +4,8 @@ import '../../widgets/auth_text_field.dart';
 import '../../widgets/auth_divider.dart';
 import '../../widgets/google_auth_button.dart';
 import '../../widgets/auth_prompt.dart';
+import '../../widgets/auth_primary_button.dart';
 import 'terms_checkbox.dart';
-import 'create_account_button.dart';
 
 class RegisterForm extends StatelessWidget {
   final TextEditingController fullNameController;
@@ -83,7 +83,7 @@ class RegisterForm extends StatelessWidget {
             onChanged: (value) {},
           ),
           TermsCheckbox(isChecked: isTermsChecked, onChanged: onTermsChanged),
-          CreateAccountButton(onPressed: onCreateAccount),
+          AuthPrimaryButton(onPressed: onCreateAccount, text: "Create Account"),
           const AuthDivider(),
           GoogleAuthButton(
             onPressed: onGoogleSignUp,

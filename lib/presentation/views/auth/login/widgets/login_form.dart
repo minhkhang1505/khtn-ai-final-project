@@ -4,8 +4,8 @@ import '../../widgets/auth_text_field.dart';
 import '../../widgets/auth_divider.dart';
 import '../../widgets/google_auth_button.dart';
 import '../../widgets/auth_prompt.dart';
+import '../../widgets/auth_primary_button.dart';
 import 'remember_me_row.dart';
-import 'sign_in_button.dart';
 
 class LoginForm extends StatelessWidget {
   final TextEditingController? emailController;
@@ -84,7 +84,7 @@ class LoginForm extends StatelessWidget {
             onForgotPassword: onForgotPassword,
           ),
           // Sign In button
-          SignInButton(onPressed: onSignIn),
+          AuthPrimaryButton(onPressed: onSignIn, text: "Sign In"),
           // Divider
           const AuthDivider(text: "Or continue with"),
           // Google Sign In button

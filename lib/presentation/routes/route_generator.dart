@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
 import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/main/main_page.dart';
@@ -71,7 +72,7 @@ class RouteGenerator {
       case AppRoutes.forgotPassword:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Forgot Password'),
+          builder: (_) => ForgotPasswordPage(),
         );
 
       // Profile routes (placeholder)
