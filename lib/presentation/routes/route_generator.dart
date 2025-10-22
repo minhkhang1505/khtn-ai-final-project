@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/login/reset_password/reset_password.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/register/verifiaction_email/verification_email.dart';
 import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/main/main_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
 
 /// Centralized route generator for the application
 ///
@@ -40,6 +45,16 @@ class RouteGenerator {
           builder: (_) => const MainPage(),
         );
 
+      case AppRoutes.verificationEmail:
+        final email = args is Map<String, dynamic>
+            ? args['email'] as String?
+            : null;
+        return _buildRoute(
+          builder: (_) =>
+              VerificationEmailPage(email: email ?? 'john@example.com'),
+          settings: settings,
+        );
+
       // Example of route with arguments
       case AppRoutes.details:
         if (args is Map<String, dynamic>) {
@@ -57,19 +72,25 @@ class RouteGenerator {
       case AppRoutes.login:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Login'),
+          builder: (_) => const LoginPage(), // 👈 Changed to actual LoginPage
         );
 
       case AppRoutes.register:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Register'),
+          builder: (_) => const RegisterPage(),
         );
 
       case AppRoutes.forgotPassword:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Forgot Password'),
+          builder: (_) => ForgotPasswordPage(),
+        );
+
+      case AppRoutes.resetPassword:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => ResetPasswordPage(),
         );
 
       // Profile routes (placeholder)

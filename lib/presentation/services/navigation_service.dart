@@ -12,8 +12,13 @@ import 'package:flutter/material.dart';
 /// Usage:
 /// 1. Initialize in main.dart: MaterialApp(navigatorKey: NavigationService.navigatorKey)
 /// 2. Navigate anywhere: NavigationService.navigateTo('/route-name')
+///
+/// Provider-friendly: Can be used as static service OR injected via Provider
 class NavigationService {
-  // Prevent instantiation
+  // Singleton instance for Provider injection (optional)
+  static final NavigationService instance = NavigationService._();
+
+  // Private constructor
   NavigationService._();
 
   /// Global navigator key for the app
