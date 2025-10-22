@@ -4,8 +4,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 class AuthHeader extends StatelessWidget {
   final String title;
   final String subtitle;
+  final String? iconPath;
 
-  const AuthHeader({super.key, required this.title, required this.subtitle});
+  const AuthHeader({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    this.iconPath,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +21,7 @@ class AuthHeader extends StatelessWidget {
       children: [
         const SizedBox(height: 40),
         SvgPicture.asset(
-          "assets/icons/ic_ai_star.svg",
+          iconPath ?? "assets/icons/ic_ai_star.svg",
           width: 60,
           height: 60,
           colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),

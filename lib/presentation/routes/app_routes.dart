@@ -19,6 +19,7 @@ class AppRoutes {
   static const String login = '/auth/login';
   static const String register = '/auth/register';
   static const String forgotPassword = '/auth/forgot-password';
+  static const String verificationEmail = '/auth/register/verification-email';
 
   // Profile routes (example - can be extended)
   static const String profile = '/profile';

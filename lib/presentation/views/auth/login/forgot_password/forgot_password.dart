@@ -44,6 +44,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     children: [AuthBackButton(onPressed: _handleBackToSignIn)],
                   ),
                   const AuthHeader(
+                    iconPath: "assets/icons/ic_lock_password.svg",
                     title: "Forgot Password?",
                     subtitle: "No worries, we'll send you reset instructions",
                   ),
