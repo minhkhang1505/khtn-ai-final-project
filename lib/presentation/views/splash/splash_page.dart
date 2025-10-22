@@ -54,7 +54,7 @@ class _SplashPageState extends State<SplashPage>
 
     // Navigate to main page with bottom navigation and remove splash from stack
     if (mounted) {
-      NavigationService.replaceWith(AppRoutes.resetPassword);
+      NavigationService.replaceWith(AppRoutes.main);
     }
   }
 
@@ -81,7 +81,11 @@ class _SplashPageState extends State<SplashPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // App Logo/Icon
-              Icon(Icons.rocket_launch, size: 120, color: Theme.of(context).colorScheme.primary),
+              Icon(
+                Icons.rocket_launch,
+                size: 120,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               const SizedBox(height: 24),
               // App Name
               Text(
