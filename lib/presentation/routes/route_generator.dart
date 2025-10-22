@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/login/reset_password/reset_password.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/register/verifiaction_email/verification_email.dart';
 import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
@@ -45,11 +46,12 @@ class RouteGenerator {
         );
 
       case AppRoutes.verificationEmail:
-        final email = args is Map<String, dynamic> ? args['email'] as String? : null;
+        final email = args is Map<String, dynamic>
+            ? args['email'] as String?
+            : null;
         return _buildRoute(
-          builder: (_) => VerificationEmailPage(
-            email: email ?? 'john@example.com',
-          ),
+          builder: (_) =>
+              VerificationEmailPage(email: email ?? 'john@example.com'),
           settings: settings,
         );
 
@@ -83,6 +85,12 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (_) => ForgotPasswordPage(),
+        );
+
+      case AppRoutes.resetPassword:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => ResetPasswordPage(),
         );
 
       // Profile routes (placeholder)
