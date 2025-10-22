@@ -13,7 +13,7 @@ class PromptItem extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 0, 16),
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         borderRadius: AppBorderRadius.large,
@@ -21,37 +21,55 @@ class PromptItem extends StatelessWidget {
         color: colorScheme.surfaceContainerLow,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                flex: 8,
+                flex: 17,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      prompt.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    if (prompt.description != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        prompt.description!,
-                        style: TextStyle(
-                          color: colorScheme.onSurfaceVariant,
-                          fontSize: 14,
+                    Row(
+                      children: [
+                        // public status
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 1,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary,
+                            borderRadius: AppBorderRadius.extraLargeIncreased,
+                          ),
+                          child: Text(
+                            prompt.isPublic ? "Public" : "Private",
+                            style: TextStyle(color: colorScheme.onPrimary),
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 4),
+
+                        // title
+                        Expanded(
+                          child: Text(
+                            prompt.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // description
                   ],
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -60,7 +78,7 @@ class PromptItem extends StatelessWidget {
                       icon: Icon(
                         prompt.isFavorite ? Icons.star : Icons.star_border,
                         color: prompt.isFavorite
-                            ? colorScheme.primary
+                            ? Colors.amber
                             : colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -68,6 +86,29 @@ class PromptItem extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          if (prompt.description != null) ...[
+            const SizedBox(height: 4),
+            Container(
+              padding: const EdgeInsets.only(right: 16),
+              child: Text(
+                prompt.description!,
+                style: TextStyle(
+                  color: colorScheme.onSurfaceVariant,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+          SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+            decoration: BoxDecoration(
+              border: Border.all(color: colorScheme.onPrimaryFixedVariant),
+              color: colorScheme.primaryContainer.withAlpha(20),
+              borderRadius: AppBorderRadius.extraLargeIncreased,
+            ),
+            child: Text(prompt.category),
           ),
         ],
       ),
