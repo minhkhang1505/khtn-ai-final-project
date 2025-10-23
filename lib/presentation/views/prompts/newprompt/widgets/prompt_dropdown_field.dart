@@ -27,6 +27,7 @@ class PromptDropdownField<T> extends StatelessWidget {
         Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 2),
         DropdownMenu<T>(
+          expandedInsets: EdgeInsets.zero,
           hintText: hintText ?? "",
           initialSelection: initialSelection,
           onSelected: onSelected,

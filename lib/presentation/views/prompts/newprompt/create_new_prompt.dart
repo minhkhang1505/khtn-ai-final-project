@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_back_button.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_details_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_preview_section.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_action_buttons.dart';
 
 class CreateNewPromptPage extends StatefulWidget {
   const CreateNewPromptPage({super.key});
@@ -40,25 +41,11 @@ class _CreateNewPromptPageState extends State<CreateNewPromptPage> {
   }
 
   void _savePrompt() {
-    // TODO: Implement save logic
-    if (_titleController.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please enter a title')));
-      return;
-    }
+    // TODO: Implement save logic here
+  }
 
-    if (_contentController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter prompt content')),
-      );
-      return;
-    }
-
-    // Save prompt logic here
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Prompt saved successfully!')));
+  void _cancelPrompt() {
+    // TODO: Implement cancel logic here
   }
 
   @override
@@ -95,6 +82,11 @@ class _CreateNewPromptPageState extends State<CreateNewPromptPage> {
                 PromptPreviewSection(
                   title: _titleController.text,
                   content: _contentController.text,
+                ),
+                const SizedBox(height: 12),
+                PromptActionButtons(
+                  onCancel: _cancelPrompt,
+                  onSave: _savePrompt,
                 ),
               ],
             ),
