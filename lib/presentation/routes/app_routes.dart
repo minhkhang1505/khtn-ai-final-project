@@ -30,6 +30,9 @@ class AppRoutes {
   // Feature routes (example - can be extended)
   static const String details = '/details';
 
+  /// Create New Prompt
+  static const String createNewPrompt = '/prompts/new';
+
   /// Get all route names as a list
   /// Useful for debugging or logging
   static List<String> get allRoutes => [
@@ -43,5 +46,6 @@ class AppRoutes {
     editProfile,
     settings,
     details,
+    createNewPrompt,
   ];
 }
