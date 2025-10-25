@@ -32,6 +32,7 @@ class AppRoutes {
 
   /// Create New Prompt
   static const String createNewPrompt = '/prompts/new';
+  static const String promptDetails = '/prompts/details';
 
   /// Get all route names as a list
   /// Useful for debugging or logging
@@ -47,5 +48,6 @@ class AppRoutes {
     settings,
     details,
     createNewPrompt,
+    promptDetails,
   ];
 }
