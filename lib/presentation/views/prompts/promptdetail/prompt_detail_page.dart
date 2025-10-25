@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_details_section.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/widgets/prompt_detail_action_buttons.dart';
 
 class PromptDetailPage extends StatefulWidget {
   const PromptDetailPage({super.key});
@@ -41,7 +42,7 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
     // TODO: Implement save logic here
   }
 
-  void _cancelPrompt() {
+  void _deletePromp() {
     // TODO: Implement cancel logic here
   }
 
@@ -74,41 +75,10 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
                   },
                 ),
                 SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.surface,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(12),
-                            side: BorderSide(color: colorScheme.outline),
-                          ),
-                        ),
-                        onPressed: () {},
-                        child: const Text("Delete"),
-                      ),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      flex: 1,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(12),
-                            side: BorderSide(color: colorScheme.outline),
-                          ),
-                        ),
-                        onPressed: () {},
-                        child: Text(
-                          "Save",
-                          style: TextStyle(color: colorScheme.onPrimary),
-                        ),
-                      ),
-                    ),
-                  ],
+                PromptDetailActionButtons(
+                  title: _titleController.text,
+                  onSaveChange: _savePrompt,
+                  onDelete: _deletePromp,
                 ),
               ],
             ),
