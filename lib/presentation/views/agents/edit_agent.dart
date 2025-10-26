@@ -71,6 +71,7 @@ class EditAgentPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   color: Colors.white,
+                  margin: const EdgeInsets.all(0),
                   child: Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -99,7 +100,7 @@ class EditAgentPage extends StatelessWidget {
                                 Text(
                                   'Enable or disable this agent',
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     color: Colors.black54,
                                   ),
                                 ),

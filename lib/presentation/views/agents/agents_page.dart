@@ -4,6 +4,7 @@ import 'package:khtn_ai_final_project/constants/constant.dart' show AppSpacing, 
 import 'workflows_tab.dart' show WorkflowsTab;
 import 'all_agents_tab.dart' show AllAgentsTab;
 import 'active_agents_tab.dart' show ActiveAgentsTab;
+import 'create_agent.dart' show CreateAgentPage;
 
 /// Agents page - Manage AI agents
 class AgentsPage extends StatefulWidget {
@@ -72,7 +73,14 @@ class _AgentsPageState extends State<AgentsPage> with SingleTickerProviderStateM
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: FilledButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                // Navigate to Create Agent page
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const CreateAgentPage(),
+                  ),
+                );
+              },
               icon: const Icon(Icons.add, size: 18),
               label: const Text(
                 'Create Agent',

@@ -56,7 +56,8 @@ class WorkflowsCart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.all(0),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade300),
