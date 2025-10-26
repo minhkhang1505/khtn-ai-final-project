@@ -5,11 +5,12 @@ import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/routes/route_generator.dart';
 import 'package:khtn_ai_final_project/presentation/services/navigation_service.dart';
 import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/agents/edit_agent.dart';
 
 void main() {
   //runApp(const MyApp());
   runApp(const MaterialApp(
-    home: AgentsPage(),
+    home: EditAgentPage(),
   ));
 }
 
