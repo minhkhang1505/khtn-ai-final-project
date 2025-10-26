@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/constants/constant.dart' show AppSpacing;
-
-export 'package:khtn_ai_final_project/presentation/views/agents/agents_card.dart';
+import 'edit_agent.dart' show EditAgentPage;
 
 /// Card to display individual AI agent information
 class AgentCard extends StatelessWidget {
@@ -32,7 +31,7 @@ class AgentCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Agent icon=
+                // Agent icon
                 SvgPicture.asset(
                   'assets/icons/ic_agent.svg',
                   width: 40,
@@ -56,7 +55,13 @@ class AgentCard extends StatelessWidget {
                 // Edit Agent button
                 ElevatedButton(
                   onPressed: () {
-                    // TODO: Handle edit action
+                    // Navigate to Edit Agent page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EditAgentPage(),
+                      ),
+                    );
                   },
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.resolveWith<Color?>(
@@ -105,7 +110,7 @@ class AgentCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.fork_right, color: Colors.grey, size: 18),
+                  Icon(Icons.fork_right, color: Theme.of(context).primaryColor, size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(

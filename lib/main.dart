@@ -10,7 +10,7 @@ import 'package:khtn_ai_final_project/presentation/views/agents/edit_agent.dart'
 void main() {
   //runApp(const MyApp());
   runApp(const MaterialApp(
-    home: EditAgentPage(),
+    home: AgentsPage(),
   ));
 }
 

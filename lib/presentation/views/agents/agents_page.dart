@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'agents_card.dart' show AgentCard;
 import 'package:khtn_ai_final_project/constants/constant.dart' show AppSpacing, AppBarInfo;
+import 'workflows_tab.dart' show WorkflowsTab;
 
 /// Agents page - Manage AI agents
 class AgentsPage extends StatefulWidget {
@@ -54,25 +55,16 @@ class _AgentsPageState extends State<AgentsPage> with SingleTickerProviderStateM
               children: const [
                 Text(
                   'AI Agents',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: AppBarInfo.titleTextStyle,
                 ),
                 SizedBox(height: 4),
                 Text(
                   'Automate tasks with AI-powered workflows',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w400,
-                  ),
+                  style: AppBarInfo.subtitleTextStyle,
                 ),
               ],
             ),
           ],
-          
         ),
         actions: [
           Padding(
@@ -172,20 +164,6 @@ class AllAgentsTab extends StatelessWidget {
           state: 'Inactive',
         ),
       ],
-    );
-  }
-}
-
-class WorkflowsTab extends StatelessWidget {
-  const WorkflowsTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Workflows will be displayed here.',
-        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-      ),
     );
   }
 }
