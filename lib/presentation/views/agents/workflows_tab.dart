@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'workflows_cart.dart' show WorkflowsCart, Workflow;
+import 'package:khtn_ai_final_project/constants/constant.dart' show AppSpacing;
 
 class WorkflowsTab extends StatelessWidget {
   const WorkflowsTab({super.key});
@@ -7,15 +8,15 @@ class WorkflowsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(40),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.vertical, horizontal: AppSpacing.horizontal),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             WorkflowsCart(workflow: Workflow.emailTriage),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.cardSpacing),
             WorkflowsCart(workflow: Workflow.dataExtraction),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.cardSpacing),
             WorkflowsCart(workflow: Workflow.dataExtraction),
           ],
         ),

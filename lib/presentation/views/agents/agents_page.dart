@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'agents_card.dart' show AgentCard;
 import 'package:khtn_ai_final_project/constants/constant.dart' show AppSpacing, AppBarInfo;
 import 'workflows_tab.dart' show WorkflowsTab;
+import 'all_agents_tab.dart' show AllAgentsTab;
+import 'active_agents_tab.dart' show ActiveAgentsTab;
 
 /// Agents page - Manage AI agents
 class AgentsPage extends StatefulWidget {
@@ -114,56 +116,6 @@ class _AgentsPageState extends State<AgentsPage> with SingleTickerProviderStateM
           ),
         ],
       ),
-    );
-  }
-}
-
-class ActiveAgentsTab extends StatelessWidget {
-  const ActiveAgentsTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: const [
-        AgentCard(
-          agentName: 'Email Assistant',
-          agentDescription: 'Handles email workflows automatically.',
-          workflows: 'Email Triage',
-          state: 'Active',
-        ),
-        AgentCard(
-          agentName: 'Document Processor',
-          agentDescription: 'Processes documents efficiently.',
-          workflows: 'Data Extraction',
-          state: 'Inactive',
-        ),
-      ],
-    );
-  }
-}
-
-class AllAgentsTab extends StatelessWidget {
-  const AllAgentsTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: const [
-        AgentCard(
-          agentName: 'Email Assistant',
-          agentDescription: 'Handles email workflows automatically.',
-          workflows: 'Email Triage',
-          state: 'Active',
-        ),
-        AgentCard(
-          agentName: 'Document Processor',
-          agentDescription: 'Processes documents efficiently.',
-          workflows: 'Data Extraction',
-          state: 'Inactive',
-        ),
-      ],
     );
   }
 }

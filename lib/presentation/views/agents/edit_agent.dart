@@ -10,7 +10,7 @@ class EditAgentPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
-        toolbarHeight: 80,
+        toolbarHeight: AppBarInfo.height,
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

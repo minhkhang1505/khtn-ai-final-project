@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:khtn_ai_final_project/constants/constant.dart' show AppSpacing;
 import 'edit_agent.dart' show EditAgentPage;
 
 /// Card to display individual AI agent information
@@ -21,7 +20,6 @@ class AgentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: AppSpacing.horizontal),
       color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(16),

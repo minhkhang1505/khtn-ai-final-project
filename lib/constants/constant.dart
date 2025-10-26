@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class AppSpacing {
   static const double horizontal = 24.0;
   static const double vertical = 16.0;
+  static const double cardSpacing = 16.0;
 }
 
 class AppBarInfo {
