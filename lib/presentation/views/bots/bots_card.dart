@@ -109,17 +109,20 @@ class BotCard extends StatelessWidget {
                 Chip(
                   label: Text(
                     category,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black87, fontSize: 12),
                   ),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.white70,
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                 ),
                 const SizedBox(width: 8),
                 Chip(
                   label: Text(
                     model,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black87, fontSize: 12),
+                    
                   ),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.white70,
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                 ),
               ],
             ),

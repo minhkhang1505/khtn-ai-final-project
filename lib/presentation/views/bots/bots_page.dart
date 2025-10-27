@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'bots_card.dart' show BotCard;
 import 'package:khtn_ai_final_project/core/constants/constants.dart' show AppSpacing, AppBarInfo;
 import 'create_bot_page.dart' show CreateBotPage;
-
+import 'package:khtn_ai_final_project/presentation/common/widgets/search_bar.dart' show BotSearch;
 
 /// Bots page - Manage AI bots
 class BotsPage extends StatefulWidget {
@@ -97,9 +97,16 @@ class _BotsPageState extends State<BotsPage> with SingleTickerProviderStateMixin
         children: [
           Container(
             padding: const EdgeInsets.only(top: AppSpacing.vertical, left: AppSpacing.horizontal, right: AppSpacing.horizontal),
+            child: const BotSearch(),
+          ),
+          SizedBox(height: AppSpacing.cardSpacing),
+
+          Container(
+            padding: const EdgeInsets.only(top: AppSpacing.vertical, left: AppSpacing.horizontal, right: AppSpacing.horizontal),
             child: bots[0],
           ),
           SizedBox(height: AppSpacing.cardSpacing),
+
           Container(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.horizontal),
             child: bots[1],
