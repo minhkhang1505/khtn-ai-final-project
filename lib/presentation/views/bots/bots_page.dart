@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'bots_card.dart' show BotCard;
 import 'package:khtn_ai_final_project/core/constants/constants.dart' show AppSpacing, AppBarInfo;
+import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart' show BotSearch;
 import 'create_bot_page.dart' show CreateBotPage;
-import 'package:khtn_ai_final_project/presentation/common/widgets/search_bar.dart' show BotSearch;
+import 'bots_card.dart' show BotCard;
 
 /// Bots page - Manage AI bots
 class BotsPage extends StatefulWidget {

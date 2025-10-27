@@ -251,7 +251,69 @@ class _CreateBotPageState extends State<CreateBotPage> {
                   ),
                 ),
 
-                // Create Button
+                // Knowledge Base Section
+                const SizedBox(height: 12),
+                Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  margin: const EdgeInsets.all(0),
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Title
+                        const Text(
+                          'Knowledge Base',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+
+                        const Text(
+                          "Enhance your bot’s intelligence by adding relevant knowledge sources.",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Upload Button
+                        SizedBox(
+                          width: double.infinity, // chiếm full chiều ngang của card
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              // Handle file upload
+                            },
+                            icon: const Icon(Icons.upload_file),
+                            label: const Text('Upload Documents'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black87,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: BorderSide(color: Colors.grey.shade300),
+                              ),
+                              elevation: 0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Action Buttons
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
