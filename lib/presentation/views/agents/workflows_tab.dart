@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'workflows_cart.dart' show WorkflowsCart, Workflow;
-import 'package:khtn_ai_final_project/constants/constant.dart' show AppSpacing;
+import 'workflows_card.dart' show WorkflowsCart, Workflow;
+import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppSpacing;
 
 class WorkflowsTab extends StatelessWidget {
   const WorkflowsTab({super.key});

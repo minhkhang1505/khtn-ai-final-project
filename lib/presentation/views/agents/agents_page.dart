@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'agents_card.dart' show AgentCard;
-import 'package:khtn_ai_final_project/constants/constant.dart' show AppSpacing, AppBarInfo;
+import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppSpacing, AppBarInfo;
 import 'workflows_tab.dart' show WorkflowsTab;
 import 'all_agents_tab.dart' show AllAgentsTab;
 import 'active_agents_tab.dart' show ActiveAgentsTab;
-import 'create_agent.dart' show CreateAgentPage;
+import 'create_agent_page.dart' show CreateAgentPage;
 
 /// Agents page - Manage AI agents
 class AgentsPage extends StatefulWidget {

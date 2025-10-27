@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'workflows_cart.dart' show WorkflowsCart, Workflow;
-import 'package:khtn_ai_final_project/constants/constant.dart' show AppBarInfo;
+import 'workflows_card.dart' show WorkflowsCart, Workflow;
+import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppBarInfo, AppSpacing;
 
 class CreateAgentPage extends StatefulWidget {
   const CreateAgentPage({super.key});
@@ -151,8 +151,8 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                     ),
                   ),
                 ),
+                const SizedBox(height: AppSpacing.cardSpacing),
 
-                const SizedBox(height: 12),
                 // Workflows Section
                 Card(
                   elevation: 0,
@@ -256,22 +256,48 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                     ),
                   ),
                 ),
-
+                const SizedBox(height: AppSpacing.cardSpacing),
+                
                 // Create Button
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          side: BorderSide(color: Theme.of(context).primaryColor),
+                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                        ),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+                        ),
                       ),
-                      side: const BorderSide(color: Colors.deepPurple), 
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                     ),
-                    child: const Text('Create Agent'),
-                  ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                        ),
+                        child: const Text(
+                          'Create Agent',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

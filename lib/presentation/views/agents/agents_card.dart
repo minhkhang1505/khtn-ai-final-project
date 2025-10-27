@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'edit_agent.dart' show EditAgentPage;
+import 'edit_agent_page.dart' show EditAgentPage;
 
 /// Card to display individual AI agent information
 class AgentCard extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'agents_card.dart' show AgentCard;
-import 'package:khtn_ai_final_project/constants/constant.dart' show AppSpacing;
+import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppSpacing;
 
 class ActiveAgentsTab extends StatelessWidget {
   const ActiveAgentsTab({super.key});
