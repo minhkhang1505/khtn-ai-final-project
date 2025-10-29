@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'workflows_card.dart' show WorkflowsCart, Workflow;
+import 'workflows/workflow_card.dart' show WorkflowsCart;
+import 'package:khtn_ai_final_project/data/models/workflow_model.dart' show Workflow;
 import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppBarInfo, AppSpacing;
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart' show ResponsiveHelper;
+import 'package:khtn_ai_final_project/theme/app_radius.dart' show AppBorderRadius;
 
 class CreateAgentPage extends StatefulWidget {
   const CreateAgentPage({super.key});
@@ -57,7 +60,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
+            width: ResponsiveHelper.contentWidth(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -65,7 +68,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppBorderRadius.medium,
                     side: BorderSide(color: Colors.grey.shade300),
                   ),
                   margin: const EdgeInsets.all(0),
@@ -114,7 +117,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -141,7 +144,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -157,7 +160,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppBorderRadius.medium,
                     side: BorderSide(color: Colors.grey.shade300),
                   ),
                   margin: const EdgeInsets.all(0),
@@ -212,7 +215,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                                     duration: const Duration(milliseconds: 200),
                                     margin: const EdgeInsets.all(0),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
+                                      borderRadius: AppBorderRadius.medium,
                                       border: Border.all(
                                         color: isSelected
                                             ? Theme.of(context).primaryColor
@@ -220,7 +223,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                                         width: 2,
                                       ),
                                     ),
-                                    child: WorkflowsCart(workflow: workflow),
+                                    child: WorkflowsCart(workflowType: workflow as dynamic),
                                   ),
 
                                   if (isSelected)
@@ -229,7 +232,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                                         duration: const Duration(milliseconds: 200),
                                         decoration: BoxDecoration(
                                           color: Theme.of(context).primaryColor.withAlpha((0.08 * 255).round()),
-                                          borderRadius: BorderRadius.circular(14),
+                                          borderRadius: AppBorderRadius.medium,
                                         ),
                                       ),
                                     ),
@@ -269,7 +272,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                         },
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppBorderRadius.medium,
                           ),
                           side: BorderSide(color: Theme.of(context).primaryColor),
                           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -287,7 +290,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepPurple,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppBorderRadius.medium,
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                         ),

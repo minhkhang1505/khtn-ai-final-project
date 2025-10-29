@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'workflows_card.dart' show WorkflowsCart, Workflow;
+import 'workflow_card.dart' show WorkflowsCart;
+import 'package:khtn_ai_final_project/data/models/workflow_model.dart' show Workflow;
 import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppSpacing;
 
 class WorkflowsTab extends StatelessWidget {
@@ -13,11 +14,11 @@ class WorkflowsTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            WorkflowsCart(workflow: Workflow.emailTriage),
+            WorkflowsCart(workflowType: Workflow.emailTriage),
             const SizedBox(height: AppSpacing.cardSpacing),
-            WorkflowsCart(workflow: Workflow.dataExtraction),
+            WorkflowsCart(workflowType: Workflow.dataExtraction),
             const SizedBox(height: AppSpacing.cardSpacing),
-            WorkflowsCart(workflow: Workflow.dataExtraction),
+            WorkflowsCart(workflowType: Workflow.dataExtraction),
           ],
         ),
       ),

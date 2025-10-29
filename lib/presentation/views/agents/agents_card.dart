@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'edit_agent_page.dart' show EditAgentPage;
+import 'package:khtn_ai_final_project/theme/app_radius.dart';
 
 /// Card to display individual AI agent information
 class AgentCard extends StatelessWidget {
@@ -35,7 +36,6 @@ class AgentCard extends StatelessWidget {
                   width: 40,
                   height: 40,
                 ),
-
                 const SizedBox(width: 8),
 
                 // Name of Agent
@@ -47,7 +47,6 @@ class AgentCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-
                 const Spacer(),
 
                 // Edit Agent button
@@ -83,7 +82,7 @@ class AgentCard extends StatelessWidget {
                   child: const Icon(
                     Icons.settings,
                     size: 24,
-                    color: Colors.black,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -96,7 +95,6 @@ class AgentCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 16, color: Colors.black87),
               ),
             ),
-
             const SizedBox(height: 24),
 
             // Workflows info
@@ -104,7 +102,7 @@ class AgentCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppBorderRadius.medium,
               ),
               child: Row(
                 children: [
@@ -126,7 +124,7 @@ class AgentCard extends StatelessWidget {
                           const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       side: BorderSide(color: Colors.grey.shade300),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: AppBorderRadius.largeIncreased,
                       ),
                     ),
                     child: const Text('New Email'),
@@ -134,7 +132,6 @@ class AgentCard extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 16),
 
             // Button
@@ -152,7 +149,7 @@ class AgentCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       side: BorderSide(color: Colors.grey.shade300),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppBorderRadius.medium,
                       ),
                     ),
                   ),

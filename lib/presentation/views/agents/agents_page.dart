@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'agents_card.dart' show AgentCard;
+import 'package:khtn_ai_final_project/presentation/viewmodels/agent_viewmodel.dart' show AgentViewModel;
 import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppSpacing, AppBarInfo;
-import 'workflows_tab.dart' show WorkflowsTab;
+import 'workflows/workflows_tab.dart' show WorkflowsTab;
 import 'all_agents_tab.dart' show AllAgentsTab;
 import 'active_agents_tab.dart' show ActiveAgentsTab;
 import 'create_agent_page.dart' show CreateAgentPage;
@@ -15,29 +15,14 @@ class AgentsPage extends StatefulWidget {
 }
 
 class _AgentsPageState extends State<AgentsPage> with SingleTickerProviderStateMixin {
+  final AgentViewModel _viewModel = AgentViewModel();
   late TabController _tabController;
-
-  // Example agent cards
-  final agents = <Widget>[
-    AgentCard(
-      agentName: 'Email Assistant',
-      agentDescription: 'Handles email workflows automatically.',
-      workflows: 'Email Triage',
-      state: 'Active',
-    ),
-    AgentCard(
-      agentName: 'Document Processor',
-      agentDescription: 'Processes documents efficiently.',
-      workflows: 'Data Extraction',
-      state: 'Inactive',
-    ),
-  ];
-
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _viewModel.loadAgents();
   }
 
   @override

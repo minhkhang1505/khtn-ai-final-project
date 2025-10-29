@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'workflows_card.dart' show WorkflowsCart, Workflow;
+import 'workflows/workflow_card.dart' show WorkflowsCart;
+import 'package:khtn_ai_final_project/data/models/workflow_model.dart' show Workflow;
 import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppBarInfo, AppSpacing;
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart' show ResponsiveHelper;
+import 'package:khtn_ai_final_project/theme/app_radius.dart';
 
 class EditAgentPage extends StatelessWidget {
   const EditAgentPage({super.key});
@@ -61,14 +64,14 @@ class EditAgentPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
+            width: ResponsiveHelper.contentWidth(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Status & Actions Card 
                 Card(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: AppBorderRadius.medium,
                   ),
                   color: Colors.white,
                   margin: const EdgeInsets.all(0),
@@ -119,7 +122,7 @@ class EditAgentPage extends StatelessWidget {
                                 onPressed: () {},
                                 style: OutlinedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: AppBorderRadius.medium,
                                   ),
                                   side: const BorderSide(color: Colors.deepPurple), 
                                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -134,7 +137,7 @@ class EditAgentPage extends StatelessWidget {
                                 onPressed: () {},
                                 style: OutlinedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: AppBorderRadius.medium,
                                   ),
                                   side: const BorderSide(color: Colors.deepPurple), 
                                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -154,7 +157,7 @@ class EditAgentPage extends StatelessWidget {
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppBorderRadius.medium,
                     side: BorderSide(color: Colors.grey.shade300),
                   ),
                   margin: const EdgeInsets.all(0),
@@ -203,7 +206,7 @@ class EditAgentPage extends StatelessWidget {
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -230,7 +233,7 @@ class EditAgentPage extends StatelessWidget {
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -244,7 +247,7 @@ class EditAgentPage extends StatelessWidget {
 
                 // Workflows Card
                 Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
                   color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -275,7 +278,7 @@ class EditAgentPage extends StatelessWidget {
                         const SizedBox(height: 16),
 
                         // Workflow
-                        WorkflowsCart(workflow: Workflow.emailTriage),
+                        WorkflowsCart(workflowType: Workflow.emailTriage as dynamic),
                       ],
                     ),
                   ),
@@ -293,7 +296,7 @@ class EditAgentPage extends StatelessWidget {
                         },
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppBorderRadius.medium,
                           ),
                           side: BorderSide(color: Theme.of(context).primaryColor),
                           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -311,7 +314,7 @@ class EditAgentPage extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppBorderRadius.medium,
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                         ),

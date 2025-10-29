@@ -1,67 +1,23 @@
 import 'package:flutter/material.dart';
-
-enum Workflow { emailTriage, dataExtraction }
+import 'package:khtn_ai_final_project/data/models/workflow_model.dart';
+import 'package:khtn_ai_final_project/data/models/workflow_step_model.dart';
+import 'package:khtn_ai_final_project/theme/app_radius.dart';
 
 class WorkflowsCart extends StatelessWidget {
-  final Workflow workflow;
-  final String workflowName;
-  final String workflowDescription;
-  final String feature;
-  final List<WorkflowStep> steps;
-  final String state;
-
-  const WorkflowsCart._({
-    required this.workflow,
-    required this.workflowName,
-    required this.workflowDescription,
-    required this.feature,
-    required this.steps,
-    required this.state,
-  });
-
-  factory WorkflowsCart({required Workflow workflow}) {
-    switch (workflow) {
-      case Workflow.emailTriage:
-        return WorkflowsCart._(
-          workflow: workflow,
-          workflowName: 'Email Triage',
-          workflowDescription:
-              'Automatically categorize and respond to emails',
-          feature: 'New Email',
-          state: 'Active',
-          steps: const [
-            WorkflowStep(number: 1, title: 'Read Email', subtitle: 'email.read'),
-            WorkflowStep(number: 2, title: 'Categorize', subtitle: 'ai.classify'),
-            WorkflowStep(number: 3, title: 'Send Response', subtitle: 'email.send'),
-          ],
-        );
-
-      case Workflow.dataExtraction:
-        return WorkflowsCart._(
-          workflow: workflow,
-          workflowName: 'Data Extraction',
-          workflowDescription:
-              'Extracts structured data from PDF, invoices, or forms automatically.',
-          feature: 'Data Extraction',
-          state: 'Inactive',
-          steps: const [
-            WorkflowStep(number: 1, title: 'Read Document', subtitle: 'file.read'),
-            WorkflowStep(number: 2, title: 'Extract Data', subtitle: 'ai.extract'),
-            WorkflowStep(number: 3, title: 'Save to DB', subtitle: 'data.save'),
-          ],
-        );
-    }
-  }
+  //final WorkflowModel workflow;
+  final Workflow workflowType;
+  const WorkflowsCart({super.key, required this.workflowType});
 
   @override
   Widget build(BuildContext context) {
+    final workflow = WorkflowModel(workflow: workflowType);
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
       margin: const EdgeInsets.all(0),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppBorderRadius.medium,
           color: Colors.grey.shade50,
         ),
         padding: const EdgeInsets.all(20),
@@ -78,7 +34,7 @@ class WorkflowsCart extends StatelessWidget {
                     Icon(Icons.fork_right, color: Theme.of(context).primaryColor, size: 24),
                     SizedBox(width: 8),
                     Text(
-                      workflowName,
+                      workflow.name,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -93,14 +49,14 @@ class WorkflowsCart extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 4),
                   ),
-                  child: Text(feature),
+                  child: Text(workflow.feature),
                 ),
               ],
             ),
             const SizedBox(height: 4),
 
             Text(
-              workflowDescription,
+              workflow.description,
               style: TextStyle(
                 color: Colors.black54,
                 fontSize: 15,
@@ -118,7 +74,7 @@ class WorkflowsCart extends StatelessWidget {
 
             // Workflow steps
             Text(
-              '${steps.length} steps',
+              '${workflow.steps.length} steps',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w100,
@@ -126,7 +82,7 @@ class WorkflowsCart extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            ...steps,
+            ...workflow.steps.map((step) => WorkflowStep(step: step)),
           ],
         ),
       ),
@@ -135,16 +91,9 @@ class WorkflowsCart extends StatelessWidget {
 }
 
 class WorkflowStep extends StatelessWidget {
-  final int number;
-  final String title;
-  final String subtitle;
+  final WorkflowStepModel step;
 
-  const WorkflowStep({
-    super.key,
-    required this.number,
-    required this.title,
-    required this.subtitle,
-  });
+  const WorkflowStep({super.key, required this.step});
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +105,7 @@ class WorkflowStep extends StatelessWidget {
             radius: 12,
             backgroundColor: Colors.blue.shade100,
             child: Text(
-              '$number',
+              '${step.number}',
               style: const TextStyle(
                 color: Colors.blue,
                 fontSize: 14,
@@ -169,7 +118,7 @@ class WorkflowStep extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 14)),
+                Text(step.title, style: const TextStyle(fontSize: 14)),
                 // Text(
                 //   subtitle,
                 //   style: const TextStyle(
