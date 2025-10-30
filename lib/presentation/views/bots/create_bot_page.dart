@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/constants.dart' show AppBarInfo;
-import 'package:khtn_ai_final_project/presentation/common/widgets/category_dropdown.dart' show CategoryDropdown;
-import 'package:khtn_ai_final_project/presentation/common/widgets/ai_model_dropdown.dart' show AiModelDropdown;
+import 'package:khtn_ai_final_project/presentation/common/widgets/category_option_menu.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/ai_model_option_menu.dart';
+import 'package:khtn_ai_final_project/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 
 class CreateBotPage extends StatefulWidget {
   const CreateBotPage({super.key});
@@ -58,7 +60,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
+            width: ResponsiveHelper.contentWidth(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -66,7 +68,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppBorderRadius.medium,
                     side: BorderSide(color: Colors.grey.shade300),
                   ),
                   margin: const EdgeInsets.all(0),
@@ -115,7 +117,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -142,7 +144,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -166,7 +168,11 @@ class _CreateBotPageState extends State<CreateBotPage> {
                                     ),
                                   ),
                                   SizedBox(height: 8),
-                                  CategoryDropdown(),
+                                  CategoryOptionMenu(
+                                    onChanged: (category) {
+                                      // Handle category change if needed
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
@@ -184,7 +190,11 @@ class _CreateBotPageState extends State<CreateBotPage> {
                                     ),
                                   ),
                                   SizedBox(height: 8),
-                                  AiModelDropdown(),
+                                  AiModelOptionMenu(
+                                    onChanged: (model) {
+                                      // Handle model change if needed
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
@@ -200,7 +210,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppBorderRadius.medium,
                     side: BorderSide(color: Colors.grey.shade300),
                   ),
                   margin: const EdgeInsets.all(0),
@@ -240,7 +250,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -256,7 +266,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppBorderRadius.medium,
                     side: BorderSide(color: Colors.grey.shade300),
                   ),
                   margin: const EdgeInsets.all(0),
@@ -301,7 +311,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                               foregroundColor: Colors.black87,
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: AppBorderRadius.small,
                                 side: BorderSide(color: Colors.grey.shade300),
                               ),
                               elevation: 0,
@@ -325,7 +335,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                         },
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppBorderRadius.medium,
                           ),
                           side: BorderSide(color: Theme.of(context).primaryColor),
                           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -343,7 +353,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepPurple,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppBorderRadius.medium,
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                         ),

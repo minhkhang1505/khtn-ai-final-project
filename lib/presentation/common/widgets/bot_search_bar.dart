@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/theme/app_radius.dart';
 
 class BotSearch extends StatelessWidget {
   const BotSearch({super.key});
@@ -14,12 +15,12 @@ class BotSearch extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey.shade100,
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFF7B9EB0), width: 1.5),
+            borderRadius: AppBorderRadius.medium,
+            borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFF5A7D90), width: 2),
+            borderRadius: AppBorderRadius.medium,
+            borderSide: BorderSide(color: Color(0xFF5A7D90), width: 2),
           ),
         ),
       ),

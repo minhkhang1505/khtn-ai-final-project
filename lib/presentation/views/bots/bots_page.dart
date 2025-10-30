@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/constants.dart' show AppSpacing, AppBarInfo;
 import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart' show BotSearch;
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot_viewmodel.dart' show BotViewModel;
 import 'create_bot_page.dart' show CreateBotPage;
 import 'bots_card.dart' show BotCard;
+import 'package:khtn_ai_final_project/theme/app_radius.dart';
 
 /// Bots page - Manage AI bots
 class BotsPage extends StatefulWidget {
@@ -13,26 +15,14 @@ class BotsPage extends StatefulWidget {
 }
 
 class _BotsPageState extends State<BotsPage> with SingleTickerProviderStateMixin {
+  late BotViewModel _botViewModel;
 
-  // Example bot cards
-  final bots = <Widget>[
-    BotCard(
-      botName: 'Chat Assistant',
-      botDescription: 'Helps with customer inquiries.',
-      category: 'Customer Support',
-      model: 'GPT-4',
-      state: 'Active',
-      prompt: 'Assist customers with their questions.',
-    ),
-    BotCard(
-      botName: 'Sales Bot',
-      botDescription: 'Automates sales follow-ups.',
-      category: 'Sales',
-      model: 'GPT-3.5',
-      state: 'Inactive',
-      prompt: 'Follow up with potential leads.',
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _botViewModel = BotViewModel();
+    _botViewModel.loadBots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +74,7 @@ class _BotsPageState extends State<BotsPage> with SingleTickerProviderStateMixin
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: AppBorderRadius.medium,
                 ),
               ),
             ),
@@ -92,26 +82,33 @@ class _BotsPageState extends State<BotsPage> with SingleTickerProviderStateMixin
         ],
       ),
 
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.only(top: AppSpacing.vertical, left: AppSpacing.horizontal, right: AppSpacing.horizontal),
-            child: const BotSearch(),
-          ),
-          SizedBox(height: AppSpacing.cardSpacing),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: AppSpacing.vertical, left: AppSpacing.horizontal + 4, right: AppSpacing.horizontal + 4),
+              child: const BotSearch(),
+            ),
+            SizedBox(height: AppSpacing.cardSpacing),
 
-          Container(
-            padding: const EdgeInsets.only(top: AppSpacing.vertical, left: AppSpacing.horizontal, right: AppSpacing.horizontal),
-            child: bots[0],
-          ),
-          SizedBox(height: AppSpacing.cardSpacing),
-
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.horizontal),
-            child: bots[1],
-          ),
-        ],
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: _botViewModel.bots.length,
+              itemBuilder: (context, index) {
+                final bot = _botViewModel.bots[index];
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: AppSpacing.horizontal,
+                    right: AppSpacing.horizontal,
+                    bottom: index == _botViewModel.bots.length - 1 ? AppSpacing.vertical : AppSpacing.cardSpacing,
+                  ),
+                  child: BotCard(bot: bot),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

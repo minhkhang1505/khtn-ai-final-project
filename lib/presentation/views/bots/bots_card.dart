@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'edit_bot_page.dart';
+import 'package:khtn_ai_final_project/data/models/bot_model.dart';
 
 /// Card to display individual AI bot information
 class BotCard extends StatelessWidget {
-  final String botName;
-  final String botDescription;
-  final String category;
-  final String model;
-  final String state;
-  final String prompt;
+  final BotModel bot;
 
-  const BotCard({
-    super.key,
-    required this.botName,
-    required this.botDescription,
-    required this.category,
-    required this.state,
-    required this.model,
-    required this.prompt,
-  });
+  const BotCard({super.key, required this.bot});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +32,7 @@ class BotCard extends StatelessWidget {
 
                 // Name of Bot
                 Text(
-                  botName,
+                  bot.name,
                   style: const TextStyle(
                     fontSize: 20,
                     color: Colors.black87,
@@ -87,7 +75,7 @@ class BotCard extends StatelessWidget {
                   child: const Icon(
                     Icons.settings,
                     size: 24,
-                    color: Colors.black,
+                    color: Colors.black54,
                   ),
                 ),
               ],
@@ -96,7 +84,7 @@ class BotCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
-                botDescription,
+                bot.description,
                 style: const TextStyle(fontSize: 16, color: Colors.black87),
               ),
             ),
@@ -108,7 +96,7 @@ class BotCard extends StatelessWidget {
               children: [
                 Chip(
                   label: Text(
-                    category,
+                    bot.category,
                     style: const TextStyle(color: Colors.black87, fontSize: 12),
                   ),
                   backgroundColor: Colors.white70,
@@ -117,7 +105,7 @@ class BotCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Chip(
                   label: Text(
-                    model,
+                    bot.model,
                     style: const TextStyle(color: Colors.black87, fontSize: 12),
                     
                   ),
