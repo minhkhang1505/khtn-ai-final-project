@@ -35,12 +35,6 @@ class RouteGenerator {
           builder: (_) => const SplashPage(),
         );
 
-      case AppRoutes.home:
-        return _buildRoute(
-          settings: settings,
-          builder: (_) => const HomePage(),
-        );
-
       case AppRoutes.main:
         return _buildRoute(
           settings: settings,

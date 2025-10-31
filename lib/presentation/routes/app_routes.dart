@@ -12,7 +12,6 @@ class AppRoutes {
 
   // Root routes
   static const String splash = '/';
-  static const String home = '/home';
   static const String main = '/main'; // Main page with bottom navigation
 
   // Auth routes (example - can be extended)
@@ -38,7 +37,6 @@ class AppRoutes {
   /// Useful for debugging or logging
   static List<String> get allRoutes => [
     splash,
-    home,
     main,
     login,
     register,
