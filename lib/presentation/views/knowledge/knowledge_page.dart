@@ -13,20 +13,101 @@ class KnowledgePage extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            itemCount: 5,
-            itemBuilder: (context, index) => KnowledgeItem(
-              iconPath: 'assets/icons/ic_url.svg',
-              knowledge: KnowledgeModel(
-                id: '1',
-                userId: 'user1',
-                knowledgeName: 'Knowledge 1',
-                description: 'Description 1',
-                createdAt: DateTime.now(),
+          child: Column(
+            children: [
+              //filter section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [FilterChipMenu()],
               ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: 5,
+                  itemBuilder: (context, index) => KnowledgeItem(
+                    iconPath: 'assets/icons/ic_url.svg',
+                    knowledge: KnowledgeModel(
+                      id: '1',
+                      userId: 'user1',
+                      knowledgeName: 'Knowledge 1',
+                      description: 'Description 1',
+                      createdAt: DateTime.now(),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class FilterChipMenu extends StatefulWidget {
+  @override
+  State<FilterChipMenu> createState() => _FilterChipMenuState();
+}
+
+class _FilterChipMenuState extends State<FilterChipMenu> {
+  String selected = 'All';
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final result = await showModalBottomSheet<String>(
+          context: context,
+          builder: (context) => Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.filter_list),
+                  title: Text('All'),
+                  onTap: () {
+                    Navigator.pop(context, "All");
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.star),
+                  title: Text('Created time'),
+                  onTap: () {
+                    Navigator.pop(context, "Created time");
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.access_time),
+                  title: Text('Ascending'),
+                  onTap: () {
+                    Navigator.pop(context, "Ascending");
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.access_time),
+                  title: Text('Descending'),
+                  onTap: () {
+                    Navigator.pop(context, "Descending");
+                  },
+                ),
+              ],
             ),
           ),
+        );
+        if (result != null) {
+          setState(() => selected = result);
+        }
+      },
+      child: Chip(
+        label: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.filter_list, size: 16),
+            SizedBox(width: 8),
+            Text(selected),
+          ],
         ),
       ),
     );
