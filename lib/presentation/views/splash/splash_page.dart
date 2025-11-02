@@ -54,7 +54,7 @@ class _SplashPageState extends State<SplashPage>
 
     // Navigate to main page with bottom navigation and remove splash from stack
     if (mounted) {
-      NavigationService.replaceWith(AppRoutes.main);
+      NavigationService.replaceWith(AppRoutes.newKnowledgeSource);
     }
   }
 

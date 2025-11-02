@@ -7,7 +7,9 @@ This is a Flutter application for an AI-powered platform with features including
 ## Current Project Structure
 
 ### **Architecture Overview**
+
 The project attempts to follow Clean Architecture with three main layers:
+
 - **Domain Layer**: Business logic and entities
 - **Data Layer**: Data access and models
 - **Presentation Layer**: UI and state management
@@ -92,6 +94,7 @@ lib/
 ### **Dependencies Analysis**
 
 **Current Dependencies:**
+
 - `provider: ^6.1.2` - State management (not used)
 - `get_it: ^7.7.0` - DI container (not configured)
 - `http: ^1.2.2` - HTTP client (not used)
@@ -100,6 +103,7 @@ lib/
 - `dartz: ^0.10.1` - Functional programming (not used)
 
 **Missing Modern Dependencies:**
+
 - Riverpod (better state management)
 - Dio (improved HTTP client)
 - Freezed (code generation for models)
@@ -109,27 +113,32 @@ lib/
 ## Issues with Current Structure
 
 ### **1. Incomplete Architecture Implementation**
+
 - Clean Architecture layers exist but are not implemented
 - Empty folders indicate planned structure but missing implementation
 - No actual data flow between layers
 
 ### **2. Missing Core Infrastructure**
+
 - No error handling system
 - No network abstraction
 - No dependency injection setup
 - No state management implementation
 
 ### **3. Poor Separation of Concerns**
+
 - Business logic mixed with UI code
 - No proper use cases or repositories
 - Direct data manipulation in UI components
 
 ### **4. Lack of Testing**
+
 - No unit tests for business logic
 - No widget tests for UI components
 - No integration tests
 
 ### **5. Outdated Patterns**
+
 - Using Provider instead of modern Riverpod
 - Manual model classes instead of code generation
 - No proper async state handling
@@ -139,21 +148,25 @@ lib/
 ### **Modern Flutter Architecture Stack**
 
 **State Management:** Riverpod (instead of Provider)
+
 - Better performance and testability
 - Built-in dependency injection
 - Async state handling with AsyncValue
 
 **Data Layer:**
+
 - Dio for HTTP client with interceptors
 - Drift for local database
 - Proper repository pattern implementation
 
 **Code Generation:**
+
 - Freezed for immutable models
 - JsonSerializable for API serialization
 - BuildRunner for code generation
 
 **Testing:**
+
 - Mocktail for mocking
 - BlocTest/Riverpod testing utilities
 - Integration tests with Patrol
@@ -161,12 +174,14 @@ lib/
 ### **Phase 1: Foundation (1-2 weeks)**
 
 1. **Implement Core Infrastructure**
+
    - Add `Either<Failure, T>` pattern using `dartz`
    - Create base classes: `UseCase`, `BaseRepository`, `Failure`
    - Implement network layer with Dio + interceptors
    - Add proper error handling types
 
 2. **State Management Migration**
+
    - Replace Provider with Riverpod
    - Create `NotifierProvider` for each feature
    - Implement async state handling with `AsyncValue`
@@ -180,11 +195,13 @@ lib/
 ### **Phase 2: Feature Development (2-3 weeks)**
 
 1. **Authentication Flow**
+
    - Implement login/register with JWT
    - Add token refresh logic
    - Create auth state management
 
 2. **Core Features**
+
    - Prompts CRUD operations
    - Knowledge base management
    - Chat functionality
@@ -198,11 +215,13 @@ lib/
 ### **Phase 3: Enhancement & Optimization (1-2 weeks)**
 
 1. **UI/UX Improvements**
+
    - Add loading states and error handling UI
    - Implement pull-to-refresh
    - Add offline support
 
 2. **Performance & Code Quality**
+
    - Add code generation (freezed, json_serializable)
    - Implement CI/CD pipeline
    - Add performance monitoring
@@ -215,21 +234,25 @@ lib/
 ## Benefits of This Refactoring
 
 ### **Maintainability**
+
 - **Separation of Concerns**: Each layer has a single responsibility
 - **Testability**: Business logic isolated from UI/framework code
 - **Modularity**: Features can be developed independently
 
 ### **Scalability**
+
 - **Easy Feature Addition**: New features follow established patterns
 - **Team Collaboration**: Clear boundaries prevent conflicts
 - **Code Reusability**: Shared components and utilities
 
 ### **Modern Standards**
+
 - **Industry Alignment**: Matches current Flutter best practices
 - **Future-Proof**: Uses actively maintained libraries
 - **Performance**: Optimized state management and data flow
 
 ### **Developer Experience**
+
 - **Type Safety**: Strong typing with freezed models
 - **Hot Reload**: Fast development with Riverpod
 - **Debugging**: Clear error handling and logging

@@ -33,6 +33,9 @@ class AppRoutes {
   static const String createNewPrompt = '/prompts/new';
   static const String promptDetails = '/prompts/details';
 
+  /// New Knowledge Source
+  static const String newKnowledgeSource = '/knowledge/new';
+
   /// Get all route names as a list
   /// Useful for debugging or logging
   static List<String> get allRoutes => [
