@@ -12,7 +12,6 @@ class AppRoutes {
 
   // Root routes
   static const String splash = '/';
-  static const String home = '/home';
   static const String main = '/main'; // Main page with bottom navigation
 
   // Auth routes (example - can be extended)
@@ -34,11 +33,14 @@ class AppRoutes {
   static const String createNewPrompt = '/prompts/new';
   static const String promptDetails = '/prompts/details';
 
+  /// New Knowledge Source
+  static const String newKnowledgeSource = '/knowledge/new';
+  static const String knowledgeDetails = '/knowledge/details';
+
   /// Get all route names as a list
   /// Useful for debugging or logging
   static List<String> get allRoutes => [
     splash,
-    home,
     main,
     login,
     register,

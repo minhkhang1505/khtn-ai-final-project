@@ -5,8 +5,6 @@ class CustomTabbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(length: 3, child: Scaffold(
-      
-    ));
+    return DefaultTabController(length: 3, child: Scaffold());
   }
-} 
+}

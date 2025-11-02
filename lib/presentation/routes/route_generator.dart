@@ -3,10 +3,11 @@ import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/reset_password/reset_password.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/register/verifiaction_email/verification_email.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/knowledge_detail_screen.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/newknowledgesource/new_knowledge.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/create_new_prompt.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/prompt_detail_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart';
-import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/main/main_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
@@ -33,12 +34,6 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (_) => const SplashPage(),
-        );
-
-      case AppRoutes.home:
-        return _buildRoute(
-          settings: settings,
-          builder: (_) => const HomePage(),
         );
 
       case AppRoutes.main:
@@ -124,6 +119,18 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (_) => PromptDetailPage(),
+        );
+
+      case AppRoutes.newKnowledgeSource:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const NewKnowledgeScreen(),
+        );
+
+      case AppRoutes.knowledgeDetails:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => KnowledgeDetailScreen(),
         );
 
       default:

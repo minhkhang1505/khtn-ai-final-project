@@ -16,7 +16,9 @@ class AppRadius {
   static const extraLarge = Radius.circular(28);
   static const extraLargeIncreased = Radius.circular(32);
   static const extraExtraLarge = Radius.circular(48);
-  static const full = Radius.circular(1000); // or use BorderRadius.circular(9999)
+  static const full = Radius.circular(
+    1000,
+  ); // or use BorderRadius.circular(9999)
 }
 
 /// You can also create BorderRadius presets for convenience.
@@ -30,7 +32,9 @@ class AppBorderRadius {
   static const large = BorderRadius.all(AppRadius.large);
   static const largeIncreased = BorderRadius.all(AppRadius.largeIncreased);
   static const extraLarge = BorderRadius.all(AppRadius.extraLarge);
-  static const extraLargeIncreased = BorderRadius.all(AppRadius.extraLargeIncreased);
+  static const extraLargeIncreased = BorderRadius.all(
+    AppRadius.extraLargeIncreased,
+  );
   static const extraExtraLarge = BorderRadius.all(AppRadius.extraExtraLarge);
   static const full = BorderRadius.all(AppRadius.full);
 }
