@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/widgets/auth_primary_button.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/widgets/auth_text_field.dart';
-import 'package:khtn_ai_final_project/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class ResetPasswordForm extends StatelessWidget {
   final VoidCallback onSubmit;

@@ -31,8 +31,8 @@ class KnowledgePage extends StatelessWidget {
                     knowledge: KnowledgeModel(
                       id: '1',
                       userId: 'user1',
-                      knowledgeName: 'Knowledge 1',
-                      description: 'Description 1',
+                      knowledgeName: 'Knowledge $index',
+                      description: 'Description $index',
                       createdAt: DateTime.now(),
                     ),
                   ),

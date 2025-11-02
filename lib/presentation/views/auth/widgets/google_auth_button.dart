@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:khtn_ai_final_project/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class GoogleAuthButton extends StatelessWidget {
   final VoidCallback onPressed;

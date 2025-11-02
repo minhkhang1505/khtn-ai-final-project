@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class AuthPrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:khtn_ai_final_project/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class CategoryItem extends StatelessWidget {
   final String categoryName;
