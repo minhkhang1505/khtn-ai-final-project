@@ -1,26 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/views/knowledge/newknowledgesource/new_knowledge.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form.dart';
 
-class KnowledgeDetailScreen extends StatefulWidget {
-  const KnowledgeDetailScreen({super.key});
+/// Screen for viewing and editing knowledge source details
+class KnowledgeDetailScreen extends StatelessWidget {
+  // TODO: Add parameters to accept knowledge data from navigation
+  final String? knowledgeId;
+  final String? initialSourceName;
+  final String? initialSourceDescription;
+  final String? initialUrl;
+  final KnowledgeSourceType? initialSourceType;
 
-  @override
-  State<KnowledgeDetailScreen> createState() => _KnowledgeDetailScreenState();
-}
+  const KnowledgeDetailScreen({
+    super.key,
+    this.knowledgeId,
+    this.initialSourceName,
+    this.initialSourceDescription,
+    this.initialUrl,
+    this.initialSourceType,
+  });
 
-class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
-  final TextEditingController _knowledgeNameController =
-      TextEditingController();
+  void _handleEdit(BuildContext context) {
+    // TODO: Implement edit mode toggle or navigation
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Edit mode activated')));
+  }
+
+  void _handleSave(
+    BuildContext context, {
+    required String sourceName,
+    required String sourceDescription,
+    required String url,
+    required sourceType,
+  }) {
+    // TODO: Implement update logic
+    // This is where you would call your repository/service to update the knowledge
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Knowledge source "$sourceName" updated successfully'),
+        backgroundColor: Colors.green,
+      ),
+    );
+
+    // Navigate back after a short delay
+    Future.delayed(const Duration(seconds: 1), () {
+      Navigator.of(context).pop();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Knowledge'),
+        title: const Text('Knowledge Details'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -29,192 +65,26 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: AppBorderRadius.extraLarge,
-                  color: colorScheme.surfaceContainerLow,
+          child: KnowledgeForm(
+            initialSourceName: initialSourceName,
+            initialSourceDescription: initialSourceDescription,
+            initialUrl: initialUrl,
+            initialSourceType: initialSourceType,
+            isEditMode: true,
+            onEditPressed: () => _handleEdit(context),
+            onSave:
+                ({
+                  required String sourceName,
+                  required String sourceDescription,
+                  required String url,
+                  required sourceType,
+                }) => _handleSave(
+                  context,
+                  sourceName: sourceName,
+                  sourceDescription: sourceDescription,
+                  url: url,
+                  sourceType: sourceType,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: [
-                        Text(
-                          "Add Data Source",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Spacer(),
-                        IconButton(
-                          onPressed: () {},
-                          icon: SvgPicture.asset(
-                            'assets/icons/ic_edit.svg',
-                            width: 24,
-                            height: 24,
-                            color: colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    //dropdown menu for selecting knowledge source type
-                    Row(
-                      children: [
-                        Text(
-                          'Source: ',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Spacer(),
-                        DropdownMenu<KnowledgeSourceType>(
-                          controller: _knowledgeNameController,
-                          enableFilter: true,
-                          inputDecorationTheme: InputDecorationTheme(
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Colors.grey),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(
-                                color: Colors.blue,
-                                width: 1.5,
-                              ),
-                            ),
-                          ),
-                          initialSelection: knowledgeSources[0],
-                          requestFocusOnTap: true,
-                          onSelected: (KnowledgeSourceType? source) {
-                            setState(() {
-                              _knowledgeNameController.text =
-                                  source?.name ?? '';
-                            });
-                          },
-                          dropdownMenuEntries: knowledgeSources.map((source) {
-                            return DropdownMenuEntry<KnowledgeSourceType>(
-                              value: source,
-                              label: source.name,
-                              leadingIcon: SvgPicture.asset(
-                                source.iconAssetPath,
-                                width: 24,
-                                height: 24,
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                    // enter knowledge name
-                    const SizedBox(height: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Source Name',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        TextField(
-                          decoration: InputDecoration(
-                            hintText: 'e.g., Company Documents',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Source Description',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Describe the knowledge source...',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          minLines: 4,
-                          maxLines: null,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'URL or Path',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        TextField(
-                          decoration: InputDecoration(
-                            hintText: 'e.g., https://www.example.com',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    // enter knowledge description
-                    // input field for knowledge source (URL, file upload, text input)
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppBorderRadius.medium,
-                      ),
-                    ),
-                    child: Text(
-                      "Save",
-                      style: TextStyle(color: colorScheme.onPrimary),
-                    ),
-                  ),
-                ],
-              ),
-            ],
           ),
         ),
       ),
