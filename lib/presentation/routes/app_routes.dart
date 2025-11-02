@@ -35,6 +35,7 @@ class AppRoutes {
 
   /// New Knowledge Source
   static const String newKnowledgeSource = '/knowledge/new';
+  static const String knowledgeDetails = '/knowledge/details';
 
   /// Get all route names as a list
   /// Useful for debugging or logging
