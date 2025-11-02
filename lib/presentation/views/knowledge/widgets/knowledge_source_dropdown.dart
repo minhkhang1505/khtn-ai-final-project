@@ -7,12 +7,14 @@ class KnowledgeSourceDropdown extends StatelessWidget {
   final TextEditingController controller;
   final KnowledgeSourceType? initialSelection;
   final ValueChanged<KnowledgeSourceType?>? onSelected;
+  final bool enabled;
 
   const KnowledgeSourceDropdown({
     super.key,
     required this.controller,
     this.initialSelection,
     this.onSelected,
+    this.enabled = true,
   });
 
   @override
@@ -26,10 +28,11 @@ class KnowledgeSourceDropdown extends StatelessWidget {
         const Spacer(),
         DropdownMenu<KnowledgeSourceType>(
           controller: controller,
+          enabled: enabled,
           enableFilter: true,
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: Colors.grey[100],
+            fillColor: enabled ? Colors.grey[100] : Colors.grey[200],
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 8,
@@ -46,10 +49,14 @@ class KnowledgeSourceDropdown extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Colors.blue, width: 1.5),
             ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
           ),
           initialSelection: initialSelection ?? KnowledgeSourceTypes.all[0],
-          requestFocusOnTap: true,
-          onSelected: onSelected,
+          requestFocusOnTap: enabled,
+          onSelected: enabled ? onSelected : null,
           dropdownMenuEntries: KnowledgeSourceTypes.all.map((source) {
             return DropdownMenuEntry<KnowledgeSourceType>(
               value: source,

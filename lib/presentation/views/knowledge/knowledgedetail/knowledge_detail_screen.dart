@@ -25,15 +25,19 @@ class KnowledgeDetailScreen extends StatefulWidget {
 }
 
 class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
-  bool isEditMode = true;
+  bool _isEditMode = false;
 
-  void _handleEdit(BuildContext context) {
+  void _handleEdit() {
     setState(() {
-      isEditMode = !isEditMode;
+      _isEditMode = !_isEditMode;
     });
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Edit mode activated')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          _isEditMode ? 'Edit mode activated' : 'View mode activated',
+        ),
+      ),
+    );
   }
 
   void _handleSave(
@@ -55,7 +59,9 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
 
     // Navigate back after a short delay
     Future.delayed(const Duration(seconds: 1), () {
-      Navigator.of(context).pop();
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
     });
   }
 
@@ -79,8 +85,8 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
             initialSourceDescription: widget.initialSourceDescription,
             initialUrl: widget.initialUrl,
             initialSourceType: widget.initialSourceType,
-            isEditMode: isEditMode,
-            onEditPressed: () => _handleEdit(context),
+            isEditMode: _isEditMode,
+            onEditPressed: _handleEdit,
             onSave:
                 ({
                   required String sourceName,

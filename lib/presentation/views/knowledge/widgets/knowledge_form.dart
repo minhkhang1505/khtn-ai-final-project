@@ -45,13 +45,22 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
   late final TextEditingController _sourceDescriptionController;
   late final TextEditingController _urlController;
   late KnowledgeSourceType _selectedSourceType;
-  bool isEditMode = false;
+  late KnowledgeSourceType _initialSourceType;
+  late String _initialSourceName;
+  late String _initialSourceDescription;
+  late String _initialUrl;
+  bool _hasChanges = false;
 
   @override
   void initState() {
     super.initState();
     _selectedSourceType =
         widget.initialSourceType ?? KnowledgeSourceTypes.all[0];
+    _initialSourceType = _selectedSourceType;
+    _initialSourceName = widget.initialSourceName ?? '';
+    _initialSourceDescription = widget.initialSourceDescription ?? '';
+    _initialUrl = widget.initialUrl ?? '';
+
     _sourceTypeController = TextEditingController(
       text: _selectedSourceType.name,
     );
@@ -62,6 +71,25 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
       text: widget.initialSourceDescription,
     );
     _urlController = TextEditingController(text: widget.initialUrl);
+
+    // Add listeners to track changes
+    _sourceNameController.addListener(_checkForChanges);
+    _sourceDescriptionController.addListener(_checkForChanges);
+    _urlController.addListener(_checkForChanges);
+  }
+
+  void _checkForChanges() {
+    final hasChanges =
+        _sourceNameController.text != _initialSourceName ||
+        _sourceDescriptionController.text != _initialSourceDescription ||
+        _urlController.text != _initialUrl ||
+        _selectedSourceType != _initialSourceType;
+
+    if (hasChanges != _hasChanges) {
+      setState(() {
+        _hasChanges = hasChanges;
+      });
+    }
   }
 
   @override
@@ -117,10 +145,8 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
               children: [
                 KnowledgeSectionHeader(
                   title: KnowledgeConstants.addDataSourceTitle,
-                  onActionPressed: widget.isEditMode
-                      ? widget.onEditPressed
-                      : null,
-                  actionIconPath: widget.isEditMode
+                  onActionPressed: widget.onEditPressed,
+                  actionIconPath: widget.onEditPressed != null
                       ? 'assets/icons/ic_edit.svg'
                       : null,
                 ),
@@ -128,12 +154,14 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                 KnowledgeSourceDropdown(
                   controller: _sourceTypeController,
                   initialSelection: _selectedSourceType,
+                  enabled: widget.isEditMode,
                   onSelected: (KnowledgeSourceType? source) {
                     if (source != null) {
                       setState(() {
                         _selectedSourceType = source;
                         _sourceTypeController.text = source.name;
                       });
+                      _checkForChanges();
                     }
                   },
                 ),
@@ -143,7 +171,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   hintText: KnowledgeConstants.sourceNameHint,
                   controller: _sourceNameController,
                   validator: _validateSourceName,
-                  readOnly: isEditMode,
+                  readOnly: !widget.isEditMode,
                 ),
                 const SizedBox(height: 16),
                 LabeledTextField(
@@ -152,7 +180,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   controller: _sourceDescriptionController,
                   minLines: 4,
                   maxLines: null,
-                  readOnly: isEditMode,
+                  readOnly: !widget.isEditMode,
                 ),
                 const SizedBox(height: 16),
                 LabeledTextField(
@@ -161,7 +189,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   controller: _urlController,
                   validator: _validateUrl,
                   keyboardType: TextInputType.url,
-                  readOnly: isEditMode,
+                  readOnly: !widget.isEditMode,
                 ),
               ],
             ),
@@ -171,16 +199,23 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
-                onPressed: _handleSave,
+                onPressed: (widget.isEditMode && _hasChanges)
+                    ? _handleSave
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorScheme.primary,
+                  disabledBackgroundColor: colorScheme.surfaceContainerHighest,
                   shape: RoundedRectangleBorder(
                     borderRadius: AppBorderRadius.medium,
                   ),
                 ),
                 child: Text(
                   KnowledgeConstants.saveButton,
-                  style: TextStyle(color: colorScheme.onPrimary),
+                  style: TextStyle(
+                    color: (widget.isEditMode && _hasChanges)
+                        ? colorScheme.onPrimary
+                        : colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],

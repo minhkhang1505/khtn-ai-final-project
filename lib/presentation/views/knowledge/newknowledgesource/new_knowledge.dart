@@ -26,7 +26,9 @@ class NewKnowledgeScreen extends StatelessWidget {
 
     // Navigate back after a short delay
     Future.delayed(const Duration(seconds: 1), () {
-      Navigator.of(context).pop();
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
     });
   }
 
