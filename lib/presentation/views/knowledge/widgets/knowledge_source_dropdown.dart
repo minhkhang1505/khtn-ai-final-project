@@ -19,6 +19,7 @@ class KnowledgeSourceDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       children: [
         const Text(
@@ -39,11 +40,11 @@ class KnowledgeSourceDropdown extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.grey),
+              borderSide: BorderSide(color: colorScheme.outline.withAlpha(50)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.grey),
+              borderSide: BorderSide(color: colorScheme.outline.withAlpha(50)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
