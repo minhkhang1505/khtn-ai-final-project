@@ -3,7 +3,7 @@ import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form.dart';
 
 /// Screen for viewing and editing knowledge source details
-class KnowledgeDetailScreen extends StatelessWidget {
+class KnowledgeDetailScreen extends StatefulWidget {
   // TODO: Add parameters to accept knowledge data from navigation
   final String? knowledgeId;
   final String? initialSourceName;
@@ -20,8 +20,17 @@ class KnowledgeDetailScreen extends StatelessWidget {
     this.initialSourceType,
   });
 
+  @override
+  State<KnowledgeDetailScreen> createState() => _KnowledgeDetailScreenState();
+}
+
+class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
+  bool isEditMode = true;
+
   void _handleEdit(BuildContext context) {
-    // TODO: Implement edit mode toggle or navigation
+    setState(() {
+      isEditMode = !isEditMode;
+    });
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Edit mode activated')));
@@ -66,11 +75,11 @@ class KnowledgeDetailScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: KnowledgeForm(
-            initialSourceName: initialSourceName,
-            initialSourceDescription: initialSourceDescription,
-            initialUrl: initialUrl,
-            initialSourceType: initialSourceType,
-            isEditMode: true,
+            initialSourceName: widget.initialSourceName,
+            initialSourceDescription: widget.initialSourceDescription,
+            initialUrl: widget.initialUrl,
+            initialSourceType: widget.initialSourceType,
+            isEditMode: isEditMode,
             onEditPressed: () => _handleEdit(context),
             onSave:
                 ({

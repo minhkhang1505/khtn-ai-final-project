@@ -45,6 +45,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
   late final TextEditingController _sourceDescriptionController;
   late final TextEditingController _urlController;
   late KnowledgeSourceType _selectedSourceType;
+  bool isEditMode = false;
 
   @override
   void initState() {
@@ -142,6 +143,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   hintText: KnowledgeConstants.sourceNameHint,
                   controller: _sourceNameController,
                   validator: _validateSourceName,
+                  readOnly: isEditMode,
                 ),
                 const SizedBox(height: 16),
                 LabeledTextField(
@@ -150,6 +152,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   controller: _sourceDescriptionController,
                   minLines: 4,
                   maxLines: null,
+                  readOnly: isEditMode,
                 ),
                 const SizedBox(height: 16),
                 LabeledTextField(
@@ -158,6 +161,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   controller: _urlController,
                   validator: _validateUrl,
                   keyboardType: TextInputType.url,
+                  readOnly: isEditMode,
                 ),
               ],
             ),
