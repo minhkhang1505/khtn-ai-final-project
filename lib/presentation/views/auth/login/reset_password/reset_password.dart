@@ -19,33 +19,47 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      AuthBackButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 500 : double.infinity,
+              ),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              AuthBackButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                          AuthHeader(
+                            iconPath: "assets/icons/ic_lock_password.svg",
+                            title: "Reset Your Password",
+                            subtitle: "",
+                          ),
+                          ResetPasswordForm(
+                            onSubmit: _handleResetPasswordButton,
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                  AuthHeader(
-                    iconPath: "assets/icons/ic_lock_password.svg",
-                    title: "Reset Your Password",
-                    subtitle: "",
-                  ),
-                  ResetPasswordForm(onSubmit: _handleResetPasswordButton),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

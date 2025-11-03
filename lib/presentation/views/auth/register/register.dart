@@ -47,36 +47,48 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const AuthHeader(
-                  title: "Create Account",
-                  subtitle: "Join thousands of AI enthusiasts today!",
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 500 : double.infinity,
+              ),
+              child: SingleChildScrollView(
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const AuthHeader(
+                          title: "Create Account",
+                          subtitle: "Join thousands of AI enthusiasts today!",
+                        ),
+                        RegisterForm(
+                          fullNameController: _fullNameController,
+                          emailController: _emailController,
+                          passwordController: _passwordController,
+                          confirmPasswordController: _confirmPasswordController,
+                          isTermsChecked: _isTermsChecked,
+                          onTermsChanged: (value) {
+                            setState(() {
+                              _isTermsChecked = value;
+                            });
+                          },
+                          onCreateAccount: _handleCreateAccount,
+                          onGoogleSignUp: _handleGoogleSignUp,
+                          onSignInTap: _handleSignIn,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                RegisterForm(
-                  fullNameController: _fullNameController,
-                  emailController: _emailController,
-                  passwordController: _passwordController,
-                  confirmPasswordController: _confirmPasswordController,
-                  isTermsChecked: _isTermsChecked,
-                  onTermsChanged: (value) {
-                    setState(() {
-                      _isTermsChecked = value;
-                    });
-                  },
-                  onCreateAccount: _handleCreateAccount,
-                  onGoogleSignUp: _handleGoogleSignUp,
-                  onSignInTap: _handleSignIn,
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

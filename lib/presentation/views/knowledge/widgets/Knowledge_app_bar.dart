@@ -10,31 +10,28 @@ class KnowledgeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Knowledge'),
-              SizedBox(height: 4),
-              Text('Connect data sources', style: TextStyle(fontSize: 14)),
-            ],
-          ),
-          IconButton(
-            onPressed: onAddKnowledge,
-            icon: SvgPicture.asset(
-              'assets/icons/ic_add.svg',
-              width: 45,
-              height: 45,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.primary,
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
+          Text('Knowledge'),
+          SizedBox(height: 4),
+          Text('Connect data sources', style: TextStyle(fontSize: 14)),
         ],
       ),
+      actions: [
+        IconButton(
+          onPressed: onAddKnowledge,
+          icon: SvgPicture.asset(
+            'assets/icons/ic_add.svg',
+            width: 45,
+            height: 45,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).colorScheme.primary,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

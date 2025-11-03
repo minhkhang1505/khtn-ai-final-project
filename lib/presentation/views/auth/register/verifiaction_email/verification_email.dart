@@ -41,31 +41,44 @@ class _VerificationEmailPageState extends State<VerificationEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  AuthHeader(
-                    iconPath: "assets/icons/ic_email.svg",
-                    title: "Verify Your Email",
-                    subtitle:
-                        "We've sent a verification code to ${widget.email}",
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 500 : double.infinity,
+              ),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          AuthHeader(
+                            iconPath: "assets/icons/ic_email.svg",
+                            title: "Verify Your Email",
+                            subtitle:
+                                "We've sent a verification code to ${widget.email}",
+                          ),
+                          VerificationEmailForm(
+                            onResendCode: _handleResendCode,
+                            onChangeEmail: _handleChangeEmail,
+                            onVerifyAndContinueButton:
+                                _handleVerifyAndContinueButton,
+                            onCodeChanged: _handleCodeChanged,
+                            onVerifyAndContinue: _handleVerifyAndContinue,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  VerificationEmailForm(
-                    onResendCode: _handleResendCode,
-                    onChangeEmail: _handleChangeEmail,
-                    onVerifyAndContinueButton: _handleVerifyAndContinueButton,
-                    onCodeChanged: _handleCodeChanged,
-                    onVerifyAndContinue: _handleVerifyAndContinue,
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

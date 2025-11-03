@@ -48,33 +48,45 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const AuthHeader(
-                  title: "Welcome",
-                  subtitle: "Sign in to continue to your AI workspace",
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final bool isWideScreen = constraints.maxWidth > 600;
+            return Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: isWideScreen ? 500 : double.infinity,
                 ),
-                LoginForm(
-                  emailController: _emailController,
-                  passwordController: _passwordController,
-                  isRememberMeChecked: _isRememberMeChecked,
-                  onRememberMeChanged: (value) {
-                    setState(() {
-                      _isRememberMeChecked = value;
-                    });
-                  },
-                  onForgotPassword: _handleForgotPassword,
-                  onSignIn: _handleSignIn,
-                  onGoogleSignIn: _handleGoogleSignIn,
-                  onSignUpTap: _handleSignUp,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const AuthHeader(
+                          title: "Welcome",
+                          subtitle: "Sign in to continue to your AI workspace",
+                        ),
+                        LoginForm(
+                          emailController: _emailController,
+                          passwordController: _passwordController,
+                          isRememberMeChecked: _isRememberMeChecked,
+                          onRememberMeChanged: (value) {
+                            setState(() {
+                              _isRememberMeChecked = value;
+                            });
+                          },
+                          onForgotPassword: _handleForgotPassword,
+                          onSignIn: _handleSignIn,
+                          onGoogleSignIn: _handleGoogleSignIn,
+                          onSignUpTap: _handleSignUp,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

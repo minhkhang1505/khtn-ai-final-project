@@ -60,43 +60,55 @@ class _CreateNewPromptPageState extends State<CreateNewPromptPage> {
         ),
         title: const Text("New Prompt"),
       ),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                PromptDetailsSection(
-                  titleController: _titleController,
-                  descriptionController: _descriptionController,
-                  contentController: _contentController,
-                  selectedCategory: _selectedCategory,
-                  selectedLanguage: _selectedLanguage,
-                  isPublic: _isPublic,
-                  onCategoryChanged: (value) {
-                    setState(() => _selectedCategory = value);
-                  },
-                  onLanguageChanged: (value) {
-                    setState(() => _selectedLanguage = value);
-                  },
-                  onPublicChanged: (value) {
-                    setState(() => _isPublic = value);
-                  },
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 800 : double.infinity,
+              ),
+              child: SingleChildScrollView(
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        PromptDetailsSection(
+                          titleController: _titleController,
+                          descriptionController: _descriptionController,
+                          contentController: _contentController,
+                          selectedCategory: _selectedCategory,
+                          selectedLanguage: _selectedLanguage,
+                          isPublic: _isPublic,
+                          onCategoryChanged: (value) {
+                            setState(() => _selectedCategory = value);
+                          },
+                          onLanguageChanged: (value) {
+                            setState(() => _selectedLanguage = value);
+                          },
+                          onPublicChanged: (value) {
+                            setState(() => _isPublic = value);
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        PromptPreviewSection(
+                          title: _titleController.text,
+                          content: _contentController.text,
+                        ),
+                        const SizedBox(height: 12),
+                        PromptActionButtons(
+                          onCancel: _cancelPrompt,
+                          onSave: _savePrompt,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 12),
-                PromptPreviewSection(
-                  title: _titleController.text,
-                  content: _contentController.text,
-                ),
-                const SizedBox(height: 12),
-                PromptActionButtons(
-                  onCancel: _cancelPrompt,
-                  onSave: _savePrompt,
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

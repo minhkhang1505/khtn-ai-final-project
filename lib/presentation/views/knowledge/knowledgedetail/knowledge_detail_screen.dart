@@ -77,31 +77,46 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: KnowledgeForm(
-            initialSourceName: widget.initialSourceName,
-            initialSourceDescription: widget.initialSourceDescription,
-            initialUrl: widget.initialUrl,
-            initialSourceType: widget.initialSourceType,
-            isEditMode: _isEditMode,
-            onEditPressed: _handleEdit,
-            onSave:
-                ({
-                  required String sourceName,
-                  required String sourceDescription,
-                  required String url,
-                  required sourceType,
-                }) => _handleSave(
-                  context,
-                  sourceName: sourceName,
-                  sourceDescription: sourceDescription,
-                  url: url,
-                  sourceType: sourceType,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 800 : double.infinity,
+              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  child: KnowledgeForm(
+                    initialSourceName: widget.initialSourceName,
+                    initialSourceDescription: widget.initialSourceDescription,
+                    initialUrl: widget.initialUrl,
+                    initialSourceType: widget.initialSourceType,
+                    isEditMode: _isEditMode,
+                    onEditPressed: _handleEdit,
+                    onSave:
+                        ({
+                          required String sourceName,
+                          required String sourceDescription,
+                          required String url,
+                          required sourceType,
+                        }) => _handleSave(
+                          context,
+                          sourceName: sourceName,
+                          sourceDescription: sourceDescription,
+                          url: url,
+                          sourceType: sourceType,
+                        ),
+                  ),
                 ),
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

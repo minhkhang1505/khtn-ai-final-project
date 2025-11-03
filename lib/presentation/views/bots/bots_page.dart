@@ -1,10 +1,16 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/core/constants/constants.dart' show AppSpacing, AppBarInfo;
-import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart' show BotSearch;
-import 'package:khtn_ai_final_project/presentation/viewmodels/bot_viewmodel.dart' show BotViewModel;
+import 'package:flutter_svg/svg.dart';
+import 'package:khtn_ai_final_project/core/constants/constants.dart'
+    show AppSpacing, AppBarInfo;
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart'
+    show BotSearch;
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot_viewmodel.dart'
+    show BotViewModel;
 import 'create_bot_page.dart' show CreateBotPage;
 import 'bots_card.dart' show BotCard;
-import 'package:khtn_ai_final_project/theme/app_radius.dart';
+import 'dart:io' show Platform;
 
 /// Bots page - Manage AI bots
 class BotsPage extends StatefulWidget {
@@ -14,7 +20,8 @@ class BotsPage extends StatefulWidget {
   State<BotsPage> createState() => _BotsPageState();
 }
 
-class _BotsPageState extends State<BotsPage> with SingleTickerProviderStateMixin {
+class _BotsPageState extends State<BotsPage>
+    with SingleTickerProviderStateMixin {
   late BotViewModel _botViewModel;
 
   @override
@@ -26,13 +33,11 @@ class _BotsPageState extends State<BotsPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: AppBarInfo.height,
-        titleSpacing: AppSpacing.horizontal,
-        backgroundColor: AppBarInfo.backgroundColor,
-        shadowColor: AppBarInfo.shadowColor,
-        elevation: AppBarInfo.elevation,
+        automaticallyImplyLeading: false,
+        backgroundColor: colorScheme.surface,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -40,11 +45,7 @@ class _BotsPageState extends State<BotsPage> with SingleTickerProviderStateMixin
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text(
-                  'AI Bots',
-                  style: AppBarInfo.titleTextStyle,
-                ),
-                SizedBox(height: 4),
+                Text('AI Bots', style: AppBarInfo.titleTextStyle),
                 Text(
                   'Automate tasks with AI-powered workflows',
                   style: AppBarInfo.subtitleTextStyle,
@@ -54,61 +55,100 @@ class _BotsPageState extends State<BotsPage> with SingleTickerProviderStateMixin
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: FilledButton.icon(
-              onPressed: () {
-                // Navigate to Create bot page
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const CreateBotPage(),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text(
-                'Create Bot',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppBorderRadius.medium,
-                ),
+          // if (!Platform.isAndroid && !Platform.isIOS)
+          //   Padding(
+          //     padding: const EdgeInsets.only(right: 16),
+          //     child: FilledButton.icon(
+          //       onPressed: () {
+          //         // Navigate to Create bot page
+          //         Navigator.of(context).push(
+          //           MaterialPageRoute(
+          //             builder: (context) => const CreateBotPage(),
+          //           ),
+          //         );
+          //       },
+          //       icon: const Icon(Icons.add, size: 18),
+          //       label: const Text(
+          //         'Create Bot',
+          //         style: TextStyle(fontWeight: FontWeight.bold),
+          //       ),
+          //       style: FilledButton.styleFrom(
+          //         backgroundColor: Theme.of(context).colorScheme.primary,
+          //         padding: const EdgeInsets.symmetric(
+          //           horizontal: 16,
+          //           vertical: 20,
+          //         ),
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: AppBorderRadius.medium,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          IconButton(
+            onPressed: () {
+              // Navigate to Create bot page
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const CreateBotPage()),
+              );
+            },
+            icon: SvgPicture.asset(
+              'assets/icons/ic_add.svg',
+              width: 45,
+              height: 45,
+              colorFilter: ColorFilter.mode(
+                colorScheme.primary,
+                BlendMode.srcIn,
               ),
             ),
           ),
         ],
       ),
 
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: AppSpacing.vertical, left: AppSpacing.horizontal + 4, right: AppSpacing.horizontal + 4),
-              child: const BotSearch(),
-            ),
-            SizedBox(height: AppSpacing.cardSpacing),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 1200 : double.infinity,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(
+                        top: AppSpacing.vertical,
+                        left: AppSpacing.horizontal + 4,
+                        right: AppSpacing.horizontal + 4,
+                      ),
+                      child: const BotSearch(),
+                    ),
+                    SizedBox(height: AppSpacing.cardSpacing),
 
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: _botViewModel.bots.length,
-              itemBuilder: (context, index) {
-                final bot = _botViewModel.bots[index];
-                return Padding(
-                  padding: EdgeInsets.only(
-                    left: AppSpacing.horizontal,
-                    right: AppSpacing.horizontal,
-                    bottom: index == _botViewModel.bots.length - 1 ? AppSpacing.vertical : AppSpacing.cardSpacing,
-                  ),
-                  child: BotCard(bot: bot),
-                );
-              },
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _botViewModel.bots.length,
+                      itemBuilder: (context, index) {
+                        final bot = _botViewModel.bots[index];
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: AppSpacing.horizontal,
+                            right: AppSpacing.horizontal,
+                            bottom: index == _botViewModel.bots.length - 1
+                                ? AppSpacing.vertical
+                                : AppSpacing.cardSpacing,
+                          ),
+                          child: BotCard(bot: bot),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
