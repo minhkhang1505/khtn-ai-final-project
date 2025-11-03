@@ -9,16 +9,16 @@ class BotViewModel extends ChangeNotifier {
   void loadBots() {
     _bots.addAll([
       BotModel(
-        botName: 'Chat Assistant',
-        botDescription: 'Helps with customer inquiries.',
+        name: 'Chat Assistant',
+        description: 'Helps with customer inquiries.',
         category: 'Customer Support',
         model: 'GPT-4',
         state: 'Active',
         prompt: 'Assist customers with their questions.',
       ),
       BotModel(
-        botName: 'Sales Bot',
-        botDescription: 'Automates sales follow-ups.',
+        name: 'Sales Bot',
+        description: 'Automates sales follow-ups.',
         category: 'Sales',
         model: 'GPT-3.5',
         state: 'Inactive',

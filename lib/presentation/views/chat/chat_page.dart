@@ -139,8 +139,8 @@ class _ChatPageState extends State<ChatPage> {
                 itemBuilder: (context, index) {
                   final bot = botViewModel.bots[index];
                   return ListTile(
-                    title: Text(bot.botName),
-                    subtitle: Text(bot.botDescription),
+                    title: Text(bot.name),
+                    subtitle: Text(bot.description),
                     trailing: PopupMenuButton<int>(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
