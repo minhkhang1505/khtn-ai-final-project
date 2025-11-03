@@ -7,7 +7,12 @@ class PromptItem extends StatelessWidget {
   final VoidCallback? onFavoriteTap;
   final VoidCallback onTap;
 
-  const PromptItem({super.key, required this.prompt, this.onFavoriteTap, required this.onTap});
+  const PromptItem({
+    super.key,
+    required this.prompt,
+    this.onFavoriteTap,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +25,10 @@ class PromptItem extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
           borderRadius: AppBorderRadius.large,
-          border: Border.all(color: colorScheme.outline),
+          border: Border.all(
+            color: colorScheme.outline.withAlpha(50),
+            width: 1.5,
+          ),
           color: colorScheme.surfaceContainerLow,
         ),
         child: Column(
@@ -53,7 +61,7 @@ class PromptItem extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 4),
-      
+
                           // title
                           Expanded(
                             child: Text(
@@ -66,7 +74,7 @@ class PromptItem extends StatelessWidget {
                           ),
                         ],
                       ),
-      
+
                       // description
                     ],
                   ),
