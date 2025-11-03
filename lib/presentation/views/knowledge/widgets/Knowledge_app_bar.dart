@@ -9,6 +9,7 @@ class KnowledgeAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -27,7 +28,7 @@ class KnowledgeAppBar extends StatelessWidget implements PreferredSizeWidget {
               width: 45,
               height: 45,
               colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.primary.withAlpha(200),
+                Theme.of(context).colorScheme.primary,
                 BlendMode.srcIn,
               ),
             ),

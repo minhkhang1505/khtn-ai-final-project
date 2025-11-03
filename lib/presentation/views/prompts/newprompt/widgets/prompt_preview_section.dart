@@ -18,7 +18,10 @@ class PromptPreviewSection extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: colorScheme.outlineVariant),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withAlpha(150),
+          width: 2,
+        ),
         borderRadius: AppBorderRadius.extraLarge,
       ),
       padding: const EdgeInsets.all(16),

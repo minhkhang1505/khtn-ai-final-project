@@ -15,7 +15,10 @@ class KnowledgeFormCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: AppBorderRadius.extraLarge,
-        color: colorScheme.surfaceContainerLow,
+        border: Border.all(
+          color: colorScheme.outlineVariant.withAlpha(150),
+          width: 2,
+        ),
       ),
       child: child,
     );
