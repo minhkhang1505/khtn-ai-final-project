@@ -20,7 +20,7 @@ class _ChatPageState extends State<ChatPage> {
   final BotViewModel botViewModel = BotViewModel();
   //botViewModel.loadBots();
   bool _isLoading = false;
-  
+
   @override
   void initState() {
     super.initState();
@@ -34,13 +34,18 @@ class _ChatPageState extends State<ChatPage> {
       _messages.add(userMessage);
       _isLoading = true;
     });
+
     final reply = await ApiService.sendMessage(message);
+
+    if (!mounted) return;
+
     setState(() {
       _messages.add(Message(text: reply, isUser: false));
       _isLoading = false;
     });
 
     Future.delayed(const Duration(milliseconds: 100), () {
+      if (!mounted) return;
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
@@ -75,10 +80,7 @@ class _ChatPageState extends State<ChatPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: 20),
-                child: SizedBox(
-                  width: 120,
-                  child: BotOptionMenu(),
-                ),
+                child: SizedBox(width: 120, child: BotOptionMenu()),
               ),
 
               Padding(
@@ -87,13 +89,13 @@ class _ChatPageState extends State<ChatPage> {
                   icon: const Icon(Icons.add),
                   color: Colors.black,
                   onPressed: () {
-                  // TODO: Handle add chat button press
+                    // TODO: Handle add chat button press
                   },
                 ),
               ),
             ],
           ),
-        ]
+        ],
       ),
       drawer: Drawer(
         child: Column(
@@ -112,9 +114,7 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             ListTile(
               leading: const Icon(Icons.add),
               title: const Text('Create New Bot'),
@@ -125,7 +125,8 @@ class _ChatPageState extends State<ChatPage> {
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(left: 18.0),
-              child: Text('Chats', 
+              child: Text(
+                'Chats',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
@@ -184,9 +185,16 @@ class _ChatPageState extends State<ChatPage> {
                           value: 3,
                           child: Row(
                             children: const [
-                              Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                              Icon(
+                                Icons.delete_outline,
+                                color: Colors.red,
+                                size: 20,
+                              ),
                               SizedBox(width: 12),
-                              Text('Delete', style: TextStyle(color: Colors.red)),
+                              Text(
+                                'Delete',
+                                style: TextStyle(color: Colors.red),
+                              ),
                             ],
                           ),
                         ),
@@ -228,27 +236,39 @@ class _ChatPageState extends State<ChatPage> {
                 padding: messageWidth < 400
                     ? const EdgeInsets.symmetric(horizontal: 8, vertical: 16)
                     : EdgeInsets.symmetric(
-                        horizontal: (MediaQuery.of(context).size.width * 0.5) / 2,
-                        vertical: 16),
+                        horizontal:
+                            (MediaQuery.of(context).size.width * 0.5) / 2,
+                        vertical: 16,
+                      ),
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
                   final msg = _messages[index];
                   return Align(
-                    alignment: msg.isUser ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: msg.isUser
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
                     child: Container(
                       width: msg.isUser ? null : double.infinity,
                       margin: const EdgeInsets.symmetric(vertical: 12),
-                      padding: msg.isUser ? const EdgeInsets.all(12) : const EdgeInsets.only(
-                          left: 12, right: 12, top: 12, bottom: 12),
+                      padding: msg.isUser
+                          ? const EdgeInsets.all(12)
+                          : const EdgeInsets.only(
+                              left: 12,
+                              right: 12,
+                              top: 12,
+                              bottom: 12,
+                            ),
                       decoration: BoxDecoration(
                         color: msg.isUser ? Colors.blue[200] : Colors.grey[300],
                         borderRadius: BorderRadius.only(
                           topLeft: const Radius.circular(12),
                           topRight: const Radius.circular(12),
-                          bottomLeft:
-                              msg.isUser ? const Radius.circular(12) : Radius.zero,
-                          bottomRight:
-                              msg.isUser ? Radius.zero : const Radius.circular(12),
+                          bottomLeft: msg.isUser
+                              ? const Radius.circular(12)
+                              : Radius.zero,
+                          bottomRight: msg.isUser
+                              ? Radius.zero
+                              : const Radius.circular(12),
                         ),
                       ),
                       child: Text(
@@ -275,10 +295,12 @@ class _ChatPageState extends State<ChatPage> {
               widthFactor: double.infinity,
               child: Padding(
                 padding: messageWidth < 400
-                  ? const EdgeInsets.symmetric(horizontal: 0, vertical: 8)
-                  : EdgeInsets.symmetric(
-                      horizontal: (MediaQuery.of(context).size.width * 0.5) / 2 - 12,
-                      vertical: 8),
+                    ? const EdgeInsets.symmetric(horizontal: 0, vertical: 8)
+                    : EdgeInsets.symmetric(
+                        horizontal:
+                            (MediaQuery.of(context).size.width * 0.5) / 2 - 12,
+                        vertical: 8,
+                      ),
                 child: MessageInput(
                   onSend: (message) => _sendMessage(message),
                   onAddPressed: () {

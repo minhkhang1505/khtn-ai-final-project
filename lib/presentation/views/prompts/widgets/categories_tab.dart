@@ -14,21 +14,28 @@ class CategoriesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      primary: false,
-      padding: const EdgeInsets.all(16),
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      crossAxisCount: 2,
-      childAspectRatio: 1.7,
-      children: [
-        for (var category in categories)
-          CategoryItem(
-            categoryName: category.name,
-            iconPath: category.iconPath,
-            onTap: () => onCategoryTap?.call(category),
-          ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // You can adjust the width threshold as needed for your design
+        final isWide = constraints.maxWidth >= 800;
+        final crossAxisCount = isWide ? 4 : 2;
+        return GridView.count(
+          primary: false,
+          padding: const EdgeInsets.all(16),
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          crossAxisCount: crossAxisCount,
+          childAspectRatio: 1.7,
+          children: [
+            for (var category in categories)
+              CategoryItem(
+                categoryName: category.name,
+                iconPath: category.iconPath,
+                onTap: () => onCategoryTap?.call(category),
+              ),
+          ],
+        );
+      },
     );
   }
 }
