@@ -15,9 +15,9 @@ class CreateBotPage extends StatefulWidget {
 
 class _CreateBotPageState extends State<CreateBotPage> {
   final Set<int> selectedIndices = {};
-
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: AppBarInfo.height,
@@ -63,10 +63,12 @@ class _CreateBotPageState extends State<CreateBotPage> {
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: AppBorderRadius.medium,
-                    side: BorderSide(color: Colors.grey.shade300),
+                    side: BorderSide(
+                      color: colorScheme.outlineVariant.withAlpha(150),
+                      width: 1.5,
+                    ),
                   ),
                   margin: const EdgeInsets.all(0),
-                  color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
@@ -78,13 +80,12 @@ class _CreateBotPageState extends State<CreateBotPage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
                           ),
                         ),
                         const SizedBox(height: 4),
                         const Text(
                           'Name and describe your bot',
-                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                          style: TextStyle(fontSize: 14),
                         ),
                         const SizedBox(height: 20),
 
@@ -102,9 +103,12 @@ class _CreateBotPageState extends State<CreateBotPage> {
                         TextField(
                           decoration: InputDecoration(
                             hintText: 'e.g., Customer Support Assistant',
-                            hintStyle: const TextStyle(color: Colors.black45),
+                            hintStyle: TextStyle(
+                              color: colorScheme.onSurface.withAlpha(140),
+                            ),
                             filled: true,
-                            fillColor: Colors.grey.shade200,
+                            fillColor: colorScheme.surfaceContainerHigh
+                                .withAlpha(120),
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 14,
@@ -131,9 +135,12 @@ class _CreateBotPageState extends State<CreateBotPage> {
                         TextField(
                           decoration: InputDecoration(
                             hintText: 'What does this bot do?',
-                            hintStyle: const TextStyle(color: Colors.black45),
+                            hintStyle: TextStyle(
+                              color: colorScheme.onSurface.withAlpha(140),
+                            ),
                             filled: true,
-                            fillColor: Colors.grey.shade200,
+                            fillColor: colorScheme.surfaceContainerHigh
+                                .withAlpha(120),
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 14,
@@ -206,10 +213,13 @@ class _CreateBotPageState extends State<CreateBotPage> {
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: AppBorderRadius.medium,
-                    side: BorderSide(color: Colors.grey.shade300),
+                    side: BorderSide(
+                      color: colorScheme.outlineVariant.withAlpha(150),
+                      width: 1.5,
+                    ),
                   ),
                   margin: const EdgeInsets.all(0),
-                  color: Colors.white,
+                  color: colorScheme.surfaceContainerLow.withAlpha(10),
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
@@ -221,14 +231,13 @@ class _CreateBotPageState extends State<CreateBotPage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
                           ),
                         ),
                         const SizedBox(height: 4),
 
                         const Text(
                           "Define your bot's personality and behavior",
-                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                          style: TextStyle(fontSize: 14),
                         ),
                         const SizedBox(height: 20),
 
@@ -237,9 +246,12 @@ class _CreateBotPageState extends State<CreateBotPage> {
                           decoration: InputDecoration(
                             hintText:
                                 'e.g., You are a helpful customer support assistant.',
-                            hintStyle: const TextStyle(color: Colors.black45),
+                            hintStyle: TextStyle(
+                              color: colorScheme.onSurface.withAlpha(140),
+                            ),
                             filled: true,
-                            fillColor: Colors.grey.shade200,
+                            fillColor: colorScheme.surfaceContainerHigh
+                                .withAlpha(120),
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 14,
@@ -262,10 +274,13 @@ class _CreateBotPageState extends State<CreateBotPage> {
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: AppBorderRadius.medium,
-                    side: BorderSide(color: Colors.grey.shade300),
+                    side: BorderSide(
+                      color: colorScheme.outlineVariant.withAlpha(150),
+                      width: 1.5,
+                    ),
                   ),
                   margin: const EdgeInsets.all(0),
-                  color: Colors.white,
+                  color: colorScheme.surfaceContainerLow.withAlpha(10),
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
@@ -278,14 +293,13 @@ class _CreateBotPageState extends State<CreateBotPage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
                           ),
                         ),
                         const SizedBox(height: 4),
 
                         const Text(
                           "Enhance your bot’s intelligence by adding relevant knowledge sources.",
-                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                          style: TextStyle(fontSize: 14),
                         ),
                         const SizedBox(height: 20),
 
@@ -300,15 +314,14 @@ class _CreateBotPageState extends State<CreateBotPage> {
                             icon: const Icon(Icons.upload_file),
                             label: const Text('Upload Documents'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black87,
+                              backgroundColor: colorScheme.surfaceContainerHigh,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: 12,
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: AppBorderRadius.small,
-                                side: BorderSide(color: Colors.grey.shade300),
+                                side: BorderSide(color: colorScheme.outline),
                               ),
                               elevation: 0,
                             ),
@@ -334,7 +347,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                             borderRadius: AppBorderRadius.medium,
                           ),
                           side: BorderSide(
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).colorScheme.outline,
                           ),
                           padding: const EdgeInsets.symmetric(
                             vertical: 16,
@@ -343,10 +356,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                         ),
                         child: const Text(
                           'Cancel',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -355,9 +365,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primary,
+                          backgroundColor: colorScheme.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: AppBorderRadius.medium,
                           ),
@@ -369,7 +377,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                         child: Text(
                           'Create Bot',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            color: colorScheme.onPrimary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

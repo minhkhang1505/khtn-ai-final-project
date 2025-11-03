@@ -73,11 +73,10 @@ class _CategoryOptionMenuState extends State<CategoryOptionMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return PopupMenuButton<int>(
-      shape: RoundedRectangleBorder(
-        borderRadius: AppBorderRadius.medium,
-      ),
-      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
+      color: colorScheme.surface,
       elevation: 6,
       offset: const Offset(0, 40),
       onSelected: (index) {
@@ -108,20 +107,17 @@ class _CategoryOptionMenuState extends State<CategoryOptionMenu> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surfaceContainerHigh,
           borderRadius: AppBorderRadius.medium,
-          border: Border.all(color: Colors.grey.shade300),
+          border: Border.all(color: colorScheme.outline.withAlpha(100)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              selectedModel ?? "Select Category",
-              style: const TextStyle(color: Colors.black),
-            ),
+            Text(selectedModel ?? "Select Category"),
             const SizedBox(width: 8),
-            const Icon(Icons.arrow_drop_down, color: Colors.black),
+            const Icon(Icons.arrow_drop_down),
           ],
         ),
       ),
