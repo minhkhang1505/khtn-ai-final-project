@@ -25,6 +25,7 @@ class _VerificationEmailPageState extends State<VerificationEmailPage> {
   }
 
   void _handleVerifyAndContinueButton() {
+    Navigator.pushNamed(context, '/auth/login');
     // TODO: Implement verification logic
   }
 
@@ -33,6 +34,7 @@ class _VerificationEmailPageState extends State<VerificationEmailPage> {
   }
 
   void _handleChangeEmail() {
+    Navigator.pushNamed(context, '/auth/register');
     // TODO: Implement change email logic
   }
 

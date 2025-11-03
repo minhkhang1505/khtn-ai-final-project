@@ -22,20 +22,25 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleSignIn() {
+    Navigator.pushNamed(context, '/main');
     // TODO: Implement sign in logic
   }
 
   void _handleGoogleSignIn() {
+    Navigator.pushNamed(context, '/main');
     // TODO: Implement Google sign in logic
   }
 
   void _handleForgotPassword() {
+    Navigator.pushNamed(context, '/auth/forgot-password');
     // TODO: Implement forgot password logic
   }
 
   void _handleSignUp() {
+    Navigator.pushNamed(context, '/auth/register');
     // TODO: Navigate to sign up page
   }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
