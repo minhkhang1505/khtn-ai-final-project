@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/custom_text_field.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/constants/knowledge_constants.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form_card.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_section_header.dart';
@@ -166,6 +167,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   },
                 ),
                 const SizedBox(height: 16),
+                
                 LabeledTextField(
                   label: KnowledgeConstants.sourceNameLabel,
                   hintText: KnowledgeConstants.sourceNameHint,
