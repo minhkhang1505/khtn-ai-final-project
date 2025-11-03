@@ -46,11 +46,20 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
     // TODO: Implement cancel logic here
   }
 
+  void _backToPromptsList() {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Prompt Detail')),
+      appBar: AppBar(
+        title: const Text('Prompt Detail'),
+        leading: IconButton(
+          onPressed: _backToPromptsList,
+          icon: Icon(Icons.arrow_back_ios),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(

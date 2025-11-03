@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class PromptsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onAddPrompt;
@@ -22,7 +23,18 @@ class PromptsAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ],
           ),
-          IconButton(onPressed: onAddPrompt, icon: const Icon(Icons.add)),
+          IconButton(
+            onPressed: onAddPrompt,
+            icon: SvgPicture.asset(
+              'assets/icons/ic_add.svg',
+              width: 45,
+              height: 45,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.primary,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
         ],
       ),
     );

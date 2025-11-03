@@ -52,7 +52,12 @@ class _CreateNewPromptPageState extends State<CreateNewPromptPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const CustomBackButton(),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
         title: const Text("New Prompt"),
       ),
       body: SingleChildScrollView(
