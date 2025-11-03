@@ -21,35 +21,50 @@ class _KnowledgePageState extends State<KnowledgePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: KnowledgeAppBar(onAddKnowledge: _onAddKnowledge),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              // Filter section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [FilterChipMenu()],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 1200 : double.infinity,
               ),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  itemCount: 5,
-                  itemBuilder: (context, index) => KnowledgeItem(
-                    iconPath: 'assets/icons/ic_url.svg',
-                    knowledge: KnowledgeModel(
-                      id: '1',
-                      userId: 'user1',
-                      knowledgeName: 'Knowledge $index',
-                      description: 'Description $index',
-                      createdAt: DateTime.now(),
+              child: Container(
+                color: Theme.of(context).colorScheme.surface,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        // Filter section
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: const [FilterChipMenu()],
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            itemCount: 5,
+                            itemBuilder: (context, index) => KnowledgeItem(
+                              iconPath: 'assets/icons/ic_url.svg',
+                              knowledge: KnowledgeModel(
+                                id: '1',
+                                userId: 'user1',
+                                knowledgeName: 'Knowledge $index',
+                                description: 'Description $index',
+                                createdAt: DateTime.now(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
