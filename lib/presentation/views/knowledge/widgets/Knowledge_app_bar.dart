@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class KnowledgeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onAddKnowledge;
@@ -19,7 +20,18 @@ class KnowledgeAppBar extends StatelessWidget implements PreferredSizeWidget {
               Text('Connect data sources', style: TextStyle(fontSize: 14)),
             ],
           ),
-          IconButton(onPressed: onAddKnowledge, icon: const Icon(Icons.add)),
+          IconButton(
+            onPressed: onAddKnowledge,
+            icon: SvgPicture.asset(
+              'assets/icons/ic_add.svg',
+              width: 45,
+              height: 45,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.primary.withAlpha(200),
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
         ],
       ),
     );
