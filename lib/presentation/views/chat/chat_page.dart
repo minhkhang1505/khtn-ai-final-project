@@ -65,14 +65,10 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     final messageWidth = MediaQuery.of(context).size.width * 0.6;
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        toolbarHeight: AppBarInfo.height,
-        titleSpacing: AppSpacing.horizontal,
-        backgroundColor: AppBarInfo.backgroundColor,
-        shadowColor: AppBarInfo.shadowColor,
-        elevation: AppBarInfo.elevation,
         title: const Text("AI Chat"),
         actions: [
           Row(
@@ -87,7 +83,6 @@ class _ChatPageState extends State<ChatPage> {
                 padding: const EdgeInsets.only(right: 20),
                 child: IconButton(
                   icon: const Icon(Icons.add),
-                  color: Colors.black,
                   onPressed: () {
                     // TODO: Handle add chat button press
                   },
@@ -146,7 +141,6 @@ class _ChatPageState extends State<ChatPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      color: Colors.white,
                       elevation: 6,
                       offset: const Offset(0, 40),
                       itemBuilder: (context) => [
@@ -259,7 +253,9 @@ class _ChatPageState extends State<ChatPage> {
                               bottom: 12,
                             ),
                       decoration: BoxDecoration(
-                        color: msg.isUser ? Colors.blue[200] : Colors.grey[300],
+                        color: msg.isUser
+                            ? colorScheme.primaryFixedDim
+                            : colorScheme.secondaryFixedDim,
                         borderRadius: BorderRadius.only(
                           topLeft: const Radius.circular(12),
                           topRight: const Radius.circular(12),
@@ -274,7 +270,9 @@ class _ChatPageState extends State<ChatPage> {
                       child: Text(
                         msg.text,
                         style: TextStyle(
-                          color: msg.isUser ? Colors.black : Colors.grey[800],
+                          color: msg.isUser
+                              ? colorScheme.onPrimaryFixed
+                              : colorScheme.onSecondaryFixed,
                           fontSize: 16,
                         ),
                       ),

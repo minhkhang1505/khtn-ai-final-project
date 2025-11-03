@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class MessageInput extends StatefulWidget {
-  final void Function(String) onSend; 
-  final VoidCallback? onAddPressed; 
+  final void Function(String) onSend;
+  final VoidCallback? onAddPressed;
 
-  const MessageInput({
-    super.key,
-    required this.onSend,
-    this.onAddPressed,
-  });
+  const MessageInput({super.key, required this.onSend, this.onAddPressed});
 
   @override
   State<MessageInput> createState() => _MessageInputState();
@@ -29,6 +25,7 @@ class _MessageInputState extends State<MessageInput> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SafeArea(
       child: Container(
         color: Colors.transparent,
@@ -37,20 +34,23 @@ class _MessageInputState extends State<MessageInput> {
           constraints: const BoxConstraints(maxHeight: 150), // ~5 lines
           child: Focus(
             onKeyEvent: (node, event) {
-              if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+              if (event is KeyDownEvent &&
+                  event.logicalKey == LogicalKeyboardKey.enter) {
                 if (HardwareKeyboard.instance.isShiftPressed) {
                   final newValue = '${_controller.text}\n';
                   _controller.text = newValue;
                   _controller.selection = TextSelection.fromPosition(
                     TextPosition(offset: newValue.length),
                   );
-                  return KeyEventResult.handled; // Prevent TextField receiving the event
+                  return KeyEventResult
+                      .handled; // Prevent TextField receiving the event
                 } else {
                   _handleSend();
-                  return KeyEventResult.handled; // Prevent TextField receiving the event
+                  return KeyEventResult
+                      .handled; // Prevent TextField receiving the event
                 }
               }
-              return KeyEventResult.ignored; 
+              return KeyEventResult.ignored;
             },
             child: TextField(
               controller: _controller,
@@ -63,8 +63,8 @@ class _MessageInputState extends State<MessageInput> {
                 prefixIcon: Padding(
                   padding: const EdgeInsets.only(left: 4, right: 4),
                   child: IconButton(
-                    icon: const Icon(Icons.add),
-                    color: Colors.grey[700],
+                    icon: Icon(Icons.add),
+                    color: colorScheme.primary,
                     onPressed: widget.onAddPressed,
                   ),
                 ),
@@ -72,12 +72,12 @@ class _MessageInputState extends State<MessageInput> {
                   padding: const EdgeInsets.only(left: 4, right: 4),
                   child: IconButton(
                     icon: const Icon(Icons.send_rounded),
-                    color: Theme.of(context).primaryColor,
+                    color: colorScheme.primary,
                     onPressed: _handleSend,
                   ),
                 ),
                 filled: true,
-                fillColor: Colors.grey[100],
+                fillColor: colorScheme.surfaceContainerHigh.withAlpha(200),
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 16,

@@ -25,11 +25,12 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return PopupMenuButton<String>(
       onSelected: (value) {
         setState(() => selectedModel = value);
       },
-      color: Colors.white,
+      color: colorScheme.surfaceBright,
       position: PopupMenuPosition.under,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 4,
@@ -40,7 +41,7 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Icon
-              const Icon(Icons.auto_awesome, color: Colors.black54, size: 20),
+              const Icon(Icons.auto_awesome, size: 20),
               const SizedBox(width: 10),
               // Content
               Expanded(
@@ -49,17 +50,11 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
                   children: [
                     Text(
                       model["name"],
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     Text(
                       model["description"],
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        fontSize: 12,
-                      ),
+                      style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
@@ -67,8 +62,10 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
               if (model["upgrade"])
                 Container(
                   margin: const EdgeInsets.only(left: 8),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(6),
@@ -89,18 +86,15 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surfaceBright,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey.shade400),
+          border: Border.all(color: colorScheme.outlineVariant),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              selectedModel,
-              style: const TextStyle(color: Colors.black, fontSize: 15),
-            ),
-            const Icon(Icons.arrow_drop_down, color: Colors.black54),
+            Text(selectedModel, style: const TextStyle(fontSize: 15)),
+            const Icon(Icons.arrow_drop_down),
           ],
         ),
       ),
