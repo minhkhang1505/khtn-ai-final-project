@@ -14,12 +14,10 @@ class AppBarInfo {
   static const Color shadowColor = Colors.grey;
   static const TextStyle titleTextStyle = TextStyle(
     fontSize: 18,
-    color: Colors.black87,
     fontWeight: FontWeight.w500,
   );
   static const TextStyle subtitleTextStyle = TextStyle(
     fontSize: 14,
-    color: Colors.black54,
     fontWeight: FontWeight.w400,
   );
 }

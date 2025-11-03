@@ -11,8 +11,13 @@ class BotCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Card(
-      color: Colors.white,
+      color: colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: colorScheme.outline.withAlpha(50), width: 1.5),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -26,6 +31,10 @@ class BotCard extends StatelessWidget {
                   'assets/icons/ic_bot.svg',
                   width: 40,
                   height: 40,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
 
                 const SizedBox(width: 8),
@@ -35,7 +44,6 @@ class BotCard extends StatelessWidget {
                   bot.name,
                   style: const TextStyle(
                     fontSize: 20,
-                    color: Colors.black87,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -54,28 +62,26 @@ class BotCard extends StatelessWidget {
                     );
                   },
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.resolveWith<Color?>(
-                      (Set<WidgetState> states) {
-                        if (states.contains(WidgetState.pressed)) {
-                          return Colors.grey.shade300;
-                        }
-                        if (states.contains(WidgetState.hovered)) {
-                          return Colors.grey.shade400;
-                        }
-                        return Colors.transparent; 
-                      },
-                    ),
-                    elevation: WidgetStateProperty.all(0), 
-                    overlayColor: WidgetStateProperty.all(Colors.transparent), 
-                    shape: WidgetStateProperty.all(
-                      const CircleBorder(), 
-                    ),
+                    backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+                      Set<WidgetState> states,
+                    ) {
+                      if (states.contains(WidgetState.pressed)) {
+                        return Colors.grey.shade300;
+                      }
+                      if (states.contains(WidgetState.hovered)) {
+                        return Colors.grey.shade400;
+                      }
+                      return Colors.transparent;
+                    }),
+                    elevation: WidgetStateProperty.all(0),
+                    overlayColor: WidgetStateProperty.all(Colors.transparent),
+                    shape: WidgetStateProperty.all(const CircleBorder()),
                     padding: WidgetStateProperty.all(const EdgeInsets.all(20)),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.settings,
                     size: 24,
-                    color: Colors.black54,
+                    color: colorScheme.outline,
                   ),
                 ),
               ],
@@ -85,7 +91,7 @@ class BotCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
                 bot.description,
-                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                style: const TextStyle(fontSize: 16),
               ),
             ),
 
@@ -97,9 +103,9 @@ class BotCard extends StatelessWidget {
                 Chip(
                   label: Text(
                     bot.category,
-                    style: const TextStyle(color: Colors.black87, fontSize: 12),
+                    style: const TextStyle(fontSize: 12),
                   ),
-                  backgroundColor: Colors.white70,
+                  backgroundColor: Colors.transparent,
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                 ),
                 const SizedBox(width: 8),
@@ -107,7 +113,6 @@ class BotCard extends StatelessWidget {
                   label: Text(
                     bot.model,
                     style: const TextStyle(color: Colors.black87, fontSize: 12),
-                    
                   ),
                   backgroundColor: Colors.white70,
                   padding: const EdgeInsets.symmetric(horizontal: 4),
