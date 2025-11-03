@@ -36,6 +36,7 @@ class _PromptsPageState extends State<PromptsPage>
   }
 
   void _handleAddPrompt() {
+    Navigator.pushNamed(context, '/prompts/new');
     // TODO: Implement add prompt logic
   }
 

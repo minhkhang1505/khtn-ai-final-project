@@ -27,14 +27,17 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _handleCreateAccount() {
+    Navigator.pushNamed(context, '/auth/register/verification-email');
     // TODO: Implement create account logic
   }
 
   void _handleGoogleSignUp() {
+    Navigator.pushNamed(context, '/main');
     // TODO: Implement Google sign up logic
   }
 
   void _handleSignIn() {
+    Navigator.pushNamed(context, '/auth/login');
     // TODO: Navigate to sign in page
   }
 

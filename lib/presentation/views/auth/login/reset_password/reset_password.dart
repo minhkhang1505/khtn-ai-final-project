@@ -3,10 +3,16 @@ import 'package:khtn_ai_final_project/presentation/views/auth/login/reset_passwo
 import 'package:khtn_ai_final_project/presentation/views/auth/widgets/auth_back_button.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/widgets/auth_header.dart';
 
-class ResetPasswordPage extends StatelessWidget {
+class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
 
+  @override
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
+}
+
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
   void _handleResetPasswordButton() {
+    Navigator.pushNamed(context, '/auth/login');
     // Handle reset password logic
   }
 
@@ -20,7 +26,15 @@ class ResetPasswordPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Row(children: [AuthBackButton(onPressed: () {})]),
+                  Row(
+                    children: [
+                      AuthBackButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
                   AuthHeader(
                     iconPath: "assets/icons/ic_lock_password.svg",
                     title: "Reset Your Password",

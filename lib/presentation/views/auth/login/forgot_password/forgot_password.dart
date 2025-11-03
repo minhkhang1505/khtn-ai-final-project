@@ -20,12 +20,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   void _handleSendVerificationCode() {
+    Navigator.pushNamed(context, '/auth/reset-password');
     // TODO: Implement send verification code logic
   }
 
   void _handleBackToSignIn() {
+    Navigator.pushNamed(context, '/auth/login');
     // TODO: Navigate to sign in page
   }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
