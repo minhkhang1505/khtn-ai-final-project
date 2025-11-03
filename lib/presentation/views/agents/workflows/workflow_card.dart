@@ -10,81 +10,81 @@ class WorkflowsCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final workflow = WorkflowModel(workflow: workflowType);
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
-      margin: const EdgeInsets.all(0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
-          borderRadius: AppBorderRadius.medium,
-          color: Colors.grey.shade50,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: colorScheme.outline.withAlpha(50),
+          width: 1.5,
         ),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(Icons.fork_right, color: Theme.of(context).primaryColor, size: 24),
-                    SizedBox(width: 8),
-                    Text(
-                      workflow.name,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.grey.shade200,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 4),
+        borderRadius: AppBorderRadius.extraLarge,
+        color: colorScheme.surfaceContainerLow,
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.fork_right,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 24,
                   ),
-                  child: Text(workflow.feature),
+                  SizedBox(width: 8),
+                  Text(
+                    workflow.name,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+              TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  backgroundColor: colorScheme.surfaceContainerHigh,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 4),
-
-            Text(
-              workflow.description,
-              style: TextStyle(
-                color: Colors.black54,
-                fontSize: 15,
+                child: Text(
+                  workflow.feature,
+                  style: TextStyle(color: colorScheme.primary),
+                ),
               ),
-            ),
+            ],
+          ),
+          const SizedBox(height: 4),
 
-            const SizedBox(height: 12),
-            Divider(
-              color: Colors.grey.shade300,
-              thickness: 1,
-              indent: 0,
-              endIndent: 0,
-            ),
-            const SizedBox(height: 12),
+          Text(workflow.description, style: TextStyle(fontSize: 15)),
 
-            // Workflow steps
-            Text(
-              '${workflow.steps.length} steps',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w100,
-                color: Colors.grey.shade500,
-              ),
+          const SizedBox(height: 12),
+          Divider(
+            color: Colors.grey.shade300,
+            thickness: 1,
+            indent: 0,
+            endIndent: 0,
+          ),
+          const SizedBox(height: 12),
+
+          // Workflow steps
+          Text(
+            '${workflow.steps.length} steps',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w100,
+              color: Colors.grey.shade500,
             ),
-            const SizedBox(height: 8),
-            ...workflow.steps.map((step) => WorkflowStep(step: step)),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          ...workflow.steps.map((step) => WorkflowStep(step: step)),
+        ],
       ),
     );
   }
@@ -97,23 +97,24 @@ class WorkflowStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(
         children: [
           CircleAvatar(
             radius: 12,
-            backgroundColor: Colors.blue.shade100,
+            backgroundColor: colorScheme.tertiaryContainer.withAlpha(50),
             child: Text(
               '${step.number}',
-              style: const TextStyle(
-                color: Colors.blue,
+              style: TextStyle(
+                color: colorScheme.tertiary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          const SizedBox(width: 12, height: 32,),
+          const SizedBox(width: 12, height: 32),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,4 +135,3 @@ class WorkflowStep extends StatelessWidget {
     );
   }
 }
-

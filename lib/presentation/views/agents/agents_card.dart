@@ -20,8 +20,9 @@ class AgentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Card(
-      color: Colors.white,
+      color: colorScheme.surfaceContainerLow,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -35,6 +36,10 @@ class AgentCard extends StatelessWidget {
                   'assets/icons/ic_agent.svg',
                   width: 40,
                   height: 40,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(width: 8),
 
@@ -43,7 +48,6 @@ class AgentCard extends StatelessWidget {
                   agentName,
                   style: const TextStyle(
                     fontSize: 20,
-                    color: Colors.black87,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -61,28 +65,26 @@ class AgentCard extends StatelessWidget {
                     );
                   },
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.resolveWith<Color?>(
-                      (Set<WidgetState> states) {
-                        if (states.contains(WidgetState.pressed)) {
-                          return Colors.grey.shade300;
-                        }
-                        if (states.contains(WidgetState.hovered)) {
-                          return Colors.grey.shade400;
-                        }
-                        return Colors.transparent; 
-                      },
-                    ),
-                    elevation: WidgetStateProperty.all(0), 
-                    overlayColor: WidgetStateProperty.all(Colors.transparent), 
-                    shape: WidgetStateProperty.all(
-                      const CircleBorder(), 
-                    ),
+                    backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+                      Set<WidgetState> states,
+                    ) {
+                      if (states.contains(WidgetState.pressed)) {
+                        return Colors.grey.shade300;
+                      }
+                      if (states.contains(WidgetState.hovered)) {
+                        return Colors.grey.shade400;
+                      }
+                      return Colors.transparent;
+                    }),
+                    elevation: WidgetStateProperty.all(0),
+                    overlayColor: WidgetStateProperty.all(Colors.transparent),
+                    shape: WidgetStateProperty.all(const CircleBorder()),
                     padding: WidgetStateProperty.all(const EdgeInsets.all(20)),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.settings,
                     size: 24,
-                    color: Colors.black87,
+                    color: colorScheme.outline,
                   ),
                 ),
               ],
@@ -92,7 +94,7 @@ class AgentCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
                 agentDescription,
-                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                style: const TextStyle(fontSize: 16),
               ),
             ),
             const SizedBox(height: 24),
@@ -101,12 +103,12 @@ class AgentCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: colorScheme.outlineVariant.withAlpha(110),
                 borderRadius: AppBorderRadius.medium,
               ),
               child: Row(
                 children: [
-                  Icon(Icons.fork_right, color: Theme.of(context).primaryColor, size: 18),
+                  Icon(Icons.fork_right, color: colorScheme.primary, size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -120,9 +122,13 @@ class AgentCard extends StatelessWidget {
                   OutlinedButton(
                     onPressed: () {},
                     style: OutlinedButton.styleFrom(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      side: BorderSide(color: Colors.grey.shade300),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      side: BorderSide(
+                        color: colorScheme.outline.withAlpha(150),
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: AppBorderRadius.largeIncreased,
                       ),
@@ -147,7 +153,9 @@ class AgentCard extends StatelessWidget {
                     ),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      side: BorderSide(color: Colors.grey.shade300),
+                      side: BorderSide(
+                        color: colorScheme.outline.withAlpha(150),
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: AppBorderRadius.medium,
                       ),
@@ -159,14 +167,16 @@ class AgentCard extends StatelessWidget {
                   onPressed: () {},
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    side: BorderSide(color: Colors.grey.shade300),
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    side: BorderSide(color: colorScheme.outline.withAlpha(150)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: const Text(
-                    // TODO: Change to appropriate action with workflow 
+                    // TODO: Change to appropriate action with workflow
                     'Add to Chat',
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
