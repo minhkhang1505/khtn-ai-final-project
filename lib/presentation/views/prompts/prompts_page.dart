@@ -58,31 +58,43 @@ class _PromptsPageState extends State<PromptsPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PromptsAppBar(onAddPrompt: _handleAddPrompt),
-      body: SafeArea(
-        child: Column(
-          children: [
-            PromptsTabBar(controller: _tabController),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  AllPromptsTab(
-                    prompts: _prompts,
-                    onFavoriteTap: _handleFavoriteTap,
-                  ),
-                  CategoriesTab(
-                    categories: categories,
-                    onCategoryTap: _handleCategoryTap,
-                  ),
-                  FavoritePromptsTab(
-                    prompts: _prompts,
-                    onFavoriteTap: _handleFavoriteTap,
-                  ),
-                ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 1200 : double.infinity,
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    PromptsTabBar(controller: _tabController),
+                    Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          AllPromptsTab(
+                            prompts: _prompts,
+                            onFavoriteTap: _handleFavoriteTap,
+                          ),
+                          CategoriesTab(
+                            categories: categories,
+                            onCategoryTap: _handleCategoryTap,
+                          ),
+                          FavoritePromptsTab(
+                            prompts: _prompts,
+                            onFavoriteTap: _handleFavoriteTap,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -35,32 +35,47 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      body: Center(
-        child: SingleChildScrollView(
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [AuthBackButton(onPressed: _handleBackToSignIn)],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 500 : double.infinity,
+              ),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              AuthBackButton(onPressed: _handleBackToSignIn),
+                            ],
+                          ),
+                          const AuthHeader(
+                            iconPath: "assets/icons/ic_lock_password.svg",
+                            title: "Forgot Password?",
+                            subtitle:
+                                "No worries, we'll send you reset instructions",
+                          ),
+                          ForgotPasswordForm(
+                            emailController: _emailController,
+                            onSubmit: _handleSendVerificationCode,
+                            onBackToLogin: _handleBackToSignIn,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  const AuthHeader(
-                    iconPath: "assets/icons/ic_lock_password.svg",
-                    title: "Forgot Password?",
-                    subtitle: "No worries, we'll send you reset instructions",
-                  ),
-                  ForgotPasswordForm(
-                    emailController: _emailController,
-                    onSubmit: _handleSendVerificationCode,
-                    onBackToLogin: _handleBackToSignIn,
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

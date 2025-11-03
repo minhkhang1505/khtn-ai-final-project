@@ -60,39 +60,51 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
           icon: Icon(Icons.arrow_back_ios),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                PromptDetailsSection(
-                  titleController: _titleController,
-                  descriptionController: _descriptionController,
-                  contentController: _contentController,
-                  selectedCategory: _selectedCategory,
-                  selectedLanguage: _selectedLanguage,
-                  isPublic: _isPublic,
-                  onCategoryChanged: (value) {
-                    setState(() => _selectedCategory = value);
-                  },
-                  onLanguageChanged: (value) {
-                    setState(() => _selectedLanguage = value);
-                  },
-                  onPublicChanged: (value) {
-                    setState(() => _isPublic = value);
-                  },
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 800 : double.infinity,
+              ),
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        PromptDetailsSection(
+                          titleController: _titleController,
+                          descriptionController: _descriptionController,
+                          contentController: _contentController,
+                          selectedCategory: _selectedCategory,
+                          selectedLanguage: _selectedLanguage,
+                          isPublic: _isPublic,
+                          onCategoryChanged: (value) {
+                            setState(() => _selectedCategory = value);
+                          },
+                          onLanguageChanged: (value) {
+                            setState(() => _selectedLanguage = value);
+                          },
+                          onPublicChanged: (value) {
+                            setState(() => _isPublic = value);
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        PromptDetailActionButtons(
+                          title: _titleController.text,
+                          onSaveChange: _savePrompt,
+                          onDelete: _deletePromp,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                SizedBox(height: 16),
-                PromptDetailActionButtons(
-                  title: _titleController.text,
-                  onSaveChange: _savePrompt,
-                  onDelete: _deletePromp,
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide SearchBar;
-import 'package:khtn_ai_final_project/core/constants/constants.dart' show AppBarInfo;
+import 'package:khtn_ai_final_project/core/constants/constants.dart'
+    show AppBarInfo;
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/category_option_menu.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/ai_model_option_menu.dart';
@@ -18,7 +19,6 @@ class _EditBotPageState extends State<EditBotPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         toolbarHeight: AppBarInfo.height,
         title: Row(
@@ -27,13 +27,10 @@ class _EditBotPageState extends State<EditBotPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Edit Bot',
-                  style: AppBarInfo.titleTextStyle,
-                ),
+                Text('Edit Bot', style: AppBarInfo.titleTextStyle),
 
                 SizedBox(height: 4),
-                
+
                 Text(
                   'Set up your AI assistant bot',
                   style: AppBarInfo.subtitleTextStyle,
@@ -42,18 +39,15 @@ class _EditBotPageState extends State<EditBotPage> {
             ),
           ],
         ),
-      centerTitle: false,
-      actions: const [
-        Padding(
+        centerTitle: false,
+        actions: const [
+          Padding(
             padding: EdgeInsets.only(right: 16),
             child: Chip(
-              label: Text(
-                'Active',
-                style: TextStyle(color: Colors.green),
-              ),
+              label: Text('Active', style: TextStyle(color: Colors.green)),
               backgroundColor: Color(0xFFE8F5E9),
             ),
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -90,10 +84,7 @@ class _EditBotPageState extends State<EditBotPage> {
                         const SizedBox(height: 4),
                         const Text(
                           'Name and describe your bot',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black54,
-                          ),
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
                         ),
                         const SizedBox(height: 20),
 
@@ -114,8 +105,10 @@ class _EditBotPageState extends State<EditBotPage> {
                             hintStyle: const TextStyle(color: Colors.black45),
                             filled: true,
                             fillColor: Colors.grey.shade200,
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 14,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
@@ -141,8 +134,10 @@ class _EditBotPageState extends State<EditBotPage> {
                             hintStyle: const TextStyle(color: Colors.black45),
                             filled: true,
                             fillColor: Colors.grey.shade200,
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 14,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
@@ -233,22 +228,22 @@ class _EditBotPageState extends State<EditBotPage> {
 
                         const Text(
                           "Define your bot's personality and behavior",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black54,
-                          ),
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
                         ),
                         const SizedBox(height: 20),
-                        
+
                         // System Prompt TextField
                         TextField(
                           decoration: InputDecoration(
-                            hintText: 'e.g., You are a helpful customer support assistant.',
+                            hintText:
+                                'e.g., You are a helpful customer support assistant.',
                             hintStyle: const TextStyle(color: Colors.black45),
                             filled: true,
                             fillColor: Colors.grey.shade200,
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 14,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
@@ -290,16 +285,14 @@ class _EditBotPageState extends State<EditBotPage> {
 
                         const Text(
                           "Enhance your bot’s intelligence by adding relevant knowledge sources.",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black54,
-                          ),
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
                         ),
                         const SizedBox(height: 20),
 
                         // Upload Button
                         SizedBox(
-                          width: double.infinity, // chiếm full chiều ngang của card
+                          width: double
+                              .infinity, // chiếm full chiều ngang của card
                           child: ElevatedButton.icon(
                             onPressed: () {
                               // Handle file upload
@@ -309,7 +302,10 @@ class _EditBotPageState extends State<EditBotPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.black87,
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: AppBorderRadius.small,
                                 side: BorderSide(color: Colors.grey.shade300),
@@ -337,12 +333,20 @@ class _EditBotPageState extends State<EditBotPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: AppBorderRadius.medium,
                           ),
-                          side: BorderSide(color: Theme.of(context).primaryColor),
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                          side: BorderSide(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 24,
+                          ),
                         ),
                         child: const Text(
                           'Cancel',
-                          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -351,15 +355,23 @@ class _EditBotPageState extends State<EditBotPage> {
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurple,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: AppBorderRadius.medium,
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 24,
+                          ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Save Changes',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
