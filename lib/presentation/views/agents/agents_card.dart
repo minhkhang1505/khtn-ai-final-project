@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'edit_agent_page.dart' show EditAgentPage;
-import 'package:khtn_ai_final_project/theme/app_radius.dart';
 
 /// Card to display individual AI agent information
 class AgentCard extends StatelessWidget {
