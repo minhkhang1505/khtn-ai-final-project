@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'workflows/workflow_card.dart' show WorkflowsCart;
-import 'package:khtn_ai_final_project/data/models/workflow_model.dart' show Workflow;
-import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppBarInfo, AppSpacing;
-import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart' show ResponsiveHelper;
+import 'package:khtn_ai_final_project/data/models/workflow_model.dart'
+    show Workflow;
+import 'package:khtn_ai_final_project/core/constants/constant.dart'
+    show AppBarInfo, AppSpacing;
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart'
+    show ResponsiveHelper;
 
 class EditAgentPage extends StatelessWidget {
   const EditAgentPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         toolbarHeight: AppBarInfo.height,
         title: Row(
@@ -19,9 +23,9 @@ class EditAgentPage extends StatelessWidget {
           children: [
             // Back button
             // IconButton(
-            //   onPressed: () => 
-            //   { 
-            //     
+            //   onPressed: () =>
+            //   {
+            //
             //   },
             //   icon: const Icon(Icons.arrow_back),
             //   tooltip: 'Back',
@@ -30,13 +34,10 @@ class EditAgentPage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Email Assistant',
-                  style: AppBarInfo.titleTextStyle,
-                ),
+                Text('Email Assistant', style: AppBarInfo.titleTextStyle),
 
                 SizedBox(height: 4),
-                
+
                 Text(
                   'Handles email workflows',
                   style: AppBarInfo.subtitleTextStyle,
@@ -45,18 +46,15 @@ class EditAgentPage extends StatelessWidget {
             ),
           ],
         ),
-      centerTitle: false,
-      actions: const [
-        Padding(
+        centerTitle: false,
+        actions: const [
+          Padding(
             padding: EdgeInsets.only(right: 16),
             child: Chip(
-              label: Text(
-                'Active',
-                style: TextStyle(color: Colors.green),
-              ),
+              label: Text('Active', style: TextStyle(color: Colors.green)),
               backgroundColor: Color(0xFFE8F5E9),
             ),
-          )
+          ),
         ],
       ),
 
@@ -68,23 +66,32 @@ class EditAgentPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Status & Actions Card 
+                // Status & Actions Card
                 Card(
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.medium,
+                    borderRadius: AppBorderRadius.extraLarge,
+                    side: BorderSide(
+                      color: colorScheme.outlineVariant.withAlpha(100),
+                      width: 1.5,
+                    ),
                   ),
-                  color: Colors.white,
+                  color: colorScheme.surfaceContainerLow.withAlpha(10),
                   margin: const EdgeInsets.all(0),
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
                           'Status & Actions',
-                          style:
-                              TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
                         ),
                         const SizedBox(height: 16),
 
@@ -97,7 +104,10 @@ class EditAgentPage extends StatelessWidget {
                               children: const [
                                 Text(
                                   'Active Status',
-                                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -109,7 +119,7 @@ class EditAgentPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Switch(value: true, onChanged: (v) {}, ),
+                            Switch(value: true, onChanged: (v) {}),
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -124,8 +134,11 @@ class EditAgentPage extends StatelessWidget {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: AppBorderRadius.medium,
                                   ),
-                                  side: const BorderSide(color: Colors.deepPurple), 
-                                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                                  side: BorderSide(color: colorScheme.tertiary),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                    horizontal: 24,
+                                  ),
                                 ),
                                 icon: const Icon(Icons.play_arrow),
                                 label: const Text('Run Now'),
@@ -139,8 +152,11 @@ class EditAgentPage extends StatelessWidget {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: AppBorderRadius.medium,
                                   ),
-                                  side: const BorderSide(color: Colors.deepPurple), 
-                                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                                  side: BorderSide(color: colorScheme.tertiary),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                    horizontal: 24,
+                                  ),
                                 ),
                                 icon: const Icon(Icons.edit_outlined),
                                 label: const Text('Edit Agent'),
@@ -157,11 +173,14 @@ class EditAgentPage extends StatelessWidget {
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.medium,
-                    side: BorderSide(color: Colors.grey.shade300),
+                    borderRadius: AppBorderRadius.extraLarge,
+                    side: BorderSide(
+                      color: colorScheme.outlineVariant.withAlpha(100),
+                      width: 1.5,
+                    ),
                   ),
                   margin: const EdgeInsets.all(0),
-                  color: Colors.white,
+                  color: colorScheme.surfaceContainerLow.withAlpha(10),
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
@@ -173,16 +192,12 @@ class EditAgentPage extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
                           ),
                         ),
                         const SizedBox(height: 4),
                         const Text(
                           'Name and describe your agent',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black54,
-                          ),
+                          style: TextStyle(fontSize: 14),
                         ),
                         const SizedBox(height: 20),
 
@@ -200,11 +215,16 @@ class EditAgentPage extends StatelessWidget {
                         TextField(
                           decoration: InputDecoration(
                             hintText: 'e.g., Email Assistant',
-                            hintStyle: const TextStyle(color: Colors.black45),
+                            hintStyle: TextStyle(
+                              color: colorScheme.onSurface.withAlpha(140),
+                            ),
                             filled: true,
-                            fillColor: Colors.grey.shade200,
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                            fillColor: colorScheme.surfaceContainerHigh
+                                .withAlpha(120),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 14,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
@@ -227,11 +247,16 @@ class EditAgentPage extends StatelessWidget {
                         TextField(
                           decoration: InputDecoration(
                             hintText: 'What does this agent do?',
-                            hintStyle: const TextStyle(color: Colors.black45),
+                            hintStyle: TextStyle(
+                              color: colorScheme.onSurface.withAlpha(140),
+                            ),
                             filled: true,
-                            fillColor: Colors.grey.shade200,
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                            fillColor: colorScheme.surfaceContainerHigh
+                                .withAlpha(120),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 14,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: AppBorderRadius.medium,
                               borderSide: BorderSide.none,
@@ -247,10 +272,20 @@ class EditAgentPage extends StatelessWidget {
 
                 // Workflows Card
                 Card(
-                  shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
-                  color: Colors.white,
+                  elevation: 0,
+                  color: colorScheme.surfaceContainerLow.withAlpha(10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: AppBorderRadius.extraLarge,
+                    side: BorderSide(
+                      color: colorScheme.outlineVariant.withAlpha(100),
+                      width: 1.5,
+                    ),
+                  ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -261,30 +296,48 @@ class EditAgentPage extends StatelessWidget {
                             const Text(
                               'Workflows',
                               style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
                             ),
                             OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 16,
+                                ),
+                              ),
                               onPressed: () {},
                               icon: const Icon(Icons.add, size: 18),
-                              label: const Text('Add'),
+                              label: Text(
+                                'Add',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 4),
                         const Text(
                           '1 workflow(s) configured',
-                          style: TextStyle(color: Colors.black54, fontSize: 13),
+                          style: TextStyle(fontSize: 13),
                         ),
                         const SizedBox(height: 16),
 
                         // Workflow
-                        WorkflowsCart(workflowType: Workflow.emailTriage as dynamic),
+                        WorkflowsCart(
+                          workflowType: Workflow.emailTriage as dynamic,
+                        ),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.cardSpacing),
-                
+
                 // Delete button
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -298,12 +351,17 @@ class EditAgentPage extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: AppBorderRadius.medium,
                           ),
-                          side: BorderSide(color: Theme.of(context).primaryColor),
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 24,
+                          ),
                         ),
                         child: const Text(
                           'Cancel',
-                          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+                          style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -312,15 +370,21 @@ class EditAgentPage extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
+                          backgroundColor: colorScheme.error,
                           shape: RoundedRectangleBorder(
                             borderRadius: AppBorderRadius.medium,
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 24,
+                          ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Delete Agent',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: colorScheme.onError,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -334,4 +398,3 @@ class EditAgentPage extends StatelessWidget {
     );
   }
 }
-
