@@ -6,6 +6,7 @@ class BotSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.all(0),
       child: TextField(
@@ -13,14 +14,17 @@ class BotSearch extends StatelessWidget {
           hintText: 'Search bots...',
           prefixIcon: const Icon(Icons.search),
           filled: true,
-          fillColor: Colors.grey.shade100,
+          fillColor: colorScheme.surfaceContainerHigh.withAlpha(200),
           enabledBorder: OutlineInputBorder(
             borderRadius: AppBorderRadius.medium,
-            borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
+            borderSide: BorderSide(
+              color: Theme.of(context).primaryColor,
+              width: 1.5,
+            ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: AppBorderRadius.medium,
-            borderSide: BorderSide(color: Color(0xFF5A7D90), width: 2),
+            borderSide: BorderSide(color: colorScheme.primary, width: 2),
           ),
         ),
       ),
