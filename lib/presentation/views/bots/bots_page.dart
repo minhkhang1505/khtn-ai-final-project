@@ -1,16 +1,10 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:khtn_ai_final_project/core/constants/constants.dart'
-    show AppSpacing, AppBarInfo;
-import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart'
-    show BotSearch;
-import 'package:khtn_ai_final_project/presentation/viewmodels/bot_viewmodel.dart'
-    show BotViewModel;
+import 'package:khtn_ai_final_project/core/constants/constants.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot_view_model.dart';
 import 'create_bot_page.dart' show CreateBotPage;
 import 'bots_card.dart' show BotCard;
-import 'dart:io' show Platform;
 
 /// Bots page - Manage AI bots
 class BotsPage extends StatefulWidget {

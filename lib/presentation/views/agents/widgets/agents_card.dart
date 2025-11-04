@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'edit_agent_page.dart' show EditAgentPage;
+import '../edit_agent_page.dart' show EditAgentPage;
 
 /// Card to display individual AI agent information
 class AgentCard extends StatelessWidget {
@@ -37,7 +37,7 @@ class AgentCard extends StatelessWidget {
                   width: 40,
                   height: 40,
                   colorFilter: ColorFilter.mode(
-                    colorScheme.primary,
+                    Theme.of(context).colorScheme.primary,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -57,12 +57,7 @@ class AgentCard extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     // Navigate to Edit Agent page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EditAgentPage(),
-                      ),
-                    );
+                    Navigator.pushNamed(context, '/agents/edit');
                   },
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.resolveWith<Color?>((
@@ -84,7 +79,7 @@ class AgentCard extends StatelessWidget {
                   child: Icon(
                     Icons.settings,
                     size: 24,
-                    color: colorScheme.outline,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],

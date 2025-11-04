@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'message/message.dart';
+import 'package:flutter_svg/svg.dart';
+import '../../../data/models/message_model.dart';
 import 'package:khtn_ai_final_project/presentation/services/api_service.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/message_input.dart';
-import 'package:khtn_ai_final_project/core/constants/constants.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/bot_option_menu.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot_view_model.dart';
 
@@ -16,7 +16,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final ScrollController _scrollController = ScrollController();
-  final List<Message> _messages = [];
+  final List<MessageModel> _messages = [];
   final BotViewModel botViewModel = BotViewModel();
   //botViewModel.loadBots();
   bool _isLoading = false;
@@ -29,7 +29,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void _sendMessage(String message) async {
     if (message.trim().isEmpty) return;
-    final userMessage = Message(text: message, isUser: true);
+    final userMessage = MessageModel(text: message, isUser: true);
     setState(() {
       _messages.add(userMessage);
       _isLoading = true;
@@ -40,7 +40,7 @@ class _ChatPageState extends State<ChatPage> {
     if (!mounted) return;
 
     setState(() {
-      _messages.add(Message(text: reply, isUser: false));
+      _messages.add(MessageModel(text: reply, isUser: false));
       _isLoading = false;
     });
 
@@ -79,13 +79,21 @@ class _ChatPageState extends State<ChatPage> {
                 child: SizedBox(width: 120, child: BotOptionMenu()),
               ),
 
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    // TODO: Handle add chat button press
-                  },
+              IconButton(
+                onPressed: () {
+                  // Navigate 
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(builder: (context) => const CreateBotPage()),
+                  // );
+                },
+                icon: SvgPicture.asset(
+                  'assets/icons/ic_add.svg',
+                  width: 45,
+                  height: 45,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ],

@@ -12,6 +12,14 @@ import 'package:khtn_ai_final_project/presentation/views/main/main_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
 
+import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/agents/create_agent_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/agents/edit_agent_page.dart';
+
+import 'package:khtn_ai_final_project/presentation/views/bots/bots_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/bots/create_bot_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/bots/edit_bot_page.dart';
+
 /// Centralized route generator for the application
 ///
 /// This class handles all route generation and navigation logic.
@@ -131,6 +139,42 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (_) => KnowledgeDetailScreen(),
+        );
+
+      case AppRoutes.agents:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const AgentsPage(),
+        );
+
+      case AppRoutes.createNewAgent:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const CreateAgentPage(),
+        );
+      
+      case AppRoutes.editAgent:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const EditAgentPage(),
+        );
+      
+      case AppRoutes.bots:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const BotsPage(),
+        );
+      
+      case AppRoutes.createNewBot:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const CreateBotPage(),
+        );
+
+      case AppRoutes.editBot:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const EditBotPage(),
         );
 
       default:

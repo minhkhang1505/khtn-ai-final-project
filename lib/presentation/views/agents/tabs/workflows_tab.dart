@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'workflow_card.dart' show WorkflowsCart;
+import '../workflows/workflow_card.dart' show WorkflowsCart;
 import 'package:khtn_ai_final_project/data/models/workflow_model.dart' show Workflow;
 import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppSpacing;
 

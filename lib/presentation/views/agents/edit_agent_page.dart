@@ -21,23 +21,11 @@ class EditAgentPage extends StatelessWidget {
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Back button
-            // IconButton(
-            //   onPressed: () =>
-            //   {
-            //
-            //   },
-            //   icon: const Icon(Icons.arrow_back),
-            //   tooltip: 'Back',
-            // ),
-            // const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Email Assistant', style: AppBarInfo.titleTextStyle),
-
                 SizedBox(height: 4),
-
                 Text(
                   'Handles email workflows',
                   style: AppBarInfo.subtitleTextStyle,

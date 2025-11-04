@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'agents_card.dart' show AgentCard;
-import 'package:khtn_ai_final_project/core/constants/constant.dart'
-    show AppSpacing;
+import '../widgets/agents_card.dart' show AgentCard;
+import 'package:khtn_ai_final_project/core/constants/constant.dart' show AppSpacing;
 
-class ActiveAgentsTab extends StatelessWidget {
-  const ActiveAgentsTab({super.key});
+class AllAgentsTab extends StatelessWidget {
+  const AllAgentsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +34,8 @@ class ActiveAgentsTab extends StatelessWidget {
       ),
     ];
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.vertical,
-        horizontal: AppSpacing.horizontal,
-      ),
-      separatorBuilder: (context, index) =>
-          const SizedBox(height: AppSpacing.cardSpacing),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.vertical, horizontal: AppSpacing.horizontal),
+      separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.cardSpacing),
       itemCount: 10,
       itemBuilder: (context, index) {
         return agents[index % agents.length];
