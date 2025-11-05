@@ -47,7 +47,8 @@ class NewKnowledgeScreen extends StatelessWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth > 600;
-          return Center(
+          return Align(
+            alignment: Alignment.topCenter,
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxWidth: isWideScreen ? 800 : double.infinity,
