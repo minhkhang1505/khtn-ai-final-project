@@ -1,16 +1,13 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:khtn_ai_final_project/core/constants/constants.dart'
-    show AppSpacing, AppBarInfo;
-import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+    show AppSpacing;
 import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart'
     show BotSearch;
+import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot_viewmodel.dart'
     show BotViewModel;
 import 'create_bot_page.dart' show CreateBotPage;
 import 'bots_card.dart' show BotCard;
-import 'dart:io' show Platform;
 
 /// Bots page - Manage AI bots
 class BotsPage extends StatefulWidget {
@@ -33,75 +30,17 @@ class _BotsPageState extends State<BotsPage>
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: colorScheme.surface,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('AI Bots', style: AppBarInfo.titleTextStyle),
-                Text(
-                  'Automate tasks with AI-powered workflows',
-                  style: AppBarInfo.subtitleTextStyle,
-                ),
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          // if (!Platform.isAndroid && !Platform.isIOS)
-          //   Padding(
-          //     padding: const EdgeInsets.only(right: 16),
-          //     child: FilledButton.icon(
-          //       onPressed: () {
-          //         // Navigate to Create bot page
-          //         Navigator.of(context).push(
-          //           MaterialPageRoute(
-          //             builder: (context) => const CreateBotPage(),
-          //           ),
-          //         );
-          //       },
-          //       icon: const Icon(Icons.add, size: 18),
-          //       label: const Text(
-          //         'Create Bot',
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //       style: FilledButton.styleFrom(
-          //         backgroundColor: Theme.of(context).colorScheme.primary,
-          //         padding: const EdgeInsets.symmetric(
-          //           horizontal: 16,
-          //           vertical: 20,
-          //         ),
-          //         shape: RoundedRectangleBorder(
-          //           borderRadius: AppBorderRadius.medium,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          IconButton(
-            onPressed: () {
-              // Navigate to Create bot page
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const CreateBotPage()),
-              );
-            },
-            icon: SvgPicture.asset(
-              'assets/icons/ic_add.svg',
-              width: 45,
-              height: 45,
-              colorFilter: ColorFilter.mode(
-                colorScheme.primary,
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
-        ],
+      appBar: CustomAppBar(
+        title: 'AI Bots',
+        subtitle: 'Automate tasks with AI-powered workflows',
+        onCreatePressed: () {
+          // Navigate to Create bot page
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const CreateBotPage()),
+          );
+        },
+        createButtonLabel: 'Create Bot',
       ),
 
       body: LayoutBuilder(
