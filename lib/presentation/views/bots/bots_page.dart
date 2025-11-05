@@ -30,7 +30,6 @@ class _BotsPageState extends State<BotsPage>
 
   @override
   Widget build(BuildContext context) {
-    //final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: BotAppBar(onAddBot: _onAddBot),
       body: LayoutBuilder(
@@ -41,24 +40,17 @@ class _BotsPageState extends State<BotsPage>
               constraints: BoxConstraints(
                 maxWidth: isWideScreen ? 1200 : double.infinity,
               ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(
-                        top: AppSpacing.vertical,
-                        left: AppSpacing.horizontal + 4,
-                        right: AppSpacing.horizontal + 4,
-                      ),
-                      child: const BotSearch(),
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.horizontal),
+                      child: BotSearch(),
                     ),
-                    SizedBox(height: AppSpacing.cardSpacing),
-
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _botViewModel.bots.length,
-                      itemBuilder: (context, index) {
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
                         final bot = _botViewModel.bots[index];
                         return Padding(
                           padding: EdgeInsets.only(
@@ -68,12 +60,16 @@ class _BotsPageState extends State<BotsPage>
                                 ? AppSpacing.vertical
                                 : AppSpacing.cardSpacing,
                           ),
-                          child: BotCard(bot: bot),
+                          child: Padding(
+                            padding: EdgeInsetsGeometry.all(0),
+                            child: BotCard(bot: bot),
+                          ),
                         );
                       },
+                      childCount: _botViewModel.bots.length,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );

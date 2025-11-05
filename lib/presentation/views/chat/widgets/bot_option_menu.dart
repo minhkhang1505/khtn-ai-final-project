@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class BotOptionMenu extends StatefulWidget {
   const BotOptionMenu({super.key});
@@ -32,7 +33,7 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
       },
       color: colorScheme.surfaceBright,
       position: PopupMenuPosition.under,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
       elevation: 4,
       itemBuilder: (context) => models.map((model) {
         return PopupMenuItem<String>(
@@ -51,6 +52,8 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
                     Text(
                       model["name"],
                       style: const TextStyle(fontWeight: FontWeight.w600),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                     Text(
                       model["description"],
@@ -87,13 +90,20 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: colorScheme.surfaceBright,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppBorderRadius.medium,
           border: Border.all(color: colorScheme.outlineVariant),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(selectedModel, style: const TextStyle(fontSize: 15)),
+            Expanded(
+              child: Text(
+                selectedModel, 
+                style: const TextStyle(fontSize: 15),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
             const Icon(Icons.arrow_drop_down),
           ],
         ),

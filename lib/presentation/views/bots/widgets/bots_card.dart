@@ -38,14 +38,17 @@ class BotCard extends StatelessWidget {
                 const SizedBox(width: 8),
 
                 // Name of Bot
-                Text(
-                  bot.name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Text(
+                    bot.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
-                const Spacer(),
 
                 // Edit Bot button
                 ElevatedButton(
@@ -91,26 +94,33 @@ class BotCard extends StatelessWidget {
             // Category and Model Chips
             Row(
               children: [
-                Chip(
-                  label: Text(
-                    bot.category,
-                    style: const TextStyle(fontSize: 12),
+                Flexible(
+                  child: Chip(
+                    label: Text(
+                      bot.category,
+                      style: const TextStyle(fontSize: 12),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    backgroundColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                   ),
-                  backgroundColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
                 ),
                 const SizedBox(width: 8),
-                Chip(
-                  label: Text(
-                    bot.model,
-                    style: const TextStyle(color: Colors.black87, fontSize: 12),
+                Flexible(
+                  child: Chip(
+                    label: Text(
+                      bot.model,
+                      style: const TextStyle(color: Colors.black87, fontSize: 12),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    backgroundColor: Colors.white70,
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                   ),
-                  backgroundColor: Colors.white70,
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
           ],
         ),
       ),
