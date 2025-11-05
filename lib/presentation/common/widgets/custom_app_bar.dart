@@ -67,6 +67,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       }
     }
     return AppBar(
+      centerTitle: false,
       automaticallyImplyLeading: false,
       toolbarHeight: toolbarHeight,
       title: Column(
