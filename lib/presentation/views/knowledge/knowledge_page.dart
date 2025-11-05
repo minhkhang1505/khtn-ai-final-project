@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_filter.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_item.dart';
@@ -20,7 +21,12 @@ class _KnowledgePageState extends State<KnowledgePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: KnowledgeAppBar(onAddKnowledge: _onAddKnowledge),
+      appBar: CustomAppBar(
+        title: 'Knowledge',
+        subtitle: 'Connect data sources',
+        onCreatePressed: _onAddKnowledge,
+        createButtonLabel: 'Add Knowledge',
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth > 600;

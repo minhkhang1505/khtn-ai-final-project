@@ -3,6 +3,7 @@ import 'package:khtn_ai_final_project/core/constants/categories.dart';
 import 'package:khtn_ai_final_project/core/constants/sample_prompts.dart';
 import 'package:khtn_ai_final_project/domain/entities/category.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/all_prompts_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/categories_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/favorite_prompts_tab.dart';
@@ -57,7 +58,13 @@ class _PromptsPageState extends State<PromptsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PromptsAppBar(onAddPrompt: _handleAddPrompt),
+      appBar: CustomAppBar(
+        title: 'AI Prompts',
+        subtitle: 'Browse and manage your AI prompts',
+        // toolbarHeight: AppBarInfo.height,
+        onCreatePressed: _handleAddPrompt,
+        createButtonLabel: 'Add Prompt',
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth > 600;
