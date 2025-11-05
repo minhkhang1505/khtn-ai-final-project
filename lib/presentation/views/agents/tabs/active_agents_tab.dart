@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/agents_card.dart' show AgentCard;
-import 'package:khtn_ai_final_project/core/constants/constant.dart'
+import '../widgets/agents_card.dart' ;
+import 'package:khtn_ai_final_project/data/models/agent_model.dart';
+import 'package:khtn_ai_final_project/core/constants/constants.dart'
     show AppSpacing;
 
 class ActiveAgentsTab extends StatelessWidget {
@@ -8,32 +9,9 @@ class ActiveAgentsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final agents = [
-      AgentCard(
-        agentName: 'Email Assistant',
-        agentDescription: 'Handles email workflows automatically.',
-        workflows: 'Email Triage',
-        state: 'Active',
-      ),
-      AgentCard(
-        agentName: 'Data Extractor',
-        agentDescription: 'Extracts data from documents.',
-        workflows: 'Data Extraction',
-        state: 'Inactive',
-      ),
-      AgentCard(
-        agentName: 'Email Assistant',
-        agentDescription: 'Handles email workflows automatically.',
-        workflows: 'Email Triage',
-        state: 'Active',
-      ),
-      AgentCard(
-        agentName: 'Data Extractor',
-        agentDescription: 'Extracts data from documents.',
-        workflows: 'Data Extraction',
-        state: 'Inactive',
-      ),
-    ];
+    final agents = AgentModel.createSampleAgents()
+        .map((agent) => AgentCard(agent: agent))
+        .toList();
     return ListView.separated(
       padding: const EdgeInsets.symmetric(
         vertical: AppSpacing.vertical,

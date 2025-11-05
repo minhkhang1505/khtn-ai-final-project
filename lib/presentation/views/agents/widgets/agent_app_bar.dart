@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
+import 'package:khtn_ai_final_project/core/constants/constants.dart';
 
 class AgentAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onAddAgent;
@@ -10,13 +12,16 @@ class AgentAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Agents'),
-          SizedBox(height: 4),
-          Text('Manage your AI agents', style: TextStyle(fontSize: 14)),
-        ],
+      title: Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Agents', style: AppBarInfo.titleTextStyle),
+            SizedBox(height: 4),
+            if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context)) 
+              Text('Automate tasks with AI-powered workflows', style: AppBarInfo.subtitleTextStyle),
+          ],
+        ),
       ),
       actions: [
         IconButton(

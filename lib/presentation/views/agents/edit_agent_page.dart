@@ -1,51 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'workflows/workflow_card.dart' show WorkflowsCart;
-import 'package:khtn_ai_final_project/data/models/workflow_model.dart'
-    show Workflow;
-import 'package:khtn_ai_final_project/core/constants/constant.dart'
-    show AppBarInfo, AppSpacing;
-import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart'
-    show ResponsiveHelper;
+import 'package:khtn_ai_final_project/data/models/agent_model.dart';
+import 'widgets/workflow_card.dart';
+import 'package:khtn_ai_final_project/core/constants/constants.dart';
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
+import 'widgets/edit_agent_app_bar.dart';
 
 class EditAgentPage extends StatelessWidget {
-  const EditAgentPage({super.key});
+  final AgentModel agent;
+  const EditAgentPage({super.key, required this.agent});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      appBar: AppBar(
-        toolbarHeight: AppBarInfo.height,
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Email Assistant', style: AppBarInfo.titleTextStyle),
-                SizedBox(height: 4),
-                Text(
-                  'Handles email workflows',
-                  style: AppBarInfo.subtitleTextStyle,
-                ),
-              ],
-            ),
-          ],
-        ),
-        centerTitle: false,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Chip(
-              label: Text('Active', style: TextStyle(color: Colors.green)),
-              backgroundColor: Color(0xFFE8F5E9),
-            ),
-          ),
-        ],
-      ),
-
+      appBar: EditAgentAppBar(agent: agent),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
@@ -89,9 +59,9 @@ class EditAgentPage extends StatelessWidget {
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
-                                  'Active Status',
+                                  agent.state,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16,
@@ -102,7 +72,6 @@ class EditAgentPage extends StatelessWidget {
                                   'Enable or disable this agent',
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: Colors.black54,
                                   ),
                                 ),
                               ],
@@ -258,6 +227,7 @@ class EditAgentPage extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.cardSpacing),
 
+                // TODO: Remove one or many workflows
                 // Workflows Card
                 Card(
                   elevation: 0,
@@ -310,15 +280,25 @@ class EditAgentPage extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 4),
-                        const Text(
-                          '1 workflow(s) configured',
-                          style: TextStyle(fontSize: 13),
+                        Text(
+                          '${agent.workflows.length} workflow(s) configured',
+                          style: const TextStyle(fontSize: 13),
                         ),
                         const SizedBox(height: 16),
 
                         // Workflow
-                        WorkflowsCart(
-                          workflowType: Workflow.emailTriage as dynamic,
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final workflow = agent.workflows[index];
+                            return WorkflowsCard(
+                              workflowType: workflow,
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 12),
+                          itemCount: agent.workflows.length,
                         ),
                       ],
                     ),

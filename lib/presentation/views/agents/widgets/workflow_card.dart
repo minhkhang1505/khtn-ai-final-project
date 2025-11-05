@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/workflow_model.dart';
 import 'package:khtn_ai_final_project/data/models/workflow_step_model.dart';
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 
-class WorkflowsCart extends StatelessWidget {
+class WorkflowsCard extends StatelessWidget {
   //final WorkflowModel workflow;
   final Workflow workflowType;
-  const WorkflowsCart({super.key, required this.workflowType});
+  const WorkflowsCard({super.key, required this.workflowType});
 
   @override
   Widget build(BuildContext context) {
@@ -44,27 +45,25 @@ class WorkflowsCart extends StatelessWidget {
                   ),
                 ],
               ),
-              TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  backgroundColor: colorScheme.surfaceContainerHigh,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
+
+              if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
+                Chip(
+                  label: Text(
+                    workflow.feature,
+                    style: TextStyle(color: colorScheme.primary),
                   ),
-                ),
-                child: Text(
-                  workflow.feature,
-                  style: TextStyle(color: colorScheme.primary),
-                ),
-              ),
+                  backgroundColor: colorScheme.surfaceContainerHigh,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                )
             ],
           ),
           const SizedBox(height: 4),
 
           Text(workflow.description, style: TextStyle(fontSize: 15)),
-
           const SizedBox(height: 12),
+
           Divider(
             color: Colors.grey.shade300,
             thickness: 1,
@@ -120,13 +119,6 @@ class WorkflowStep extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(step.title, style: const TextStyle(fontSize: 14)),
-                // Text(
-                //   subtitle,
-                //   style: const TextStyle(
-                //     fontSize: 12,
-                //     color: Colors.black54,
-                //   ),
-                // ),
               ],
             ),
           ),

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'workflows/workflow_card.dart' show WorkflowsCart;
-import 'package:khtn_ai_final_project/data/models/workflow_model.dart'
-    show Workflow;
-import 'package:khtn_ai_final_project/core/constants/constant.dart'
-    show AppBarInfo, AppSpacing;
-import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart'
-    show ResponsiveHelper;
+import 'widgets/workflow_card.dart';
+import 'package:khtn_ai_final_project/data/models/workflow_model.dart';
+import 'package:khtn_ai_final_project/core/constants/constants.dart';
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
+import 'widgets/create_agent_app_bar.dart';
 
 class CreateAgentPage extends StatefulWidget {
   const CreateAgentPage({super.key});
@@ -23,37 +21,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      appBar: AppBar(
-        toolbarHeight: AppBarInfo.height,
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Create New Agent', style: AppBarInfo.titleTextStyle),
-
-                SizedBox(height: 4),
-
-                Text(
-                  'Set up a new agent with workflows',
-                  style: AppBarInfo.subtitleTextStyle,
-                ),
-              ],
-            ),
-          ],
-        ),
-        centerTitle: false,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Chip(
-              label: Text('Active', style: TextStyle(color: Colors.green)),
-              backgroundColor: Color(0xFFE8F5E9),
-            ),
-          ),
-        ],
-      ),
+      appBar: const CreateAgentAppBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
@@ -229,7 +197,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                                         width: 2,
                                       ),
                                     ),
-                                    child: WorkflowsCart(
+                                    child: WorkflowsCard(
                                       workflowType: workflow as dynamic,
                                     ),
                                   ),
@@ -255,13 +223,13 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Theme.of(context).primaryColor,
+                                          color: Colors.white,
                                         ),
                                         padding: const EdgeInsets.all(4),
                                         child: const Icon(
                                           Icons.check,
                                           size: 16,
-                                          color: Colors.white,
+                                          color: Colors.green,
                                         ),
                                       ),
                                     ),

@@ -12,13 +12,13 @@ class AgentViewModel extends ChangeNotifier {
       AgentModel(
         name: 'Email Assistant',
         description: 'Handles email workflows automatically.',
-        workflows: Workflow.emailTriage,
+        workflows: [Workflow.emailTriage],
         state: 'Active',
       ),
       AgentModel(
         name: 'Document Processor',
         description: 'Processes documents efficiently.',
-        workflows: Workflow.dataExtraction,
+        workflows: [Workflow.dataExtraction],
         state: 'Inactive',
       ),
     ]);

@@ -2,6 +2,28 @@ import 'workflow_step_model.dart';
 
 enum Workflow { emailTriage, dataExtraction }
 
+extension WorkflowFeature on Workflow {
+  String get feature {
+    switch (this) {
+      case Workflow.emailTriage:
+        return 'New Email';
+      case Workflow.dataExtraction:
+        return 'Data Extraction';
+    }
+  }
+}
+
+extension WorkflowName on Workflow {
+  String get name {
+    switch (this) {
+      case Workflow.emailTriage:
+        return 'Email Triage';
+      case Workflow.dataExtraction:
+        return 'Data Extraction';
+    }
+  }
+}
+
 class WorkflowModel {
   final Workflow workflow;
   final String name;

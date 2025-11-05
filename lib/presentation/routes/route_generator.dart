@@ -154,9 +154,10 @@ class RouteGenerator {
         );
       
       case AppRoutes.editAgent:
+        final editAgent = args is Map<String, dynamic> ? args['agent'] : args;
         return _buildRoute(
           settings: settings,
-          builder: (_) => const EditAgentPage(),
+          builder: (_) => EditAgentPage(agent: editAgent),
         );
       
       case AppRoutes.bots:
