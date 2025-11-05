@@ -33,7 +33,6 @@ class KnowledgeSourceDropdown extends StatelessWidget {
           enableFilter: true,
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: enabled ? Colors.grey[100] : Colors.grey[200],
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 8,
@@ -52,7 +51,9 @@ class KnowledgeSourceDropdown extends StatelessWidget {
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide(
+                color: colorScheme.onSurface.withAlpha(50),
+              ),
             ),
           ),
           initialSelection: initialSelection ?? KnowledgeSourceTypes.all[0],
@@ -66,6 +67,10 @@ class KnowledgeSourceDropdown extends StatelessWidget {
                 source.iconAssetPath,
                 width: 24,
                 height: 24,
+                colorFilter: ColorFilter.mode(
+                  colorScheme.primary,
+                  BlendMode.srcIn,
+                ),
               ),
             );
           }).toList(),

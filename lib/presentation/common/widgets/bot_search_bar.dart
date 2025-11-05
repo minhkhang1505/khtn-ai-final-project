@@ -18,13 +18,17 @@ class BotSearch extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderRadius: AppBorderRadius.medium,
             borderSide: BorderSide(
-              color: Theme.of(context).primaryColor,
+              color: colorScheme.primary.withAlpha(150),
               width: 1.5,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: AppBorderRadius.medium,
             borderSide: BorderSide(color: colorScheme.primary, width: 2),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 0,
+            horizontal: 16,
           ),
         ),
       ),

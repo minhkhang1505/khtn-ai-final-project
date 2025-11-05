@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'edit_bot_page.dart';
 import 'package:khtn_ai_final_project/data/models/bot_model.dart';
 
@@ -13,9 +14,10 @@ class BotCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Card(
+      elevation: 0,
       color: colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppBorderRadius.large,
         side: BorderSide(color: colorScheme.outline.withAlpha(50), width: 1.5),
       ),
       child: Padding(
