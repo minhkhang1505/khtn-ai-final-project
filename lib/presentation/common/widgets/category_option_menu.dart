@@ -1,56 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
-// class CategoryDropdown extends StatefulWidget {
-//   const CategoryDropdown({super.key});
-
-//   @override
-//   State<CategoryDropdown> createState() => _CategoryDropdownState();
-// }
-
-// class _CategoryDropdownState extends State<CategoryDropdown> {
-//   final List<String> categories = [
-//     'General',
-//     'Customer Support',
-//     'Sales',
-//     'HR',
-//     'Development',
-//     'Marketing',
-//   ];
-
-//   String selectedCategory = 'General';
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return DropdownButtonFormField<String>(
-//       initialValue: selectedCategory,
-//       items: categories
-//           .map((item) => DropdownMenuItem(value: item, child: Text(item)))
-//           .toList(),
-//       onChanged: (value) {
-//         if (value != null) {
-//           setState(() => selectedCategory = value);
-//         }
-//       },
-//       decoration: InputDecoration(
-//         contentPadding: const EdgeInsets.symmetric(
-//           vertical: 14,
-//           horizontal: 16,
-//         ),
-//         filled: true,
-//         fillColor: Colors.grey.shade200,
-//         border: OutlineInputBorder(
-//           borderRadius: BorderRadius.circular(10),
-//           borderSide: BorderSide.none,
-//         ),
-//       ),
-//       icon: const Icon(Icons.keyboard_arrow_down_rounded),
-//       dropdownColor: Colors.white,
-//       style: const TextStyle(fontSize: 15, color: Colors.black87),
-//     );
-//   }
-// }
-
 class CategoryOptionMenu extends StatefulWidget {
   final Function(String)? onChanged;
   const CategoryOptionMenu({super.key, this.onChanged});
@@ -115,7 +65,18 @@ class _CategoryOptionMenuState extends State<CategoryOptionMenu> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(selectedModel ?? "Select Category"),
+            Expanded(
+              child:
+            Text(
+              selectedModel ?? "Select Category",
+              style: TextStyle(
+                color: selectedModel == null
+                    ? colorScheme.onSurfaceVariant
+                    : colorScheme.onSurface,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),),
             const SizedBox(width: 8),
             const Icon(Icons.arrow_drop_down),
           ],

@@ -7,7 +7,7 @@ import 'package:khtn_ai_final_project/data/models/workflow_model.dart';
 /// Card to display individual AI agent information
 class AgentCard extends StatelessWidget {
   final AgentModel agent;
-  static const MAX_FEATURE_LENGTH = 15;
+  static const maxFeatureLength = 15;
 
   const AgentCard({
     super.key,
@@ -19,6 +19,10 @@ class AgentCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return Card(
       color: colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: colorScheme.outline.withAlpha(50), width: 1.5),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -131,7 +135,7 @@ class AgentCard extends StatelessWidget {
                           borderRadius: AppBorderRadius.largeIncreased,
                         ),
                         child: Text(
-                          workflow.feature.length > MAX_FEATURE_LENGTH
+                          workflow.feature.length > maxFeatureLength
                             ? '${workflow.feature.substring(0, 15)}...'
                             : workflow.feature,
                           style: TextStyle(color: colorScheme.primary),

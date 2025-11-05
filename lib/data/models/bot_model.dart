@@ -1,16 +1,16 @@
 class BotModel {
-  final String name;
-  final String description;
-  final String category;
-  final String model;
-  final String state;
-  final String prompt;
+  String name;
+  String description;
+  String category;
+  String model;
+  String status;
+  String prompt;
 
-  const BotModel({
+  BotModel({
     required this.name,
     required this.description,
     required this.category,
-    required this.state,
+    required this.status,
     required this.model,
     required this.prompt,
   });

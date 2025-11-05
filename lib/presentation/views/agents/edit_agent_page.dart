@@ -5,17 +5,25 @@ import 'widgets/workflow_card.dart';
 import 'package:khtn_ai_final_project/core/constants/constants.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'widgets/edit_agent_app_bar.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/action_button_row.dart';
 
-class EditAgentPage extends StatelessWidget {
+/// Edit Agent Page - Configure AI agent settings
+class EditAgentPage extends StatefulWidget {
   final AgentModel agent;
+
   const EditAgentPage({super.key, required this.agent});
 
+  @override
+  State<EditAgentPage> createState() => _EditAgentPageState();
+}
+
+class _EditAgentPageState extends State<EditAgentPage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      appBar: EditAgentAppBar(agent: agent),
+      appBar: EditAgentAppBar(agent: widget.agent),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
@@ -28,7 +36,7 @@ class EditAgentPage extends StatelessWidget {
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.extraLarge,
+                    borderRadius: AppBorderRadius.medium,
                     side: BorderSide(
                       color: colorScheme.outlineVariant.withAlpha(100),
                       width: 1.5,
@@ -61,7 +69,7 @@ class EditAgentPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  agent.state,
+                                  widget.agent.status,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16,
@@ -76,7 +84,15 @@ class EditAgentPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Switch(value: true, onChanged: (v) {}),
+                            Switch(
+                              value: widget.agent.status == 'Active',
+                              onChanged: (value) {
+                                setState(() {
+                                  widget.agent.status = value ? 'Active' : 'Inactive';
+                                });
+                                // TODO: update agent status here (e.g. call API)
+                              },
+                            )
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -103,20 +119,25 @@ class EditAgentPage extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Expanded(
-                              child: OutlinedButton.icon(
+                              child: ElevatedButton(
                                 onPressed: () {},
-                                style: OutlinedButton.styleFrom(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.error,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: AppBorderRadius.medium,
                                   ),
-                                  side: BorderSide(color: colorScheme.tertiary),
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 16,
                                     horizontal: 24,
                                   ),
                                 ),
-                                icon: const Icon(Icons.edit_outlined),
-                                label: const Text('Edit Agent'),
+                                child: Text(
+                                  'Delete Agent',
+                                  style: TextStyle(
+                                    color: colorScheme.onError,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -127,10 +148,11 @@ class EditAgentPage extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.cardSpacing),
 
+                // Basic Information Card
                 Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.extraLarge,
+                    borderRadius: AppBorderRadius.medium,
                     side: BorderSide(
                       color: colorScheme.outlineVariant.withAlpha(100),
                       width: 1.5,
@@ -233,7 +255,7 @@ class EditAgentPage extends StatelessWidget {
                   elevation: 0,
                   color: colorScheme.surfaceContainerLow.withAlpha(10),
                   shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.extraLarge,
+                    borderRadius: AppBorderRadius.medium,
                     side: BorderSide(
                       color: colorScheme.outlineVariant.withAlpha(100),
                       width: 1.5,
@@ -281,7 +303,7 @@ class EditAgentPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${agent.workflows.length} workflow(s) configured',
+                          '${widget.agent.workflows.length} workflow(s) configured',
                           style: const TextStyle(fontSize: 13),
                         ),
                         const SizedBox(height: 16),
@@ -291,14 +313,14 @@ class EditAgentPage extends StatelessWidget {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            final workflow = agent.workflows[index];
+                            final workflow = widget.agent.workflows[index];
                             return WorkflowsCard(
                               workflowType: workflow,
                             );
                           },
                           separatorBuilder: (context, index) =>
                               const SizedBox(height: 12),
-                          itemCount: agent.workflows.length,
+                          itemCount: widget.agent.workflows.length,
                         ),
                       ],
                     ),
@@ -307,56 +329,13 @@ class EditAgentPage extends StatelessWidget {
                 const SizedBox(height: AppSpacing.cardSpacing),
 
                 // Delete button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppBorderRadius.medium,
-                          ),
-                          side: BorderSide(
-                            color: Theme.of(context).colorScheme.outline,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 24,
-                          ),
-                        ),
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.error,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppBorderRadius.medium,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 24,
-                          ),
-                        ),
-                        child: Text(
-                          'Delete Agent',
-                          style: TextStyle(
-                            color: colorScheme.onError,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                ActionButtonRow(
+                  onCancel: () {
+                    Navigator.pop(context);
+                  },
+                  onSave: () {
+                    // TODO: Implement save functionality
+                  },
                 ),
               ],
             ),

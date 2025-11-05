@@ -1,38 +1,38 @@
 import 'workflow_model.dart' show Workflow;
 
 class AgentModel {
-  final String name;
-  final String description;
-  final List<Workflow> workflows;
-  final String state;
+  String name;
+  String description;
+  List<Workflow> workflows;
+  String status;
 
-  const AgentModel({
+  AgentModel({
     required this.name,
     required this.description,
     required this.workflows,
-    required this.state,
+    required this.status,
   });
 
   // Additional methods to create a list of sample agents
   static List<AgentModel> createSampleAgents() {
     return [
-      const AgentModel(
+      AgentModel(
         name: 'Email Assistant',
         description: 'Handles email workflows automatically.',
-        workflows: [Workflow.emailTriage],
-        state: 'Active',
+        workflows: const [Workflow.emailTriage],
+        status: 'Active',
       ),
-      const AgentModel(
+      AgentModel(
         name: 'Data Extractor',
         description: 'Extracts data from documents.',
-        workflows: [Workflow.dataExtraction],
-        state: 'Inactive',
+        workflows: const [Workflow.dataExtraction],
+        status: 'Inactive',
       ),
-      const AgentModel(
+      AgentModel(
         name: 'Customer Support Bot',
         description: 'Assists customers with common inquiries.',
-        workflows: [Workflow.emailTriage, Workflow.dataExtraction],
-        state: 'Active',
+        workflows: const [Workflow.emailTriage, Workflow.dataExtraction],
+        status: 'Active',
       ),
     ];
   }

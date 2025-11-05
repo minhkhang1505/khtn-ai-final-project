@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'edit_bot_page.dart';
 import 'package:khtn_ai_final_project/data/models/bot_model.dart';
 
 /// Card to display individual AI bot information
@@ -36,7 +35,6 @@ class BotCard extends StatelessWidget {
                     BlendMode.srcIn,
                   ),
                 ),
-
                 const SizedBox(width: 8),
 
                 // Name of Bot
@@ -47,19 +45,13 @@ class BotCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-
                 const Spacer(),
 
                 // Edit Bot button
                 ElevatedButton(
                   onPressed: () {
                     // Navigate to Edit Bot page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EditBotPage(),
-                      ),
-                    );
+                    Navigator.pushNamed(context, '/bots/edit', arguments: bot);
                   },
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.resolveWith<Color?>((
@@ -94,7 +86,6 @@ class BotCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 16),
               ),
             ),
-
             const SizedBox(height: 24),
 
             // Category and Model Chips

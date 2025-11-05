@@ -13,7 +13,7 @@ class BotViewModel extends ChangeNotifier {
         description: 'Helps with customer inquiries.',
         category: 'Customer Support',
         model: 'GPT-4',
-        state: 'Active',
+        status: 'Active',
         prompt: 'Assist customers with their questions.',
       ),
       BotModel(
@@ -21,14 +21,14 @@ class BotViewModel extends ChangeNotifier {
         description: 'Automates sales follow-ups.',
         category: 'Sales',
         model: 'GPT-3.5',
-        state: 'Inactive',
+        status: 'Inactive',
         prompt: 'Follow up with potential leads.',
       ),BotModel(
         name: 'Chat Assistant',
         description: 'Helps with customer inquiries.',
         category: 'Customer Support',
         model: 'GPT-4',
-        state: 'Active',
+        status: 'Active',
         prompt: 'Assist customers with their questions.',
       ),
       BotModel(
@@ -36,7 +36,7 @@ class BotViewModel extends ChangeNotifier {
         description: 'Automates sales follow-ups.',
         category: 'Sales',
         model: 'GPT-3.5',
-        state: 'Inactive',
+        status: 'Inactive',
         prompt: 'Follow up with potential leads.',
       ),
     ]);
