@@ -10,19 +10,17 @@ class CreateBotAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: true,
-      title: Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Bots', style: AppBarInfo.titleTextStyle),
-            SizedBox(height: 4),
-            if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
-                  Text(
-                    'Set up your AI assistant bot',
-                    style: AppBarInfo.subtitleTextStyle,
-                  ),
-          ],
-        ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Bots', style: AppBarInfo.titleTextStyle),
+          SizedBox(height: 4),
+          if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
+            Text(
+              'Set up your AI assistant bot',
+              style: AppBarInfo.subtitleTextStyle,
+            ),
+        ],
       ),
     );
   }

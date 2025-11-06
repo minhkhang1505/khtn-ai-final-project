@@ -13,24 +13,22 @@ class CreateAgentAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Create New Agent', 
+                style: AppBarInfo.titleTextStyle,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              SizedBox(height: 4),
+              if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
                 Text(
-                  'Create New Agent', 
-                  style: AppBarInfo.titleTextStyle,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                  'Set up a new agent with workflows',
+                  style: AppBarInfo.subtitleTextStyle,
                 ),
-                SizedBox(height: 4),
-                if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
-                  Text(
-                    'Set up a new agent with workflows',
-                    style: AppBarInfo.subtitleTextStyle,
-                  ),
-              ],
-            ),
+            ],
           ),
         ],
       ),

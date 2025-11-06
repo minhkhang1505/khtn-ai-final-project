@@ -14,24 +14,22 @@ class EditAgentAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                agent.name,
+                style: AppBarInfo.titleTextStyle,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              SizedBox(height: 4),
+              if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
                 Text(
-                  agent.name,
-                  style: AppBarInfo.titleTextStyle,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                  agent.description,
+                  style: AppBarInfo.subtitleTextStyle,
                 ),
-                SizedBox(height: 4),
-                if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
-                  Text(
-                    agent.description,
-                    style: AppBarInfo.subtitleTextStyle,
-                  ),
-              ],
-            ),
+            ],
           ),
         ],
       ),

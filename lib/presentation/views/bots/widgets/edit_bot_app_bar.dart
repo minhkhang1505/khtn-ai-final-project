@@ -12,25 +12,23 @@ class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: true,
-      title: Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            bot.name, 
+            style: AppBarInfo.titleTextStyle,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          SizedBox(height: 4),
+          // Subtitle - only show on tablet and desktop
+          if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
             Text(
-              bot.name, 
-              style: AppBarInfo.titleTextStyle,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+              bot.description,
+              style: AppBarInfo.subtitleTextStyle,
             ),
-            SizedBox(height: 4),
-            // Subtitle - only show on tablet and desktop
-            if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
-              Text(
-                bot.description,
-                style: AppBarInfo.subtitleTextStyle,
-              ),
-          ],
-        ),
+        ],
       ),
       actions: [
         Padding(

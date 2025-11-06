@@ -12,16 +12,14 @@ class AgentAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Agents', style: AppBarInfo.titleTextStyle),
-            SizedBox(height: 4),
-            if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context)) 
-              Text('Automate tasks with AI-powered workflows', style: AppBarInfo.subtitleTextStyle),
-          ],
-        ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Agents', style: AppBarInfo.titleTextStyle),
+          SizedBox(height: 4),
+          if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context)) 
+            Text('Automate tasks with AI-powered workflows', style: AppBarInfo.subtitleTextStyle),
+        ],
       ),
       actions: [
         IconButton(
