@@ -14,7 +14,7 @@ class BotInformationCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: AppBorderRadius.medium,
         side: BorderSide(
-          color: colorScheme.outlineVariant.withAlpha(150),
+          color: colorScheme.outlineVariant.withAlpha(100),
           width: 1.5,
         ),
       ),

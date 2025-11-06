@@ -106,26 +106,27 @@ class _AgentStatusCardState extends State<AgentStatusCard> {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.error,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppBorderRadius.medium,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 24,
-                      ),
+                  child: ElevatedButton.icon(
+                  onPressed: () {
+                    // TODO: Handle delete
+                  },
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text('Delete Agent'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.error,
+                    foregroundColor: colorScheme.onError, 
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppBorderRadius.medium,
                     ),
-                    child: Text(
-                      'Delete Agent',
-                      style: TextStyle(
-                        color: colorScheme.onError,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 24,
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
+                )
                 ),
               ],
             ),

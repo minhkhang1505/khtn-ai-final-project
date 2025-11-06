@@ -12,7 +12,7 @@ class SystemPromptsCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: AppBorderRadius.medium,
         side: BorderSide(
-          color: colorScheme.outlineVariant.withAlpha(150),
+          color: colorScheme.outlineVariant.withAlpha(100),
           width: 1.5,
         ),
       ),
@@ -60,6 +60,30 @@ class SystemPromptsCard extends StatelessWidget {
                 ),
               ),
               maxLines: 5,
+            ),
+            const SizedBox(height: 10),
+
+            // Template Prompts
+            OutlinedButton(
+              onPressed: () {
+                // TODO: Show template prompts selection dialog
+              },
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: AppBorderRadius.medium,
+                ),
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 8,
+                ),
+              ),
+              child: Text(
+                'Use Template',
+                style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.secondary),
+              ),
             ),
           ],
         ),

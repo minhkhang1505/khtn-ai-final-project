@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
-class ActionButtonRow extends StatelessWidget {
+class CreateActionButtonRow extends StatelessWidget {
   final VoidCallback? onCreate;
   final VoidCallback? onCancel;
 
-  const ActionButtonRow({super.key, this.onCreate, this.onCancel});
+  const CreateActionButtonRow({super.key, this.onCreate, this.onCancel});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class ActionButtonRow extends StatelessWidget {
               ),
             ),
             child: Text(
-              'Create Agent',
+              'Create',
               style: TextStyle(
                 color: colorScheme.onPrimary,
                 fontWeight: FontWeight.w600,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
-class ActionButtonRow extends StatelessWidget {
+class SaveActionButtonRow extends StatelessWidget {
   final VoidCallback? onSave;
   final VoidCallback? onCancel;
 
-  const ActionButtonRow({super.key, this.onSave, this.onCancel});
+  const SaveActionButtonRow({super.key, this.onSave, this.onCancel});
 
   @override
   Widget build(BuildContext context) {

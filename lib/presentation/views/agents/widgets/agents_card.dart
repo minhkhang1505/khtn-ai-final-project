@@ -59,6 +59,7 @@ class AgentCard extends StatelessWidget {
                 // Edit Agent button
                 ElevatedButton(
                   onPressed: () {
+                    // Navigate to Edit Agent page
                     Navigator.pushNamed(context, '/agents/edit', arguments: agent);
                   },
                   style: ButtonStyle(
@@ -81,7 +82,7 @@ class AgentCard extends StatelessWidget {
                   child: Icon(
                     Icons.settings,
                     size: 24,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: colorScheme.outline,
                   ),
                 ),
               ],

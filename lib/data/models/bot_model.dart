@@ -5,6 +5,7 @@ class BotModel {
   String model;
   String status;
   String prompt;
+  bool visibility;
 
   BotModel({
     required this.name,
@@ -13,5 +14,6 @@ class BotModel {
     required this.status,
     required this.model,
     required this.prompt,
+    required this.visibility,
   });
 }
