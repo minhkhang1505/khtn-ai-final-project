@@ -157,6 +157,7 @@ class _AccountPageState extends State<AccountPage> {
                             child: Container(
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                               child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -207,6 +208,42 @@ class _AccountPageState extends State<AccountPage> {
                                     ],
                                   ),
                                   SizedBox(height: 16),
+                                  ...mockPlans.map(
+                                    (plan) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 6,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.check,
+                                            color: colorScheme.primary,
+                                          ),
+                                          SizedBox(width: 8),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                plan['title']!,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                plan['description']!,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: colorScheme.onSurface
+                                                      .withAlpha(140),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
