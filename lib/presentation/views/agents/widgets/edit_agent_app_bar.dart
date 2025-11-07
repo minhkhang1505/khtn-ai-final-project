@@ -35,12 +35,12 @@ class EditAgentAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Chip(
-              label: Text(agent.status, style: TextStyle(color: agent.status == 'Active' ? Colors.green : Colors.red)),
-              backgroundColor: agent.status == 'Active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
-            ),
+          padding: EdgeInsets.only(right: 16),
+          child: Chip(
+            label: Text(agent.status, style: TextStyle(color: agent.status == 'Active' ? Colors.green : Colors.red)),
+            backgroundColor: agent.status == 'Active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
           ),
+        ),
       ],
     );
   }

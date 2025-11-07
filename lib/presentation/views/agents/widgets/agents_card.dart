@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/agent_model.dart';
 import 'package:khtn_ai_final_project/data/models/workflow_model.dart';
@@ -20,11 +21,11 @@ class AgentCard extends StatelessWidget {
     return Card(
       color: colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppBorderRadius.medium,
         side: BorderSide(color: colorScheme.outline.withAlpha(50), width: 1.5),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -44,17 +45,33 @@ class AgentCard extends StatelessWidget {
                 const SizedBox(width: 8),
 
                 // Name of Agent
-                Expanded(
-                  child: Text(
-                    agent.name,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
+                Text(
+                  agent.name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
+                const SizedBox(width: 8),
+
+                if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
+                  Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Chip(
+                      labelPadding: EdgeInsets.zero,
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      label: Text(
+                        agent.status,
+                        style: TextStyle(
+                          color: agent.status == 'Active' ? Colors.green : Colors.red,
+                        ),
+                      ),
+                      backgroundColor: agent.status == 'Active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
+                    ),
+                  ),
+                const Spacer(),
 
                 // Edit Agent button
                 ElevatedButton(
@@ -77,7 +94,7 @@ class AgentCard extends StatelessWidget {
                     elevation: WidgetStateProperty.all(0),
                     overlayColor: WidgetStateProperty.all(Colors.transparent),
                     shape: WidgetStateProperty.all(const CircleBorder()),
-                    padding: WidgetStateProperty.all(const EdgeInsets.all(20)),
+                    padding: WidgetStateProperty.all(const EdgeInsets.all(0)),
                   ),
                   child: Icon(
                     Icons.settings,

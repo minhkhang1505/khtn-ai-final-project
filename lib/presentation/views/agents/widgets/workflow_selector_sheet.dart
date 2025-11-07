@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'workflow_selector.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/workflow_model.dart';
 
 class WorkflowSelectorSheet extends StatefulWidget {
@@ -21,6 +22,7 @@ class _WorkflowSelectorSheetState extends State<WorkflowSelectorSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SafeArea(
       child: Padding(
         padding:
@@ -48,13 +50,25 @@ class _WorkflowSelectorSheetState extends State<WorkflowSelectorSheet> {
               const SizedBox(height: 12),
 
               Flexible(
-                child: WorkflowSelector(key: selectorKey),
+                child: WorkflowSelector(
+                  key: selectorKey,
+                  initialSelected: widget.initialSelected,
+                ),
               ),
 
               const SizedBox(height: 12),
               ElevatedButton.icon(
                 icon: const Icon(Icons.save),
                 label: const Text("Save Selections"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: AppBorderRadius.extraLarge,
+                  ),
+                  elevation: 0,
+                ),
                 onPressed: () {
                   final selectedIndices =
                       (selectorKey.currentState as dynamic)?.selections ?? <int>{};

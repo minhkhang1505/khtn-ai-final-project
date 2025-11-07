@@ -27,7 +27,7 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
           child: SizedBox(
-            width: ResponsiveHelper.contentWidth(context),
+            width: ResponsiveHelper.chatContentWidth(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [

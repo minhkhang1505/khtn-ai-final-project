@@ -48,7 +48,7 @@ class KnowledgeBaseCard extends StatelessWidget {
 
             // Links
             const Text(
-              'Url Links',
+              'Links',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,

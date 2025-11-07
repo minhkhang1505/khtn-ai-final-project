@@ -22,7 +22,14 @@ class EditAgentPage extends StatefulWidget {
 }
 
 class _EditAgentPageState extends State<EditAgentPage> {
-  List<Workflow> _selectedWorkflows = [];
+  late List<Workflow> _selectedWorkflows;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize selected workflows from the agent so UI shows existing ones
+    _selectedWorkflows = List<Workflow>.from(widget.agent.workflows);
+  }
 
   void _openWorkflowSelector() async {
     final selected = await showModalBottomSheet<List<Workflow>>(
@@ -36,6 +43,8 @@ class _EditAgentPageState extends State<EditAgentPage> {
         onSave: (selected) {
           setState(() {
             _selectedWorkflows = selected;
+            // Persist selection back to the agent model so the card shows them
+            widget.agent.workflows = List<Workflow>.from(selected);
           });
         },
       ),
@@ -44,6 +53,7 @@ class _EditAgentPageState extends State<EditAgentPage> {
     if (selected != null) {
       setState(() {
         _selectedWorkflows = selected;
+        widget.agent.workflows = List<Workflow>.from(selected);
       });
     }
   }
@@ -58,7 +68,7 @@ class _EditAgentPageState extends State<EditAgentPage> {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
           child: SizedBox(
-            width: ResponsiveHelper.contentWidth(context),
+            width: ResponsiveHelper.chatContentWidth(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -135,7 +145,7 @@ class _EditAgentPageState extends State<EditAgentPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${widget.agent.workflows.length} workflow(s) configured',
+                          '${_selectedWorkflows.length} workflow(s) configured',
                           style: const TextStyle(fontSize: 13),
                         ),
                         const SizedBox(height: 16),
@@ -145,14 +155,12 @@ class _EditAgentPageState extends State<EditAgentPage> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            final workflow = widget.agent.workflows[index];
-                            return WorkflowsCard(
-                              workflowType: workflow,
-                            );
+                            final workflow = _selectedWorkflows[index];
+                            return WorkflowsCard(workflowType: workflow);
                           },
                           separatorBuilder: (context, index) =>
                               const SizedBox(height: 12),
-                          itemCount: widget.agent.workflows.length,
+                          itemCount: _selectedWorkflows.length,
                         ),
                       ],
                     ),

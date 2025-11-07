@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot_view_model.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class ChatDrawer extends StatefulWidget {
   const ChatDrawer({super.key});
@@ -19,6 +20,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final bot = botViewModel.bots.isNotEmpty ? botViewModel.bots[0] : null;
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -41,7 +43,15 @@ class _ChatDrawerState extends State<ChatDrawer> {
             leading: const Icon(Icons.add),
             title: const Text('Create New Bot'),
             onTap: () {
-              // TODO: Handle create new bot
+              Navigator.pushNamed(context, '/bots/new');
+              // TODO: Create new chat page with bot
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.edit),
+            title: const Text('Edit Bot'),
+            onTap: () {
+              Navigator.pushNamed(context, '/bots/edit', arguments: bot);
             },
           ),
           const SizedBox(height: 10),
@@ -56,6 +66,8 @@ class _ChatDrawerState extends State<ChatDrawer> {
               ),
             ),
           ),
+
+          // List of existing chats
           Expanded(
             child: ListView.builder(
               itemCount: botViewModel.bots.length,
@@ -66,7 +78,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
                   subtitle: Text(bot.description),
                   trailing: PopupMenuButton<int>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppBorderRadius.medium,
                     ),
                     elevation: 6,
                     offset: const Offset(0, 40),

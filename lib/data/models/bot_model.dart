@@ -1,4 +1,7 @@
+import 'agent_model.dart';
+
 class BotModel {
+  String id;
   String name;
   String description;
   String category;
@@ -6,8 +9,10 @@ class BotModel {
   String status;
   String prompt;
   bool visibility;
+  List<AgentModel> subagents = [];
 
   BotModel({
+    required this.id,
     required this.name,
     required this.description,
     required this.category,
@@ -15,5 +20,6 @@ class BotModel {
     required this.model,
     required this.prompt,
     required this.visibility,
+    required this.subagents,
   });
 }

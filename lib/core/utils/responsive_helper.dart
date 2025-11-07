@@ -11,9 +11,16 @@ class ResponsiveHelper {
   static bool isDesktop(BuildContext context) =>
       MediaQuery.of(context).size.width >= 1024;
 
-  static double contentWidth(BuildContext context) {
+  static double chatContentWidth(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     if (width < 600) return width * 0.95;
+    if (width < 1024) return width * 0.8;
+    return width * 0.6;
+  }
+
+  static double contentWidth(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < 600) return width * 0.9;
     if (width < 1024) return width * 0.8;
     return width * 0.6;
   }

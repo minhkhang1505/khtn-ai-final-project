@@ -82,6 +82,32 @@ class _BotStatusCardState extends State<BotStatusCard> {
                 )
               ],
             ),
+            const SizedBox(height: 20),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // TODO: Handle delete
+                },
+                icon: const Icon(Icons.delete_outline),
+                label: const Text('Delete Bot'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.error,
+                  foregroundColor: colorScheme.onError, 
+                  shape: RoundedRectangleBorder(
+                    borderRadius: AppBorderRadius.medium,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 24,
+                  ),
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

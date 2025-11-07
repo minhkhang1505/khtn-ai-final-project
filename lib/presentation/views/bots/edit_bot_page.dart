@@ -9,6 +9,7 @@ import 'widgets/knowledge_base_card.dart';
 import 'widgets/bot_information_card.dart';
 import 'widgets/bot_status_card.dart';
 import 'widgets/visibility_card.dart';
+import 'widgets/subagent_card.dart';
 
 /// Edit Bot Page - Configure AI bot settings
 class EditBotPage extends StatefulWidget {
@@ -30,7 +31,7 @@ class _EditBotPageState extends State<EditBotPage> {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
           child: SizedBox(
-            width: ResponsiveHelper.contentWidth(context),
+            width: ResponsiveHelper.chatContentWidth(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -60,6 +61,10 @@ class _EditBotPageState extends State<EditBotPage> {
                   // TODO: Handle visibility status change
                   setState(() {});
                 },),
+                const SizedBox(height: AppSpacing.cardSpacing),
+
+                // Subagent Section
+                SubagentCard(subagents: widget.bot.subagents),
                 const SizedBox(height: AppSpacing.cardSpacing),
 
                 // Action Buttons

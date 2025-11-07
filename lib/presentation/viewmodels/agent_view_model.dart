@@ -10,12 +10,14 @@ class AgentViewModel extends ChangeNotifier {
   void loadAgents() {
     _agents.addAll([
       AgentModel(
+        id: '1',
         name: 'Email Assistant',
         description: 'Handles email workflows automatically.',
         workflows: [Workflow.emailTriage],
         status: 'Active',
       ),
       AgentModel(
+        id: '2',
         name: 'Document Processor',
         description: 'Processes documents efficiently.',
         workflows: [Workflow.dataExtraction],

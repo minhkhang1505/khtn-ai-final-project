@@ -4,7 +4,14 @@ import 'workflow_card.dart';
 import 'package:khtn_ai_final_project/data/models/workflow_model.dart';
 
 class WorkflowSelector extends StatefulWidget {
-  const WorkflowSelector({super.key});
+  /// Optional initial selection for the selector. The sheet passes the
+  /// currently-selected workflows so the UI can reflect existing choices.
+  final List<Workflow> initialSelected;
+
+  const WorkflowSelector({
+    super.key,
+    this.initialSelected = const [],
+  });
 
   @override
   State<WorkflowSelector> createState() => _WorkflowSelectorState();
@@ -13,6 +20,16 @@ class WorkflowSelector extends StatefulWidget {
 class _WorkflowSelectorState extends State<WorkflowSelector> {
   final Set<int> selectedIndices = {};
   Set<int> get selections => selectedIndices;
+
+  @override
+  void initState() {
+    super.initState();
+    // Populate selectedIndices from provided initialSelected workflows
+    for (final wf in widget.initialSelected) {
+      final idx = Workflow.values.indexOf(wf);
+      if (idx >= 0) selectedIndices.add(idx);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

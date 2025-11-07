@@ -64,7 +64,7 @@ class _VisibilityCardState extends State<VisibilityCard> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Enable or disable this agent',
+                      'Enable or disable this bot',
                       style: TextStyle(
                         fontSize: 13,
                       ),

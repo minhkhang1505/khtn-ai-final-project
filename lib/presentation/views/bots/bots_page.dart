@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/constants.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot_view_model.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'widgets/bots_app_bar.dart';
 import 'widgets/bots_card.dart';
 
@@ -60,8 +61,15 @@ class _BotsPageState extends State<BotsPage>
                                 ? AppSpacing.vertical
                                 : AppSpacing.cardSpacing,
                           ),
-                          child: Padding(
-                            padding: EdgeInsetsGeometry.all(0),
+                          child: InkWell(
+                            borderRadius: AppBorderRadius.medium,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/bots/edit',
+                                arguments: bot,
+                              );
+                            },
                             child: BotCard(bot: bot),
                           ),
                         );

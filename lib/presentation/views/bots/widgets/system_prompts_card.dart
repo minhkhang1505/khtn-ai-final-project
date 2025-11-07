@@ -70,19 +70,19 @@ class SystemPromptsCard extends StatelessWidget {
               },
               style: OutlinedButton.styleFrom(
                 shape: RoundedRectangleBorder(
-                  borderRadius: AppBorderRadius.medium,
+                  borderRadius: AppBorderRadius.large,
                 ),
                 side: BorderSide(
                   color: Theme.of(context).colorScheme.outline,
                 ),
                 padding: const EdgeInsets.symmetric(
-                  vertical: 8,
+                  vertical: 6,
                   horizontal: 8,
                 ),
               ),
               child: Text(
                 'Use Template',
-                style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.secondary),
+                style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.secondary),
               ),
             ),
           ],
