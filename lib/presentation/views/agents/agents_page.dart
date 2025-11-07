@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/agent_viewmodel.dart'
-    show AgentViewModel;
-import 'package:khtn_ai_final_project/core/constants/constant.dart'
-    show AppBarInfo;
-import 'workflows/workflows_tab.dart' show WorkflowsTab;
-import 'all_agents_tab.dart' show AllAgentsTab;
-import 'active_agents_tab.dart' show ActiveAgentsTab;
-import 'create_agent_page.dart' show CreateAgentPage;
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/agent_view_model.dart';
+import 'widgets/agent_app_bar.dart';
+import 'tabs/workflows_tab.dart';
+import 'tabs/all_agents_tab.dart';
+import 'tabs/active_agents_tab.dart';
 
 /// Agents page - Manage AI agents
 class AgentsPage extends StatefulWidget {
@@ -23,6 +19,10 @@ class _AgentsPageState extends State<AgentsPage>
   final AgentViewModel _viewModel = AgentViewModel();
   late TabController _tabController;
 
+  void _onAddAgent() {
+    Navigator.pushNamed(context, '/agents/new');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -34,18 +34,7 @@ class _AgentsPageState extends State<AgentsPage>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'AI Agents',
-        subtitle: 'Automate tasks with AI-powered workflows',
-        onCreatePressed: () {
-          // Navigate to Create Agent page
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const CreateAgentPage()),
-          );
-        },
-        createButtonLabel: 'Create Agent',
-      ),
-
+      appBar: AgentAppBar(onAddAgent: _onAddAgent),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth > 600;

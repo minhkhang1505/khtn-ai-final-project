@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/core/constants/constants.dart'
-    show AppSpacing;
-import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart'
-    show BotSearch;
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/bot_viewmodel.dart'
-    show BotViewModel;
-import 'create_bot_page.dart' show CreateBotPage;
-import 'bots_card.dart' show BotCard;
+import 'package:khtn_ai_final_project/core/constants/constants.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot_view_model.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'widgets/bots_app_bar.dart';
+import 'widgets/bots_card.dart';
 
 /// Bots page - Manage AI bots
 class BotsPage extends StatefulWidget {
@@ -28,21 +25,14 @@ class _BotsPageState extends State<BotsPage>
     _botViewModel.loadBots();
   }
 
+  void _onAddBot() {
+    Navigator.pushNamed(context, '/bots/new');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'AI Bots',
-        subtitle: 'Automate tasks with AI-powered workflows',
-        onCreatePressed: () {
-          // Navigate to Create bot page
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const CreateBotPage()),
-          );
-        },
-        createButtonLabel: 'Create Bot',
-      ),
-
+      appBar: BotAppBar(onAddBot: _onAddBot),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth > 600;
@@ -51,24 +41,17 @@ class _BotsPageState extends State<BotsPage>
               constraints: BoxConstraints(
                 maxWidth: isWideScreen ? 1200 : double.infinity,
               ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(
-                        top: AppSpacing.vertical,
-                        left: AppSpacing.horizontal + 4,
-                        right: AppSpacing.horizontal + 4,
-                      ),
-                      child: const BotSearch(),
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.horizontal),
+                      child: BotSearch(),
                     ),
-                    SizedBox(height: AppSpacing.cardSpacing),
-
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _botViewModel.bots.length,
-                      itemBuilder: (context, index) {
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
                         final bot = _botViewModel.bots[index];
                         return Padding(
                           padding: EdgeInsets.only(
@@ -78,12 +61,23 @@ class _BotsPageState extends State<BotsPage>
                                 ? AppSpacing.vertical
                                 : AppSpacing.cardSpacing,
                           ),
-                          child: BotCard(bot: bot),
+                          child: InkWell(
+                            borderRadius: AppBorderRadius.medium,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/bots/edit',
+                                arguments: bot,
+                              );
+                            },
+                            child: BotCard(bot: bot),
+                          ),
                         );
                       },
+                      childCount: _botViewModel.bots.length,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );

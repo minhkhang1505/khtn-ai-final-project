@@ -1,17 +1,25 @@
-class BotModel {
-  final String name;
-  final String description;
-  final String category;
-  final String model;
-  final String state;
-  final String prompt;
+import 'agent_model.dart';
 
-  const BotModel({
+class BotModel {
+  String id;
+  String name;
+  String description;
+  String category;
+  String model;
+  String status;
+  String prompt;
+  bool visibility;
+  List<AgentModel> subagents = [];
+
+  BotModel({
+    required this.id,
     required this.name,
     required this.description,
     required this.category,
-    required this.state,
+    required this.status,
     required this.model,
     required this.prompt,
+    required this.visibility,
+    required this.subagents,
   });
 }

@@ -37,6 +37,16 @@ class AppRoutes {
   static const String newKnowledgeSource = '/knowledge/new';
   static const String knowledgeDetails = '/knowledge/details';
 
+  /// Bots routes
+  static const String bots = '/bots';
+  static const String createNewBot = '/bots/new';
+  static const String editBot = '/bots/edit';
+
+  /// Agents routes
+  static const String agents = '/agents';
+  static const String createNewAgent = '/agents/new';
+  static const String editAgent = '/agents/edit';
+
   /// Get all route names as a list
   /// Useful for debugging or logging
   static List<String> get allRoutes => [
@@ -51,5 +61,11 @@ class AppRoutes {
     details,
     createNewPrompt,
     promptDetails,
+    bots,
+    createNewBot,
+    editBot,
+    agents,
+    createNewAgent,
+    editAgent,
   ];
 }
