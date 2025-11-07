@@ -1,18 +1,20 @@
-class Prompt {
+class PromptEntity {
   final String id;
-  final String createdAt;
-  final String updatedAt;
+  final String title;
+  final String? description;
   final String category;
   final String content;
-  final String? description;
-  final bool isPublic;
   final String language;
-  final String title;
+  final bool isPublic;
   final String userId;
   final String userName;
+  final String createdAt;
+  final String updatedAt;
+  final String createdBy;
+  final String updatedBy;
   final bool isFavorite;
 
-  Prompt({
+  PromptEntity({
     required this.id,
     required this.createdAt,
     required this.updatedAt,
@@ -25,10 +27,12 @@ class Prompt {
     required this.userId,
     required this.userName,
     required this.isFavorite,
+    required this.createdBy,
+    required this.updatedBy,
   });
 
-  factory Prompt.fromJson(Map<String, dynamic> json) {
-    return Prompt(
+  factory PromptEntity.fromJson(Map<String, dynamic> json) {
+    return PromptEntity(
       id: json['_id'] ?? '',
       createdAt: json['createdAt'] ?? '',
       updatedAt: json['updatedAt'] ?? '',
@@ -41,6 +45,8 @@ class Prompt {
       userId: json['userId'] ?? '',
       userName: json['userName'] ?? '',
       isFavorite: json['isFavorite'] ?? false,
+      createdBy: json['createdBy'] ?? '',
+      updatedBy: json['updatedBy'] ?? '',
     );
   }
 
@@ -58,10 +64,12 @@ class Prompt {
       'userId': userId,
       'userName': userName,
       'isFavorite': isFavorite,
-    };
+      'createdBy': createdBy,
+      'updatedBy': updatedBy,
+    };  
   }
 
-  Prompt copyWith({
+  PromptEntity copyWith({
     String? id,
     String? createdAt,
     String? updatedAt,
@@ -75,7 +83,7 @@ class Prompt {
     String? userName,
     bool? isFavorite,
   }) {
-    return Prompt(
+    return PromptEntity(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -88,6 +96,8 @@ class Prompt {
       userId: userId ?? this.userId,
       userName: userName ?? this.userName,
       isFavorite: isFavorite ?? this.isFavorite,
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
     );
   }
 }

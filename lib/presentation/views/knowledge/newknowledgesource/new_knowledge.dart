@@ -62,6 +62,7 @@ class NewKnowledgeScreen extends StatelessWidget {
                       vertical: 12,
                     ),
                     child: KnowledgeForm(
+                      isEditMode: true,
                       onSave:
                           ({
                             required String sourceName,

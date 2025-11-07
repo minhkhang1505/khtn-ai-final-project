@@ -1,7 +1,7 @@
-import 'package:khtn_ai_final_project/domain/entities/prompt.dart';
+import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 
-final List<Prompt> samplePrompts = [
-  Prompt(
+final List<PromptEntity> samplePrompts = [
+  PromptEntity(
     id: "p1",
     createdAt: "2025-10-20T10:00:00Z",
     updatedAt: "2025-10-21T09:00:00Z",
@@ -14,8 +14,10 @@ final List<Prompt> samplePrompts = [
     userId: "u101",
     userName: "Alice",
     isFavorite: true,
+    createdBy: "Alice",
+    updatedBy: "Alice",
   ),
-  Prompt(
+  PromptEntity(
     id: "p2",
     createdAt: "2025-10-19T14:30:00Z",
     updatedAt: "2025-10-20T15:00:00Z",
@@ -30,8 +32,10 @@ final List<Prompt> samplePrompts = [
     userId: "u102",
     userName: "Bob",
     isFavorite: false,
+    createdBy: "Alice",
+    updatedBy: "Alice",
   ),
-  Prompt(
+  PromptEntity(
     id: "p3",
     createdAt: "2025-10-18T08:15:00Z",
     updatedAt: "2025-10-18T09:30:00Z",
@@ -44,8 +48,10 @@ final List<Prompt> samplePrompts = [
     userId: "u103",
     userName: "Charlie",
     isFavorite: true,
+    createdBy: "Alice",
+    updatedBy: "Alice",
   ),
-  Prompt(
+  PromptEntity(
     id: "p4",
     createdAt: "2025-10-17T12:00:00Z",
     updatedAt: "2025-10-18T08:00:00Z",
@@ -58,5 +64,7 @@ final List<Prompt> samplePrompts = [
     userId: "u104",
     userName: "Diana",
     isFavorite: false,
+    createdBy: "Alice",
+    updatedBy: "Alice",
   ),
 ];

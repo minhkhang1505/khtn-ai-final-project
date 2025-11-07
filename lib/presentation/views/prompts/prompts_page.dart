@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/categories.dart';
 import 'package:khtn_ai_final_project/core/constants/sample_prompts.dart';
 import 'package:khtn_ai_final_project/domain/entities/category.dart';
-import 'package:khtn_ai_final_project/domain/entities/prompt.dart';
+import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/all_prompts_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/categories_tab.dart';
@@ -21,7 +21,7 @@ class PromptsPage extends StatefulWidget {
 class _PromptsPageState extends State<PromptsPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  late List<Prompt> _prompts;
+  late List<PromptEntity> _prompts;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _PromptsPageState extends State<PromptsPage>
     // TODO: Implement add prompt logic
   }
 
-  void _handleFavoriteTap(Prompt prompt) {
+  void _handleFavoriteTap(PromptEntity prompt) {
     setState(() {
       final index = _prompts.indexWhere((p) => p.id == prompt.id);
       if (index != -1) {

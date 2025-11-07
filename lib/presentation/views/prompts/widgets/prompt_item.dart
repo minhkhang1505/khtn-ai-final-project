@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/domain/entities/prompt.dart';
+import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class PromptItem extends StatelessWidget {
-  final Prompt prompt;
+  final PromptEntity prompt;
   final VoidCallback? onFavoriteTap;
   final VoidCallback onTap;
 

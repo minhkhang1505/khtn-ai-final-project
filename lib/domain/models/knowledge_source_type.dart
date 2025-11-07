@@ -39,5 +39,10 @@ class KnowledgeSourceTypes {
     name: 'URL',
   );
 
-  static const List<KnowledgeSourceType> all = [slack, drive, confluence, url];
+  static const file = KnowledgeSourceType(
+    iconAssetPath: 'assets/icons/ic_file.svg',
+    name: 'File',
+  );
+
+  static const List<KnowledgeSourceType> all = [slack, drive, confluence, url, file];
 }

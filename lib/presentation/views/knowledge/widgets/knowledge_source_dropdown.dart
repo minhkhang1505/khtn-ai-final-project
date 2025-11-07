@@ -30,7 +30,7 @@ class KnowledgeSourceDropdown extends StatelessWidget {
         DropdownMenu<KnowledgeSourceType>(
           controller: controller,
           enabled: enabled,
-          enableFilter: true,
+          enableFilter: false,
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
             contentPadding: const EdgeInsets.symmetric(
