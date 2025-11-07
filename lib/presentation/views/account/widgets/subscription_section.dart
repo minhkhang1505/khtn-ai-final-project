@@ -7,11 +7,13 @@ import 'package:khtn_ai_final_project/presentation/views/account/models/account_
 class SubscriptionSection extends StatelessWidget {
   final SubscriptionPlan currentPlan;
   final VoidCallback? onUpgradePressed;
+  final bool isProUser;
 
   const SubscriptionSection({
     super.key,
     required this.currentPlan,
     this.onUpgradePressed,
+    required this.isProUser,
   });
 
   @override
@@ -22,10 +24,14 @@ class SubscriptionSection extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(
-          color: colorScheme.outlineVariant.withAlpha(150),
+          color: isProUser
+              ? Colors.yellow
+              : colorScheme.outlineVariant.withAlpha(150),
           width: 1.5,
         ),
-        color: colorScheme.surfaceContainerLow,
+        color: isProUser
+            ? Colors.yellow.withAlpha(10)
+            : colorScheme.surfaceContainerLow,
         borderRadius: AppBorderRadius.large,
       ),
       child: Column(
@@ -36,35 +42,39 @@ class SubscriptionSection extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           const SizedBox(height: 16),
-          _CurrentPlanInfo(plan: currentPlan),
+          if (isProUser)
+            ProPlanInfo(plan: currentPlan)
+          else
+            _CurrentPlanInfo(plan: currentPlan),
           const SizedBox(height: 16),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: colorScheme.primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppBorderRadius.medium,
+          if (!isProUser)
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: AppBorderRadius.medium,
+                ),
+                minimumSize: const Size.fromHeight(48),
               ),
-              minimumSize: const Size.fromHeight(48),
-            ),
-            onPressed: onUpgradePressed,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  'assets/icons/ic_upgrade.svg',
-                  colorFilter: ColorFilter.mode(
-                    colorScheme.onPrimary,
-                    BlendMode.srcIn,
+              onPressed: onUpgradePressed,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/ic_upgrade.svg',
+                    colorFilter: ColorFilter.mode(
+                      colorScheme.onPrimary,
+                      BlendMode.srcIn,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  "Upgrade to Pro",
-                  style: TextStyle(color: colorScheme.onPrimary),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Text(
+                    "Upgrade to Pro",
+                    style: TextStyle(color: colorScheme.onPrimary),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -86,81 +96,44 @@ class ProPlanInfo extends StatelessWidget {
           children: [
             Text(plan.name, style: const TextStyle(fontSize: 14)),
             const SizedBox(width: 6),
-            if (plan.isCurrent)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                decoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  borderRadius: AppBorderRadius.small,
-                ),
-                child: Text(
-                  "Active",
-                  style: TextStyle(color: colorScheme.onPrimary, fontSize: 12),
-                ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                color: colorScheme.primary,
+                borderRadius: AppBorderRadius.small,
               ),
+              child: Text(
+                "Active",
+                style: TextStyle(color: colorScheme.onPrimary, fontSize: 12),
+              ),
+            ),
           ],
         ),
         Text(
-          "${plan.price}/month, next billing date: ${plan.billingPeriod}",
+          "${plan.price}/month, next billing date: ${plan.nextBillingDate}",
           style: TextStyle(
             fontSize: 12,
             color: colorScheme.onSurface.withAlpha(140),
           ),
         ),
+        SizedBox(height: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(Icons.check, color: colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  "Unlimited AI chats",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.onSurface.withAlpha(140),
+            ...plan.features.map(
+              (feature) => Row(
+                children: [
+                  Icon(Icons.check, color: colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text(
+                    feature.title,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colorScheme.onSurface.withAlpha(140),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(Icons.check, color: colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  "Unlimited custom bots",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.onSurface.withAlpha(140),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(Icons.check, color: colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  "Advanced workflows",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.onSurface.withAlpha(140),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(Icons.check, color: colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  "Priority support",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.onSurface.withAlpha(140),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

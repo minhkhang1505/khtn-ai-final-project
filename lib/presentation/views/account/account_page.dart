@@ -13,6 +13,7 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   bool _showUpgradeBanner = true;
+  bool isProUser = false;
 
   final user = User(
     id: '1',
@@ -30,7 +31,7 @@ class _AccountPageState extends State<AccountPage> {
       appBar: AppBar(
         centerTitle: false,
         automaticallyImplyLeading: false,
-        title: AccountHeader(user: user),
+        title: AccountHeader(user: user, isProUser: isProUser),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -47,8 +48,9 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                 SubscriptionSection(
-                  currentPlan: freePlan,
+                  currentPlan: proPlan,
                   onUpgradePressed: _showUpgradeDialog,
+                  isProUser: isProUser,
                 ),
                 const SizedBox(height: 16),
                 AppearanceSection(
@@ -86,7 +88,10 @@ class _AccountPageState extends State<AccountPage> {
 
   void _onUpgradeConfirmed() {
     // TODO: Implement upgrade logic
-    Navigator.pop(context);
+    setState(() {
+      _showUpgradeBanner = false;
+      isProUser = true;
+    });
   }
 
   void _onThemeChanged(bool value) {
@@ -95,5 +100,6 @@ class _AccountPageState extends State<AccountPage> {
 
   void _onLogout() {
     // TODO: Implement logout logic
+    Navigator.pushNamed(context, '/auth/login');
   }
 }
