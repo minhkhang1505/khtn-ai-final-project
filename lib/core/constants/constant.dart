@@ -12,11 +12,12 @@ class AppBarInfo {
   static const double elevation = 1.0;
   static const Color backgroundColor = Colors.white;
   static const Color shadowColor = Colors.grey;
-
   static const TextStyle titleTextStyle = TextStyle(
-    fontSize: 24,
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
   );
   static const TextStyle subtitleTextStyle = TextStyle(
     fontSize: 14,
+    fontWeight: FontWeight.w400,
   );
 }

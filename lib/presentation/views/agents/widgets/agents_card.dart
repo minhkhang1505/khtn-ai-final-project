@@ -19,6 +19,11 @@ class AgentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: AppBorderRadius.large,
+        side: BorderSide(color: colorScheme.outline.withAlpha(50), width: 1.5),
+      ),
+      elevation: 0,
       color: colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
         borderRadius: AppBorderRadius.medium,

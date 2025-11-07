@@ -10,7 +10,10 @@ class WorkflowsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.vertical, horizontal: AppSpacing.horizontal),
+      padding: const EdgeInsets.symmetric(
+        vertical: AppSpacing.vertical,
+        horizontal: AppSpacing.horizontal,
+      ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
