@@ -19,54 +19,62 @@ class UpgradeDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Dialog(
-      child: Padding(
-        padding: EdgeInsets.zero,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _DialogHeader(onDismiss: onDismiss ?? () => Navigator.pop(context)),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _PriceDisplay(plan: upgradePlan),
-                  const SizedBox(height: 16),
-                  _FeaturesList(features: upgradePlan.features),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppBorderRadius.large,
-                      ),
-                      minimumSize: const Size.fromHeight(48),
-                    ),
-                    onPressed: onUpgradeConfirmed,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/ic_promote.svg',
-                          colorFilter: ColorFilter.mode(
-                            colorScheme.onPrimary,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "Upgrade to Pro",
-                          style: TextStyle(color: colorScheme.onPrimary),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: screenWidth > 600 ? 600 : double.infinity,
+        ),
+        child: Padding(
+          padding: EdgeInsets.zero,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _DialogHeader(
+                onDismiss: onDismiss ?? () => Navigator.pop(context),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _PriceDisplay(plan: upgradePlan),
+                    const SizedBox(height: 16),
+                    _FeaturesList(features: upgradePlan.features),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: AppBorderRadius.large,
+                        ),
+                        minimumSize: const Size.fromHeight(48),
+                      ),
+                      onPressed: onUpgradeConfirmed,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/ic_promote.svg',
+                            colorFilter: ColorFilter.mode(
+                              colorScheme.onPrimary,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Upgrade to Pro",
+                            style: TextStyle(color: colorScheme.onPrimary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

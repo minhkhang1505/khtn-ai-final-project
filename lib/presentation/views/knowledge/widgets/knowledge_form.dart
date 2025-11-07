@@ -3,6 +3,7 @@ import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_text_field.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/constants/knowledge_constants.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/file_input_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form_card.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_section_header.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_source_dropdown.dart';
@@ -135,6 +136,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    bool isFileInput = false;
 
     return Form(
       key: _formKey,
@@ -158,16 +160,20 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   enabled: widget.isEditMode,
                   onSelected: (KnowledgeSourceType? source) {
                     if (source != null) {
+                      if (source == KnowledgeSourceTypes.file) {
+                        isFileInput = true;
+                      }
                       setState(() {
                         _selectedSourceType = source;
                         _sourceTypeController.text = source.name;
                       });
+
                       _checkForChanges();
                     }
                   },
                 ),
                 const SizedBox(height: 16),
-                
+
                 LabeledTextField(
                   label: KnowledgeConstants.sourceNameLabel,
                   hintText: KnowledgeConstants.sourceNameHint,
@@ -197,6 +203,16 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
             ),
           ),
           const SizedBox(height: 12),
+          if (!isFileInput)
+            FileInputSection(
+              onFilePicked: (file) {
+                if (file != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Đã chọn file: ${file.name}')),
+                  );
+                }
+              },
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

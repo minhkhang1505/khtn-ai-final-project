@@ -25,7 +25,7 @@ class SubscriptionSection extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           color: isProUser
-              ? Colors.yellow
+              ? Colors.yellow.shade200
               : colorScheme.outlineVariant.withAlpha(150),
           width: 1.5,
         ),

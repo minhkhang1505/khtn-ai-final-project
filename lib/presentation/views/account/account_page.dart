@@ -14,6 +14,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   bool _showUpgradeBanner = true;
   bool isProUser = false;
+  bool _isDarkMode = false;
 
   final user = User(
     id: '1',
@@ -25,46 +26,57 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         automaticallyImplyLeading: false,
         title: AccountHeader(user: user, isProUser: isProUser),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: Column(
-              children: [
-                if (_showUpgradeBanner)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: UpgradeBanner(
-                      onDismiss: _dismissUpgradeBanner,
-                      onTap: _showUpgradeDialog,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWideScreen = constraints.maxWidth > 600;
+          return Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 800 : double.infinity,
+              ),
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    child: Column(
+                      children: [
+                        if (_showUpgradeBanner)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: UpgradeBanner(
+                              onDismiss: _dismissUpgradeBanner,
+                              onTap: _showUpgradeDialog,
+                            ),
+                          ),
+                        SubscriptionSection(
+                          currentPlan: proPlan,
+                          onUpgradePressed: _showUpgradeDialog,
+                          isProUser: isProUser,
+                        ),
+                        const SizedBox(height: 16),
+                        AppearanceSection(
+                          isDarkMode: _isDarkMode,
+                          onThemeChanged: _onThemeChanged,
+                        ),
+                        const SizedBox(height: 16),
+                        AccountActionsSection(onLogoutPressed: _onLogout),
+                        const SizedBox(height: 16),
+                        AccountFooter(version: appVersion),
+                      ],
                     ),
                   ),
-                SubscriptionSection(
-                  currentPlan: proPlan,
-                  onUpgradePressed: _showUpgradeDialog,
-                  isProUser: isProUser,
                 ),
-                const SizedBox(height: 16),
-                AppearanceSection(
-                  isDarkMode: isDarkMode,
-                  onThemeChanged: _onThemeChanged,
-                ),
-                const SizedBox(height: 16),
-                AccountActionsSection(onLogoutPressed: _onLogout),
-                const SizedBox(height: 16),
-                AccountFooter(version: appVersion),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -95,7 +107,10 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _onThemeChanged(bool value) {
-    // TODO: Implement theme change
+    setState(() {
+      _isDarkMode = value;
+    });
+    // TODO: Implement global theme change (would need theme provider)
   }
 
   void _onLogout() {
