@@ -7,13 +7,11 @@ import 'package:khtn_ai_final_project/presentation/views/account/models/account_
 class SubscriptionSection extends StatelessWidget {
   final SubscriptionPlan currentPlan;
   final VoidCallback? onUpgradePressed;
-  final VoidCallback? onViewBenefitsPressed;
 
   const SubscriptionSection({
     super.key,
     required this.currentPlan,
     this.onUpgradePressed,
-    this.onViewBenefitsPressed,
   });
 
   @override
@@ -65,16 +63,6 @@ class SubscriptionSection extends StatelessWidget {
                   style: TextStyle(color: colorScheme.onPrimary),
                 ),
               ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Center(
-            child: GestureDetector(
-              onTap: onViewBenefitsPressed,
-              child: Text(
-                "View Pro Benefits",
-                style: TextStyle(color: colorScheme.primary),
-              ),
             ),
           ),
         ],

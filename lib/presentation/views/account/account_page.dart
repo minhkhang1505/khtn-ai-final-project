@@ -49,7 +49,6 @@ class _AccountPageState extends State<AccountPage> {
                 SubscriptionSection(
                   currentPlan: freePlan,
                   onUpgradePressed: _showUpgradeDialog,
-                  onViewBenefitsPressed: _showUpgradeDialog,
                 ),
                 const SizedBox(height: 16),
                 AppearanceSection(
