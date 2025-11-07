@@ -37,6 +37,7 @@ class SubscriptionPlan {
   final String price;
   final String billingPeriod;
   final String subtitle;
+  final DateTime? nextBillingDate;
   final List<PlanFeature> features;
   final bool isCurrent;
 
@@ -45,6 +46,7 @@ class SubscriptionPlan {
     required this.price,
     required this.billingPeriod,
     required this.subtitle,
+    this.nextBillingDate,
     required this.features,
     this.isCurrent = false,
   });

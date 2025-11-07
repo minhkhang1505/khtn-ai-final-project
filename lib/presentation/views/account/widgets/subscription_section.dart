@@ -71,6 +71,104 @@ class SubscriptionSection extends StatelessWidget {
   }
 }
 
+class ProPlanInfo extends StatelessWidget {
+  final SubscriptionPlan plan;
+
+  const ProPlanInfo({super.key, required this.plan});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(plan.name, style: const TextStyle(fontSize: 14)),
+            const SizedBox(width: 6),
+            if (plan.isCurrent)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  borderRadius: AppBorderRadius.small,
+                ),
+                child: Text(
+                  "Active",
+                  style: TextStyle(color: colorScheme.onPrimary, fontSize: 12),
+                ),
+              ),
+          ],
+        ),
+        Text(
+          "${plan.price}/month, next billing date: ${plan.billingPeriod}",
+          style: TextStyle(
+            fontSize: 12,
+            color: colorScheme.onSurface.withAlpha(140),
+          ),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.check, color: colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(
+                  "Unlimited AI chats",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onSurface.withAlpha(140),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Icon(Icons.check, color: colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(
+                  "Unlimited custom bots",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onSurface.withAlpha(140),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Icon(Icons.check, color: colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(
+                  "Advanced workflows",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onSurface.withAlpha(140),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Icon(Icons.check, color: colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(
+                  "Priority support",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onSurface.withAlpha(140),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class _CurrentPlanInfo extends StatelessWidget {
   final SubscriptionPlan plan;
 

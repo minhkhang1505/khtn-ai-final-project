@@ -17,6 +17,8 @@ final proPlan = SubscriptionPlan(
   name: 'Pro Plan',
   price: '\$19.00',
   billingPeriod: '/month',
+  // Mock next billing date set 30 days from now
+  nextBillingDate: DateTime.now().add(Duration(days: 30)),
   subtitle: 'Cancel anytime',
   features: [
     PlanFeature(
