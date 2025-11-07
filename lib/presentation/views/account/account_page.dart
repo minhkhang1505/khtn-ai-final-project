@@ -154,97 +154,155 @@ class _AccountPageState extends State<AccountPage> {
                         onPressed: () => showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => Dialog(
-                            child: Container(
-                              constraints: const BoxConstraints(maxWidth: 400),
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/icons/ic_upgrade.svg',
-                                        colorFilter: ColorFilter.mode(
-                                          colorScheme.onPrimary,
-                                          BlendMode.srcIn,
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      16,
+                                      0,
+                                      2,
+                                      0,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/icons/ic_upgrade.svg',
+                                          colorFilter: ColorFilter.mode(
+                                            colorScheme.primary,
+                                            BlendMode.srcIn,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text("Upgrade to Pro"),
-                                      Spacer(),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(Icons.close),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 16),
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "\$19.00",
-                                            style: TextStyle(
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                        SizedBox(width: 8),
+                                        Text("Upgrade to Pro"),
+                                        Spacer(),
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(
+                                            Icons.close,
+                                            size: 16,
+                                            color: colorScheme.onSurface,
                                           ),
-                                          Text(
-                                            "/month",
-                                            style: TextStyle(fontSize: 14),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 8),
-                                      Text(
-                                        "Cancel anytime",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: colorScheme.onSurface
-                                              .withAlpha(140),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 16),
-                                  ...mockPlans.map(
-                                    (plan) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 6,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.check,
-                                            color: colorScheme.primary,
-                                          ),
-                                          SizedBox(width: 8),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  plan['title']!,
+                                                  "\$19.00",
                                                   style: TextStyle(
+                                                    fontSize: 28,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                                 Text(
-                                                  plan['description']!,
+                                                  "/month",
                                                   style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: colorScheme.onSurface
-                                                        .withAlpha(140),
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              "Cancel anytime",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: colorScheme.onSurface
+                                                    .withAlpha(140),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 16),
+                                        ...mockPlans.map(
+                                          (plan) => Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 6,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.check,
+                                                  color: colorScheme.primary,
+                                                ),
+                                                SizedBox(width: 8),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        plan['title']!,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        plan['description']!,
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: colorScheme
+                                                              .onSurface
+                                                              .withAlpha(140),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+
+                                        //TODO: BUTTON UPGRADE
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                colorScheme.primary,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  AppBorderRadius.large,
+                                            ),
+                                          ),
+                                          onPressed: () {},
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(
+                                                'assets/icons/ic_promote.svg',
+                                                colorFilter: ColorFilter.mode(
+                                                  colorScheme.onPrimary,
+                                                  BlendMode.srcIn,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Upgrade to Pro",
+                                                style: TextStyle(
+                                                  color: colorScheme.onPrimary,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
