@@ -155,6 +155,7 @@ class _AccountPageState extends State<AccountPage> {
                           context: context,
                           builder: (BuildContext context) => Dialog(
                             child: Container(
+                              constraints: const BoxConstraints(maxWidth: 400),
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -220,25 +221,27 @@ class _AccountPageState extends State<AccountPage> {
                                             color: colorScheme.primary,
                                           ),
                                           SizedBox(width: 8),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                plan['title']!,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  plan['title']!,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                              Text(
-                                                plan['description']!,
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: colorScheme.onSurface
-                                                      .withAlpha(140),
+                                                Text(
+                                                  plan['description']!,
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: colorScheme.onSurface
+                                                        .withAlpha(140),
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
