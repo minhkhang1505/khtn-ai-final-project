@@ -3,9 +3,18 @@ import 'package:khtn_ai_final_project/presentation/views/auth/widgets/auth_prima
 import 'package:khtn_ai_final_project/presentation/views/auth/widgets/auth_text_field.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
-class ResetPasswordForm extends StatelessWidget {
+class ResetPasswordForm extends StatefulWidget {
   final VoidCallback onSubmit;
+
   const ResetPasswordForm({super.key, required this.onSubmit});
+
+  @override
+  State<ResetPasswordForm> createState() => _ResetPasswordFormState();
+}
+
+class _ResetPasswordFormState extends State<ResetPasswordForm> {
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +42,39 @@ class ResetPasswordForm extends StatelessWidget {
             "Enter your new password below",
             style: TextStyle(fontSize: 16, color: colorScheme.onSurfaceVariant),
           ),
-          AuthTextField(label: "New Password", hintText: "********"),
-          AuthTextField(label: "Confirm New Password", hintText: "********"),
-          AuthPrimaryButton(onPressed: onSubmit, text: "Continue"),
+          AuthTextField(
+            controller: passwordController,
+            label: "New Password",
+            hintText: "********",
+            obscureText: true,
+            onChanged: (value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Password cannot be empty";
+              }
+              if (value.length < 8) {
+                return "Password must be at least 8 characters";
+              }
+              return null;
+            },
+          ),
+          AuthTextField(
+            controller: confirmPasswordController,
+            label: "Confirm New Password",
+            hintText: "********",
+            obscureText: true,
+            onChanged: (value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Confirm Password cannot be empty";
+              }
+              if (value != confirmPasswordController.text) {
+                return "Passwords do not match";
+              }
+              return null;
+            },
+          ),
+          AuthPrimaryButton(onPressed: widget.onSubmit, text: "Continue"),
         ],
       ),
     );

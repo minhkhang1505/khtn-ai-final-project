@@ -8,6 +8,7 @@ class AuthTextField extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final ValueChanged<String>? onChanged;
+  final String? Function(String?)? validator;
 
   const AuthTextField({
     super.key,
@@ -17,6 +18,7 @@ class AuthTextField extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.onChanged,
+    this.validator,
   });
 
   @override
@@ -26,7 +28,7 @@ class AuthTextField extends StatelessWidget {
       children: [
         Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
-        TextField(
+        TextFormField(
           controller: controller,
           decoration: InputDecoration(
             border: OutlineInputBorder(borderRadius: AppBorderRadius.large),
@@ -35,6 +37,7 @@ class AuthTextField extends StatelessWidget {
           onChanged: onChanged,
           keyboardType: keyboardType,
           obscureText: obscureText,
+          validator: validator,
         ),
       ],
     );

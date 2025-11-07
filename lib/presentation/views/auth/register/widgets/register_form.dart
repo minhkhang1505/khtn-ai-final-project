@@ -60,6 +60,15 @@ class RegisterForm extends StatelessWidget {
             controller: fullNameController,
             keyboardType: TextInputType.name,
             onChanged: (value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Full name cannot be empty";
+              }
+              if (value.length < 3) {
+                return "Full name must be at least 3 characters";
+              }
+              return null;
+            },
           ),
           AuthTextField(
             label: "Email",
@@ -67,6 +76,15 @@ class RegisterForm extends StatelessWidget {
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Email cannot be empty";
+              }
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                return "Invalid email format";
+              }
+              return null;
+            },
           ),
           AuthTextField(
             label: "Password",
@@ -74,6 +92,15 @@ class RegisterForm extends StatelessWidget {
             controller: passwordController,
             obscureText: true,
             onChanged: (value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Password cannot be empty";
+              }
+              if (value.length < 8) {
+                return "Password must be at least 8 characters";
+              }
+              return null;
+            },
           ),
           AuthTextField(
             label: "Confirm Password",
@@ -81,6 +108,15 @@ class RegisterForm extends StatelessWidget {
             controller: confirmPasswordController,
             obscureText: true,
             onChanged: (value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Confirm Password cannot be empty";
+              }
+              if (value != passwordController.text) {
+                return "Passwords do not match";
+              }
+              return null;
+            },
           ),
           TermsCheckbox(isChecked: isTermsChecked, onChanged: onTermsChanged),
           AuthPrimaryButton(onPressed: onCreateAccount, text: "Create Account"),

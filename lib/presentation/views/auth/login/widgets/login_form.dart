@@ -68,6 +68,15 @@ class LoginForm extends StatelessWidget {
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Email cannot be empty";
+              }
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                return "Invalid email format";
+              }
+              return null;
+            },
           ),
           // Password field
           AuthTextField(
@@ -76,6 +85,15 @@ class LoginForm extends StatelessWidget {
             controller: passwordController,
             obscureText: true,
             onChanged: (value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Password cannot be empty";
+              }
+              if (value.length < 8) {
+                return "Password must be at least 8 characters";
+              }
+              return null;
+            },
           ),
           // Remember me and Forgot password
           RememberMeRow(
