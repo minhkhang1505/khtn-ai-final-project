@@ -6,9 +6,14 @@ import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar
 final avatarSize = 48.0;
 
 /// Account page - User profile and settings
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -146,9 +151,67 @@ class AccountPage extends StatelessWidget {
                             borderRadius: AppBorderRadius.medium,
                           ),
                         ),
-                        onPressed: () {
-                          //TODO: Implement theme change
-                        },
+                        onPressed: () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => Dialog(
+                            child: Container(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/icons/ic_upgrade.svg',
+                                        colorFilter: ColorFilter.mode(
+                                          colorScheme.onPrimary,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text("Upgrade to Pro"),
+                                      Spacer(),
+                                      IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(Icons.close),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "\$19.00",
+                                            style: TextStyle(
+                                              fontSize: 28,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            "/month",
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        "Cancel anytime",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: colorScheme.onSurface
+                                              .withAlpha(140),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -332,3 +395,26 @@ class Geo {
 
   Geo({required this.lat, required this.long});
 }
+
+final List<Map<String, String>> mockPlans = [
+  {
+    'title': 'Unlimited AI Chats',
+    'description': 'Chat as much as you want with no limits',
+  },
+  {
+    'title': 'Custom AI Bots',
+    'description': 'Create unlimited custom bots for your needs',
+  },
+  {
+    'title': 'Advanced Workflows',
+    'description': 'Access to all workflow templates and automation',
+  },
+  {
+    'title': 'Priority Support',
+    'description': 'Get help faster with priority email support',
+  },
+  {
+    'title': 'Early Access',
+    'description': 'Try new features before everyone else',
+  },
+];
