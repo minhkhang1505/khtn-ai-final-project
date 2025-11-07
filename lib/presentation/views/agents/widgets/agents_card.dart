@@ -25,10 +25,6 @@ class AgentCard extends StatelessWidget {
       ),
       elevation: 0,
       color: colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppBorderRadius.medium,
-        side: BorderSide(color: colorScheme.outline.withAlpha(50), width: 1.5),
-      ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
