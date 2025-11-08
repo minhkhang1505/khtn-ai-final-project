@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/agent_model.dart';
 import 'widgets/workflow_card.dart';
-import 'package:khtn_ai_final_project/core/constants/constants.dart';
+import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'widgets/edit_agent_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' hide SearchBar;
-import 'package:khtn_ai_final_project/core/constants/constants.dart';
+import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/data/models/bot_model.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'widgets/edit_bot_app_bar.dart';

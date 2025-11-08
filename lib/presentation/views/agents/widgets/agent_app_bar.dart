@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
-import 'package:khtn_ai_final_project/core/constants/constants.dart';
+import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 
 class AgentAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onAddAgent;
