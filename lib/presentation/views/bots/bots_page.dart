@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/constants.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot_view_model.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'widgets/bots_app_bar.dart';
@@ -32,7 +33,12 @@ class _BotsPageState extends State<BotsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BotAppBar(onAddBot: _onAddBot),
+      appBar: CustomAppBar(
+        title: "Bots",
+        subtitle: "Set up your AI assistant bot",
+        onCreatePressed: _onAddBot,
+        createButtonLabel: 'Add Bot',
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth > 600;
@@ -50,32 +56,29 @@ class _BotsPageState extends State<BotsPage>
                     ),
                   ),
                   SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final bot = _botViewModel.bots[index];
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            left: AppSpacing.horizontal,
-                            right: AppSpacing.horizontal,
-                            bottom: index == _botViewModel.bots.length - 1
-                                ? AppSpacing.vertical
-                                : AppSpacing.cardSpacing,
-                          ),
-                          child: InkWell(
-                            borderRadius: AppBorderRadius.medium,
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/bots/edit',
-                                arguments: bot,
-                              );
-                            },
-                            child: BotCard(bot: bot),
-                          ),
-                        );
-                      },
-                      childCount: _botViewModel.bots.length,
-                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final bot = _botViewModel.bots[index];
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          left: AppSpacing.horizontal,
+                          right: AppSpacing.horizontal,
+                          bottom: index == _botViewModel.bots.length - 1
+                              ? AppSpacing.vertical
+                              : AppSpacing.cardSpacing,
+                        ),
+                        child: InkWell(
+                          borderRadius: AppBorderRadius.medium,
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/bots/edit',
+                              arguments: bot,
+                            );
+                          },
+                          child: BotCard(bot: bot),
+                        ),
+                      );
+                    }, childCount: _botViewModel.bots.length),
                   ),
                 ],
               ),
