@@ -36,10 +36,10 @@ class _AgentsPageState extends State<AgentsPage>
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Bots",
-        subtitle: "Set up your AI assistant bot",
+        title: "Agents",
+        subtitle: "Set up your AI assistant agents",
         onCreatePressed: _onAddAgent,
-        createButtonLabel: 'Add Bot',
+        createButtonLabel: 'Add Agent',
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/workflow_card.dart';
 import 'package:khtn_ai_final_project/data/models/workflow_model.dart';
-import 'package:khtn_ai_final_project/core/constants/app_constants.dart' show AppSpacing;
+import 'package:khtn_ai_final_project/core/constants/app_constants.dart'
+    show AppSpacing;
 
 /// Tab to display workflows associated with AI agents
 class WorkflowsTab extends StatelessWidget {
@@ -19,9 +20,9 @@ class WorkflowsTab extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             WorkflowsCard(workflowType: Workflow.emailTriage),
-            const SizedBox(height: AppSpacing.cardSpacing),
+            const SizedBox(height: AppSpacing.cardSpacing + 8),
             WorkflowsCard(workflowType: Workflow.dataExtraction),
-            const SizedBox(height: AppSpacing.cardSpacing),
+            const SizedBox(height: AppSpacing.cardSpacing + 8),
             WorkflowsCard(workflowType: Workflow.dataExtraction),
           ],
         ),

@@ -31,6 +31,7 @@ class KnowledgeSourceDropdown extends StatelessWidget {
           controller: controller,
           enabled: enabled,
           enableFilter: false,
+          requestFocusOnTap: false,
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
             contentPadding: const EdgeInsets.symmetric(
@@ -57,7 +58,6 @@ class KnowledgeSourceDropdown extends StatelessWidget {
             ),
           ),
           initialSelection: initialSelection ?? KnowledgeSourceTypes.all[0],
-          requestFocusOnTap: enabled,
           onSelected: enabled ? onSelected : null,
           dropdownMenuEntries: KnowledgeSourceTypes.all.map((source) {
             return DropdownMenuEntry<KnowledgeSourceType>(

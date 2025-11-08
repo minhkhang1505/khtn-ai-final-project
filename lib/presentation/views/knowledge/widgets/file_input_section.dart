@@ -89,6 +89,7 @@ class _FileInputSectionState extends State<FileInputSection> {
                 ),
               ],
             ),
+          SizedBox(height: 12),
         ],
       ),
     );

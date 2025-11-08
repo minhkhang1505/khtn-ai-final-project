@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/data/models/account_models.dart';
 import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/widgets.dart';
@@ -62,14 +63,14 @@ class _AccountPageState extends State<AccountPage> {
                           onUpgradePressed: _showUpgradeDialog,
                           isProUser: isProUser,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.vertical + 4),
                         AppearanceSection(
                           isDarkMode: themeProvider.isDarkMode,
                           onThemeChanged: themeProvider.toggleTheme,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.vertical + 4),
                         AccountActionsSection(onLogoutPressed: _onLogout),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.vertical + 4),
                         AccountFooter(version: appVersion),
                       ],
                     ),
