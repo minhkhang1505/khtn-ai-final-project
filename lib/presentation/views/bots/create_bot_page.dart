@@ -32,44 +32,47 @@ class _CreateBotPageState extends State<CreateBotPage> {
         child: Center(
           child: SizedBox(
             width: ResponsiveHelper.chatContentWidth(context),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Basic Information Section
-                const BotInformationCard(),
-                const SizedBox(height: AppSpacing.cardSpacing),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Basic Information Section
+                  const BotInformationCard(),
+                  const SizedBox(height: AppSpacing.cardSpacing),
+                  // System Prompts Section
+                  SystemPromptsCard(),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                const SizedBox(height: 12),
-                // System Prompts Section
-                SystemPromptsCard(),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  // Knowledge Base Section
+                  const KnowledgeBaseCard(),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Knowledge Base Section
-                const KnowledgeBaseCard(),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  // Visibility Section
+                  VisibilityCard(
+                    onStatusChanged: () {
+                      // TODO: Handle visibility status change
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Visibility Section
-                VisibilityCard(onStatusChanged: () {
-                  // TODO: Handle visibility status change
-                  setState(() {});
-                },),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  // Subagent Section
+                  SubagentCard(subagents: subagents),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Subagent Section
-                SubagentCard(subagents: subagents),
-                const SizedBox(height: AppSpacing.cardSpacing),
-
-                // Action Buttons
-                const SizedBox(height: 12),
-                CreateActionButtonRow(
-                  onCreate: () {
-                    // Handle create bot action
-                  },
-                  onCancel: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                  // Action Buttons
+                  const SizedBox(height: 12),
+                  CreateActionButtonRow(
+                    onCreate: () {
+                      // Handle create bot action
+                    },
+                    onCancel: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

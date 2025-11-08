@@ -60,11 +60,11 @@ class _BotsPageState extends State<BotsPage>
                       final bot = _botViewModel.bots[index];
                       return Padding(
                         padding: EdgeInsets.only(
-                          left: AppSpacing.horizontal,
-                          right: AppSpacing.horizontal,
+                          left: AppSpacing.horizontal - 4,
+                          right: AppSpacing.horizontal - 4,
                           bottom: index == _botViewModel.bots.length - 1
                               ? AppSpacing.vertical
-                              : AppSpacing.cardSpacing,
+                              : AppSpacing.cardSpacing - 8,
                         ),
                         child: InkWell(
                           borderRadius: AppBorderRadius.medium,

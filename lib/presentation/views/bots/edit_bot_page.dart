@@ -32,51 +32,56 @@ class _EditBotPageState extends State<EditBotPage> {
         child: Center(
           child: SizedBox(
             width: ResponsiveHelper.chatContentWidth(context),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Status & Actions Section
-                BotStatusCard(
-                  bot: widget.bot,
-                  onStatusChanged: () {
-                    setState(() {});
-                  },
-                ),
-                const SizedBox(height: AppSpacing.cardSpacing),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Status & Actions Section
+                  BotStatusCard(
+                    bot: widget.bot,
+                    onStatusChanged: () {
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Basic Information Section
-                const BotInformationCard(),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  // Basic Information Section
+                  const BotInformationCard(),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // System Prompts Section
-                const SystemPromptsCard(),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  // System Prompts Section
+                  const SystemPromptsCard(),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Knowledge Base Section
-                const KnowledgeBaseCard(),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  // Knowledge Base Section
+                  const KnowledgeBaseCard(),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Visibility Section
-                VisibilityCard(onStatusChanged: () {
-                  // TODO: Handle visibility status change
-                  setState(() {});
-                },),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  // Visibility Section
+                  VisibilityCard(
+                    onStatusChanged: () {
+                      // TODO: Handle visibility status change
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Subagent Section
-                SubagentCard(subagents: widget.bot.subagents),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  // Subagent Section
+                  SubagentCard(subagents: widget.bot.subagents),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Action Buttons
-                SaveActionButtonRow(
-                  onCancel: () {
-                    Navigator.pop(context);
-                  },
-                  onSave: () {
-                    // TODO: Handle save action
-                  },
-                ),
-              ],
+                  // Action Buttons
+                  SaveActionButtonRow(
+                    onCancel: () {
+                      Navigator.pop(context);
+                    },
+                    onSave: () {
+                      // TODO: Handle save action
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
