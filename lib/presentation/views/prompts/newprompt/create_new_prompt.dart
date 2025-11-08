@@ -52,6 +52,7 @@ class _CreateNewPromptPageState extends State<CreateNewPromptPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {

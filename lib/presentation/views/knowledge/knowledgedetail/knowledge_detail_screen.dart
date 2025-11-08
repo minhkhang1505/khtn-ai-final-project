@@ -69,6 +69,7 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         title: const Text('Knowledge Details'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),

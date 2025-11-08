@@ -28,10 +28,7 @@ class BotInformationCard extends StatelessWidget {
             // Title
             const Text(
               'Basic Information',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 4),
             const Text(
@@ -43,10 +40,7 @@ class BotInformationCard extends StatelessWidget {
             // Bot Name label
             const Text(
               'Bot Name *',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
 
@@ -58,8 +52,7 @@ class BotInformationCard extends StatelessWidget {
                   color: colorScheme.onSurface.withAlpha(140),
                 ),
                 filled: true,
-                fillColor: colorScheme.surfaceContainerHigh
-                    .withAlpha(120),
+                fillColor: colorScheme.surfaceContainerHigh.withAlpha(120),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 14,
@@ -75,10 +68,7 @@ class BotInformationCard extends StatelessWidget {
             // Description label
             const Text(
               'Description',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
 
@@ -90,8 +80,7 @@ class BotInformationCard extends StatelessWidget {
                   color: colorScheme.onSurface.withAlpha(140),
                 ),
                 filled: true,
-                fillColor: colorScheme.surfaceContainerHigh
-                    .withAlpha(120),
+                fillColor: colorScheme.surfaceContainerHigh.withAlpha(120),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 14,

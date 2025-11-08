@@ -12,22 +12,24 @@ class AllAgentsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final allAgents = AgentModel.createSampleAgents();
     final agents = allAgents
-        .map((agent) => InkWell(
-          borderRadius: AppBorderRadius.medium,
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              '/agents/edit',
-              arguments: agent,
-            );
-          },
-          child: AgentCard(agent: agent),
-        ),)
+        .map(
+          (agent) => InkWell(
+            borderRadius: AppBorderRadius.medium,
+            onTap: () {
+              Navigator.pushNamed(context, '/agents/edit', arguments: agent);
+            },
+            child: AgentCard(agent: agent),
+          ),
+        )
         .toList();
-        
+
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.vertical, horizontal: AppSpacing.horizontal),
-      separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.cardSpacing),
+      padding: const EdgeInsets.symmetric(
+        vertical: AppSpacing.vertical - 4,
+        horizontal: AppSpacing.horizontal - 4,
+      ),
+      separatorBuilder: (context, index) =>
+          const SizedBox(height: AppSpacing.cardSpacing - 8),
       itemCount: agents.length,
       itemBuilder: (context, index) {
         return agents[index % agents.length];

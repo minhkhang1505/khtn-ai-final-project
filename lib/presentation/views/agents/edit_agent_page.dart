@@ -69,115 +69,122 @@ class _EditAgentPageState extends State<EditAgentPage> {
         child: Center(
           child: SizedBox(
             width: ResponsiveHelper.chatContentWidth(context),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Status & Actions Card
-                AgentStatusCard(
-                  agent: widget.agent,
-                  onStatusChanged: () {
-                    setState(() {});
-                  },
-                ),
-                const SizedBox(height: AppSpacing.cardSpacing),
-
-                // Basic Information Card
-                AgentInformationCard(
-                  // TODO: Implement pre-fill functionality later
-                  // Pass existing agent data to pre-fill fields
-                  // agent: widget.agent,
-                ),
-                const SizedBox(height: AppSpacing.cardSpacing),
-
-                // Workflows Card
-                Card(
-                  elevation: 0,
-                  color: colorScheme.surfaceContainerLow.withAlpha(10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.medium,
-                    side: BorderSide(
-                      color: colorScheme.outlineVariant.withAlpha(100),
-                      width: 1.5,
-                    ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Status & Actions Card
+                  AgentStatusCard(
+                    agent: widget.agent,
+                    onStatusChanged: () {
+                      setState(() {});
+                    },
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 16,
+                  const SizedBox(height: AppSpacing.cardSpacing),
+
+                  // Basic Information Card
+                  AgentInformationCard(
+                    // TODO: Implement pre-fill functionality later
+                    // Pass existing agent data to pre-fill fields
+                    // agent: widget.agent,
+                  ),
+                  const SizedBox(height: AppSpacing.cardSpacing),
+
+                  // Workflows Card
+                  Card(
+                    elevation: 0,
+                    color: colorScheme.surfaceContainerLow.withAlpha(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppBorderRadius.medium,
+                      side: BorderSide(
+                        color: colorScheme.outlineVariant.withAlpha(100),
+                        width: 1.5,
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Header row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Workflows',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                            ),
-                            // Add workflows button
-                            OutlinedButton.icon(
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                  horizontal: 16,
-                                ),
-                              ),
-                              onPressed: () {
-                                _openWorkflowSelector();
-                              },
-                              icon: const Icon(Icons.add, size: 18),
-                              label: Text(
-                                'Add',
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Header row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Workflows',
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${_selectedWorkflows.length} workflow(s) configured',
-                          style: const TextStyle(fontSize: 13),
-                        ),
-                        const SizedBox(height: 16),
+                              // Add workflows button
+                              OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outline,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 16,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  _openWorkflowSelector();
+                                },
+                                icon: const Icon(Icons.add, size: 18),
+                                label: Text(
+                                  'Add',
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${_selectedWorkflows.length} workflow(s) configured',
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                          const SizedBox(height: 16),
 
-                        // Workflow
-                        ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final workflow = _selectedWorkflows[index];
-                            return WorkflowsCard(workflowType: workflow);
-                          },
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 12),
-                          itemCount: _selectedWorkflows.length,
-                        ),
-                      ],
+                          // Workflow
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final workflow = _selectedWorkflows[index];
+                              return WorkflowsCard(workflowType: workflow);
+                            },
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 12),
+                            itemCount: _selectedWorkflows.length,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Action Buttons
-                SaveActionButtonRow(
-                  onCancel: () {
-                    Navigator.pop(context);
-                  },
-                  onSave: () {
-                    // TODO: Implement save functionality
-                  },
-                ),
-              ],
+                  // Action Buttons
+                  SaveActionButtonRow(
+                    onCancel: () {
+                      Navigator.pop(context);
+                    },
+                    onSave: () {
+                      // TODO: Implement save functionality
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

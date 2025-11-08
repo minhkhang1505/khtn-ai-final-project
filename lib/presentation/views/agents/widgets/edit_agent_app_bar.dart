@@ -11,6 +11,13 @@ class EditAgentAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: true,
+      centerTitle: false,
+      leading: IconButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        icon: Icon(Icons.arrow_back_ios),
+      ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -21,7 +28,8 @@ class EditAgentAppBar extends StatelessWidget implements PreferredSizeWidget {
             maxLines: 1,
           ),
           SizedBox(height: 4),
-          if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
+          if (ResponsiveHelper.isDesktop(context) ||
+              ResponsiveHelper.isTablet(context))
             Text(
               agent.description,
               style: AppBarInfo.subtitleTextStyle,
@@ -34,8 +42,15 @@ class EditAgentAppBar extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: EdgeInsets.only(right: 16),
           child: Chip(
-            label: Text(agent.status, style: TextStyle(color: agent.status == 'Active' ? Colors.green : Colors.red)),
-            backgroundColor: agent.status == 'Active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
+            label: Text(
+              agent.status,
+              style: TextStyle(
+                color: agent.status == 'Active' ? Colors.green : Colors.red,
+              ),
+            ),
+            backgroundColor: agent.status == 'Active'
+                ? Colors.green.withValues(alpha: 0.2)
+                : Colors.red.withValues(alpha: 0.2),
           ),
         ),
       ],

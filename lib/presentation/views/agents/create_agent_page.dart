@@ -28,62 +28,65 @@ class _CreateAgentPageState extends State<CreateAgentPage> {
         child: Center(
           child: SizedBox(
             width: ResponsiveHelper.chatContentWidth(context),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Basic Information Section
-                AgentInformationCard(),
-                const SizedBox(height: AppSpacing.cardSpacing),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Basic Information Section
+                  AgentInformationCard(),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Workflows Section
-                Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.medium,
-                    side: BorderSide(
-                      color: colorScheme.outlineVariant.withAlpha(100),
+                  // Workflows Section
+                  Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppBorderRadius.medium,
+                      side: BorderSide(
+                        color: colorScheme.outlineVariant.withAlpha(100),
+                      ),
                     ),
-                  ),
-                  margin: const EdgeInsets.all(0),
-                  color: colorScheme.surfaceContainerLow.withAlpha(10),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Title
-                        const Text(
-                          'Select Workflows *',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                    margin: const EdgeInsets.all(0),
+                    color: colorScheme.surfaceContainerLow.withAlpha(10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title
+                          const Text(
+                            'Select Workflows *',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Choose at least one workflow for this agent',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        const SizedBox(height: 20),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Choose at least one workflow for this agent',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(height: 20),
 
-                        // Workflows list
-                        WorkflowSelector(),
-                      ],
+                          // Workflows list
+                          WorkflowSelector(),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.cardSpacing),
+                  const SizedBox(height: AppSpacing.cardSpacing),
 
-                // Action Buttons
-                CreateActionButtonRow(
-                  onCreate: () {
-                    // Handle create agent action
-                  },
-                  onCancel: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                  // Action Buttons
+                  CreateActionButtonRow(
+                    onCreate: () {
+                      // Handle create agent action
+                    },
+                    onCancel: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -20,9 +20,9 @@ class WorkflowsTab extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             WorkflowsCard(workflowType: Workflow.emailTriage),
-            const SizedBox(height: AppSpacing.cardSpacing + 8),
+            const SizedBox(height: AppSpacing.cardSpacing),
             WorkflowsCard(workflowType: Workflow.dataExtraction),
-            const SizedBox(height: AppSpacing.cardSpacing + 8),
+            const SizedBox(height: AppSpacing.cardSpacing),
             WorkflowsCard(workflowType: Workflow.dataExtraction),
           ],
         ),

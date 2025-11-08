@@ -36,6 +36,7 @@ class NewKnowledgeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         title: const Text(KnowledgeConstants.newKnowledgeTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
