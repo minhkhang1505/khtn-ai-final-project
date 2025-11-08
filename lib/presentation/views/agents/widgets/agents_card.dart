@@ -46,14 +46,16 @@ class AgentCard extends StatelessWidget {
                 const SizedBox(width: 8),
 
                 // Name of Agent
-                Text(
-                  agent.name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Text(
+                    agent.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
                 ),
                 const SizedBox(width: 8),
 
@@ -72,7 +74,6 @@ class AgentCard extends StatelessWidget {
                       backgroundColor: agent.status == 'Active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
                     ),
                   ),
-                const Spacer(),
 
                 // Edit Agent button
                 ElevatedButton(
@@ -105,6 +106,7 @@ class AgentCard extends StatelessWidget {
                 ),
               ],
             ),
+            
             // Description of Agent
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),

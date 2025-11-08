@@ -41,14 +41,16 @@ class BotCard extends StatelessWidget {
                 const SizedBox(width: 8),
 
                 // Name of Bot
-                Text(
-                  bot.name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Text(
+                    bot.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
                 ),
                 const SizedBox(width: 8),
 
@@ -68,7 +70,6 @@ class BotCard extends StatelessWidget {
                       backgroundColor: bot.status == 'Active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
                     ),
                   ),
-                const Spacer(),
 
                 // Edit Bot button
                 ElevatedButton(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:khtn_ai_final_project/core/constants/constant.dart';
+import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
