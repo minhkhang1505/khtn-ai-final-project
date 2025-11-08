@@ -54,6 +54,7 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         title: const Text('Prompt Detail'),
         leading: IconButton(
           onPressed: _backToPromptsList,
