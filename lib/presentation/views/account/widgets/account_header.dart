@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:khtn_ai_final_project/presentation/views/account/models/account_models.dart';
-import 'package:khtn_ai_final_project/presentation/views/account/models/account_constants.dart';
+import 'package:khtn_ai_final_project/data/models/account_models.dart';
+import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
 
 /// Header widget displaying user profile information
 class AccountHeader extends StatelessWidget {

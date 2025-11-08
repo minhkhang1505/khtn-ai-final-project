@@ -10,14 +10,14 @@ import 'package:khtn_ai_final_project/presentation/views/account/account_page.da
 /// Main page with bottom navigation bar
 ///
 /// Contains 6 tabs: Chat, Bots, Agents, Knowledge, Prompts, Account
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   // List of pages corresponding to bottom nav items

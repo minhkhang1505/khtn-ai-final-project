@@ -1,4 +1,4 @@
-import 'package:khtn_ai_final_project/presentation/views/account/models/account_models.dart';
+import 'package:khtn_ai_final_project/data/models/account_models.dart';
 
 /// Constants for the Account feature
 const double avatarSize = 48.0;

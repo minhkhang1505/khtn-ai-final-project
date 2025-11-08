@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/agent_view_model.dart';
 import 'widgets/agent_app_bar.dart';
 import 'tabs/workflows_tab.dart';
@@ -34,7 +35,12 @@ class _AgentsPageState extends State<AgentsPage>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AgentAppBar(onAddAgent: _onAddAgent),
+      appBar: CustomAppBar(
+        title: "Agents",
+        subtitle: "Set up your AI assistant agents",
+        onCreatePressed: _onAddAgent,
+        createButtonLabel: 'Add Agent',
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth > 600;

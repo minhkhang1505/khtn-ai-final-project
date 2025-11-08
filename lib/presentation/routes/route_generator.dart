@@ -8,7 +8,7 @@ import 'package:khtn_ai_final_project/presentation/views/knowledge/newknowledges
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/create_new_prompt.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/prompt_detail_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart';
-import 'package:khtn_ai_final_project/presentation/views/main/main_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
 
@@ -47,7 +47,7 @@ class RouteGenerator {
       case AppRoutes.main:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const MainPage(),
+          builder: (_) => const HomePage(),
         );
 
       case AppRoutes.verificationEmail:
@@ -152,20 +152,20 @@ class RouteGenerator {
           settings: settings,
           builder: (_) => const CreateAgentPage(),
         );
-      
+
       case AppRoutes.editAgent:
         final editAgent = args is Map<String, dynamic> ? args['agent'] : args;
         return _buildRoute(
           settings: settings,
           builder: (_) => EditAgentPage(agent: editAgent),
         );
-      
+
       case AppRoutes.bots:
         return _buildRoute(
           settings: settings,
           builder: (_) => const BotsPage(),
         );
-      
+
       case AppRoutes.createNewBot:
         return _buildRoute(
           settings: settings,
@@ -173,7 +173,7 @@ class RouteGenerator {
         );
 
       case AppRoutes.editBot:
-      final editBot = args is Map<String, dynamic> ? args['bot'] : args;
+        final editBot = args is Map<String, dynamic> ? args['bot'] : args;
         return _buildRoute(
           settings: settings,
           builder: (_) => EditBotPage(bot: editBot),

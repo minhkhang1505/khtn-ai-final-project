@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/views/account/models/account_models.dart';
-import 'package:khtn_ai_final_project/presentation/views/account/models/account_constants.dart';
+import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
+import 'package:khtn_ai_final_project/data/models/account_models.dart';
+import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/widgets.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 /// Account page - User profile and settings
 class AccountPage extends StatefulWidget {
@@ -14,7 +17,6 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   bool _showUpgradeBanner = true;
   bool isProUser = false;
-  bool _isDarkMode = false;
 
   final user = User(
     id: '1',
@@ -26,6 +28,7 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -60,14 +63,14 @@ class _AccountPageState extends State<AccountPage> {
                           onUpgradePressed: _showUpgradeDialog,
                           isProUser: isProUser,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.vertical + 4),
                         AppearanceSection(
-                          isDarkMode: _isDarkMode,
-                          onThemeChanged: _onThemeChanged,
+                          isDarkMode: themeProvider.isDarkMode,
+                          onThemeChanged: themeProvider.toggleTheme,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.vertical + 4),
                         AccountActionsSection(onLogoutPressed: _onLogout),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.vertical + 4),
                         AccountFooter(version: appVersion),
                       ],
                     ),
@@ -104,13 +107,6 @@ class _AccountPageState extends State<AccountPage> {
       _showUpgradeBanner = false;
       isProUser = true;
     });
-  }
-
-  void _onThemeChanged(bool value) {
-    setState(() {
-      _isDarkMode = value;
-    });
-    // TODO: Implement global theme change (would need theme provider)
   }
 
   void _onLogout() {
