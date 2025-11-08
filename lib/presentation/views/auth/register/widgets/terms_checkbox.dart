@@ -13,24 +13,24 @@ class TermsCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Transform.scale(
-              scale: 1.0,
-              child: Checkbox(
-                value: isChecked,
-                onChanged: onChanged,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: VisualDensity.compact,
-              ),
-            ),
-            const Text(
-              "I agree to the Terms of Service and Privacy Policy",
-              style: TextStyle(fontSize: 12),
-            ),
-          ],
+        Transform.scale(
+          scale: 1.0,
+          child: Checkbox(
+            value: isChecked,
+            onChanged: onChanged,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+          ),
+        ),
+        Flexible(
+          child: Text(
+            "I agree to the Terms of Service and Privacy Policy",
+            style: TextStyle(fontSize: 12),
+            softWrap: true,
+            maxLines: 2,
+          ),
         ),
       ],
     );
