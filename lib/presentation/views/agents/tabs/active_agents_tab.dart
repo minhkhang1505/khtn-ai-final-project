@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/agents_card.dart' ;
 import 'package:khtn_ai_final_project/data/models/agent_model.dart';
-import 'package:khtn_ai_final_project/core/constants/constants.dart';
+import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class ActiveAgentsTab extends StatelessWidget {
