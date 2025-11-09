@@ -5,7 +5,7 @@
 ![Flutter](https://img.shields.io/badge/Flutter-3.9.2-blue?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.9.2-blue?logo=dart)
 ![Version](https://img.shields.io/badge/Version-1.0.0-green)
-![License](https://img.shields.io/badge/License-MIT-brightgreen)
+<!-- ![License](https://img.shields.io/badge/License-MIT-brightgreen) -->
 
 **A comprehensive AI-powered multi-agent platform for workflow automation and intelligent bot management built with Flutter.**
 
@@ -17,17 +17,12 @@
 
 - [Project Title & Description](#-project-title--description)
 - [Features](#-features)
+- [Team Members](#-team-members)
+- [Screenshots & Demo](#-screenshots--demo)
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
 - [Installation & Setup](#-installation--setup)
-- [Screenshots & Demo](#-screenshots--demo)
-- [API Reference](#-api-reference)
 - [Architecture Overview](#-architecture-overview)
-- [How to Add a New Feature](#-how-to-add-a-new-feature)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Contact & Team](#-contact--team)
-- [Acknowledgements](#-acknowledgements)
 
 ---
 
@@ -94,7 +89,30 @@ An intelligent, enterprise-grade Flutter application designed to streamline work
 
 ---
 
-## Tech Stack
+## Team Members
+
+- **Nguyen Minh Khang**
+
+  - GitHub: [@minhkhang1505](https://github.com/minhkhang1505)
+  - Email: minhkhang.dev@gmail.com
+
+- **Do Thai Hoc**
+  - GitHub: [@hocvn](https://github.com/hocvn)
+  - Email: minhkhang.dev@gmail.com
+
+---
+
+## Screenshots & Demo
+
+### Demo (YouTube)
+
+<a href="https://youtu.be/3AQxvRG4u5E" target="_blank">
+  <img src="https://img.shields.io/badge/Watch%20Demo-YouTube-red?logo=youtube" alt="Watch Demo">
+</a>
+
+---
+
+## Currently Used Tech Stack
 
 ### Frontend Framework
 
@@ -104,14 +122,15 @@ An intelligent, enterprise-grade Flutter application designed to streamline work
 ### State Management & Dependency Injection
 
 - **Provider** (^6.1.5+1) - ChangeNotifier-based reactive state management
-- **get_it** (^7.7.0) - Service locator for dependency injection
+<!-- - **get_it** (^7.7.0) - Service locator for dependency injection -->
 
 ### Networking & API Integration
 
-- **http** (^1.2.2) - HTTP client for RESTful API communication
+<!-- - **http** (^1.2.2) - HTTP client for RESTful API communication -->
+
 - **google_fonts** (^6.3.2) - Google Fonts integration
 
-### Local Storage & Persistence
+<!-- ### Local Storage & Persistence
 
 - **shared_preferences** (^2.3.2) - Key-value storage for app preferences
 
@@ -122,7 +141,7 @@ An intelligent, enterprise-grade Flutter application designed to streamline work
 ### Functional Programming
 
 - **dartz** (^0.10.1) - Functional programming tools (Either, Tasks)
-- **equatable** (^2.0.5) - Simplified equality comparison
+- **equatable** (^2.0.5) - Simplified equality comparison -->
 
 ### UI Components & Widgets
 
@@ -138,9 +157,9 @@ An intelligent, enterprise-grade Flutter application designed to streamline work
 
 - **file_picker** (^10.3.3) - File selection and upload
 
-### Development & Linting
+<!-- ### Development & Linting
 
-- **flutter_lints** (^5.0.0) - Recommended linting rules for Flutter
+- **flutter_lints** (^5.0.0) - Recommended linting rules for Flutter -->
 
 ---
 
@@ -223,14 +242,14 @@ lib/
 └── main.dart                      # App entry point
 ```
 
-### Architecture Notes
+<!-- ### Architecture Notes
 
 - **Layer-First Organization:** Separation of concerns with clear layer boundaries
 - **Empty Directories:** Tracked with `.gitkeep` to maintain public structure visibility
 - **Feature Scalability:** Can transition to feature-first layout as the project grows
 - **Modular Design:** Each feature is independently testable and maintainable
 
----
+--- -->
 
 ## Installation & Setup
 
@@ -316,9 +335,9 @@ After running the app, verify the following screens appear correctly:
 
 ---
 
-## Screenshots & Demo
 
-### Application Screens
+
+<!-- ### Application Screens
 
 | Screen               | Description                                           |
 | -------------------- | ----------------------------------------------------- |
@@ -339,11 +358,11 @@ After running the app, verify the following screens appear correctly:
 - **Dark Mode Toggle:** Theme switching for user preference
 - **Responsive Design:** Seamless experience on phones and tablets
 
-_Note: Actual screenshots to be added in a future update. For now, build and run the app to see the current UI._
+_Note: Actual screenshots to be added in a future update. For now, build and run the app to see the current UI._ -->
 
 <!-- --- -->
 
-<!-- ## 🔗 API Reference
+<!-- ## API Reference
 
 ### Base Configuration
 
@@ -427,7 +446,7 @@ This project combines **Clean Architecture** principles with **MVVM** (Model-Vie
      └─────────────────┘
 ```
 
-#### Layer Details
+<!-- #### Layer Details
 
 **Domain Layer**
 
@@ -462,13 +481,13 @@ This project combines **Clean Architecture** principles with **MVVM** (Model-Vie
 
 #### Benefits
 
- - **Testability:** Each layer can be tested independently  
- - **Maintainability:** Clear separation of concerns  
- - **Scalability:** Easy to add new features without affecting existing code  
- - **Reusability:** Domain logic is framework-agnostic  
- - **Flexibility:** Can swap implementations (data sources, UI frameworks)
+ - **Testability:** Each layer can be tested independently
+ - **Maintainability:** Clear separation of concerns
+ - **Scalability:** Easy to add new features without affecting existing code
+ - **Reusability:** Domain logic is framework-agnostic
+ - **Flexibility:** Can swap implementations (data sources, UI frameworks) -->
 
----
+<!-- ---
 
 ## How to Add a New Feature
 
@@ -561,7 +580,7 @@ static const String reports = '/reports';
 static const String reportDetail = '/reports/:id';
 ```
 
-Update `routes/route_generator.dart` with route generation logic.
+Update `routes/route_generator.dart` with route generation logic. -->
 
 <!-- #### Step 6: Testing
 
@@ -580,7 +599,7 @@ test/
         └── report_view_model_test.dart
 ``` -->
 
-#### Best Practices
+<!-- #### Best Practices
 
 - ✅ Keep layers independent and testable
 - ✅ Use meaningful entity and model names
@@ -653,9 +672,9 @@ We welcome contributions from the community! Follow these guidelines to contribu
    - `perf` - Performance improvements
    - `test` - Adding or updating tests
    - `chore` - Build/tooling changes
-   - `ci` - CI/CD changes
+   - `ci` - CI/CD changes -->
 
-5. **Push to Your Fork**
+<!-- 5. **Push to Your Fork**
 
    ```bash
    git push origin feat/your-feature-name
@@ -684,9 +703,9 @@ We welcome contributions from the community! Follow these guidelines to contribu
 - **Comments:** Document complex logic with clear comments
 - **Naming:** Use descriptive, readable names for variables and functions
 
----
+--- -->
 
-## License
+<!-- ## License
 
 This project is licensed under the **MIT License** - see below for details.
 
@@ -718,21 +737,11 @@ SOFTWARE.
 
 You are free to use, modify, and distribute this software for commercial and non-commercial purposes.
 
----
+--- -->
 
-## Team Members
 
-- **Nguyen Minh Khang**
-  - GitHub: [@minhkhang1505](https://github.com/minhkhang1505)
-  - Email: minhkhang.dev@gmail.com
 
-- **Do Thai Hoc**
-  - GitHub: [@hocvn](https://github.com/hocvn)
-  - Email: minhkhang.dev@gmail.com
-
----
-
-## Acknowledgements
+<!-- ## Acknowledgements
 
 ### Libraries & Frameworks
 
@@ -757,4 +766,4 @@ You are free to use, modify, and distribute this software for commercial and non
 
 - HCMUS Advanced Mobile Development Course instructors and peers
 - All contributors and issue reporters
-- The Flutter and Dart communities for continuous support
+- The Flutter and Dart communities for continuous support -->
