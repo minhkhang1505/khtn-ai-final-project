@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/login/reset_password/reset_password.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/register/verifiaction_email/verification_email.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/knowledge_detail_screen.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/newknowledgesource/new_knowledge.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/create_new_prompt.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/prompt_detail_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
-import 'package:khtn_ai_final_project/presentation/views/main/main_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
+
+import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/agents/create_agent_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/agents/edit_agent_page.dart';
+
+import 'package:khtn_ai_final_project/presentation/views/bots/bots_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/bots/create_bot_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/bots/edit_bot_page.dart';
 
 /// Centralized route generator for the application
 ///
@@ -28,16 +44,20 @@ class RouteGenerator {
           builder: (_) => const SplashPage(),
         );
 
-      case AppRoutes.home:
+      case AppRoutes.main:
         return _buildRoute(
           settings: settings,
           builder: (_) => const HomePage(),
         );
 
-      case AppRoutes.main:
+      case AppRoutes.verificationEmail:
+        final email = args is Map<String, dynamic>
+            ? args['email'] as String?
+            : null;
         return _buildRoute(
+          builder: (_) =>
+              VerificationEmailPage(email: email ?? 'john@example.com'),
           settings: settings,
-          builder: (_) => const MainPage(),
         );
 
       // Example of route with arguments
@@ -57,19 +77,25 @@ class RouteGenerator {
       case AppRoutes.login:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Login'),
+          builder: (_) => const LoginPage(), // 👈 Changed to actual LoginPage
         );
 
       case AppRoutes.register:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Register'),
+          builder: (_) => const RegisterPage(),
         );
 
       case AppRoutes.forgotPassword:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Forgot Password'),
+          builder: (_) => ForgotPasswordPage(),
+        );
+
+      case AppRoutes.resetPassword:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => ResetPasswordPage(),
         );
 
       // Profile routes (placeholder)
@@ -89,6 +115,68 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (_) => _buildPlaceholderPage(title: 'Settings'),
+        );
+
+      case AppRoutes.createNewPrompt:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => CreateNewPromptPage(),
+        );
+
+      case AppRoutes.promptDetails:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => PromptDetailPage(),
+        );
+
+      case AppRoutes.newKnowledgeSource:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const NewKnowledgeScreen(),
+        );
+
+      case AppRoutes.knowledgeDetails:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => KnowledgeDetailScreen(),
+        );
+
+      case AppRoutes.agents:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const AgentsPage(),
+        );
+
+      case AppRoutes.createNewAgent:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const CreateAgentPage(),
+        );
+
+      case AppRoutes.editAgent:
+        final editAgent = args is Map<String, dynamic> ? args['agent'] : args;
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => EditAgentPage(agent: editAgent),
+        );
+
+      case AppRoutes.bots:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const BotsPage(),
+        );
+
+      case AppRoutes.createNewBot:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const CreateBotPage(),
+        );
+
+      case AppRoutes.editBot:
+        final editBot = args is Map<String, dynamic> ? args['bot'] : args;
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => EditBotPage(bot: editBot),
         );
 
       default:

@@ -54,7 +54,7 @@ class _SplashPageState extends State<SplashPage>
 
     // Navigate to main page with bottom navigation and remove splash from stack
     if (mounted) {
-      NavigationService.replaceWith(AppRoutes.main);
+      NavigationService.replaceWith(AppRoutes.login);
     }
   }
 
@@ -67,7 +67,7 @@ class _SplashPageState extends State<SplashPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: AnimatedBuilder(
           animation: _animationController,
@@ -81,7 +81,11 @@ class _SplashPageState extends State<SplashPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // App Logo/Icon
-              Icon(Icons.rocket_launch, size: 120, color: Colors.white),
+              Icon(
+                Icons.rocket_launch,
+                size: 120,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               const SizedBox(height: 24),
               // App Name
               Text(
@@ -89,7 +93,7 @@ class _SplashPageState extends State<SplashPage>
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.primary,
                   letterSpacing: 2,
                 ),
               ),
@@ -98,7 +102,7 @@ class _SplashPageState extends State<SplashPage>
                 'Final Project',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Theme.of(context).colorScheme.primary,
                   letterSpacing: 1,
                 ),
               ),
@@ -109,7 +113,7 @@ class _SplashPageState extends State<SplashPage>
                 height: 40,
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.white.withOpacity(0.8),
+                    Theme.of(context).colorScheme.primary,
                   ),
                   strokeWidth: 3,
                 ),
