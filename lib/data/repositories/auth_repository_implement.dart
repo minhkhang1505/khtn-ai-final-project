@@ -18,8 +18,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> logout(String refreshToken) async {
-    await remoteDataSource.logout(refreshToken);
+  Future<void> logout(String accessToken, String refreshToken) async {
+    await remoteDataSource.logout(accessToken, refreshToken);
   }
 
   @override

@@ -24,8 +24,17 @@ class AuthApiClient {
       _dio.post(path, data: data);
 
   //for logout
-  Future<Response> delete(String path, {required String token}) {
-    final options = Options(headers: {'Authorization' : 'Bearer $token'});
+  Future<Response> delete(
+    String path, {
+    required String token,
+    required String refreshToken,
+  }) {
+    final options = Options(
+      headers: {
+        'Authorization': 'Bearer $token',
+        if (refreshToken.isNotEmpty) 'X-Stack-Refresh-Token': refreshToken,
+      },
+    );
     return _dio.delete(path, options: options);
   }
 }
