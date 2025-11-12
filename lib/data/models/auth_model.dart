@@ -1,10 +1,16 @@
+// Request model for login
 class LoginRequest {
   String email;
   String password;
 
   LoginRequest({required this.email, required this.password});
+
+  Map<String, dynamic> toJson() {
+    return {'email': email, 'password': password};
+  }
 }
 
+// Request model for sign-up
 class SignUpRequest {
   String email;
   String password;
@@ -25,6 +31,7 @@ class SignUpRequest {
   }
 }
 
+// Response model for sign-up, login, logout responses
 class AuthResponse {
   String accessToken;
   String refreshToken;
@@ -45,8 +52,13 @@ class AuthResponse {
   }
 }
 
+// Response model for refresh token response
 class RefreshTokenResponse {
   String accessToken;
 
   RefreshTokenResponse({required this.accessToken});
+
+  factory RefreshTokenResponse.fromJson(Map<String, dynamic> json) {
+    return RefreshTokenResponse(accessToken: json['access_token']);
+  }
 }

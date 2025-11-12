@@ -19,8 +19,13 @@ class AuthApiClient {
     _dio.interceptors.add(LogInterceptor());
   }
 
+  // for sign-up, login, refresh token
   Future<Response> post(String path, {Map<String, dynamic>? data}) =>
       _dio.post(path, data: data);
 
-  //TODO: Add more methods as needed (e.g., get, put, delete)
+  //for logout
+  Future<Response> delete(String path, {required String token}) {
+    final options = Options(headers: {'Authorization' : 'Bearer $token'});
+    return _dio.delete(path, options: options);
+  }
 }

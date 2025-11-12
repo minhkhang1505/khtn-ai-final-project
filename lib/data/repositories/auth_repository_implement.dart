@@ -6,9 +6,24 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
 
   AuthRepositoryImpl({required this.remoteDataSource});
-  
+
   @override
   Future<AuthResponse> signUp(SignUpRequest signUpRequest) async {
     return await remoteDataSource.signUp(signUpRequest);
+  }
+
+  @override
+  Future<AuthResponse> login(LoginRequest loginRequest) async {
+    return await remoteDataSource.login(loginRequest);
+  }
+
+  @override
+  Future<void> logout(String refreshToken) async {
+    await remoteDataSource.logout(refreshToken);
+  }
+
+  @override
+  Future<RefreshTokenResponse> refreshToken() async {
+    return await remoteDataSource.refreshToken();
   }
 }

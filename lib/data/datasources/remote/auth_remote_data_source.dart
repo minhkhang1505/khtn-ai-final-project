@@ -1,11 +1,11 @@
-import 'package:khtn_ai_final_project/core/network/api_client.dart';
+import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/auth_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<AuthResponse> signUp(SignUpRequest registerRequest);
-  // Future<AuthResponse> login(LoginRequest loginRequest);
-  // Future<void> logout();
-  // Future<RefreshTokenResponse> refreshToken();
+  Future<AuthResponse> login(LoginRequest loginRequest);
+  Future<void> logout(String token);
+  Future<RefreshTokenResponse> refreshToken();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -13,6 +13,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   AuthRemoteDataSourceImpl(this.client);
 
+  //for sign-up
   @override
   Future<AuthResponse> signUp(SignUpRequest registerRequest) async {
     final response = await client.post(
@@ -20,5 +21,31 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: registerRequest.toJson(),
     );
     return AuthResponse.fromJson(response.data);
+  }
+
+  //for login
+  @override
+  Future<AuthResponse> login(LoginRequest loginRequest) async {
+    final response = await client.post(
+      '/auth/password/sign-in',
+      data: loginRequest.toJson(),
+    );
+    return AuthResponse.fromJson(response.data);
+  }
+
+  // for logout
+  @override
+  Future<void> logout(String token) async {
+    await client.delete('/auth/sign-out', token: token);
+  }
+
+  // for refresh token
+  @override
+  Future<RefreshTokenResponse> refreshToken() async {
+    final response = await client.post(
+      '/auth/sessions/current/refresh',
+      data: {},
+    );
+    return RefreshTokenResponse.fromJson(response.data);
   }
 }
