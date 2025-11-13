@@ -96,8 +96,8 @@ class PromptEntity {
       userId: userId ?? this.userId,
       userName: userName ?? this.userName,
       isFavorite: isFavorite ?? this.isFavorite,
-      createdBy: createdBy ?? this.createdBy,
-      updatedBy: updatedBy ?? this.updatedBy,
+      createdBy: createdBy,
+      updatedBy: updatedBy,
     );
   }
 }

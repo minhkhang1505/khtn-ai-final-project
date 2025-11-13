@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import '../widgets/auth_header.dart';
 import 'widgets/register_form.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -9,7 +11,8 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage>
+    with TickerProviderStateMixin {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -26,9 +29,18 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _handleCreateAccount() {
-    Navigator.pushNamed(context, '/auth/register/verification-email');
-    // TODO: Implement create account logic
+  void _handleCreateAccount() async {
+    final viewModel = context.read<AuthViewModel>();
+
+    final success = await viewModel.signUp(_emailController.text, _passwordController.text);
+    if (success) {
+      Navigator.pushNamed(context, '/main');
+    } else {
+      final error = viewModel.error ?? "Sign-up failed";
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error)),
+      );
+    }
   }
 
   void _handleGoogleSignUp() {
