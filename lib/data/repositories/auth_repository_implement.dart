@@ -35,13 +35,13 @@ class AuthRepositoryImpl implements AuthRepository {
         refresh: response.refreshToken,
       );
     }
-    
+
     return response;
   }
 
   @override
-  Future<void> logout(String accessToken, String refreshToken) async {
-    await remoteDataSource.logout(accessToken, refreshToken);
+  Future<void> logout() async {
+    await remoteDataSource.logout();
     await localDataSource.clearTokens();
   }
 

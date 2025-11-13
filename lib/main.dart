@@ -5,6 +5,7 @@ import 'package:khtn_ai_final_project/data/datasources/remote/auth_remote_data_s
 import 'package:khtn_ai_final_project/data/repositories/auth_repository_implement.dart';
 import 'package:khtn_ai_final_project/domain/repositories/auth_repository.dart';
 import 'package:khtn_ai_final_project/domain/usecases/login_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/logout_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/sign_up_usecase.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,7 @@ void main() {
           create: (_) => AuthViewModel(
             signUpUseCase: signUpUseCase,
             loginUsecase: loginUseCase,
+            logoutUsecase: LogoutUsecase(authRepository: authRepository),
           ),
         ),
       ],

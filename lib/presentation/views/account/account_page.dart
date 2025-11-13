@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/data/models/account_models.dart';
 import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/widgets.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,8 @@ class AccountPage extends StatefulWidget {
   State<AccountPage> createState() => _AccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage> {
+class _AccountPageState extends State<AccountPage>
+    with TickerProviderStateMixin {
   bool _showUpgradeBanner = true;
   bool isProUser = false;
 
@@ -109,8 +111,14 @@ class _AccountPageState extends State<AccountPage> {
     });
   }
 
-  void _onLogout() {
-    // TODO: Implement logout logic
-    Navigator.pushNamed(context, '/auth/login');
+  void _onLogout() async {
+    final authViewModel = context.read<AuthViewModel>();
+
+    final logoutResponse = await authViewModel.logout();
+    if (logoutResponse) {
+      Navigator.pushNamed(context, '/auth/login');
+    } else {
+      debugPrint("Logout failed");
+    }
   }
 }

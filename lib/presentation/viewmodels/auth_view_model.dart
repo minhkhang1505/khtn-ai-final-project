@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/auth_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/login_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/logout_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/sign_up_usecase.dart';
 
 class AuthViewModel extends ChangeNotifier {
   // ViewModel implementation will go here
   final SignUpUseCase signUpUseCase;
   final LoginUsecase loginUsecase;
+  final LogoutUsecase logoutUsecase;
 
-  AuthViewModel({required this.signUpUseCase, required this.loginUsecase});
+  AuthViewModel({
+    required this.signUpUseCase,
+    required this.loginUsecase,
+    required this.logoutUsecase,
+  });
 
   bool _isLoading = false;
   String? _error;
@@ -76,6 +82,25 @@ class AuthViewModel extends ChangeNotifier {
       }
     } catch (e) {
       _error = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> logout() async {
+    _isLoading = true;
+    notifyListeners();
+    
+    try {
+      await logoutUsecase.call();
+      _error = null;
+      debugPrint("Logout successful");
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      debugPrint("Logout error: $_error");
       return false;
     } finally {
       _isLoading = false;

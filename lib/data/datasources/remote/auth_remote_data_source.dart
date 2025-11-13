@@ -5,7 +5,7 @@ import 'package:khtn_ai_final_project/data/models/auth_model.dart';
 abstract class AuthRemoteDataSource {
   Future<AuthResponse> signUp(SignUpRequest registerRequest);
   Future<AuthResponse> login(LoginRequest loginRequest);
-  Future<void> logout(String accessToken, String refreshToken);
+  Future<void> logout();
   Future<RefreshTokenResponse> refreshToken();
 }
 
@@ -36,7 +36,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   // for logout
   @override
-  Future<void> logout(String accessToken, String refreshToken) async {
+  Future<void> logout() async {
     await client.delete(
       '/auth/sessions/current',
       includeRefreshToken: true,

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 
 class AuthApiClient {
@@ -40,7 +41,9 @@ class AuthApiClient {
           'X-Stack-Refresh-Token': refreshToken,
       },
     );
-    return _dio.delete(path, options: options);
+    debugPrint('DELETE request: $path');
+    debugPrint('Headers: ${options.headers}');
+    return _dio.delete(path, options: options, data: {});
   }
 }
 
@@ -62,6 +65,9 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
+    debugPrint(
+      'AuthInterceptor: onError called with statusCode: ${err.response?.statusCode}',
+    );
     if (err.response?.statusCode == 401) {
       final refreshToken = await localDataSource.getRefreshToken();
       if (refreshToken != null && refreshToken.isNotEmpty) {
