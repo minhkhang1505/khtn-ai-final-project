@@ -68,6 +68,13 @@ class AuthInterceptor extends Interceptor {
     debugPrint(
       'AuthInterceptor: onError called with statusCode: ${err.response?.statusCode}',
     );
+
+    if (err.response?.statusCode == 400) {
+      debugPrint('AuthInterceptor: Bad request (400) - ${err.response?.data}');
+      // TODO: Thực hiện xử lý riêng cho lỗi 400 nếu cần, ví dụ: show thông báo cho người dùng
+      // handler.next(err); // tiếp tục truyền lỗi lên
+    }
+    
     if (err.response?.statusCode == 401) {
       final refreshToken = await localDataSource.getRefreshToken();
       if (refreshToken != null && refreshToken.isNotEmpty) {

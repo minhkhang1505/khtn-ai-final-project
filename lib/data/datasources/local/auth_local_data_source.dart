@@ -18,10 +18,6 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> saveTokens({required String access, String? refresh}) async {
-    // await prefs.setString('access_token', access);
-    // if (refresh != null) {
-    //   await prefs.setString('refresh_token', refresh);
-    // }
 
     await _storage.write(key: _accessToken, value: access);
     if (refresh != null) {
