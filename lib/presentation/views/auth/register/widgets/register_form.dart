@@ -7,7 +7,7 @@ import '../../widgets/auth_prompt.dart';
 import '../../widgets/auth_primary_button.dart';
 import 'terms_checkbox.dart';
 
-class RegisterForm extends StatelessWidget {
+class RegisterForm extends StatefulWidget {
   final TextEditingController fullNameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
@@ -30,6 +30,14 @@ class RegisterForm extends StatelessWidget {
     required this.onGoogleSignUp,
     required this.onSignInTap,
   });
+
+  @override
+  State<RegisterForm> createState() => _RegisterFormState();
+}
+
+class _RegisterFormState extends State<RegisterForm> {
+  bool _obscureText = false; // Start with password hidden
+  bool _obscureConfirmText = false; // Start with confirm password hidden
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +65,7 @@ class RegisterForm extends StatelessWidget {
           AuthTextField(
             label: "Full name",
             hintText: "John Doe",
-            controller: fullNameController,
+            controller: widget.fullNameController,
             keyboardType: TextInputType.name,
             onChanged: (value) {},
             validator: (value) {
@@ -73,7 +81,7 @@ class RegisterForm extends StatelessWidget {
           AuthTextField(
             label: "Email",
             hintText: "abc@example.com",
-            controller: emailController,
+            controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) {},
             validator: (value) {
@@ -89,9 +97,15 @@ class RegisterForm extends StatelessWidget {
           AuthTextField(
             label: "Password",
             hintText: "********",
-            controller: passwordController,
-            obscureText: true,
+            controller: widget.passwordController,
+            obscureText: _obscureText,
             onChanged: (value) {},
+            suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
+            onSuffixIconPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "Password cannot be empty";
@@ -105,30 +119,44 @@ class RegisterForm extends StatelessWidget {
           AuthTextField(
             label: "Confirm Password",
             hintText: "********",
-            controller: confirmPasswordController,
-            obscureText: true,
+            controller: widget.confirmPasswordController,
+            obscureText: _obscureConfirmText,
+            suffixIcon: _obscureConfirmText
+                ? Icons.visibility
+                : Icons.visibility_off,
+            onSuffixIconPressed: () {
+              setState(() {
+                _obscureConfirmText = !_obscureConfirmText;
+              });
+            },
             onChanged: (value) {},
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "Confirm Password cannot be empty";
               }
-              if (value != passwordController.text) {
+              if (value != widget.passwordController.text) {
                 return "Passwords do not match";
               }
               return null;
             },
           ),
-          TermsCheckbox(isChecked: isTermsChecked, onChanged: onTermsChanged),
-          AuthPrimaryButton(onPressed: onCreateAccount, text: "Create Account"),
+          TermsCheckbox(
+            isChecked: widget.isTermsChecked,
+            onChanged: widget.onTermsChanged,
+          ),
+          AuthPrimaryButton(
+            onPressed: widget.onCreateAccount,
+            text: "Create Account",
+          ),
           const AuthDivider(),
           GoogleAuthButton(
-            onPressed: onGoogleSignUp,
+            onPressed: widget.onGoogleSignUp,
             text: "Sign in with Google",
           ),
           AuthPrompt(
             question: "Already have an account?",
             actionText: "Sign In",
-            onActionTap: onSignInTap,
+            onActionTap: widget.onSignInTap,
           ),
         ],
       ),
