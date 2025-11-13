@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
+import 'package:khtn_ai_final_project/data/datasources/remote/auth_remote_data_source.dart';
+import 'package:khtn_ai_final_project/data/repositories/auth_repository_implement.dart';
+import 'package:khtn_ai_final_project/domain/repositories/auth_repository.dart';
+import 'package:khtn_ai_final_project/domain/usecases/login_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/sign_up_usecase.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/theme/util.dart';
 import 'package:khtn_ai_final_project/core/theme/theme.dart';
@@ -8,9 +15,31 @@ import 'package:khtn_ai_final_project/presentation/services/navigation_service.d
 import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
 
 void main() {
+  // 1️⃣ Tầng Data Source (API)
+  final authApiClient = AuthApiClient();
+  final AuthRemoteDataSource remoteDataSource = AuthRemoteDataSourceImpl(
+    authApiClient,
+  );
+
+  // 2️⃣ Tầng Repository
+  final AuthRepository authRepository = AuthRepositoryImpl(
+    remoteDataSource: remoteDataSource,
+  );
+
+  // 3️⃣ Tầng UseCase
+  final signUpUseCase = SignUpUseCase(repository: authRepository);
+  final loginUseCase = LoginUsecase(authRepository: authRepository);
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(
+          create: (_) => AuthViewModel(
+            signUpUseCase: signUpUseCase,
+            loginUsecase: loginUseCase,
+          ),
+        ),
+      ],
       child: const MyApp(),
     ),
   );

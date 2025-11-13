@@ -33,21 +33,24 @@ class SignUpRequest {
 
 // Response model for sign-up, login, logout responses
 class AuthResponse {
-  String accessToken;
-  String refreshToken;
-  String userId;
+  final String accessToken;
+  final String refreshToken;
+  final String userId;
+  final int statusCode;
 
   AuthResponse({
     required this.accessToken,
     required this.refreshToken,
     required this.userId,
+    required this.statusCode,
   });
 
-  factory AuthResponse.fromJson(Map<String, dynamic> json) {
+  factory AuthResponse.fromJson(Map<String, dynamic> json, int statusCode) {
     return AuthResponse(
       accessToken: json['access_token'],
       refreshToken: json['refresh_token'],
       userId: json['user_id'],
+      statusCode: statusCode,
     );
   }
 }

@@ -20,7 +20,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       '/auth/password/sign-up',
       data: registerRequest.toJson(),
     );
-    return AuthResponse.fromJson(response.data);
+    return AuthResponse.fromJson(response.data, response.statusCode ?? 0);
   }
 
   //for login
@@ -30,7 +30,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       '/auth/password/sign-in',
       data: loginRequest.toJson(),
     );
-    return AuthResponse.fromJson(response.data);
+    return AuthResponse.fromJson(response.data, response.statusCode ?? 0);
   }
 
   // for logout
