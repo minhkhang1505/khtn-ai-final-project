@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import '../../widgets/auth_text_field.dart';
 import '../../widgets/auth_divider.dart';
 import '../../widgets/google_auth_button.dart';
 import '../../widgets/auth_prompt.dart';
 import '../../widgets/auth_primary_button.dart';
 import 'remember_me_row.dart';
+import 'package:provider/provider.dart';
 
 class LoginForm extends StatefulWidget {
   final TextEditingController? emailController;
@@ -39,7 +41,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
+    final viewModel = context.watch<AuthViewModel>();
     return Container(
       height: 520,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -115,7 +117,11 @@ class _LoginFormState extends State<LoginForm> {
             onForgotPassword: widget.onForgotPassword,
           ),
           // Sign In button
-          AuthPrimaryButton(onPressed: widget.onSignIn, text: "Sign In"),
+          AuthPrimaryButton(
+            onPressed: widget.onSignIn,
+            text: "Sign In",
+            isLoading: viewModel.isLoading,
+          ),
           // Divider
           const AuthDivider(text: "Or continue with"),
           // Google Sign In button
