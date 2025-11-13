@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
+import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/auth_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/repositories/auth_repository_implement.dart';
 import 'package:khtn_ai_final_project/domain/repositories/auth_repository.dart';
@@ -20,10 +21,12 @@ void main() {
   final AuthRemoteDataSource remoteDataSource = AuthRemoteDataSourceImpl(
     authApiClient,
   );
+  final AuthLocalDataSource localDataSource = AuthLocalDataSourceImpl();
 
   // 2️⃣ Tầng Repository
   final AuthRepository authRepository = AuthRepositoryImpl(
     remoteDataSource: remoteDataSource,
+    localDataSource: localDataSource,
   );
 
   // 3️⃣ Tầng UseCase

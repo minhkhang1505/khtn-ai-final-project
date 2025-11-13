@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/services/navigation_service.dart';
 
@@ -17,6 +18,7 @@ class _SplashPageState extends State<SplashPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  final localDataSource = AuthLocalDataSourceImpl();
 
   @override
   void initState() {
@@ -49,11 +51,21 @@ class _SplashPageState extends State<SplashPage>
   }
 
   Future<void> _navigateToHome() async {
-    // Simulate initialization tasks (e.g., loading data, checking auth)
-    await Future.delayed(const Duration(seconds: 2));
+    final accessToken = await localDataSource.getAccessToken();
+    final refreshToken = await localDataSource.getRefreshToken();
 
-    // Navigate to main page with bottom navigation and remove splash from stack
-    if (mounted) {
+    if (refreshToken != null && refreshToken.isNotEmpty) {
+      if (accessToken == null || accessToken.isEmpty) {
+        try {
+          NavigationService.replaceWith(AppRoutes.main);
+        } catch (e) {
+          await localDataSource.clearTokens();
+          NavigationService.replaceWith(AppRoutes.login);
+        }
+      } else {
+        NavigationService.replaceWith(AppRoutes.main);
+      }
+    } else {
       NavigationService.replaceWith(AppRoutes.login);
     }
   }
