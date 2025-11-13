@@ -129,17 +129,8 @@ class _AccountPageState extends State<AccountPage>
 
   Future<void> _onLogout() async {
     final authViewModel = context.read<AuthViewModel>();
-
     final logoutResponse = await authViewModel.logout();
-    // if (logoutResponse && mounted) {
-    //   // Close the dialog first, then navigate
-
-    //   Navigator.of(context, rootNavigator: true).pop();
-    //   // Add a small delay to ensure dialog is closed before navigating
-    //   await Future.delayed(const Duration(milliseconds: 100));
-    //   if (mounted) {
-    //     Navigator.pushNamed(context, '/auth/login');
-    //   }
+    
     if (!logoutResponse) {
       debugPrint("Logout failed");
     }
