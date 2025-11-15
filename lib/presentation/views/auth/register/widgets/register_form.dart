@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import '../../widgets/auth_text_field.dart';
 import '../../widgets/auth_divider.dart';
 import '../../widgets/google_auth_button.dart';
@@ -17,6 +18,7 @@ class RegisterForm extends StatefulWidget {
   final VoidCallback onCreateAccount;
   final VoidCallback onGoogleSignUp;
   final VoidCallback onSignInTap;
+  final AuthViewModel error;
 
   const RegisterForm({
     super.key,
@@ -29,6 +31,7 @@ class RegisterForm extends StatefulWidget {
     required this.onCreateAccount,
     required this.onGoogleSignUp,
     required this.onSignInTap,
+    required this.error,
   });
 
   @override
@@ -67,32 +70,14 @@ class _RegisterFormState extends State<RegisterForm> {
             hintText: "John Doe",
             controller: widget.fullNameController,
             keyboardType: TextInputType.name,
-            onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Full name cannot be empty";
-              }
-              if (value.length < 3) {
-                return "Full name must be at least 3 characters";
-              }
-              return null;
-            },
+            error: widget.error.fullNameError,
           ),
           AuthTextField(
             label: "Email",
             hintText: "abc@example.com",
             controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
-            onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Email cannot be empty";
-              }
-              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                return "Invalid email format";
-              }
-              return null;
-            },
+            error: widget.error.emailError,
           ),
           AuthTextField(
             label: "Password",
@@ -106,15 +91,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 _obscureText = !_obscureText;
               });
             },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Password cannot be empty";
-              }
-              if (value.length < 8) {
-                return "Password must be at least 8 characters";
-              }
-              return null;
-            },
+            error: widget.error.passwordError,
           ),
           AuthTextField(
             label: "Confirm Password",
@@ -129,16 +106,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 _obscureConfirmText = !_obscureConfirmText;
               });
             },
-            onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Confirm Password cannot be empty";
-              }
-              if (value != widget.passwordController.text) {
-                return "Passwords do not match";
-              }
-              return null;
-            },
+            error: widget.error.confirmPasswordError,
           ),
           TermsCheckbox(
             isChecked: widget.isTermsChecked,
