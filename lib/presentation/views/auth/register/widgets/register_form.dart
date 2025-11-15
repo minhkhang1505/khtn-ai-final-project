@@ -7,6 +7,7 @@ import '../../widgets/google_auth_button.dart';
 import '../../widgets/auth_prompt.dart';
 import '../../widgets/auth_primary_button.dart';
 import 'terms_checkbox.dart';
+import 'package:provider/provider.dart';
 
 class RegisterForm extends StatefulWidget {
   final TextEditingController fullNameController;
@@ -45,6 +46,7 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final viewModel = context.watch<AuthViewModel>();
 
     return Container(
       height: 680,
@@ -115,6 +117,7 @@ class _RegisterFormState extends State<RegisterForm> {
           AuthPrimaryButton(
             onPressed: widget.onCreateAccount,
             text: "Create Account",
+            isLoading: viewModel.isLoading,
           ),
           const AuthDivider(),
           GoogleAuthButton(
