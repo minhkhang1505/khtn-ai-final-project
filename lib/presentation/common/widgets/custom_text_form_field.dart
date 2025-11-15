@@ -15,6 +15,7 @@ class CustomTextFormField extends StatelessWidget {
   final IconData? suffixIcon;
   final String? Function(String?)? validator;
   final VoidCallback? onSuffixIconPressed;
+  final String? error;
 
   const CustomTextFormField({
     super.key,
@@ -31,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
     this.suffixIcon,
     this.validator,
     this.onSuffixIconPressed,
+    this.error,
   });
 
   @override
@@ -45,6 +47,7 @@ class CustomTextFormField extends StatelessWidget {
       readOnly: readOnly,
       validator: validator,
       decoration: InputDecoration(
+        errorText: error,
         hintText: hintText,
         hintStyle: TextStyle(
           color: colorScheme.onSurface.withAlpha(140),

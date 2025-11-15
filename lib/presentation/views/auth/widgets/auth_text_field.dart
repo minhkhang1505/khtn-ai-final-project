@@ -11,6 +11,7 @@ class AuthTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final IconData? suffixIcon;
   final VoidCallback? onSuffixIconPressed;
+  final String? error;
 
   const AuthTextField({
     super.key,
@@ -23,6 +24,7 @@ class AuthTextField extends StatelessWidget {
     this.validator,
     this.suffixIcon,
     this.onSuffixIconPressed,
+    this.error,
   });
 
   @override
@@ -41,6 +43,7 @@ class AuthTextField extends StatelessWidget {
           validator: validator,
           suffixIcon: suffixIcon,
           onSuffixIconPressed: onSuffixIconPressed,
+          error: error,
         ),
       ],
     );

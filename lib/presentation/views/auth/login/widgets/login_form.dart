@@ -18,6 +18,7 @@ class LoginForm extends StatefulWidget {
   final VoidCallback onSignIn;
   final VoidCallback onGoogleSignIn;
   final VoidCallback onSignUpTap;
+  final AuthViewModel loginError;
 
   const LoginForm({
     super.key,
@@ -29,6 +30,7 @@ class LoginForm extends StatefulWidget {
     required this.onSignIn,
     required this.onGoogleSignIn,
     required this.onSignUpTap,
+    required this.loginError,
   });
 
   @override
@@ -76,16 +78,8 @@ class _LoginFormState extends State<LoginForm> {
             hintText: "John@example.com",
             controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
+            error: widget.loginError.emailError,
             onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Email cannot be empty";
-              }
-              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                return "Invalid email format";
-              }
-              return null;
-            },
           ),
           // Password field
           AuthTextField(
@@ -93,6 +87,7 @@ class _LoginFormState extends State<LoginForm> {
             hintText: "Enter your password",
             controller: widget.passwordController,
             obscureText: _obscureText,
+            error: widget.loginError.passwordError ?? widget.loginError.error,
             onChanged: (value) {},
             onSuffixIconPressed: () {
               setState(() {
@@ -101,13 +96,9 @@ class _LoginFormState extends State<LoginForm> {
             },
             suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
             validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Password cannot be empty";
+              if (widget.loginError.error != null) {
+                return widget.loginError.error;
               }
-              if (value.length < 8) {
-                return "Password must be at least 8 characters";
-              }
-              return null;
             },
           ),
           // Remember me and Forgot password

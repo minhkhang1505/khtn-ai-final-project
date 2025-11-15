@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/auth_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/login_usecase.dart';
@@ -22,15 +24,58 @@ class AuthViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
+  String? emailError;
+  String? passwordError;
+
+  void clearErrors() {
+    emailError = null;
+    passwordError = null;
+    _error = null;
+    notifyListeners();
+  }
+
+  bool validate(String email, String password) {
+    emailError = null;
+    passwordError = null;
+
+    if (email.isEmpty) {
+      _error = "Email cannot be empty";
+      emailError = "Email cannot be empty";
+    } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      emailError = "Invalid email format";
+    }
+
+    if (password.isEmpty) {
+      _error = "Password cannot be empty";
+      passwordError = "Password cannot be empty";
+    } else if (!RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~.,;:]).{8,}$',
+    ).hasMatch(password)) {
+      passwordError =
+          "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.";
+    }
+
+    notifyListeners();
+    return emailError == null && passwordError == null;
+  }
+
   Future<bool> login(String email, String password) async {
+    clearErrors();
     _isLoading = true;
     notifyListeners();
+
+    if (!validate(email, password)) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
 
     try {
       final request = LoginRequest(email: email, password: password);
       final response = await loginUsecase.call(request);
 
       final statusCode = response.statusCode;
+      debugPrintThrottled("Login response status code: $statusCode");
 
       if (statusCode == 200) {
         _error = null;
@@ -41,8 +86,12 @@ class AuthViewModel extends ChangeNotifier {
         debugPrint("Login error: $_error");
         return false;
       }
-    } catch (e) {
-      _error = e.toString();
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        _error = "Invalid email or password";
+      } else {
+        _error = "Login failed: ${e.message}";
+      }
       return false;
     } finally {
       _isLoading = false;
@@ -92,7 +141,7 @@ class AuthViewModel extends ChangeNotifier {
   Future<bool> logout() async {
     _isLoading = true;
     notifyListeners();
-    
+
     try {
       await logoutUsecase.call();
       _error = null;
