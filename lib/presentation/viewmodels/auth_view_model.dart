@@ -41,6 +41,9 @@ class AuthViewModel extends ChangeNotifier {
   bool validate(String email, String password, String? confirmPassword, String? fullName) {
     emailError = null;
     passwordError = null;
+    confirmPasswordError = null;
+    fullNameError = null;
+    _error = null;
 
     if (email.isEmpty) {
       _error = "Email cannot be empty";

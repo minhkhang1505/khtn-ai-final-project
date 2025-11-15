@@ -55,11 +55,6 @@ class _RegisterPageState extends State<RegisterPage>
     );
     if (success) {
       Navigator.pushNamed(context, '/main');
-    } else {
-      final error = viewModel.error ?? "Sign-up failed";
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error)));
     }
   }
 
