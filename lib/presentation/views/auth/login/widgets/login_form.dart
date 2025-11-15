@@ -79,7 +79,6 @@ class _LoginFormState extends State<LoginForm> {
             controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
             error: widget.loginError.emailError,
-            onChanged: (value) {},
           ),
           // Password field
           AuthTextField(
@@ -88,18 +87,12 @@ class _LoginFormState extends State<LoginForm> {
             controller: widget.passwordController,
             obscureText: _obscureText,
             error: widget.loginError.passwordError ?? widget.loginError.error,
-            onChanged: (value) {},
             onSuffixIconPressed: () {
               setState(() {
                 _obscureText = !_obscureText;
               });
             },
             suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
-            validator: (value) {
-              if (widget.loginError.error != null) {
-                return widget.loginError.error;
-              }
-            },
           ),
           // Remember me and Forgot password
           RememberMeRow(
