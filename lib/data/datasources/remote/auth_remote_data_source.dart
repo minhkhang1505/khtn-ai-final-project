@@ -1,5 +1,4 @@
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
-import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/data/models/auth_model.dart';
 
 abstract class AuthRemoteDataSource {

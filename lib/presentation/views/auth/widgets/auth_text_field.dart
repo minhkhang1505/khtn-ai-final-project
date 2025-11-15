@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/custom_text_form_field.dart';
 
 class AuthTextField extends StatelessWidget {
   final String label;
@@ -9,6 +9,9 @@ class AuthTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final ValueChanged<String>? onChanged;
   final String? Function(String?)? validator;
+  final IconData? suffixIcon;
+  final VoidCallback? onSuffixIconPressed;
+  final String? error;
 
   const AuthTextField({
     super.key,
@@ -19,6 +22,9 @@ class AuthTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.onChanged,
     this.validator,
+    this.suffixIcon,
+    this.onSuffixIconPressed,
+    this.error,
   });
 
   @override
@@ -28,16 +34,16 @@ class AuthTextField extends StatelessWidget {
       children: [
         Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
-        TextFormField(
+        CustomTextFormField(
           controller: controller,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(borderRadius: AppBorderRadius.large),
-            hintText: hintText,
-          ),
+          hintText: hintText,
           onChanged: onChanged,
           keyboardType: keyboardType,
           obscureText: obscureText,
           validator: validator,
+          suffixIcon: suffixIcon,
+          onSuffixIconPressed: onSuffixIconPressed,
+          error: error,
         ),
       ],
     );

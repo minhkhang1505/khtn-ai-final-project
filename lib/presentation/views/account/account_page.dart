@@ -3,6 +3,7 @@ import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/data/models/account_models.dart';
 import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/views/account/widgets/logout_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/widgets.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,22 @@ class _AccountPageState extends State<AccountPage>
                           onThemeChanged: themeProvider.toggleTheme,
                         ),
                         const SizedBox(height: AppSpacing.vertical + 4),
-                        AccountActionsSection(onLogoutPressed: _onLogout),
+                        //lout action
+                        AccountActionsSection(
+                          onLogoutPressed: () async {
+                            final shouldLogout = await showDialog<bool>(
+                              context: context,
+                              builder: (_) => LogoutDialog(onLogout: _onLogout),
+                            );
+
+                            if (shouldLogout == true && context.mounted) {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                '/auth/login',
+                              );
+                            }
+                          },
+                        ),
                         const SizedBox(height: AppSpacing.vertical + 4),
                         AccountFooter(version: appVersion),
                       ],
@@ -111,13 +127,11 @@ class _AccountPageState extends State<AccountPage>
     });
   }
 
-  void _onLogout() async {
+  Future<void> _onLogout() async {
     final authViewModel = context.read<AuthViewModel>();
-
     final logoutResponse = await authViewModel.logout();
-    if (logoutResponse) {
-      Navigator.pushNamed(context, '/auth/login');
-    } else {
+    
+    if (!logoutResponse) {
       debugPrint("Logout failed");
     }
   }

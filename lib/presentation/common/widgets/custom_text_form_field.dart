@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextFormField extends StatelessWidget {
   final String? hintText;
   final int maxLines;
   final TextEditingController? controller;
@@ -11,8 +11,13 @@ class CustomTextField extends StatelessWidget {
   final String? initialValue;
   final EdgeInsetsGeometry? contentPadding;
   final bool readOnly;
+  final IconData? prefixIcon;
+  final IconData? suffixIcon;
+  final String? Function(String?)? validator;
+  final VoidCallback? onSuffixIconPressed;
+  final String? error;
 
-  const CustomTextField({
+  const CustomTextFormField({
     super.key,
     this.hintText,
     this.maxLines = 1,
@@ -23,21 +28,31 @@ class CustomTextField extends StatelessWidget {
     this.initialValue,
     this.contentPadding,
     this.readOnly = false,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.validator,
+    this.onSuffixIconPressed,
+    this.error,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return TextField(
+    return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,
       maxLines: maxLines,
       onChanged: onChanged,
       readOnly: readOnly,
+      validator: validator,
       decoration: InputDecoration(
+        errorText: error,
         hintText: hintText,
-        hintStyle: TextStyle(color: colorScheme.onSurface.withAlpha(140)),
+        hintStyle: TextStyle(
+          color: colorScheme.onSurface.withAlpha(140),
+          fontSize: 13,
+        ),
         filled: true,
         fillColor: colorScheme.surfaceContainerHigh.withAlpha(120),
         contentPadding:
@@ -47,6 +62,23 @@ class CustomTextField extends StatelessWidget {
           borderRadius: AppBorderRadius.medium,
           borderSide: BorderSide.none,
         ),
+        suffixIcon: suffixIcon != null
+            ? InkWell(
+                onTap: onSuffixIconPressed,
+                child: Icon(
+                  suffixIcon,
+                  color: colorScheme.onSurface.withAlpha(140),
+                  size: 18,
+                ),
+              )
+            : null,
+        prefixIcon: prefixIcon != null
+            ? Icon(
+                prefixIcon,
+                color: colorScheme.onSurface.withAlpha(140),
+                size: 18,
+              )
+            : null,
       ),
     );
   }
