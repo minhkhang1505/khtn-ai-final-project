@@ -26,17 +26,24 @@ class AuthViewModel extends ChangeNotifier {
 
   String? emailError;
   String? passwordError;
+  String? confirmPasswordError;
+  String? fullNameError;
 
   void clearErrors() {
     emailError = null;
     passwordError = null;
+    confirmPasswordError = null;
+    fullNameError = null;
     _error = null;
     notifyListeners();
   }
 
-  bool validate(String email, String password) {
+  bool validate(String email, String password, String? confirmPassword, String? fullName) {
     emailError = null;
     passwordError = null;
+    confirmPasswordError = null;
+    fullNameError = null;
+    _error = null;
 
     if (email.isEmpty) {
       _error = "Email cannot be empty";
@@ -55,8 +62,22 @@ class AuthViewModel extends ChangeNotifier {
           "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.";
     }
 
+    if (confirmPassword != null) {
+      if (confirmPassword.isEmpty) {
+        confirmPasswordError = "Confirm Password cannot be empty";
+      } else if (confirmPassword != password) {
+        confirmPasswordError = "Passwords do not match";
+      }
+    }
+
+    if (fullName != null) {
+      if (fullName.isEmpty) {
+        fullNameError = "Full name cannot be empty";
+      }
+    }
+
     notifyListeners();
-    return emailError == null && passwordError == null;
+    return emailError == null && passwordError == null && confirmPasswordError == null && fullNameError == null;
   }
 
   Future<bool> login(String email, String password) async {
@@ -64,7 +85,7 @@ class AuthViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    if (!validate(email, password)) {
+    if (!validate(email, password, null, null)) {
       _isLoading = false;
       notifyListeners();
       return false;
@@ -99,9 +120,16 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> signUp(String email, String password) async {
+  Future<bool> signUp(String email, String password, String? confirmPassword, String? fullName) async {
+    clearErrors();
     _isLoading = true;
     notifyListeners();
+
+    if(!validate(email, password, confirmPassword, fullName)) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
 
     try {
       debugPrint("Starting sign-up for email: $email");
@@ -111,8 +139,8 @@ class AuthViewModel extends ChangeNotifier {
         verificationCallbackUrl:
             "https://auth.dev.jarvis.cx/handler/email-verification?after_auth_return_to=%2Fauth%2Fsignin%3Fclient_id%3Djarvis_chat%26redirect%3Dhttps%253A%252F%252Fchat.dev.jarvis.cx%252Fauth%252Foauth%252Fsuccess",
       );
-      final response = await signUpUseCase.call(request);
 
+      final response = await signUpUseCase.call(request);
       final statusCode = response.statusCode;
 
       if (statusCode == 200) {
