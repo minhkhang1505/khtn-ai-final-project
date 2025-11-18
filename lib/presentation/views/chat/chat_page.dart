@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
-import '../../../data/models/message_model.dart';
+import '../../../data/models/chat_model.dart';
 import 'widgets/chat_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/services/api_service.dart';
 import 'widgets/chat_drawer.dart';
@@ -16,7 +16,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final ScrollController _scrollController = ScrollController();
-  final List<MessageModel> _messages = [];
+  final List<ChatMessageModel> _messages = [];
  
   bool _isLoading = false;
 
@@ -31,18 +31,19 @@ class _ChatPageState extends State<ChatPage> {
 
   void _sendMessage(String message) async {
     if (message.trim().isEmpty) return;
-    final userMessage = MessageModel(text: message, isUser: true);
+    final userMessage = ChatMessageModel.sample();
     setState(() {
       _messages.add(userMessage);
       _isLoading = true;
     });
 
     final reply = await ApiService.sendMessage(message);
+    final replyMessage = ChatMessageModel.sampleWithData(reply, 'assistant');
 
     if (!mounted) return;
 
     setState(() {
-      _messages.add(MessageModel(text: reply, isUser: false));
+      _messages.add(replyMessage);
       _isLoading = false;
     });
 
@@ -81,13 +82,13 @@ class _ChatPageState extends State<ChatPage> {
               itemBuilder: (context, index) {
                 final msg = _messages[index];
                 return Align(
-                  alignment: msg.isUser
+                  alignment: msg.role == 'user'
                       ? Alignment.centerRight
                       : Alignment.centerLeft,
                   child: Container(
-                    width: msg.isUser ? null : double.infinity,
+                    width: msg.role == 'user' ? null : double.infinity,
                     margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    padding: msg.isUser
+                    padding: msg.role == 'user'
                         ? const EdgeInsets.all(12)
                         : const EdgeInsets.only(
                             left: 12,
@@ -96,24 +97,24 @@ class _ChatPageState extends State<ChatPage> {
                             bottom: 12,
                           ),
                     decoration: BoxDecoration(
-                      color: msg.isUser
+                      color: msg.role == 'user'
                           ? colorScheme.primaryFixedDim
                           : colorScheme.secondaryFixedDim,
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(12),
                         topRight: const Radius.circular(12),
-                        bottomLeft: msg.isUser
+                        bottomLeft: msg.role == 'user'
                             ? const Radius.circular(12)
                             : Radius.zero,
-                        bottomRight: msg.isUser
+                        bottomRight: msg.role == 'user'
                             ? Radius.zero
                             : const Radius.circular(12),
                       ),
                     ),
                     child: Text(
-                      msg.text,
+                      msg.content,
                       style: TextStyle(
-                        color: msg.isUser
+                        color: msg.role == 'user'
                             ? colorScheme.onPrimaryFixed
                             : colorScheme.onSecondaryFixed,
                         fontSize: 16,
