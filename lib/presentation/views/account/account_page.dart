@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
-import 'package:khtn_ai_final_project/data/models/account_models.dart';
+// import 'package:khtn_ai_final_project/data/models/user_models.dart';
 import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/logout_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/widgets.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/user_view_model.dart';
 import 'package:provider/provider.dart';
 
 /// Account page - User profile and settings
@@ -18,25 +19,30 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage>
     with TickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+    // Delay to ensure context is available
+    Future.microtask(() {
+      final userVM = Provider.of<UserViewModel>(context, listen: false);
+      userVM.loadCurrentUser();
+    });
+  }
+
   bool _showUpgradeBanner = true;
   bool isProUser = false;
 
-  final user = User(
-    id: '1',
-    email: 'user@example.com',
-    username: 'Mockuser',
-    roles: ['admin', 'user'],
-    geo: Geo(lat: '40.7128', long: '-74.0060'),
-  );
+  // User data will be provided by UserViewModel
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final user = context.watch<UserViewModel>().user;
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         automaticallyImplyLeading: false,
-        title: AccountHeader(user: user, isProUser: isProUser),
+        title: AccountHeader(isProUser: isProUser, user: user),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -130,7 +136,7 @@ class _AccountPageState extends State<AccountPage>
   Future<void> _onLogout() async {
     final authViewModel = context.read<AuthViewModel>();
     final logoutResponse = await authViewModel.logout();
-    
+
     if (!logoutResponse) {
       debugPrint("Logout failed");
     }

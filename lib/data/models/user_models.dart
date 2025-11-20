@@ -1,18 +1,28 @@
 /// Models for the Account feature
-class User {
+class UserResponse {
   final String id;
   final String email;
   final String username;
   final List<String> roles;
   final Geo geo;
 
-  User({
+  UserResponse({
     required this.id,
     required this.email,
     required this.username,
     required this.roles,
     required this.geo,
   });
+
+  factory UserResponse.fromJson(Map<String, dynamic> json) {
+    return UserResponse(
+      id: json['id'],
+      email: json['email'],
+      username: json['username'],
+      roles: List<String>.from(json['roles']),
+      geo: Geo(lat: json['geo']['lat'], long: json['geo']['long']),
+    );
+  }
 }
 
 class Geo {

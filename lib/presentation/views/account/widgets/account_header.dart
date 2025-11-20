@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:khtn_ai_final_project/data/models/account_models.dart';
 import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
+import 'package:khtn_ai_final_project/data/models/user_models.dart';
 
 /// Header widget displaying user profile information
 class AccountHeader extends StatelessWidget {
-  final User user;
   final bool isProUser;
+  final UserResponse? user;
 
-  const AccountHeader({super.key, required this.user, required this.isProUser});
+  const AccountHeader({super.key, required this.isProUser, this.user});
 
   @override
   Widget build(BuildContext context) {
+    final displayUser =
+        user ??
+        UserResponse(
+          id: '0',
+          email: '',
+          username: 'Guest',
+          roles: [],
+          geo: Geo(lat: '0', long: '0'),
+        );
     final colorScheme = Theme.of(context).colorScheme;
     return Row(
       children: [
@@ -26,13 +35,13 @@ class AccountHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                user.username,
+                displayUser.username,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
               ),
-              Text(user.email, style: const TextStyle(fontSize: 16)),
+              Text(displayUser.email, style: const TextStyle(fontSize: 16)),
             ],
           ),
         ),
