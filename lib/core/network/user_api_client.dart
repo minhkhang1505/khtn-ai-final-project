@@ -27,50 +27,14 @@ class UserApiClient {
 
   /// GET request with Authorization header support
   Future<Response> get(String path, {Map<String, dynamic>? data}) async {
-    final refreshToken = await localDataSource.getRefreshToken();
+    final accessToken = await localDataSource.getAccessToken();
     final options = Options(
       headers: {
-        if (refreshToken != null && refreshToken.isNotEmpty)
-          'Authorization': 'Bearer $refreshToken',
+        if (accessToken != null && accessToken.isNotEmpty)
+          'Authorization': 'Bearer $accessToken',
       },
     );
     return _dio.get(path, options: options);
-  }
-
-  /// POST request with Authorization header support
-  Future<Response> post(String path, {Map<String, dynamic>? data}) async {
-    final refreshToken = await localDataSource.getRefreshToken();
-    final options = Options(
-      headers: {
-        if (refreshToken != null && refreshToken.isNotEmpty)
-          'Authorization': 'Bearer $refreshToken',
-      },
-    );
-    return _dio.post(path, data: data, options: options);
-  }
-
-  /// PUT request with Authorization header support
-  Future<Response> put(String path, {Map<String, dynamic>? data}) async {
-    final refreshToken = await localDataSource.getRefreshToken();
-    final options = Options(
-      headers: {
-        if (refreshToken != null && refreshToken.isNotEmpty)
-          'Authorization': 'Bearer $refreshToken',
-      },
-    );
-    return _dio.put(path, data: data, options: options);
-  }
-
-  /// DELETE request with Authorization header support
-  Future<Response> delete(String path, {Map<String, dynamic>? data}) async {
-    final refreshToken = await localDataSource.getRefreshToken();
-    final options = Options(
-      headers: {
-        if (refreshToken != null && refreshToken.isNotEmpty)
-          'Authorization': 'Bearer $refreshToken',
-      },
-    );
-    return _dio.delete(path, options: options);
   }
 
   /// Get the current GUID

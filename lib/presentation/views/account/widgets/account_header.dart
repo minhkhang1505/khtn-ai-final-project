@@ -19,7 +19,7 @@ class AccountHeader extends StatelessWidget {
           email: '',
           username: 'Guest',
           roles: [],
-          geo: Geo(lat: '0', long: '0'),
+          geo: Geo.defaultLocation(),
         );
     final colorScheme = Theme.of(context).colorScheme;
     return Row(
@@ -41,7 +41,10 @@ class AccountHeader extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              Text(displayUser.email, style: const TextStyle(fontSize: 16)),
+              Text(
+                displayUser.email,
+                style: TextStyle(fontSize: 12, color: colorScheme.outline),
+              ),
             ],
           ),
         ),
