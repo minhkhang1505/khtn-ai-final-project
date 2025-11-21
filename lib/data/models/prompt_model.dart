@@ -180,40 +180,48 @@ enum Category {
   WRITING,
 }
 
-
-
 ///CreatePromptDto
-class CreatePromptRequest {
-    String category;
-    String content;
-    String description;
-    bool isPublic;
-    String language;
-    String title;
+class PromptCreationAndUpdateRequest {
+  String category;
+  String content;
+  String description;
+  bool isPublic;
+  String language;
+  String title;
 
-    CreatePromptRequest({
-        required this.category,
-        required this.content,
-        required this.description,
-        required this.isPublic,
-        required this.language,
-        required this.title,
-    });
+  PromptCreationAndUpdateRequest({
+    required this.category,
+    required this.content,
+    required this.description,
+    required this.isPublic,
+    required this.language,
+    required this.title,
+  });
 
-    CreatePromptRequest copyWith({
-        String? category,
-        String? content,
-        String? description,
-        bool? isPublic,
-        String? language,
-        String? title,
-    }) => 
-        CreatePromptRequest(
-            category: category ?? this.category,
-            content: content ?? this.content,
-            description: description ?? this.description,
-            isPublic: isPublic ?? this.isPublic,
-            language: language ?? this.language,
-            title: title ?? this.title,
-        );
+  PromptCreationAndUpdateRequest copyWith({
+    String? category,
+    String? content,
+    String? description,
+    bool? isPublic,
+    String? language,
+    String? title,
+  }) => PromptCreationAndUpdateRequest(
+    category: category ?? this.category,
+    content: content ?? this.content,
+    description: description ?? this.description,
+    isPublic: isPublic ?? this.isPublic,
+    language: language ?? this.language,
+    title: title ?? this.title,
+  );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'category': category,
+      'content': content,
+      'description': description,
+      'isPublic': isPublic,
+      'language': language,
+      'title': title,
+    };
+  }
 }

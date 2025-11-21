@@ -56,7 +56,7 @@ class JarvisApiClient {
     return _dio.post(path, data: data, options: options);
   }
 
-  Future<Response> delete(String path, {Map<String, dynamic>? data}) async {
+  Future<Response> delete(String path) async {
     final accessToken = await localDataSource.getAccessToken();
 
     final options = Options(
@@ -65,7 +65,7 @@ class JarvisApiClient {
           'Authorization': 'Bearer $accessToken',
       },
     );
-    return _dio.delete(path, data: data, options: options);
+    return _dio.delete(path, options: options);
   }
 
   Future<Response> patch(String path, {Map<String, dynamic>? data}) async {
