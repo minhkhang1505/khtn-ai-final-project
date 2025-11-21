@@ -1,18 +1,33 @@
 /// Models for the Account feature
-class User {
+class UserResponse {
   final String id;
   final String email;
   final String username;
   final List<String> roles;
-  final Geo geo;
+  final Geo? geo;
 
-  User({
+  UserResponse({
     required this.id,
     required this.email,
     required this.username,
     required this.roles,
-    required this.geo,
+    this.geo,
   });
+
+  factory UserResponse.fromJson(Map<String, dynamic> json) {
+    return UserResponse(
+      id: json['id'] ?? '',
+      email: json['email'] ?? '',
+      username: json['username'] ?? '',
+      roles: json['roles'] != null ? List<String>.from(json['roles']) : [],
+      geo: json['geo'] != null
+          ? Geo(
+              lat: json['geo']['lat'] ?? '0',
+              long: json['geo']['long'] ?? '0',
+            )
+          : null,
+    );
+  }
 }
 
 class Geo {
@@ -20,6 +35,12 @@ class Geo {
   final String long;
 
   Geo({required this.lat, required this.long});
+
+  /// Create a default Geo with zero coordinates
+  factory Geo.defaultLocation() => Geo(lat: '0', long: '0');
+
+  /// Check if geo is set to default/zero
+  bool get isDefault => lat == '0' && long == '0';
 }
 
 class PlanFeature {

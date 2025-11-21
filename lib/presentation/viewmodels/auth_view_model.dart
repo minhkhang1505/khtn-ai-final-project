@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/auth_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/login_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/logout_usecase.dart';
