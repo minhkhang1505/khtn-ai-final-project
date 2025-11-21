@@ -1,12 +1,12 @@
 // Response model for prompts
-class PrompResponse {
+class PromptResponse {
   bool hasNext;
   List<Item> items;
   int limit;
   int offset;
   int total;
 
-  PrompResponse({
+  PromptResponse({
     required this.hasNext,
     required this.items,
     required this.limit,
@@ -14,19 +14,46 @@ class PrompResponse {
     required this.total,
   });
 
-  PrompResponse copyWith({
+  PromptResponse copyWith({
     bool? hasNext,
     List<Item>? items,
     int? limit,
     int? offset,
     int? total,
-  }) => PrompResponse(
+  }) => PromptResponse(
     hasNext: hasNext ?? this.hasNext,
     items: items ?? this.items,
     limit: limit ?? this.limit,
     offset: offset ?? this.offset,
     total: total ?? this.total,
   );
+
+  factory PromptResponse.fromJson(Map<String, dynamic> json) {
+    return PromptResponse(
+      hasNext: json['hasNext'] as bool,
+      items: (json['items'] as List<dynamic>)
+          .map(
+            (item) => Item(
+              id: item['id'] as String,
+              category: item['category'] as String,
+              content: item['content'] as String,
+              createdAt: item['createdAt'] as String,
+              description: item['description'] as String?,
+              isFavorite: item['isFavorite'] as bool,
+              isPublic: item['isPublic'] as bool,
+              language: item['language'] as String,
+              title: item['title'] as String,
+              updatedAt: item['updatedAt'] as String,
+              userId: item['userId'] as String,
+              userName: item['userName'] as String,
+            ),
+          )
+          .toList(),
+      limit: json['limit'] as int,
+      offset: json['offset'] as int,
+      total: json['total'] as int,
+    );
+  }
 }
 
 class Item {
@@ -126,6 +153,17 @@ class PromptRequest {
     offset: offset ?? this.offset,
     query: query ?? this.query,
   );
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (category != null) 'category': category.toString().split('.').last,
+      if (isFavorite != null) 'isFavorite': isFavorite,
+      if (isPublic != null) 'isPublic': isPublic,
+      if (limit != null) 'limit': limit,
+      if (offset != null) 'offset': offset,
+      if (query != null) 'query': query,
+    };
+  }
 }
 
 enum Category {
@@ -140,4 +178,42 @@ enum Category {
   PRODUCTIVITY,
   SEO,
   WRITING,
+}
+
+
+
+///CreatePromptDto
+class CreatePromptRequest {
+    String category;
+    String content;
+    String description;
+    bool isPublic;
+    String language;
+    String title;
+
+    CreatePromptRequest({
+        required this.category,
+        required this.content,
+        required this.description,
+        required this.isPublic,
+        required this.language,
+        required this.title,
+    });
+
+    CreatePromptRequest copyWith({
+        String? category,
+        String? content,
+        String? description,
+        bool? isPublic,
+        String? language,
+        String? title,
+    }) => 
+        CreatePromptRequest(
+            category: category ?? this.category,
+            content: content ?? this.content,
+            description: description ?? this.description,
+            isPublic: isPublic ?? this.isPublic,
+            language: language ?? this.language,
+            title: title ?? this.title,
+        );
 }

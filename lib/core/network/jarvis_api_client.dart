@@ -14,12 +14,7 @@ class JarvisApiClient {
   late final Dio _dio;
 
   JarvisApiClient._(this.guid) {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: baseUrl,
-        headers: {'x-jarvis-guid': guid, 'Content-Type': 'application/json'},
-      ),
-    );
+    _dio = Dio(BaseOptions(baseUrl: baseUrl, headers: {'x-jarvis-guid': guid}));
 
     _dio.interceptors.add(
       TokenInterceptor(
@@ -46,6 +41,44 @@ class JarvisApiClient {
       },
     );
     return _dio.get(path, options: options);
+  }
+
+  Future<Response> post(String path, {Map<String, dynamic>? data}) async {
+    final accessToken = await localDataSource.getAccessToken();
+
+    final options = Options(
+      headers: {
+        if (accessToken != null && accessToken.isNotEmpty)
+          'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+    );
+    return _dio.post(path, data: data, options: options);
+  }
+
+  Future<Response> delete(String path, {Map<String, dynamic>? data}) async {
+    final accessToken = await localDataSource.getAccessToken();
+
+    final options = Options(
+      headers: {
+        if (accessToken != null && accessToken.isNotEmpty)
+          'Authorization': 'Bearer $accessToken',
+      },
+    );
+    return _dio.delete(path, data: data, options: options);
+  }
+
+  Future<Response> patch(String path, {Map<String, dynamic>? data}) async {
+    final accessToken = await localDataSource.getAccessToken();
+
+    final options = Options(
+      headers: {
+        if (accessToken != null && accessToken.isNotEmpty)
+          'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+    );
+    return _dio.patch(path, data: data, options: options);
   }
 
   /// Get the current GUID
