@@ -1,12 +1,12 @@
 // Response model for prompts
-class PromptResponse {
+class PromptPaggingResponse {
   bool hasNext;
-  List<Item> items;
+  List<PromptItem> items;
   int limit;
   int offset;
   int total;
 
-  PromptResponse({
+  PromptPaggingResponse({
     required this.hasNext,
     required this.items,
     required this.limit,
@@ -14,13 +14,13 @@ class PromptResponse {
     required this.total,
   });
 
-  PromptResponse copyWith({
+  PromptPaggingResponse copyWith({
     bool? hasNext,
-    List<Item>? items,
+    List<PromptItem>? items,
     int? limit,
     int? offset,
     int? total,
-  }) => PromptResponse(
+  }) => PromptPaggingResponse(
     hasNext: hasNext ?? this.hasNext,
     items: items ?? this.items,
     limit: limit ?? this.limit,
@@ -28,35 +28,37 @@ class PromptResponse {
     total: total ?? this.total,
   );
 
-  factory PromptResponse.fromJson(Map<String, dynamic> json) {
-    return PromptResponse(
-      hasNext: json['hasNext'] as bool,
-      items: (json['items'] as List<dynamic>)
-          .map(
-            (item) => Item(
-              id: item['id'] as String,
-              category: item['category'] as String,
-              content: item['content'] as String,
-              createdAt: item['createdAt'] as String,
-              description: item['description'] as String?,
-              isFavorite: item['isFavorite'] as bool,
-              isPublic: item['isPublic'] as bool,
-              language: item['language'] as String,
-              title: item['title'] as String,
-              updatedAt: item['updatedAt'] as String,
-              userId: item['userId'] as String,
-              userName: item['userName'] as String,
-            ),
-          )
-          .toList(),
-      limit: json['limit'] as int,
-      offset: json['offset'] as int,
-      total: json['total'] as int,
+  factory PromptPaggingResponse.fromJson(Map<String, dynamic> json) {
+    return PromptPaggingResponse(
+      hasNext: json['hasNext'] as bool? ?? false,
+      items:
+          (json['items'] as List<dynamic>?)
+              ?.map(
+                (item) => PromptItem(
+                  id: item['id'] as String? ?? '',
+                  category: item['category'] as String? ?? '',
+                  content: item['content'] as String? ?? '',
+                  createdAt: item['createdAt'] as String? ?? '',
+                  description: item['description'] as String?,
+                  isFavorite: item['isFavorite'] as bool? ?? false,
+                  isPublic: item['isPublic'] as bool? ?? false,
+                  language: item['language'] as String? ?? '',
+                  title: item['title'] as String? ?? '',
+                  updatedAt: item['updatedAt'] as String? ?? '',
+                  userId: item['userId'] as String? ?? '',
+                  userName: item['userName'] as String? ?? '',
+                ),
+              )
+              .toList() ??
+          [],
+      limit: json['limit'] as int? ?? 0,
+      offset: json['offset'] as int? ?? 0,
+      total: json['total'] as int? ?? 0,
     );
   }
 }
 
-class Item {
+class PromptItem {
   String id;
   String category;
   String content;
@@ -70,7 +72,7 @@ class Item {
   String userId;
   String userName;
 
-  Item({
+  PromptItem({
     required this.id,
     required this.category,
     required this.content,
@@ -85,7 +87,7 @@ class Item {
     required this.userName,
   });
 
-  Item copyWith({
+  PromptItem copyWith({
     String? id,
     String? category,
     String? content,
@@ -98,7 +100,7 @@ class Item {
     String? updatedAt,
     String? userId,
     String? userName,
-  }) => Item(
+  }) => PromptItem(
     id: id ?? this.id,
     category: category ?? this.category,
     content: content ?? this.content,

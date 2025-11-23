@@ -67,13 +67,7 @@ class TokenInterceptor extends Interceptor {
       final dio = Dio();
       final response = await dio.post(
         '$baseUrl$refreshTokenEndpoint',
-        data: {},
-        options: Options(
-          headers: {
-            'X-Stack-Refresh-Token': refreshToken,
-            'Content-Type': 'application/json',
-          },
-        ),
+        options: Options(headers: {'X-Stack-Refresh-Token': refreshToken}),
       );
 
       final newAccessToken = response.data['access_token'];

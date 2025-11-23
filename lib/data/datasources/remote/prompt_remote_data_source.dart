@@ -2,7 +2,7 @@ import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
 
 abstract class PromptRemoteDataSource {
-  Future<PromptResponse> getPrompts(PromptRequest request);
+  Future<PromptPaggingResponse> getPrompts(PromptRequest request);
   Future<bool> createPrompt(PromptCreationAndUpdateRequest request);
   Future<bool> deletePrompt(String promptId);
   Future<bool> addPromptToFavorites(String promptId);
@@ -16,14 +16,14 @@ class PromptRemoteDataSourceImpl implements PromptRemoteDataSource {
   PromptRemoteDataSourceImpl(this.client);
 
   @override
-  Future<PromptResponse> getPrompts(PromptRequest request) async {
+  Future<PromptPaggingResponse> getPrompts(PromptRequest request) async {
     final response = await client.get('/prompts', data: request.toJson());
 
     if (response.statusCode != 200) {
       throw Exception('Failed to load prompts');
     }
 
-    return PromptResponse.fromJson(response.data);
+    return PromptPaggingResponse.fromJson(response.data);
   }
 
   @override
