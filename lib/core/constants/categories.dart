@@ -1,5 +1,19 @@
 import 'package:khtn_ai_final_project/domain/entities/category.dart';
 
+enum CategoryType {
+  coding,
+  career,
+  business,
+  education,
+  marketing,
+  writing,
+  fun,
+  chatbot,
+  productivity,
+  ceo,
+  other,
+}
+
 final List<Category> categories = [
   Category(
     id: "coding",

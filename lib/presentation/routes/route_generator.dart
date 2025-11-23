@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/reset_password/reset_password.dart';
@@ -11,6 +12,8 @@ import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/create_prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 
 import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/agents/create_agent_page.dart';
@@ -120,7 +123,18 @@ class RouteGenerator {
       case AppRoutes.createNewPrompt:
         return _buildRoute(
           settings: settings,
-          builder: (_) => CreateNewPromptPage(),
+          builder: (context) {
+            final promptViewModel = Provider.of<PromptViewmodel>(
+              context,
+              listen: false,
+            );
+            return ChangeNotifierProvider(
+              create: (_) => CreatePromptViewModel(
+                createPromptUseCase: promptViewModel.createPromptUseCase,
+              ),
+              child: const CreateNewPromptPage(),
+            );
+          },
         );
 
       case AppRoutes.promptDetails:
