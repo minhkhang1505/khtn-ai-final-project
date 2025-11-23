@@ -9,7 +9,6 @@ import 'package:khtn_ai_final_project/data/repositories/auth_repository_implemen
 import 'package:khtn_ai_final_project/data/repositories/prompt_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/user_repository_implement.dart';
 import 'package:khtn_ai_final_project/domain/repositories/auth_repository.dart';
-import 'package:khtn_ai_final_project/domain/repositories/prompt_repository.dart';
 import 'package:khtn_ai_final_project/domain/usecases/get_user_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/login_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/logout_usecase.dart';

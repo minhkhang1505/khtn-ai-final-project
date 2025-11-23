@@ -9,6 +9,7 @@ import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/favorit
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompts_tab_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:provider/provider.dart';
+
 /// Prompts page - Manage AI prompts
 class PromptsPage extends StatefulWidget {
   const PromptsPage({super.key});
@@ -26,7 +27,6 @@ class _PromptsPageState extends State<PromptsPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    
 
     Future.microtask(() {
       final viewmodel = Provider.of<PromptViewmodel>(context, listen: false);
@@ -61,7 +61,7 @@ class _PromptsPageState extends State<PromptsPage>
 
   @override
   Widget build(BuildContext context) {
-    _prompts = (Provider.of<PromptViewmodel>(context).prompts as List<PromptEntity>? ?? []);
+    _prompts = (Provider.of<PromptViewmodel>(context).prompts ?? []);
     return Scaffold(
       appBar: CustomAppBar(
         title: 'AI Prompts',
