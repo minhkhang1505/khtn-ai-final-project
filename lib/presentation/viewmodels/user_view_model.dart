@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/user_models.dart';
-import 'package:khtn_ai_final_project/data/repositories/user_repository_implement.dart';
-import 'package:khtn_ai_final_project/domain/repositories/user_repository.dart';
 import 'package:khtn_ai_final_project/domain/usecases/get_user_usecase.dart';
 
 class UserViewModel extends ChangeNotifier {

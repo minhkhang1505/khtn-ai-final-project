@@ -7,7 +7,7 @@ class PromptRepositoryImpl implements PromptRepository {
   PromptRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<PromptResponse> getPrompts(PromptRequest request) async {
+  Future<PromptPaggingResponse> getPrompts(PromptRequest request) async {
     final response = await remoteDataSource.getPrompts(request);
     return response;
   }

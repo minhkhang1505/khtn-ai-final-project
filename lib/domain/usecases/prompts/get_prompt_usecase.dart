@@ -5,7 +5,7 @@ class GetPromptUseCase {
   final PromptRepository repository;
   GetPromptUseCase(this.repository);
 
-  Future<PromptResponse> call(PromptRequest request) async {
+  Future<PromptPaggingResponse> call(PromptRequest request) async {
     final response = await repository.getPrompts(request);
     return response;
   }

@@ -1,7 +1,7 @@
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
 
 abstract class PromptRepository {
-  Future<PromptResponse> getPrompts(PromptRequest request);
+  Future<PromptPaggingResponse> getPrompts(PromptRequest request);
   Future<bool> createPrompt(PromptCreationAndUpdateRequest request);
   Future<bool> deletePrompt(String promptId);
   Future<bool> addPromptToFavorites(String promptId);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/empty_prompt_widget.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
 
 class FavoritePromptsTab extends StatefulWidget {
@@ -26,7 +27,7 @@ class _FavoritePromptsTabState extends State<FavoritePromptsTab> {
     final favoritePrompts = widget.prompts.where((p) => p.isFavorite).toList();
 
     if (favoritePrompts.isEmpty) {
-      return const Center(child: Text('No favorite prompts yet'));
+      return EmptyPromptWidget(message: "No favorite prompts available.");
     }
 
     return ListView(
