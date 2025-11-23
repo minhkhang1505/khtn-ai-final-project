@@ -1,9 +1,9 @@
 import 'package:khtn_ai_final_project/domain/repositories/prompt_repository.dart';
 
-class RemovePromptFromFavorite {
+class RemovePromptFromFavoriteUsecase {
   final PromptRepository repository;
 
-  RemovePromptFromFavorite(this.repository);
+  RemovePromptFromFavoriteUsecase(this.repository);
 
   Future<bool> call(String promptId) async {
     final result = await repository.removeFromFavorites(promptId);

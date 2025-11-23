@@ -12,7 +12,11 @@ import 'package:khtn_ai_final_project/domain/repositories/auth_repository.dart';
 import 'package:khtn_ai_final_project/domain/usecases/get_user_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/login_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/logout_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/prompts/add_prompt_to_fav.dart';
+import 'package:khtn_ai_final_project/domain/usecases/prompts/create_prompt_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/prompts/delete_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from_favorite.dart';
 import 'package:khtn_ai_final_project/domain/usecases/sign_up_usecase.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
@@ -77,6 +81,14 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => PromptViewmodel(
             getPromptUseCase: GetPromptUseCase(promptRepository),
+            createPromptUseCase: CreatePromptUsecase(promptRepository),
+            deletePromptUseCase: DeletePromptUsecase(promptRepository),
+            addPromptToFavoriteUseCase: AddPromptToFavoriteUsecase(
+              promptRepository,
+            ),
+            removePromptFromFavoriteUsecase: RemovePromptFromFavoriteUsecase(
+              promptRepository,
+            ),
           ),
         ),
       ],

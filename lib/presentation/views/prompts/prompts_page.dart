@@ -22,6 +22,7 @@ class _PromptsPageState extends State<PromptsPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
   late List<PromptEntity> _prompts;
+  late List<PromptEntity> _favoritePrompts;
 
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _PromptsPageState extends State<PromptsPage>
     Future.microtask(() {
       final viewmodel = Provider.of<PromptViewmodel>(context, listen: false);
       viewmodel.getAllPrompts();
+      viewmodel.getFavoritePrompts();
     });
   }
 
@@ -62,6 +64,8 @@ class _PromptsPageState extends State<PromptsPage>
   @override
   Widget build(BuildContext context) {
     _prompts = (Provider.of<PromptViewmodel>(context).prompts ?? []);
+    _favoritePrompts =
+        (Provider.of<PromptViewmodel>(context).favoritePrompts ?? []);
     return Scaffold(
       appBar: CustomAppBar(
         title: 'AI Prompts',
