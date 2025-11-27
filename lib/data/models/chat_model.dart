@@ -55,14 +55,12 @@ class MessageRequestModel {
   List<String> files;
   AssistantModel assistant;
   AiChatMetadata metadata;
-  String role;
 
   MessageRequestModel({
     required this.content, 
     required this.files, 
     required this.assistant, 
     required this.metadata, 
-    this.role = 'user'
   });
 
   factory MessageRequestModel.fromJson(Map<String, dynamic> json) {

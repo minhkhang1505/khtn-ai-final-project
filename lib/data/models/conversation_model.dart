@@ -1,4 +1,4 @@
-import 'message_model.dart';
+import 'chat_model.dart';
 import 'assistant_model.dart';
 import 'metadata_model.dart';
 
@@ -29,4 +29,46 @@ class ChatConversationModel {
       messages: [ChatMessageModel.sample()],
     );
   }
+}
+
+
+// Request Model
+class ConversationRequestModel {
+  String cursor;
+  int limit;
+  String assistantId;
+  String assistantModel = "dify";
+
+  ConversationRequestModel({
+    required this.cursor,
+    required this.limit,
+    required this.assistantId,
+    required this.assistantModel,
+  });
+}
+
+class Object {
+  String title;
+  String id;
+  String createdAt;
+
+  Object({
+    required this.title,
+    required this.id,
+    required this.createdAt,
+  });
+}
+
+// Response Model
+class ConversationResponseModel {
+  String cursor;
+  bool hasMore;
+  int limit;
+  List <Object> objects;
+  ConversationResponseModel({
+    required this.cursor,
+    required this.hasMore,
+    required this.limit,
+    required this.objects,
+  });
 }
