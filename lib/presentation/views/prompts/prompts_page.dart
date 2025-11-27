@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/categories.dart';
-import 'package:khtn_ai_final_project/core/constants/sample_prompts.dart';
 import 'package:khtn_ai_final_project/domain/entities/category.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/all_prompts_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/categories_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/favorite_prompts_tab.dart';
-import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompts_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompts_tab_bar.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 /// Prompts page - Manage AI prompts
 class PromptsPage extends StatefulWidget {
@@ -22,12 +22,18 @@ class _PromptsPageState extends State<PromptsPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
   late List<PromptEntity> _prompts;
+  late List<PromptEntity> _favoritePrompts;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _prompts = List.from(samplePrompts);
+
+    Future.microtask(() {
+      final viewmodel = Provider.of<PromptViewmodel>(context, listen: false);
+      viewmodel.getAllPrompts();
+      viewmodel.getFavoritePrompts();
+    });
   }
 
   @override
@@ -57,6 +63,9 @@ class _PromptsPageState extends State<PromptsPage>
 
   @override
   Widget build(BuildContext context) {
+    _prompts = (Provider.of<PromptViewmodel>(context).prompts ?? []);
+    _favoritePrompts =
+        (Provider.of<PromptViewmodel>(context).favoritePrompts ?? []);
     return Scaffold(
       appBar: CustomAppBar(
         title: 'AI Prompts',
