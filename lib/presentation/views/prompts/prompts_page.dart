@@ -11,49 +11,21 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.d
 import 'package:provider/provider.dart';
 
 /// Prompts page - Manage AI prompts
-class PromptsPage extends StatefulWidget {
+class PromptsPage extends StatelessWidget {
   const PromptsPage({super.key});
 
-  @override
-  State<PromptsPage> createState() => _PromptsPageState();
-}
-
-class _PromptsPageState extends State<PromptsPage>
-    with TickerProviderStateMixin {
-  late TabController _tabController;
-  late List<PromptEntity> _prompts;
-  late List<PromptEntity> _favoritePrompts;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-
-    Future.microtask(() {
-      final viewmodel = Provider.of<PromptViewmodel>(context, listen: false);
-      viewmodel.getAllPrompts();
-      viewmodel.getFavoritePrompts();
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  void _handleAddPrompt() {
+  void _handleAddPrompt(BuildContext context) {
     Navigator.pushNamed(context, '/prompts/new');
-    // TODO: Implement add prompt logic
   }
 
-  void _handleFavoriteTap(PromptEntity prompt) {
-    setState(() {
-      final index = _prompts.indexWhere((p) => p.id == prompt.id);
-      if (index != -1) {
-        _prompts[index] = prompt.copyWith(isFavorite: !prompt.isFavorite);
-      }
-    });
+  void _handleFavoriteTap(BuildContext context, PromptEntity prompt) {
+    final viewmodel = Provider.of<PromptViewmodel>(context, listen: false);
+    // Toggle favorite status via viewmodel
+    if (prompt.isFavorite) {
+      viewmodel.removeFromFavorite(prompt.id);
+    } else {
+      viewmodel.addPromptToFavorite(prompt.id);
+    }
   }
 
   void _handleCategoryTap(Category category) {
@@ -63,55 +35,76 @@ class _PromptsPageState extends State<PromptsPage>
 
   @override
   Widget build(BuildContext context) {
-    _prompts = (Provider.of<PromptViewmodel>(context).prompts ?? []);
-    _favoritePrompts =
-        (Provider.of<PromptViewmodel>(context).favoritePrompts ?? []);
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'AI Prompts',
-        subtitle: 'Browse and manage your AI prompts',
-        // toolbarHeight: AppBarInfo.height,
-        onCreatePressed: _handleAddPrompt,
-        createButtonLabel: 'Add Prompt',
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final bool isWideScreen = constraints.maxWidth > 600;
-          return Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: isWideScreen ? 1200 : double.infinity,
-              ),
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    PromptsTabBar(controller: _tabController),
-                    Expanded(
-                      child: TabBarView(
-                        controller: _tabController,
+    // Load prompts when widget builds for the first time
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewmodel = Provider.of<PromptViewmodel>(context, listen: false);
+      if (viewmodel.prompts == null || viewmodel.prompts!.isEmpty) {
+        viewmodel.getAllPrompts();
+      }
+      if (viewmodel.favoritePrompts == null ||
+          viewmodel.favoritePrompts!.isEmpty) {
+        viewmodel.getFavoritePrompts();
+      }
+    });
+
+    return Consumer<PromptViewmodel>(
+      builder: (context, viewmodel, child) {
+        final prompts = viewmodel.prompts ?? [];
+        final favoritePrompts = viewmodel.favoritePrompts ?? [];
+
+        return DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            appBar: CustomAppBar(
+              title: 'AI Prompts',
+              subtitle: 'Browse and manage your AI prompts',
+              onCreatePressed: () => _handleAddPrompt(context),
+              createButtonLabel: 'Add Prompt',
+            ),
+            body: LayoutBuilder(
+              builder: (context, constraints) {
+                final bool isWideScreen = constraints.maxWidth > 600;
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: isWideScreen ? 1200 : double.infinity,
+                    ),
+                    child: SafeArea(
+                      child: Column(
                         children: [
-                          AllPromptsTab(
-                            prompts: _prompts,
-                            onFavoriteTap: _handleFavoriteTap,
+                          PromptsTabBar(
+                            controller: DefaultTabController.of(context),
                           ),
-                          CategoriesTab(
-                            categories: categories,
-                            onCategoryTap: _handleCategoryTap,
-                          ),
-                          FavoritePromptsTab(
-                            prompts: _prompts,
-                            onFavoriteTap: _handleFavoriteTap,
+                          Expanded(
+                            child: TabBarView(
+                              children: [
+                                AllPromptsTab(
+                                  prompts: prompts,
+                                  onFavoriteTap: (prompt) =>
+                                      _handleFavoriteTap(context, prompt),
+                                ),
+                                CategoriesTab(
+                                  categories: categories,
+                                  onCategoryTap: _handleCategoryTap,
+                                ),
+                                FavoritePromptsTab(
+                                  prompts: favoritePrompts,
+                                  onFavoriteTap: (prompt) =>
+                                      _handleFavoriteTap(context, prompt),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
