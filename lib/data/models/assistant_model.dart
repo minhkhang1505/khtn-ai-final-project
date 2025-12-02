@@ -23,7 +23,7 @@ enum AssistantModelType {
 }
 
 class AssistantModel {
-  String model;
+  String model = "dify"; // default model
   String name;
   String id;
 
@@ -32,16 +32,32 @@ class AssistantModel {
   factory AssistantModel.fromJson(Map<String, dynamic> json) {
     return AssistantModel(
       model: json['model'],
-      name: json['name'] ?? 'Default Assistant',
-      id: json['id'] ?? '',
+      name: json['name'],
+      id: json['id'],
     );
   }
 
-  factory AssistantModel.sample() {
+  factory AssistantModel.fromMap(Map<String, dynamic> map) {
     return AssistantModel(
-      model: AssistantModelType.GPT_4_O.id,
-      name: 'Sample Assistant',
-      id: 'assistant_sample_id',
+      model: map['model'],
+      name: map['name'],
+      id: map['id'],
     );
+  }
+
+  factory AssistantModel.defaults() {
+    return AssistantModel(
+      model: "dify",
+      name: 'GPT_4O_MINI',
+      id: 'gpt-4o-mini',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'model': model,
+      'name': name,
+      'id': id,
+    };
   }
 }

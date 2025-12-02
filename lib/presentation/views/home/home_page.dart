@@ -21,14 +21,14 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   // List of pages corresponding to bottom nav items
-  final List<Widget> _pages = const <Widget>[
-    ChatPage(),
-    BotsPage(),
-    AgentsPage(),
-    KnowledgePage(),
-    PromptsPage(),
-    AccountPage(),
-  ];
+  // final List<Widget> _pages = const <Widget>[
+  //   ChatPage(),
+  //   BotsPage(),
+  //   AgentsPage(),
+  //   KnowledgePage(),
+  //   PromptsPage(),
+  //   AccountPage(),
+  // ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -51,7 +51,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: const [
+          ChatPage(),
+          BotsPage(),
+          AgentsPage(),
+          KnowledgePage(),
+          PromptsPage(),
+          AccountPage(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // Fixed type for more than 3 items
         items: <BottomNavigationBarItem>[

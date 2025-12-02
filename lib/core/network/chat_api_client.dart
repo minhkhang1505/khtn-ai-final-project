@@ -1,25 +1,35 @@
 import 'package:dio/dio.dart';
-import 'auth_api_client.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
+import 'package:khtn_ai_final_project/core/network/token_interceptor.dart';
+import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 
 class ChatApiClient {
   static const String baseUrl = 'https://api.dev.jarvis.cx/api/v1/ai-chat';
   final AuthLocalDataSource localDataSource;
   String endpoint = '/messages';
 
-  final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: baseUrl,
-      headers: {
-        'Authorization': 'Bearer YOUR_API_KEY_HERE', // Replace with your actual API key
-        'Content-Type': 'application/json',
-      },
-    ),
-  );
+  late final Dio _dio;
 
   ChatApiClient(this.localDataSource) {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    // Add token interceptor so Authorization header is injected from local storage
+    _dio.interceptors.add(
+      TokenInterceptor(
+        localDataSource: localDataSource,
+        refreshTokenEndpoint: 'auth/sessions/current/refresh',
+        baseUrl: AuthApiClient.baseUrl,
+      ),
+    );
+
     _dio.interceptors.add(LogInterceptor());
-    _dio.interceptors.add(AuthInterceptor(localDataSource));  // Reuse AuthInterceptor for token management
   }
 
   // for chat with bot

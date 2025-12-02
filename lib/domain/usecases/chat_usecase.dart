@@ -2,23 +2,23 @@ import 'package:khtn_ai_final_project/data/models/chat_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversation_model.dart';
 import 'package:khtn_ai_final_project/domain/repositories/chat_repository.dart';
 
-class ChatUsecase {
+class ChatUseCase {
   final ChatRepository chatRepository;
-  ChatUsecase({required this.chatRepository});
+  ChatUseCase({required this.chatRepository});
 
-  Future<MessageRequestModel> sendMessage(MessageRequestModel messageRequest) async {
+  Future<SendMessageResponseModel> sendMessage(SendMessageRequestModel messageRequest) async {
     return await chatRepository.sendMessage(messageRequest);
   }
 
-  Future<MessageRequestModel> chatWithBot(MessageRequestModel messageRequest) async {
+  Future<ChatWithBotResponseModel> chatWithBot(ChatWithBotRequestModel messageRequest) async {
     return await chatRepository.chatWithBot(messageRequest);
   }
 
-  Future<ConversationRequestModel> getConversations(ConversationRequestModel conversationRequest) async {
+  Future<GetConversationsResponseModel> getConversations(GetConversationsRequestModel conversationRequest) async {
     return await chatRepository.getConversations(conversationRequest);
   }
 
-  Future<ConversationRequestModel> getConversationHistory(ConversationRequestModel conversationRequest) async {
+  Future<GetConversationHistoryResponseModel> getConversationHistory(GetConversationHistoryRequestModel conversationRequest) async {
     return await chatRepository.getConversationHistory(conversationRequest);
   }
 }
