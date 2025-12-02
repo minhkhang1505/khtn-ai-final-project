@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
 
-class AllPromptsTab extends StatefulWidget {
+class AllPromptsTab extends StatelessWidget {
   final List<PromptEntity> prompts;
   final Function(PromptEntity)? onFavoriteTap;
 
   const AllPromptsTab({super.key, required this.prompts, this.onFavoriteTap});
 
-  @override
-  State<AllPromptsTab> createState() => _AllPromptsTabState();
-}
-
-class _AllPromptsTabState extends State<AllPromptsTab> {
-  void handleItemTap(PromptEntity prompt) {
+  void _handleItemTap(BuildContext context, PromptEntity prompt) {
     Navigator.pushNamed(context, '/prompts/details', arguments: prompt.id);
   }
 
@@ -22,11 +17,11 @@ class _AllPromptsTabState extends State<AllPromptsTab> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       children: [
-        for (var prompt in widget.prompts)
+        for (var prompt in prompts)
           PromptItem(
-            onTap: () => handleItemTap(prompt),
+            onTap: () => _handleItemTap(context, prompt),
             prompt: prompt,
-            onFavoriteTap: () => widget.onFavoriteTap?.call(prompt),
+            onFavoriteTap: () => onFavoriteTap?.call(prompt),
           ),
       ],
     );
