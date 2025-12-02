@@ -21,6 +21,12 @@ class TokenInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final token = await localDataSource.getAccessToken();
+
+    //Debug print for tracing
+    print("➡️ REQUEST: ${options.method} ${options.uri}");
+    print("Headers: ${options.headers}");
+    print("Body: ${options.data}");
+
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }

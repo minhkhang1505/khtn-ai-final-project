@@ -40,7 +40,7 @@ class JarvisApiClient {
           'Authorization': 'Bearer $accessToken',
       },
     );
-    return _dio.get(path, options: options);
+    return _dio.get(path, options: options, queryParameters: data);
   }
 
   Future<Response> post(String path, {Map<String, dynamic>? data}) async {
