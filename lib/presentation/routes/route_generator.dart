@@ -14,6 +14,8 @@ import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.d
 import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/create_prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_detail_view_model.dart';
+import 'package:khtn_ai_final_project/domain/usecases/prompts/udpate_prompt_usecase.dart';
 
 import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/agents/create_agent_page.dart';
@@ -138,9 +140,26 @@ class RouteGenerator {
         );
 
       case AppRoutes.promptDetails:
+        final promptId = settings.arguments as String;
         return _buildRoute(
           settings: settings,
-          builder: (_) => PromptDetailPage(),
+          builder: (context) {
+            final promptViewModel = Provider.of<PromptViewmodel>(
+              context,
+              listen: false,
+            );
+            return ChangeNotifierProvider(
+              create: (_) => PromptDetailViewModel(
+                getPromptUseCase: promptViewModel.getPromptUseCase,
+                updatePromptUseCase: UpdatePromptUsecase(
+                  repository: promptViewModel.deletePromptUseCase.repository,
+                ),
+                deletePromptUseCase: promptViewModel.deletePromptUseCase,
+                promptId: promptId,
+              )..loadPromptDetails(),
+              child: const PromptDetailPage(),
+            );
+          },
         );
 
       case AppRoutes.newKnowledgeSource:

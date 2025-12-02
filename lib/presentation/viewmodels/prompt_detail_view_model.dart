@@ -9,12 +9,17 @@ class PromptDetailViewModel extends ChangeNotifier {
   final UpdatePromptUsecase updatePromptUseCase;
   final DeletePromptUsecase deletePromptUseCase;
   final String promptId;
+
   PromptDetailViewModel({
     required this.getPromptUseCase,
     required this.updatePromptUseCase,
     required this.deletePromptUseCase,
     required this.promptId,
-  });
+  }) {
+    titleController = TextEditingController();
+    descriptionController = TextEditingController();
+    contentController = TextEditingController();
+  }
 
   late TextEditingController titleController;
   late TextEditingController descriptionController;

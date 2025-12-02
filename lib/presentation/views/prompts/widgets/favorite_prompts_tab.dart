@@ -19,7 +19,7 @@ class FavoritePromptsTab extends StatefulWidget {
 
 class _FavoritePromptsTabState extends State<FavoritePromptsTab> {
   void handleItemTap(PromptEntity prompt) {
-    Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
+    Navigator.pushNamed(context, '/prompts/details', arguments: prompt.id);
   }
 
   @override

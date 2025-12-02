@@ -14,7 +14,7 @@ class AllPromptsTab extends StatefulWidget {
 
 class _AllPromptsTabState extends State<AllPromptsTab> {
   void handleItemTap(PromptEntity prompt) {
-    Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
+    Navigator.pushNamed(context, '/prompts/details', arguments: prompt.id);
   }
 
   @override
