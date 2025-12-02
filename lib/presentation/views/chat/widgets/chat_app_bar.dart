@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'bot_option_menu.dart';
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -16,7 +17,11 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Chat', style: AppBarInfo.titleTextStyle),
+          if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
+            Text(
+              'Chats',
+              style: AppBarInfo.titleTextStyle,
+            ),
         ],
       ),
       actions: [

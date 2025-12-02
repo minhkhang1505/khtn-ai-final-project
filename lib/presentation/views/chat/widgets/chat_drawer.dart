@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot_view_model.dart';
-import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class ChatDrawer extends StatefulWidget {
   const ChatDrawer({super.key});
@@ -42,7 +41,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
             const SizedBox(height: 10),
             ListTile(
               leading: const Icon(Icons.add),
-              title: const Text('Create New Bot'),
+              title: const Text('Create Bot'),
               onTap: () {
                 Navigator.pushNamed(context, '/bots/new');
                 // TODO: Create new chat page with bot
@@ -56,10 +55,45 @@ class _ChatDrawerState extends State<ChatDrawer> {
               },
             ),
             const SizedBox(height: 10),
+
             Padding(
               padding: const EdgeInsets.only(left: 18.0),
               child: Text(
-                'Chats',
+                'Base models',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: botViewModel.bots.length,
+                itemBuilder: (context, index) {
+                  final bot = botViewModel.bots[index];
+                  return ListTile(
+                    title: Text(bot.name),
+                    subtitle: Text(bot.description),
+                    trailing: Icon(
+                      Icons.delete_outline,
+                      color: Colors.red,
+                      size: 20,
+                    ),
+
+                    onTap: () {
+                      // TODO: Handle delete chat
+                    },
+                  );
+                },
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.only(left: 18.0),
+              child: Text(
+                'Base models',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
@@ -77,82 +111,14 @@ class _ChatDrawerState extends State<ChatDrawer> {
                   return ListTile(
                     title: Text(bot.name),
                     subtitle: Text(bot.description),
-                    trailing: PopupMenuButton<int>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppBorderRadius.medium,
-                      ),
-                      elevation: 6,
-                      offset: const Offset(0, 40),
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 0,
-                          child: Row(
-                            children: const [
-                              Icon(Icons.share_outlined, size: 20),
-                              SizedBox(width: 12),
-                              Text('Share'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 1,
-                          child: Row(
-                            children: const [
-                              Icon(Icons.edit_outlined, size: 20),
-                              SizedBox(width: 12),
-                              Text('Rename'),
-                            ],
-                          ),
-                        ),
-                        const PopupMenuDivider(),
-                        PopupMenuItem(
-                          value: 2,
-                          child: Row(
-                            children: const [
-                              Icon(Icons.archive_outlined, size: 20),
-                              SizedBox(width: 12),
-                              Text('Archive'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 3,
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.delete_outline,
-                                color: Colors.red,
-                                size: 20,
-                              ),
-                              SizedBox(width: 12),
-                              Text(
-                                'Delete',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                      onSelected: (value) {
-                        switch (value) {
-                          case 0:
-                            debugPrint('Share tapped');
-                            break;
-                          case 1:
-                            debugPrint('Rename tapped');
-                            break;
-                          case 2:
-                            debugPrint('Archive tapped');
-                            break;
-                          case 3:
-                            debugPrint('Delete tapped');
-                            break;
-                        }
-                      },
-                      icon: const Icon(Icons.more_horiz),
+                    trailing: Icon(
+                      Icons.delete_outline,
+                      color: Colors.red,
+                      size: 20,
                     ),
+
                     onTap: () {
-                      // TODO: Handle bot selection
+                      // TODO: Handle delete chat
                     },
                   );
                 },

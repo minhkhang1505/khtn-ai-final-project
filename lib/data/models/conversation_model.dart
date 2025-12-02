@@ -1,6 +1,5 @@
 import 'chat_model.dart';
 import 'assistant_model.dart';
-import 'metadata_model.dart';
 
 class ChatConversationModel {
   List<ChatMessageModel> messages = [];

@@ -17,26 +17,21 @@ class ChatPage extends StatelessWidget {
     // TODO: Handle add new chat
   }
 
-  // void sendMessage(String message) async {
-  //   if (message.trim().isEmpty) return;
-  //   final userMessage = message.trim();
-
-  //   final vm = context.read<ChatViewModel>();
-  //   await vm.sendMessage(userMessage);
-  // }
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final vm = context.read<ChatViewModel>();
     return Scaffold(
+      appBar: ChatAppBar(
+        onAddNewChat: onAddNewChat,
+      ),
       drawer: ChatDrawer(),
       body: Column(
         children: [
           Expanded(
             // Message list
             child: MessageList(
-              scrollController: context.read<ChatViewModel>().scrollController,
+              scrollController: vm.scrollController,
             ),
           ),
 

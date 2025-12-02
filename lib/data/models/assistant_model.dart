@@ -20,6 +20,17 @@ enum AssistantModelType {
       return null;
     }
   }
+
+  String get name {
+    return switch (this) {
+      AssistantModelType.CLAUDE_3_HAIKU => "Claude 3 Haiku",
+      AssistantModelType.CLAUDE_3_SONNET => "Claude 3 Sonnet",
+      AssistantModelType.GEMINI_15_FLASH => "Gemini 1.5 Flash",
+      AssistantModelType.GEMINI_15_PRO => "Gemini 1.5 Pro",
+      AssistantModelType.GPT_4_O => "GPT-4O",
+      AssistantModelType.GPT_4O_MINI => "GPT-4O Mini",
+    };
+  }
 }
 
 class AssistantModel {

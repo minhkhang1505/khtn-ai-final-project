@@ -1,6 +1,5 @@
 import 'assistant_model.dart';
 import 'metadata_model.dart';
-import 'conversation_model.dart';
 
 // Logic class
 class ChatMessageModel {
