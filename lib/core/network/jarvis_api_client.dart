@@ -21,6 +21,7 @@ class JarvisApiClient {
         localDataSource: localDataSource,
         refreshTokenEndpoint: _refreshTokenEndpoint,
         baseUrl: AuthApiClient.baseUrl,
+        dio: _dio,
       ),
     );
     _dio.interceptors.add(LogInterceptor());

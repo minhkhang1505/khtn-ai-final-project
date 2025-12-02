@@ -5,7 +5,10 @@ import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/all_prompts_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/categories_tab.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/empty_prompt_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/failure_widget.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/favorite_prompts_tab.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompts_tab_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -52,58 +55,74 @@ class PromptsPage extends StatelessWidget {
         final prompts = viewmodel.prompts ?? [];
         final favoritePrompts = viewmodel.favoritePrompts ?? [];
 
-        return DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            appBar: CustomAppBar(
-              title: 'AI Prompts',
-              subtitle: 'Browse and manage your AI prompts',
-              onCreatePressed: () => _handleAddPrompt(context),
-              createButtonLabel: 'Add Prompt',
-            ),
-            body: LayoutBuilder(
-              builder: (context, constraints) {
-                final bool isWideScreen = constraints.maxWidth > 600;
-                return Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: isWideScreen ? 1200 : double.infinity,
-                    ),
-                    child: SafeArea(
-                      child: Column(
-                        children: [
-                          PromptsTabBar(
-                            controller: DefaultTabController.of(context),
-                          ),
-                          Expanded(
-                            child: TabBarView(
-                              children: [
-                                AllPromptsTab(
-                                  prompts: prompts,
-                                  onFavoriteTap: (prompt) =>
-                                      _handleFavoriteTap(context, prompt),
-                                ),
-                                CategoriesTab(
-                                  categories: categories,
-                                  onCategoryTap: _handleCategoryTap,
-                                ),
-                                FavoritePromptsTab(
-                                  prompts: favoritePrompts,
-                                  onFavoriteTap: (prompt) =>
-                                      _handleFavoriteTap(context, prompt),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+        switch (viewmodel.viewState) {
+          case PromptViewState.loading:
+            return LoadingIndicatorWidget();
+          case PromptViewState.error:
+            return FailureWidget(
+              onRetry: () {
+                viewmodel.getAllPrompts();
+                viewmodel.getFavoritePrompts();
               },
-            ),
-          ),
-        );
+            );
+          case PromptViewState.initial:
+            return EmptyPromptWidget(
+              message: "No prompts found. Please add new prompts.",
+            );
+          case PromptViewState.success:
+            return DefaultTabController(
+              length: 3,
+              child: Scaffold(
+                appBar: CustomAppBar(
+                  title: 'AI Prompts',
+                  subtitle: 'Browse and manage your AI prompts',
+                  onCreatePressed: () => _handleAddPrompt(context),
+                  createButtonLabel: 'Add Prompt',
+                ),
+                body: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final bool isWideScreen = constraints.maxWidth > 600;
+                    return Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: isWideScreen ? 1200 : double.infinity,
+                        ),
+                        child: SafeArea(
+                          child: Column(
+                            children: [
+                              PromptsTabBar(
+                                controller: DefaultTabController.of(context),
+                              ),
+                              Expanded(
+                                child: TabBarView(
+                                  children: [
+                                    AllPromptsTab(
+                                      prompts: prompts,
+                                      onFavoriteTap: (prompt) =>
+                                          _handleFavoriteTap(context, prompt),
+                                    ),
+                                    CategoriesTab(
+                                      categories: categories,
+                                      onCategoryTap: _handleCategoryTap,
+                                    ),
+                                    FavoritePromptsTab(
+                                      prompts: favoritePrompts,
+                                      onFavoriteTap: (prompt) =>
+                                          _handleFavoriteTap(context, prompt),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            );
+        }
       },
     );
   }

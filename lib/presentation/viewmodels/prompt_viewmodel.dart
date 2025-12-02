@@ -8,6 +8,8 @@ import 'package:khtn_ai_final_project/domain/usecases/prompts/delete_prompt_usec
 import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from_favorite.dart';
 
+enum PromptViewState { initial, loading, success, error }
+
 class PromptViewmodel extends ChangeNotifier {
   final GetPromptUseCase getPromptUseCase;
   final CreatePromptUsecase createPromptUseCase;
@@ -23,40 +25,53 @@ class PromptViewmodel extends ChangeNotifier {
     required this.removePromptFromFavoriteUsecase,
   });
 
+  PromptViewState _state = PromptViewState.initial;
+  PromptViewState get viewState => _state;
+
+  void _setState(PromptViewState viewState) {
+    _state = viewState;
+    notifyListeners();
+  }
+
   final List<PromptEntity> _prompts = [];
   List<PromptEntity>? get prompts => _prompts;
-  
+
   final List<PromptEntity> _favoritePrompts = [];
   List<PromptEntity>? get favoritePrompts => _favoritePrompts;
 
   double limit = 20;
   double offset = 0;
-  bool isLoading = false;
   bool hasNext = false;
 
   Future<bool> getAllPrompts() async {
-    if (isLoading) return false;
-    isLoading = true;
-    notifyListeners();
+    if (_state == PromptViewState.loading) return false;
+
     try {
+      if (_prompts.isEmpty) {
+        _setState(PromptViewState.loading);
+      }
+
       final requestObject = PromptRequest(limit: limit, offset: offset);
       final response = await getPromptUseCase.call(requestObject);
       hasNext = response.hasNext;
       offset += limit;
       _prompts.addAll(response.items.toEntityList());
-      notifyListeners();
+
+      _setState(PromptViewState.success);
       return true;
     } catch (e) {
       debugPrint('PromptViewmodel: Error fetching prompts - $e');
+      _setState(PromptViewState.error);
       return false;
-    } finally {
-      isLoading = false;
-      notifyListeners();
     }
   }
 
   Future<bool> getFavoritePrompts() async {
     try {
+      if (_prompts.isEmpty) {
+        _setState(PromptViewState.loading);
+      }
+
       final requestFavoritePrompts = PromptRequest(
         limit: limit,
         offset: offset,
@@ -66,12 +81,12 @@ class PromptViewmodel extends ChangeNotifier {
       hasNext = response.hasNext;
       offset += limit;
       _prompts.addAll(response.items.toEntityList());
+      _setState(PromptViewState.success);
       return true;
     } catch (e) {
       debugPrint('PromptViewmodel: Error fetching favorite prompts - $e');
+      _setState(PromptViewState.error);
       return false;
-    } finally {
-      notifyListeners();
     }
   }
 

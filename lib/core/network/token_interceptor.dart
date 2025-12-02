@@ -8,11 +8,13 @@ class TokenInterceptor extends Interceptor {
   final AuthLocalDataSource localDataSource;
   final String refreshTokenEndpoint;
   final String baseUrl;
+  final Dio dio;
 
   TokenInterceptor({
     required this.localDataSource,
     required this.refreshTokenEndpoint,
     required this.baseUrl,
+    required this.dio,
   });
 
   @override
@@ -70,7 +72,7 @@ class TokenInterceptor extends Interceptor {
 
     try {
       debugPrint('TokenInterceptor: Refreshing access token...');
-      final dio = Dio();
+      // Reuse the existing dio instance instead of creating a new one
       final response = await dio.post(
         '$baseUrl$refreshTokenEndpoint',
         options: Options(headers: {'X-Stack-Refresh-Token': refreshToken}),
@@ -82,8 +84,10 @@ class TokenInterceptor extends Interceptor {
         debugPrint('TokenInterceptor: Token refreshed successfully');
 
         // Retry the original request with new token
-        final retryRequest = err.requestOptions;
-        final newResponse = await Dio().fetch(retryRequest);
+        final retryRequest = err.requestOptions
+          ..headers['Authorization'] = 'Bearer $newAccessToken';
+
+        final newResponse = await dio.fetch(retryRequest);
         return handler.resolve(newResponse);
       }
     } catch (e) {

@@ -29,6 +29,7 @@ class AuthApiClient {
         localDataSource: localDataSource,
         refreshTokenEndpoint: _refreshTokenEndpoint,
         baseUrl: baseUrl,
+        dio: _dio,
       ),
     );
     _dio.interceptors.add(LogInterceptor());
