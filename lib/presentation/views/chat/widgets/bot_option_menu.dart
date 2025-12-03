@@ -32,32 +32,32 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
 
     return PopupMenuButton<String>(
       onSelected: (value) {
-      setState(() => selectedModel = value);
+        setState(() => selectedModel = value);
       },
       color: colorScheme.surfaceBright,
       position: PopupMenuPosition.under,
       shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
       elevation: 4,
       itemBuilder: (context) => AssistantModelType.values.map((type) {
-      final name = type.name;
-      return PopupMenuItem<String>(
-        value: name,
-        child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(iconForModel(name), size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-          child: Text(
-            name,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
+        final name = type.name;
+        return PopupMenuItem<String>(
+          value: name,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(iconForModel(name), size: 20),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  name,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+            ],
           ),
-          ),
-        ],
-        ),
-      );
+        );
       }).toList(),
       child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -69,6 +69,12 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Icon(
+            iconForModel(selectedModel),
+            size: 20, 
+            color: colorScheme.onSurface,
+          ),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
               selectedModel,

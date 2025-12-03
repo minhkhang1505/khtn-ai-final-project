@@ -27,8 +27,8 @@ enum AssistantModelType {
       AssistantModelType.CLAUDE_3_SONNET => "Claude 3 Sonnet",
       AssistantModelType.GEMINI_15_FLASH => "Gemini 1.5 Flash",
       AssistantModelType.GEMINI_15_PRO => "Gemini 1.5 Pro",
-      AssistantModelType.GPT_4_O => "GPT-4O",
-      AssistantModelType.GPT_4O_MINI => "GPT-4O Mini",
+      AssistantModelType.GPT_4_O => "GPT-4o",
+      AssistantModelType.GPT_4O_MINI => "GPT-4o Mini",
     };
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot_view_model.dart';
+import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 
 class ChatDrawer extends StatefulWidget {
   const ChatDrawer({super.key});
@@ -10,6 +13,11 @@ class ChatDrawer extends StatefulWidget {
 
 class _ChatDrawerState extends State<ChatDrawer> {
   final BotViewModel botViewModel = BotViewModel();
+  final List<Map<String, dynamic>> models = AssistantModelType.values.map((type) {
+    return {
+      "name": type.name,
+    };
+  }).toList();
 
   @override
   void initState() {
@@ -19,8 +27,20 @@ class _ChatDrawerState extends State<ChatDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final bot = botViewModel.bots.isNotEmpty ? botViewModel.bots[0] : null;
+    //final bot = botViewModel.bots.isNotEmpty ? botViewModel.bots[0] : null;
+    final vm = context.read<ChatViewModel>();
     final colorScheme = Theme.of(context).colorScheme;
+
+    final conversations = vm.conversations;
+
+    IconData iconForModel(String name) {
+      final key = name.toLowerCase();
+      if (key.contains('gpt')) return Icons.smart_toy;
+      if (key.contains('dall') || key.contains('image')) return Icons.image;
+      if (key.contains('audio') || key.contains('whisper')) return Icons.mic;
+      return Icons.auto_awesome;
+    }
+
     return Drawer(
       child: SafeArea(
         child: Column(
@@ -39,89 +59,95 @@ class _ChatDrawerState extends State<ChatDrawer> {
               ),
             ),
             const SizedBox(height: 10),
-            ListTile(
-              leading: const Icon(Icons.add),
-              title: const Text('Create Bot'),
-              onTap: () {
-                Navigator.pushNamed(context, '/bots/new');
-                // TODO: Create new chat page with bot
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text('Edit Bot'),
-              onTap: () {
-                Navigator.pushNamed(context, '/bots/edit', arguments: bot);
-              },
-            ),
-            const SizedBox(height: 10),
-
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0),
-              child: Text(
-                'Base models',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ),
 
             Expanded(
-              child: ListView.builder(
-                itemCount: botViewModel.bots.length,
-                itemBuilder: (context, index) {
-                  final bot = botViewModel.bots[index];
-                  return ListTile(
-                    title: Text(bot.name),
-                    subtitle: Text(bot.description),
-                    trailing: Icon(
-                      Icons.delete_outline,
-                      color: Colors.red,
-                      size: 20,
+              child: ListView(
+                padding: EdgeInsets.zero, 
+                children: [
+                  // --- Action buttons ---
+                  // ListTile(
+                  //   leading: const Icon(Icons.add),
+                  //   title: const Text('Create Bot'),
+                  //   onTap: () {
+                  //     Navigator.pushNamed(context, '/bots/new');
+                  //     // TODO: Create new chat page with bot
+                  //   },
+                  // ),
+                  // ListTile(
+                  //   leading: const Icon(Icons.edit),
+                  //   title: const Text('Edit Bot'),
+                  //   onTap: () {
+                  //     Navigator.pushNamed(context, '/bots/edit', arguments: bot);
+                  //   },
+                  // ),
+                  const SizedBox(height: 10),
+
+                  // List of base models
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0, top: 8.0),
+                    child: Text(
+                      'Base models',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.grey[600],
+                      ),
                     ),
+                  ),
+                  
+                  ...models.map((model) {
+                    return ListTile(
+                      title: Row(
+                        children: [
+                          Icon(
+                            iconForModel(model["name"] as String),
+                            size: 16,
+                            color: colorScheme.onSurface,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(model["name"] as String),
+                        ],
+                      ),
+                      onTap: () {
+                        // TODO: Handle selection of base model
+                      },
+                    );
+                  }),
 
-                    onTap: () {
-                      // TODO: Handle delete chat
-                    },
-                  );
-                },
-              ),
-            ),
+                  const SizedBox(height: 10),
 
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0),
-              child: Text(
-                'Base models',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ),
-
-            // List of existing chats
-            Expanded(
-              child: ListView.builder(
-                itemCount: botViewModel.bots.length,
-                itemBuilder: (context, index) {
-                  final bot = botViewModel.bots[index];
-                  return ListTile(
-                    title: Text(bot.name),
-                    subtitle: Text(bot.description),
-                    trailing: Icon(
-                      Icons.delete_outline,
-                      color: Colors.red,
-                      size: 20,
+                  // Your Bots
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: Text(
+                      'Your Bots',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.grey[600],
+                      ),
                     ),
+                  ),
 
-                    onTap: () {
-                      // TODO: Handle delete chat
-                    },
-                  );
-                },
+                  ...conversations.map((conversation) {
+                    return ListTile(
+                      title: Text(conversation.title),
+                      trailing: Icon(
+                        Icons.delete_outline,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      onTap: () {
+                        // Open chat with this conversation
+                        Navigator.pop(context); // Close drawer
+                        vm.conversationId = conversation.id;
+                        vm.messages.clear();
+                        vm.getConversationHistory();
+                      },
+                    );
+                  }),
+                  const SizedBox(height: 10),
+                ],
               ),
             ),
           ],

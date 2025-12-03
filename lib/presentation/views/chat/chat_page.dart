@@ -46,7 +46,7 @@ class ChatPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                context.watch<ChatViewModel>().error!,
+                "Something went wrong: ${context.watch<ChatViewModel>().error}",
                 style: TextStyle(color: colorScheme.error),
               ),
             ),

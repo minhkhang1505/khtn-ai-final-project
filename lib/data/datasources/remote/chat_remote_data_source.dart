@@ -1,6 +1,8 @@
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
-import 'package:khtn_ai_final_project/data/models/chat_model.dart';
-import 'package:khtn_ai_final_project/data/models/conversation_model.dart';
+import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
+import 'package:khtn_ai_final_project/data/models/chat/send_message.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 
 abstract class ChatRemoteDataSource {
   Future<SendMessageResponseModel> sendMessage(SendMessageRequestModel sendMessageRequest);

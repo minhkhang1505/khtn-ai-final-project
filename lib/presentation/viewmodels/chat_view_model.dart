@@ -1,9 +1,13 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
-import 'package:khtn_ai_final_project/data/models/chat_model.dart';
+
+import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
+import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
+import 'package:khtn_ai_final_project/data/models/chat/send_message.dart';
 import 'package:khtn_ai_final_project/data/models/metadata_model.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 
 /// ViewModel responsible for chat page state.
 class ChatViewModel extends ChangeNotifier {
@@ -11,17 +15,22 @@ class ChatViewModel extends ChangeNotifier {
 
   ChatViewModel({
     required this.chatUsecase
-  });
+  }) {
+    // Fetch conversations on init
+    getConversations();
+  }
 
   // State variables
   final ScrollController scrollController = ScrollController();
 
   List<ChatMessageModel> messages = [];
   AssistantModel assistant = AssistantModel.defaults();
-  AiChatMetadata metadata = AiChatMetadata.defaults();
+  MetadataModel metadata = MetadataModel.defaults();
+  List<ConversationModel> conversations = [];
   List <String> fileIds = [];
-  String selectedBot = 'default';
-  String conversationId = '';
+  String? selectedModel = 'gpt-4o-mini';
+  String conversationId = ''; // Default conversation ID
+  String cursor = '';
   String? _error;
   bool _isLoading = false;
 
@@ -76,12 +85,68 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   Future<bool> getConversations() async {
-    // TODO: Implement fetching conversations
+    try {
+      final response = await chatUsecase.getConversations(
+        GetConversationsRequestModel(
+          cursor: '',
+          limit: 20,
+          assistantId: selectedModel?.isNotEmpty == true ? selectedModel : null,
+          assistantModel: 'dify',
+        ),
+      );
+
+      conversations = response.items;
+    } catch (e) {
+      debugPrint("Error fetching conversations: $e");
+      _error = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
     return true;
   }
 
   Future<bool> getConversationHistory() async {
-    // TODO: Implement fetching conversations
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await chatUsecase.getConversationHistory(
+        GetConversationHistoryRequestModel(
+          cursor: '',
+          limit: 100,
+          assistantId: selectedModel ?? '',
+          assistantModel: 'dify',
+          conversationId: conversationId,
+        ),
+      );
+
+      // Append messages from history
+      final messageList = response.items;
+      for (var msg in messageList) {
+        final chatMsg = ChatMessageModel.createMessage(
+          msg.query,
+          'user',
+          [],
+        );
+        messages.add(chatMsg);
+
+        final replyMsg = ChatMessageModel.createMessage(
+          msg.answer,
+          'assistant',
+          [],
+        );
+        messages.add(replyMsg);
+      }
+
+    } catch (e) {
+      debugPrint("Error fetching conversations: $e");
+      _error = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
     return true;
   }
 

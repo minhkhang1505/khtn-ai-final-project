@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
-import 'package:khtn_ai_final_project/data/models/chat_model.dart';
+import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
 
 /// Message list widget - Displays chat messages
 class MessageList extends StatefulWidget {

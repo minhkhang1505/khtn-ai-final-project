@@ -1,19 +1,19 @@
-import 'conversation_model.dart';
+import 'conversations/conversation_send_request_model.dart';
 
-class AiChatMetadata {
-  final ChatConversationModel conversation;
+class MetadataModel {
+  final ConversationSendRequestModel conversation;
 
-  AiChatMetadata({required this.conversation});
+  MetadataModel({required this.conversation});
   
-  factory AiChatMetadata.fromJson(Map<String, dynamic> json) {
-    return AiChatMetadata(
-      conversation: ChatConversationModel.fromJson(json['conversation']),
+  factory MetadataModel.fromJson(Map<String, dynamic> json) {
+    return MetadataModel(
+      conversation: ConversationSendRequestModel.fromJson(json['conversation']),
     );
   }
 
-  factory AiChatMetadata.defaults() {
-    return AiChatMetadata(
-      conversation: ChatConversationModel.defaults(),
+  factory MetadataModel.defaults() {
+    return MetadataModel(
+      conversation: ConversationSendRequestModel.defaults(),
     );
   }
 
