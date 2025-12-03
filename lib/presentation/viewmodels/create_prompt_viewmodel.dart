@@ -17,7 +17,7 @@ class CreatePromptViewModel extends ChangeNotifier {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
 
-  String _selectedCategory = categories.last.id;
+  String _selectedCategory = categories.last.id.name;
   String get selectedCategory => _selectedCategory;
 
   String _selectedLanguage = languages.first.name;
@@ -82,7 +82,7 @@ class CreatePromptViewModel extends ChangeNotifier {
     titleController.clear();
     descriptionController.clear();
     contentController.clear();
-    _selectedCategory = categories.last.id;
+    _selectedCategory = categories.last.id.name;
     _selectedLanguage = languages.first.name;
     _isPublic = true;
     _errorMessage = null;

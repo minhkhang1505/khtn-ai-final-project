@@ -1,7 +1,10 @@
 // Response model for prompts
+import 'package:khtn_ai_final_project/core/constants/categories.dart';
+import 'package:khtn_ai_final_project/domain/entities/category.dart';
+
 class PromptPaggingResponse {
   bool hasNext;
-  List<PromptItem> items;
+  List<PromptModel> items;
   int limit;
   int offset;
   int total;
@@ -16,7 +19,7 @@ class PromptPaggingResponse {
 
   PromptPaggingResponse copyWith({
     bool? hasNext,
-    List<PromptItem>? items,
+    List<PromptModel>? items,
     int? limit,
     int? offset,
     int? total,
@@ -34,7 +37,7 @@ class PromptPaggingResponse {
       items:
           (json['items'] as List<dynamic>?)
               ?.map(
-                (item) => PromptItem(
+                (item) => PromptModel(
                   id: item['id'] as String? ?? '',
                   category: item['category'] as String? ?? '',
                   content: item['content'] as String? ?? '',
@@ -58,7 +61,7 @@ class PromptPaggingResponse {
   }
 }
 
-class PromptItem {
+class PromptModel {
   String id;
   String category;
   String content;
@@ -72,7 +75,7 @@ class PromptItem {
   String userId;
   String userName;
 
-  PromptItem({
+  PromptModel({
     required this.id,
     required this.category,
     required this.content,
@@ -87,7 +90,7 @@ class PromptItem {
     required this.userName,
   });
 
-  PromptItem copyWith({
+  PromptModel copyWith({
     String? id,
     String? category,
     String? content,
@@ -100,7 +103,7 @@ class PromptItem {
     String? updatedAt,
     String? userId,
     String? userName,
-  }) => PromptItem(
+  }) => PromptModel(
     id: id ?? this.id,
     category: category ?? this.category,
     content: content ?? this.content,
@@ -118,7 +121,7 @@ class PromptItem {
 
 // Request model for prompts
 class PromptRequest {
-  Category? category;
+  CategoryType? category;
   bool? isFavorite;
   bool? isPublic;
 
@@ -141,7 +144,7 @@ class PromptRequest {
   });
 
   PromptRequest copyWith({
-    Category? category,
+    CategoryType? category,
     bool? isFavorite,
     bool? isPublic,
     double? limit,
@@ -166,20 +169,6 @@ class PromptRequest {
       if (query != null) 'query': query,
     };
   }
-}
-
-enum Category {
-  BUSINESS,
-  CAREER,
-  CHATBOT,
-  CODING,
-  EDUCATION,
-  FUN,
-  MARKETING,
-  OTHER,
-  PRODUCTIVITY,
-  SEO,
-  WRITING,
 }
 
 ///CreatePromptDto

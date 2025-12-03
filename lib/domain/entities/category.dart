@@ -1,5 +1,7 @@
+import 'package:khtn_ai_final_project/core/constants/categories.dart';
+
 class Category {
-  final String id;
+  final CategoryType id;
   final String name;
   final String iconPath;
 

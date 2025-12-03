@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:khtn_ai_final_project/core/constants/categories.dart';
+import 'package:khtn_ai_final_project/domain/entities/category.dart' as entity;
 import 'package:khtn_ai_final_project/data/mappers/prompt_mapper.dart';
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
@@ -8,7 +10,7 @@ import 'package:khtn_ai_final_project/domain/usecases/prompts/delete_prompt_usec
 import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from_favorite.dart';
 
-enum PromptViewState { initial, loading, success, error }
+enum PromptViewState { initial, loading, success, failure }
 
 class PromptViewmodel extends ChangeNotifier {
   final GetPromptUseCase getPromptUseCase;
@@ -39,6 +41,9 @@ class PromptViewmodel extends ChangeNotifier {
   final List<PromptEntity> _favoritePrompts = [];
   List<PromptEntity>? get favoritePrompts => _favoritePrompts;
 
+  final List<PromptEntity> _categoryPrompts = [];
+  List<PromptEntity>? get categoryPrompts => _categoryPrompts;
+
   double limit = 20;
   double offset = 0;
   bool hasNext = false;
@@ -61,14 +66,34 @@ class PromptViewmodel extends ChangeNotifier {
       return true;
     } catch (e) {
       debugPrint('PromptViewmodel: Error fetching prompts - $e');
-      _setState(PromptViewState.error);
+      _setState(PromptViewState.failure);
+      return false;
+    }
+  }
+
+  Future<bool> getPromptByCategory(CategoryType category) async {
+    try {
+      _setState(PromptViewState.loading);
+
+      final response = await getPromptUseCase.call(
+        PromptRequest(limit: limit, offset: offset, category: category),
+      );
+
+      hasNext = response.hasNext;
+      offset += limit;
+      _categoryPrompts.addAll(response.items.toEntityList());
+      _setState(PromptViewState.success);
+      return true;
+    } catch (e) {
+      debugPrint('PromptViewmodel: Error fetching prompts by category - $e');
+      _setState(PromptViewState.failure);
       return false;
     }
   }
 
   Future<bool> getFavoritePrompts() async {
     try {
-      if (_prompts.isEmpty) {
+      if (_favoritePrompts.isEmpty) {
         _setState(PromptViewState.loading);
       }
 
@@ -80,12 +105,12 @@ class PromptViewmodel extends ChangeNotifier {
       final response = await getPromptUseCase.call(requestFavoritePrompts);
       hasNext = response.hasNext;
       offset += limit;
-      _prompts.addAll(response.items.toEntityList());
+      _favoritePrompts.addAll(response.items.toEntityList());
       _setState(PromptViewState.success);
       return true;
     } catch (e) {
       debugPrint('PromptViewmodel: Error fetching favorite prompts - $e');
-      _setState(PromptViewState.error);
+      _setState(PromptViewState.failure);
       return false;
     }
   }
@@ -137,6 +162,4 @@ class PromptViewmodel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // Add your methods here
 }

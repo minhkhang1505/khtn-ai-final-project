@@ -80,7 +80,7 @@ class PromptDetailsSection extends StatelessWidget {
                   entries: categories
                       .map(
                         (category) => DropdownMenuEntry(
-                          value: category.id,
+                          value: category.id.name,
                           label: category.name,
                         ),
                       )
