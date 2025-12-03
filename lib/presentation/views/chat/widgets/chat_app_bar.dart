@@ -26,11 +26,17 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: SizedBox(width: 120, child: BotOptionMenu()),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 200, 
+                  minWidth: 50, 
+                ),
+                child: BotOptionMenu(),
+              ),
             ),
 
             IconButton(

@@ -29,11 +29,12 @@ class ChatViewModel extends ChangeNotifier {
   MetadataModel metadata = MetadataModel.defaults();
   List<ConversationModel> conversations = [];
   List <String> fileIds = [];
-  String? selectedModel = 'gpt-4o-mini';
+  String selectedModel = 'gpt-4o-mini';
   String conversationId = ''; // Default conversation ID
   String cursor = '';
   String? _error;
   bool _isLoading = false;
+  bool _isStreaming = false;
 
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -65,8 +66,9 @@ class ChatViewModel extends ChangeNotifier {
         assistant: assistant,
       );
       final response = await chatUsecase.sendMessage(request);
-      final replyMessage = ChatMessageModel.createMessage(response.message, 'assistant', []);
-      addMessage(replyMessage);
+
+      // For streaming responses, simulate by appending chunks;
+      await addStreamingAssistantMessage(response.message);
 
       // Scroll to bottom after a slight delay to ensure UI has updated
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -116,7 +118,7 @@ class ChatViewModel extends ChangeNotifier {
         GetConversationHistoryRequestModel(
           cursor: '',
           limit: 100,
-          assistantId: selectedModel ?? '',
+          assistantId: selectedModel,
           assistantModel: 'dify',
           conversationId: conversationId,
         ),
@@ -206,5 +208,25 @@ class ChatViewModel extends ChangeNotifier {
         curve: Curves.easeOut,
       );
     }
+  }
+
+  Future<void> addStreamingAssistantMessage(String fullText) async {
+    final msg = ChatMessageModel.createMessage(fullText, 'assistant', []);
+    _isLoading = false;
+    _isStreaming = true;
+
+    messages.add(msg);
+    notifyListeners();
+    scrollToBottom();
+
+    for (int i = 0; i < fullText.length; i++) {
+      await Future.delayed(const Duration(milliseconds: 10)); // Simulate streaming delay
+      msg.content = fullText.substring(0, i + 1);
+      notifyListeners();
+      scrollToBottom();
+    }
+
+    _isStreaming = false;
+    notifyListeners();
   }
 }

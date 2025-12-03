@@ -29,7 +29,7 @@ class ChatPage extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: vm.conversations.isEmpty
+            child: vm.conversationId.isEmpty
                 ? Center(
                     child: Text(
                       'No conversations yet. Start a new chat!',

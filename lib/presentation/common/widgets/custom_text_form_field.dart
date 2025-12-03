@@ -48,6 +48,7 @@ class CustomTextFormField extends StatelessWidget {
       validator: validator,
       decoration: InputDecoration(
         errorText: error,
+        errorMaxLines: 2,
         hintText: hintText,
         hintStyle: TextStyle(
           color: colorScheme.onSurface.withAlpha(140),

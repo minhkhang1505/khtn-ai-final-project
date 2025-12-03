@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
+import 'package:provider/provider.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 
 class BotOptionMenu extends StatefulWidget {
   const BotOptionMenu({super.key});
@@ -10,17 +12,22 @@ class BotOptionMenu extends StatefulWidget {
 }
 
 class _BotOptionMenuState extends State<BotOptionMenu> {
-  String selectedModel = "GPT_4O_MINI";
-
   final List<Map<String, dynamic>> models = AssistantModelType.values.map((type) {
     return {
       "name": type.name,
+      "id": type.id,
     };
   }).toList();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final vm = context.read<ChatViewModel>();
     // helper to pick an icon for a model name
     IconData iconForModel(String name) {
       final key = name.toLowerCase();
@@ -32,7 +39,18 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
 
     return PopupMenuButton<String>(
       onSelected: (value) {
-        setState(() => selectedModel = value);
+        final selected = models.firstWhere((model) => model["name"] == value);
+        setState(() {
+          // Update selected model
+          vm.selectedModel = selected["id"];
+        });
+
+        //vm.selectedModel = value;
+        vm.assistant = AssistantModel(
+          model: 'dify',
+          name: selected["name"],
+          id: selected["id"],
+        );
       },
       color: colorScheme.surfaceBright,
       position: PopupMenuPosition.under,
@@ -51,7 +69,7 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
                 child: Text(
                   name,
                   style: const TextStyle(fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
+                  //overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
               ),
@@ -60,30 +78,30 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
         );
       }).toList(),
       child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceBright,
-        borderRadius: AppBorderRadius.medium,
-        border: Border.all(color: colorScheme.outlineVariant),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            iconForModel(selectedModel),
-            size: 20, 
-            color: colorScheme.onSurface,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              selectedModel,
-              style: const TextStyle(fontSize: 15),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceBright,
+          borderRadius: AppBorderRadius.medium,
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              iconForModel(vm.selectedModel),
+              size: 20, 
+              color: colorScheme.onSurface,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                AssistantModelType.fromId(vm.selectedModel)?.name ?? 'Select Model',
+                style: const TextStyle(fontSize: 15),
+                //overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
-          const Icon(Icons.arrow_drop_down),
+            const Icon(Icons.arrow_drop_down),
           ],
         ),
       ),
