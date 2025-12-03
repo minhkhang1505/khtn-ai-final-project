@@ -29,10 +29,20 @@ class ChatPage extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            // Message list
-            child: MessageList(
-              scrollController: vm.scrollController,
-            ),
+            child: vm.conversations.isEmpty
+                ? Center(
+                    child: Text(
+                      'No conversations yet. Start a new chat!',
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  )
+                : // Message list
+                MessageList(
+                    scrollController: vm.scrollController,
+                  ),
           ),
 
           if (context.watch<ChatViewModel>().isLoading)
@@ -46,8 +56,8 @@ class ChatPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Something went wrong: ${context.watch<ChatViewModel>().error}",
-                style: TextStyle(color: colorScheme.error),
+                "Something went wrong",
+                style: TextStyle(color: colorScheme.error, fontWeight: FontWeight.bold),
               ),
             ),
 

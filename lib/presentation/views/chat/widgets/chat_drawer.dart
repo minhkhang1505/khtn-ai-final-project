@@ -120,7 +120,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
                   Padding(
                     padding: const EdgeInsets.only(left: 18.0),
                     child: Text(
-                      'Your Bots',
+                      'Your Conversations',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
@@ -131,17 +131,45 @@ class _ChatDrawerState extends State<ChatDrawer> {
 
                   ...conversations.map((conversation) {
                     return ListTile(
-                      title: Text(conversation.title),
-                      trailing: Icon(
-                        Icons.delete_outline,
-                        color: Colors.red,
-                        size: 20,
-                      ),
+                        title: Text(conversation.title),
+                        trailing: IconButton(
+                        icon: Icon(
+                          Icons.delete_outline,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+                        onPressed: () async {
+                          final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text('Delete conversation'),
+                            content: const Text('Are you sure you want to delete this conversation?'),
+                            actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(false),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(true),
+                              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                            ),
+                            ],
+                          ),
+                          );
+
+                          if (confirm == true) {
+                            // TODO: Add delete conversation logic here
+                            // Call ViewModel to delete the conversation and update UI
+                            // await vm.deleteConversation(conversation.id);
+                          }
+                        },
+                        ),
                       onTap: () {
                         // Open chat with this conversation
                         Navigator.pop(context); // Close drawer
                         vm.conversationId = conversation.id;
                         vm.messages.clear();
+                        vm.clearError();
                         vm.getConversationHistory();
                       },
                     );

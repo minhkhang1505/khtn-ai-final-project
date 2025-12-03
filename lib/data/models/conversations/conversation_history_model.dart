@@ -1,17 +1,17 @@
 // Request Model for GET conversation history
 class GetConversationHistoryRequestModel {
   String conversationId;
-  String cursor;
+  String? cursor;
   int limit;
-  String assistantId;
-  String assistantModel = "dify";  // default model
+  String? assistantId;
+  String assistantModel;
 
   GetConversationHistoryRequestModel({
     required this.conversationId,
-    required this.cursor,
+    this.cursor,
     required this.limit,
-    required this.assistantId,
-    required this.assistantModel,
+    this.assistantId,
+    this.assistantModel = "dify",
   });
 
   Map<String, dynamic> toJson() {
@@ -24,7 +24,8 @@ class GetConversationHistoryRequestModel {
   }
 }
 
-class InputsModel{
+// Sub-model for inputs field
+class InputsModel {
   String assistant;
   List<String> toolIds;
 
@@ -33,7 +34,21 @@ class InputsModel{
     required this.toolIds,
   });
 
+  factory InputsModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return InputsModel(assistant: '', toolIds: []);
+    }
+
+    return InputsModel(
+      assistant: json['assistant'] ?? '',
+      toolIds: (json['tool_ids'] is List)
+          ? List<String>.from(json['tool_ids'])
+          : <String>[],
+    );
+  }
 }
+
+// Response Model for GET conversation history
 class MessageAndResponseModel {
   String answer;
   String createdAt;
@@ -46,6 +61,15 @@ class MessageAndResponseModel {
     required this.query,
     required this.inputs,
   });
+
+  factory MessageAndResponseModel.fromJson(Map<String, dynamic> json) {
+    return MessageAndResponseModel(
+      answer: json['answer'] ?? '',
+      createdAt: json['createdAt'] ?? '',
+      query: json['query'] ?? '',
+      inputs: InputsModel.fromJson(json['inputs']),
+    );
+  }
 }
 
 // Response Model for GET conversation history
@@ -60,22 +84,24 @@ class GetConversationHistoryResponseModel {
     required this.items,
   });
 
-  factory GetConversationHistoryResponseModel.fromJson(Map<String, dynamic> json, int statusCode) {
-    var itemsFromJson = json['items'] as List;
-    List<MessageAndResponseModel> itemList = itemsFromJson.map((item) => MessageAndResponseModel(
-      answer: item['answer'],
-      createdAt: item['createdAt'],
-      query: (item['query']),
-      inputs: InputsModel(
-        assistant: item['inputs']['assistant'],
-        toolIds: List<String>.from(item['inputs']['toolIds']),
-      ),
-    )).toList();
+  factory GetConversationHistoryResponseModel.fromJson(
+      Map<String, dynamic> json, int statusCode) {
+    final rawItems = json['items'];
+
+    final List<MessageAndResponseModel> items = [];
+
+    if (rawItems is List) {
+      for (final element in rawItems) {
+        if (element is Map<String, dynamic>) {
+          items.add(MessageAndResponseModel.fromJson(element));
+        }
+      }
+    }
 
     return GetConversationHistoryResponseModel(
-      hasMore: json['hasMore'],
-      limit: json['limit'],
-      items: itemList,
+      hasMore: json['has_more'] ?? false,
+      limit: json['limit'] ?? 0,
+      items: items,
     );
   }
 }

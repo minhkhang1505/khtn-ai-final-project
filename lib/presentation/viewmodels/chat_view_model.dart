@@ -8,6 +8,7 @@ import 'package:khtn_ai_final_project/data/models/metadata_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
+import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
 
 /// ViewModel responsible for chat page state.
 class ChatViewModel extends ChangeNotifier {
@@ -138,7 +139,6 @@ class ChatViewModel extends ChangeNotifier {
         );
         messages.add(replyMsg);
       }
-
     } catch (e) {
       debugPrint("Error fetching conversations: $e");
       _error = e.toString();
@@ -150,8 +150,39 @@ class ChatViewModel extends ChangeNotifier {
     return true;
   }
 
-  Future<bool> chatWithBot() async {
-    // TODO : Implement chatting with bot
+  Future<bool> chatWithBot(String content) async {
+    
+    final trimmed = content.trim();
+    if (trimmed.isEmpty) return false;
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final request = ChatWithBotRequestModel(
+        content: trimmed,
+        files: [],
+        metadata: metadata,
+        assistant: assistant,
+      );
+      final response = await chatUsecase.chatWithBot(request);
+      final replyMessage = ChatMessageModel.createMessage(response.message, 'assistant', []);
+      addMessage(replyMessage);
+
+      // Scroll to bottom after a slight delay to ensure UI has updated
+      Future.delayed(const Duration(milliseconds: 100), () {
+        scrollToBottom();
+      });
+
+    } catch (e) {
+      // On error, add a simple assistant message describing failure
+      debugPrint("Error chatting with bot: $e");
+      _error = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
     return true;
   }
 
@@ -162,7 +193,7 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   /// Clear conversation
-  void clear() {
+  void clearMessages() {
     messages.clear();
     notifyListeners();
   }

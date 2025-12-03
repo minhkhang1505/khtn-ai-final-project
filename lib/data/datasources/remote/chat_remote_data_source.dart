@@ -50,7 +50,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override
   Future<GetConversationHistoryResponseModel> getConversationHistory(GetConversationHistoryRequestModel getConversationHistoryRequest) async {
     final response = await client.getWithQuery(
-      '/ai-chat/conversations/${getConversationHistoryRequest.conversationId}/history',
+      '/ai-chat/conversations/${getConversationHistoryRequest.conversationId}/messages',
       queryParameters: getConversationHistoryRequest.toJson(),
     );
     return GetConversationHistoryResponseModel.fromJson(response.data, response.statusCode ?? 0);
