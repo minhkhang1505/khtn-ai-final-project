@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:khtn_ai_final_project/core/constants/categories.dart';
-import 'package:khtn_ai_final_project/domain/entities/category.dart' as entity;
 import 'package:khtn_ai_final_project/data/mappers/prompt_mapper.dart';
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
