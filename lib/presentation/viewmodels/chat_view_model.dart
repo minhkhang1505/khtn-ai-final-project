@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
 
@@ -6,6 +8,7 @@ import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/send_message.dart';
 import 'package:khtn_ai_final_project/data/models/metadata_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversation_send_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
@@ -31,6 +34,7 @@ class ChatViewModel extends ChangeNotifier {
   List <String> fileIds = [];
   String selectedModel = 'gpt-4o-mini';
   String conversationId = ''; // Default conversation ID
+  String conversationTitle = 'Chat';
   String cursor = '';
   String? _error;
   bool _isLoading = false;
@@ -38,6 +42,16 @@ class ChatViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  String get messagesContent {
+     String temp = metadata.conversation.messages.map((msg) => "${msg.role}: ${msg.content}").join('\n');
+     temp += "\n\nTotal messages: ${metadata.conversation.messages.length}";
+     temp += "\nConversation ID: ${metadata.conversation.id}";
+
+     temp = metadata.toJson().toString();
+
+     return temp;
+  }
 
   void clearError() {
     _error = null;
@@ -57,7 +71,7 @@ class ChatViewModel extends ChangeNotifier {
     });
     _isLoading = true;
     notifyListeners();
-
+    
     try {
       final request = SendMessageRequestModel(
         content: trimmed,
@@ -69,6 +83,9 @@ class ChatViewModel extends ChangeNotifier {
 
       // For streaming responses, simulate by appending chunks;
       await addStreamingAssistantMessage(response.message);
+
+      // Update metadata after message exchange
+      updateMetadata();
 
       // Scroll to bottom after a slight delay to ensure UI has updated
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -93,7 +110,7 @@ class ChatViewModel extends ChangeNotifier {
         GetConversationsRequestModel(
           cursor: '',
           limit: 20,
-          assistantId: selectedModel?.isNotEmpty == true ? selectedModel : null,
+          assistantId: selectedModel.isNotEmpty == true ? selectedModel : null,
           assistantModel: 'dify',
         ),
       );
@@ -141,6 +158,7 @@ class ChatViewModel extends ChangeNotifier {
         );
         messages.add(replyMsg);
       }
+      updateMetadata();
     } catch (e) {
       debugPrint("Error fetching conversations: $e");
       _error = e.toString();
@@ -188,6 +206,15 @@ class ChatViewModel extends ChangeNotifier {
     return true;
   }
 
+  /// New chat - clear messages and reset metadata
+  void newChat() {
+    messages.clear();
+    conversationId = '';
+    conversationTitle = 'Chat';
+    metadata = MetadataModel.defaults();
+    notifyListeners();
+  }
+
   /// Add a pre-built message (useful for initializing from history)
   void addMessage(ChatMessageModel message) {
     messages.add(message);
@@ -200,6 +227,19 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Update metadata based on current conversation ID and messages
+  void updateMetadata() {
+    metadata = MetadataModel(
+      conversation: ConversationSendRequestModel(
+        id: conversationId,
+        messages: messages,
+      ),
+    );
+    debugPrint("Metadata updated: ${metadata.toJson()}");
+    debugPrint("Conversation ID: ${metadata.conversation.id}");
+  }
+
+  /// Scroll message list to bottom
   void scrollToBottom() {
     if (scrollController.hasClients) {
       scrollController.animateTo(
@@ -210,6 +250,7 @@ class ChatViewModel extends ChangeNotifier {
     }
   }
 
+  /// Simulate adding an assistant message in a streaming fashion
   Future<void> addStreamingAssistantMessage(String fullText) async {
     final msg = ChatMessageModel.createMessage(fullText, 'assistant', []);
     _isLoading = false;

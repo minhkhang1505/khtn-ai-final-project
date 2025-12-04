@@ -20,6 +20,7 @@ class MetadataModel {
   Map<String, dynamic> toJson() {
     return {
       'conversation': {
+        'id': conversation.id,
         'messages': conversation.messages.map((msg) => {
           'content': msg.content,
           'files': msg.files,

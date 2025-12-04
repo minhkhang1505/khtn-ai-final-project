@@ -7,6 +7,7 @@ class SendMessageRequestModel {
   String content;
   List<String> files;
   MetadataModel metadata;
+  String? responseMode;
   
   SendMessageRequestModel({
     required this.content, 

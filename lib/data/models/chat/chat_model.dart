@@ -2,9 +2,10 @@ import '../assistant_model.dart';
 
 class ChatMessageModel {
   String content;
-  List<String> files;
+  List<String>? files;
   AssistantModel assistant;
   String role;
+  
 
   ChatMessageModel({
     required this.content, 

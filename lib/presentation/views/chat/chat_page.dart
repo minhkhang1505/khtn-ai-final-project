@@ -13,17 +13,13 @@ import 'widgets/message_list.dart';
 class ChatPage extends StatelessWidget {
   const ChatPage({super.key});
 
-  void onAddNewChat() {
-    // TODO: Handle add new chat
-  }
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final vm = context.read<ChatViewModel>();
     return Scaffold(
       appBar: ChatAppBar(
-        onAddNewChat: onAddNewChat,
+        onAddNewChat: () => vm.newChat(),
       ),
       drawer: ChatDrawer(),
       body: Column(
@@ -32,7 +28,7 @@ class ChatPage extends StatelessWidget {
             child: vm.conversationId.isEmpty
                 ? Center(
                     child: Text(
-                      'No conversations yet. Start a new chat!',
+                      'Hello! Start a new conversation🎉',
                       style: TextStyle(
                         fontSize: 30,
                         color: colorScheme.primary,
@@ -68,9 +64,7 @@ class ChatPage extends StatelessWidget {
               padding: ResponsiveHelper.horizontalPadding(context),
               child: MessageInput(
                 onSend: (message) => vm.sendMessage(message),
-                onAddPressed: () {
-                  // TODO: Handle add button press
-                },
+                onAddPressed: () => {},
               ),
             ),
           ),
