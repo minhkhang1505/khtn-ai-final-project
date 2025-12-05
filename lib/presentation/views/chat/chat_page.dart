@@ -18,9 +18,7 @@ class ChatPage extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final vm = context.read<ChatViewModel>();
     return Scaffold(
-      appBar: ChatAppBar(
-        onAddNewChat: () => vm.newChat(),
-      ),
+      appBar: ChatAppBar(onAddNewChat: () => vm.newChat()),
       drawer: ChatDrawer(),
       body: Column(
         children: [
@@ -36,9 +34,7 @@ class ChatPage extends StatelessWidget {
                     ),
                   )
                 : // Message list
-                MessageList(
-                    scrollController: vm.scrollController,
-                  ),
+                  MessageList(scrollController: vm.scrollController),
           ),
 
           if (context.watch<ChatViewModel>().isLoading)
@@ -53,7 +49,10 @@ class ChatPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 "Something went wrong",
-                style: TextStyle(color: colorScheme.error, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: colorScheme.error,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
 
@@ -64,7 +63,18 @@ class ChatPage extends StatelessWidget {
               padding: ResponsiveHelper.horizontalPadding(context),
               child: MessageInput(
                 onSend: (message) => vm.sendMessage(message),
-                onAddPressed: () => {},
+                onFilesChanged: () {
+                  // Auto-scroll to bottom when files are added/removed
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (vm.scrollController.hasClients) {
+                      vm.scrollController.animateTo(
+                        vm.scrollController.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                      );
+                    }
+                  });
+                },
               ),
             ),
           ),

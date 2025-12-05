@@ -261,7 +261,7 @@ class ChatViewModel extends ChangeNotifier {
     scrollToBottom();
 
     for (int i = 0; i < fullText.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 10)); // Simulate streaming delay
+      await Future.delayed(const Duration(milliseconds: 100)); // Simulate streaming delay
       msg.content = fullText.substring(0, i + 1);
       notifyListeners();
       scrollToBottom();
