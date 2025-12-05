@@ -72,6 +72,7 @@ class PromptViewmodel extends ChangeNotifier {
 
   Future<bool> getPromptByCategory(CategoryType category) async {
     try {
+      _categoryPrompts.clear();
       _setState(PromptViewState.loading);
 
       final response = await getPromptUseCase.call(
