@@ -42,8 +42,11 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
     );
   }
 
-  void _deletePrompt(PromptDetailViewModel viewModel) {
-    viewModel.deletePrompt();
+  void _deletePrompt(PromptDetailViewModel viewModel) async {
+    final success = await viewModel.deletePrompt();
+    if (success) {
+      _backToPromptsList();
+    }
   }
 
   void _backToPromptsList() {
@@ -136,7 +139,7 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
                 );
               }
             },
-          ),
+          ), 
         );
       },
     );

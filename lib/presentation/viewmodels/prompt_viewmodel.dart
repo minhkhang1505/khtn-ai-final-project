@@ -75,9 +75,7 @@ class PromptViewmodel extends ChangeNotifier {
       );
 
       final response = await getPromptUseCase.call(requestObject);
-      for (var item in response.items) {
-        debugPrint('Khang - Fetched prompt: ${item.id} - ${item.title}');
-      }
+
       hasNext = response.hasNext;
       offset += limit;
 

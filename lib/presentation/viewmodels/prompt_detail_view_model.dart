@@ -110,15 +110,14 @@ class PromptDetailViewModel extends ChangeNotifier {
 
   Future<bool> deletePrompt() async {
     try {
+      _setState(PromptDetailState.loading);
       final success = await deletePromptUseCase.call(prompt.id);
+      _setState(PromptDetailState.success);
       return success;
     } catch (e) {
       _errorMessage = 'Failed to delete prompt: $e';
-      notifyListeners();
+      _setState(PromptDetailState.failure);
       return false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 
