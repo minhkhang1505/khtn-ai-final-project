@@ -43,16 +43,28 @@ class ChatPage extends StatelessWidget {
               child: CircularProgressIndicator(),
             ),
 
-          // Placeholder for error message
-          if (context.watch<ChatViewModel>().error != null)
+            // Error message with close button
+            if (context.watch<ChatViewModel>().error != null)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Something went wrong",
-                style: TextStyle(
-                  color: colorScheme.error,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "Something went wrong: ${vm.error}",
+                      style: TextStyle(
+                      color: colorScheme.error,
+                      fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: colorScheme.error),
+                    onPressed: vm.clearError,
+                    constraints: const BoxConstraints(),
+                    padding: EdgeInsets.zero,
+                  ),
+                ],
               ),
             ),
 
@@ -61,21 +73,11 @@ class ChatPage extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: ResponsiveHelper.horizontalPadding(context),
-              child: MessageInput(
-                onSend: (message) => vm.sendMessage(message),
-                onFilesChanged: () {
-                  // Auto-scroll to bottom when files are added/removed
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (vm.scrollController.hasClients) {
-                      vm.scrollController.animateTo(
-                        vm.scrollController.position.maxScrollExtent,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeOut,
-                      );
-                    }
-                  });
-                },
-              ),
+              child: MessageInput(onSend: (message) {
+                vm.clearError();
+                vm.sendMessage(message);
+                vm.clearFiles();
+              }),
             ),
           ),
         ],

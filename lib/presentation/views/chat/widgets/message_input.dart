@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 
 class MessageInput extends StatefulWidget {
   final void Function(String) onSend;
-  final VoidCallback? onFilesChanged;
 
-  const MessageInput({super.key, required this.onSend, this.onFilesChanged});
+  const MessageInput({super.key, required this.onSend});
 
   @override
   State<MessageInput> createState() => _MessageInputState();
@@ -15,24 +16,14 @@ class MessageInput extends StatefulWidget {
 class _MessageInputState extends State<MessageInput> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _textFocusNode = FocusNode();
-  final List<PlatformFile> _selectedFiles = [];
 
   void _handleSend() {
     final text = _controller.text.trim();
-    if (text.isNotEmpty) {
-      widget.onSend(text);
-      _controller.clear();
-      setState(() {
-        _selectedFiles.clear();
-      });
-    }
-  }
+    final vm = context.read<ChatViewModel>();
+    if (text.isEmpty || vm.files.isEmpty) return;
 
-  void _removeFile(int index) {
-    setState(() {
-      _selectedFiles.removeAt(index);
-    });
-    widget.onFilesChanged?.call();
+    widget.onSend(text);
+    _controller.clear();
   }
 
   String _formatFileSize(int bytes) {
@@ -44,6 +35,9 @@ class _MessageInputState extends State<MessageInput> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final vm = context.read<ChatViewModel>();
+    final vmWatch = context.watch<ChatViewModel>();
+    final isBusy = vmWatch.isBusy;
     return SafeArea(
       child: Container(
         color: Colors.transparent,
@@ -52,23 +46,23 @@ class _MessageInputState extends State<MessageInput> {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Display selected files if any
-            if (_selectedFiles.isNotEmpty)
+            if (vmWatch.files.isNotEmpty)
               Align(
                 alignment: Alignment.centerLeft,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     maxHeight: 120,
-                    maxWidth: MediaQuery.of(context).size.width * 0.5,
+                    maxWidth: MediaQuery.of(context).size.width * 0.4,
                   ),
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     child: ListView.separated(
                       shrinkWrap: true,
-                      itemCount: _selectedFiles.length,
+                      itemCount: vmWatch.files.length,
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: 6),
                       itemBuilder: (context, index) {
-                        final file = _selectedFiles[index];
+                        final file = vmWatch.files[index];
                         return Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -116,7 +110,7 @@ class _MessageInputState extends State<MessageInput> {
                                 icon: const Icon(Icons.close),
                                 iconSize: 16,
                                 color: colorScheme.onSurfaceVariant,
-                                onPressed: () => _removeFile(index),
+                                onPressed: () => vm.removeFileAt(index),
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(
                                   minWidth: 24,
@@ -166,23 +160,25 @@ class _MessageInputState extends State<MessageInput> {
                       child: IconButton(
                         icon: Icon(Icons.add),
                         color: colorScheme.primary,
-                        onPressed: () async {
-                          // Handle add button press - allow multiple file selection
-                          FilePickerResult? result = await FilePicker.platform
-                              .pickFiles(allowMultiple: true);
+                        onPressed: isBusy
+                            ? null
+                            : () async {
+                                // Handle add button press - allow multiple file selection
+                                FilePickerResult? result = await FilePicker
+                                    .platform
+                                    .pickFiles(allowMultiple: true);
 
-                          if (result != null) {
-                            setState(() {
-                              _selectedFiles.addAll(result.files);
-                            });
-                            widget.onFilesChanged?.call();
-                            debugPrint(
-                              "Selected ${result.files.length} file(s)",
-                            );
-                          } else {
-                            debugPrint("No file selected");
-                          }
-                        },
+                                if (result != null) {
+                                  try {
+                                    vm.addFiles(result.files);
+                                  } catch (_) {}
+                                  debugPrint(
+                                    "Selected ${result.files.length} file(s)",
+                                  );
+                                } else {
+                                  debugPrint("No file selected");
+                                }
+                              },
                       ),
                     ),
                     suffixIcon: Padding(
@@ -190,10 +186,11 @@ class _MessageInputState extends State<MessageInput> {
                       child: IconButton(
                         icon: const Icon(Icons.send_rounded),
                         color: colorScheme.primary,
-                        onPressed: _handleSend,
+                        onPressed: isBusy ? null : _handleSend,
                       ),
                     ),
                     filled: true,
+                    enabled: !isBusy,
                     fillColor: colorScheme.surfaceContainerHigh.withAlpha(200),
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 12,

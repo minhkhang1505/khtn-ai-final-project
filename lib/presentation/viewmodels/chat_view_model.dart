@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
 
 import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
@@ -17,9 +18,7 @@ import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart'
 class ChatViewModel extends ChangeNotifier {
   final ChatUseCase chatUsecase;
 
-  ChatViewModel({
-    required this.chatUsecase
-  }) {
+  ChatViewModel({required this.chatUsecase}) {
     // Fetch conversations on init
     getConversations();
   }
@@ -31,7 +30,7 @@ class ChatViewModel extends ChangeNotifier {
   AssistantModel assistant = AssistantModel.defaults();
   MetadataModel metadata = MetadataModel.defaults();
   List<ConversationModel> conversations = [];
-  List <String> fileIds = [];
+  List<PlatformFile> files = [];
   String selectedModel = 'gpt-4o-mini';
   String conversationId = ''; // Default conversation ID
   String conversationTitle = 'Chat';
@@ -40,28 +39,39 @@ class ChatViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool _isStreaming = false;
 
+  bool get isStreaming => _isStreaming;
+  bool get isBusy => _isLoading || _isStreaming;
+
   bool get isLoading => _isLoading;
   String? get error => _error;
 
   String get messagesContent {
-     String temp = metadata.conversation.messages.map((msg) => "${msg.role}: ${msg.content}").join('\n');
-     temp += "\n\nTotal messages: ${metadata.conversation.messages.length}";
-     temp += "\nConversation ID: ${metadata.conversation.id}";
+    String temp = metadata.conversation.messages
+        .map((msg) => "${msg.role}: ${msg.content}")
+        .join('\n');
+    temp += "\n\nTotal messages: ${metadata.conversation.messages.length}";
+    temp += "\nConversation ID: ${metadata.conversation.id}";
 
-     temp = metadata.toJson().toString();
+    temp = metadata.toJson().toString();
 
-     return temp;
-  }
-
-  void clearError() {
-    _error = null;
-    notifyListeners();
+    return temp;
   }
 
   /// Send a message as the user, append the user's message and the reply.
   Future<bool> sendMessage(String content) async {
     final trimmed = content.trim();
+
+    if (files.isNotEmpty) {
+      _error = "File upload not implemented yet.";
+      debugPrint("Error: $_error");
+      notifyListeners();
+      return false;
+    }
+
     if (trimmed.isEmpty) return false;
+
+    // Clear files after successful validation
+    clearFiles();
 
     // Create a user message and append
     final userMsg = ChatMessageModel.createMessage(trimmed, 'user', []);
@@ -71,7 +81,7 @@ class ChatViewModel extends ChangeNotifier {
     });
     _isLoading = true;
     notifyListeners();
-    
+
     try {
       final request = SendMessageRequestModel(
         content: trimmed,
@@ -144,11 +154,7 @@ class ChatViewModel extends ChangeNotifier {
       // Append messages from history
       final messageList = response.items;
       for (var msg in messageList) {
-        final chatMsg = ChatMessageModel.createMessage(
-          msg.query,
-          'user',
-          [],
-        );
+        final chatMsg = ChatMessageModel.createMessage(msg.query, 'user', []);
         messages.add(chatMsg);
 
         final replyMsg = ChatMessageModel.createMessage(
@@ -171,7 +177,6 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   Future<bool> chatWithBot(String content) async {
-    
     final trimmed = content.trim();
     if (trimmed.isEmpty) return false;
 
@@ -186,14 +191,17 @@ class ChatViewModel extends ChangeNotifier {
         assistant: assistant,
       );
       final response = await chatUsecase.chatWithBot(request);
-      final replyMessage = ChatMessageModel.createMessage(response.message, 'assistant', []);
+      final replyMessage = ChatMessageModel.createMessage(
+        response.message,
+        'assistant',
+        [],
+      );
       addMessage(replyMessage);
 
       // Scroll to bottom after a slight delay to ensure UI has updated
       Future.delayed(const Duration(milliseconds: 100), () {
         scrollToBottom();
       });
-
     } catch (e) {
       // On error, add a simple assistant message describing failure
       debugPrint("Error chatting with bot: $e");
@@ -221,12 +229,6 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Clear conversation
-  void clearMessages() {
-    messages.clear();
-    notifyListeners();
-  }
-
   /// Update metadata based on current conversation ID and messages
   void updateMetadata() {
     metadata = MetadataModel(
@@ -235,8 +237,6 @@ class ChatViewModel extends ChangeNotifier {
         messages: messages,
       ),
     );
-    debugPrint("Metadata updated: ${metadata.toJson()}");
-    debugPrint("Conversation ID: ${metadata.conversation.id}");
   }
 
   /// Scroll message list to bottom
@@ -261,13 +261,58 @@ class ChatViewModel extends ChangeNotifier {
     scrollToBottom();
 
     for (int i = 0; i < fullText.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 100)); // Simulate streaming delay
+      await Future.delayed(
+        const Duration(milliseconds: 100),
+      ); // Simulate streaming delay
       msg.content = fullText.substring(0, i + 1);
       notifyListeners();
       scrollToBottom();
     }
 
     _isStreaming = false;
+    notifyListeners();
+  }
+
+  /// Add files to the current draft/files list
+  void addFiles(List<PlatformFile> newFiles) {
+    files.addAll(newFiles);
+    notifyListeners();
+    // Ensure UI scrolls to bottom to reveal any new file UI
+    // Use delayed callback to allow UI to rebuild first
+    Future.delayed(const Duration(milliseconds: 150), () {
+      scrollToBottom();
+    });
+  }
+
+  /// Remove file at index
+  void removeFileAt(int index) {
+    if (index >= 0 && index < files.length) {
+      files.removeAt(index);
+      notifyListeners();
+      // Use delayed callback to allow UI to rebuild first
+      Future.delayed(const Duration(milliseconds: 150), () {
+        scrollToBottom();
+      });
+    }
+  }
+
+  /// Clear all selected files
+  void clearFiles() {
+    if (files.isNotEmpty) {
+      files.clear();
+      notifyListeners();
+    }
+  }
+
+  /// Clear conversation
+  void clearMessages() {
+    messages.clear();
+    notifyListeners();
+  }
+
+  /// Clear error message
+  void clearError() {
+    _error = null;
     notifyListeners();
   }
 }
