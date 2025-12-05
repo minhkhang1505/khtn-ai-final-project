@@ -47,21 +47,47 @@ class PromptViewmodel extends ChangeNotifier {
   double offset = 0;
   bool hasNext = false;
 
-  Future<bool> getAllPrompts() async {
-    if (_state == PromptViewState.loading) return false;
-
+  Future<bool> _fetchPrompts({
+    CategoryType? category,
+    bool isFavorite = false,
+    bool resetOffset = false,
+  }) async {
     try {
-      if (_prompts.isEmpty) {
-        _setState(PromptViewState.loading);
+      _setState(PromptViewState.loading);
+      if (resetOffset) {
+        offset = 0;
+        hasNext = false;
+
+        if (isFavorite) {
+          _favoritePrompts.clear();
+        } else if (category != null) {
+          _categoryPrompts.clear();
+        } else {
+          _prompts.clear();
+        }
       }
 
-      final requestObject = PromptRequest(limit: limit, offset: offset);
+      final requestObject = PromptRequest(
+        limit: limit,
+        offset: offset,
+        category: category,
+        isFavorite: isFavorite,
+      );
+
       final response = await getPromptUseCase.call(requestObject);
       hasNext = response.hasNext;
       offset += limit;
-      _prompts.addAll(response.items.toEntityList());
+
+      if (isFavorite) {
+        _favoritePrompts.addAll(response.items.toEntityList());
+      } else if (category != null) {
+        _categoryPrompts.addAll(response.items.toEntityList());
+      } else {
+        _prompts.addAll(response.items.toEntityList());
+      }
 
       _setState(PromptViewState.success);
+
       return true;
     } catch (e) {
       debugPrint('PromptViewmodel: Error fetching prompts - $e');
@@ -70,50 +96,13 @@ class PromptViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<bool> getPromptByCategory(CategoryType category) async {
-    try {
-      _categoryPrompts.clear();
-      _setState(PromptViewState.loading);
+  Future<bool> getAllPrompts() => _fetchPrompts(resetOffset: true);
 
-      final response = await getPromptUseCase.call(
-        PromptRequest(limit: limit, offset: offset, category: category),
-      );
+  Future<bool> getPromptByCategory(CategoryType category) =>
+      _fetchPrompts(category: category, resetOffset: true);
 
-      hasNext = response.hasNext;
-      offset += limit;
-      _categoryPrompts.addAll(response.items.toEntityList());
-      _setState(PromptViewState.success);
-      return true;
-    } catch (e) {
-      debugPrint('PromptViewmodel: Error fetching prompts by category - $e');
-      _setState(PromptViewState.failure);
-      return false;
-    }
-  }
-
-  Future<bool> getFavoritePrompts() async {
-    try {
-      if (_favoritePrompts.isEmpty) {
-        _setState(PromptViewState.loading);
-      }
-
-      final requestFavoritePrompts = PromptRequest(
-        limit: limit,
-        offset: offset,
-        isFavorite: true,
-      );
-      final response = await getPromptUseCase.call(requestFavoritePrompts);
-      hasNext = response.hasNext;
-      offset += limit;
-      _favoritePrompts.addAll(response.items.toEntityList());
-      _setState(PromptViewState.success);
-      return true;
-    } catch (e) {
-      debugPrint('PromptViewmodel: Error fetching favorite prompts - $e');
-      _setState(PromptViewState.failure);
-      return false;
-    }
-  }
+  Future<bool> getFavoritePrompts() =>
+      _fetchPrompts(isFavorite: true, resetOffset: true);
 
   Future<bool> createPrompt(PromptCreationAndUpdateRequest newPrompt) async {
     try {
