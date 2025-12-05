@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class FailureWidget extends StatelessWidget {
+class FailureStateWidget extends StatelessWidget {
   final VoidCallback? onRetry;
-  const FailureWidget({super.key, this.onRetry});
+  const FailureStateWidget({super.key, this.onRetry});
 
   @override
   Widget build(BuildContext context) {

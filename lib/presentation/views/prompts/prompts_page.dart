@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/categories.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/all_prompts_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/categories_tab.dart';
-import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/empty_prompt_widget.dart';
-import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/failure_widget.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/favorite_prompts_tab.dart';
-import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompts_tab_bar.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 /// Prompts page - Manage AI prompts
@@ -78,7 +78,7 @@ class PromptsPage extends StatelessWidget {
                                 switch (viewmodel.viewState) {
                                   PromptViewState.loading =>
                                     LoadingIndicatorWidget(),
-                                  PromptViewState.failure => FailureWidget(
+                                  PromptViewState.failure => FailureStateWidget(
                                     onRetry: () {
                                       viewmodel.getAllPrompts();
                                     },
@@ -99,7 +99,7 @@ class PromptsPage extends StatelessWidget {
                                 switch (viewmodel.viewState) {
                                   PromptViewState.loading =>
                                     LoadingIndicatorWidget(),
-                                  PromptViewState.failure => FailureWidget(
+                                  PromptViewState.failure => FailureStateWidget(
                                     onRetry: () {
                                       viewmodel.getFavoritePrompts();
                                     },

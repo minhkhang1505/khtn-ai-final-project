@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/categories.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
-import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/empty_prompt_widget.dart';
 import 'package:provider/provider.dart';
 
 class FilterByCategoryPage extends StatefulWidget {

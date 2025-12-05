@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_detail_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_details_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/widgets/prompt_detail_action_buttons.dart';
@@ -22,12 +24,6 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
     titleController = TextEditingController();
     descriptionController = TextEditingController();
     contentController = TextEditingController();
-
-    // Initialize ViewModel after widget tree is ready
-    Future.microtask(() {
-      final viewModel = context.read<PromptDetailViewModel>();
-      viewModel.loadPromptDetails();
-    });
   }
 
   @override
@@ -79,55 +75,66 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
           body: LayoutBuilder(
             builder: (context, constraints) {
               final bool isWideScreen = constraints.maxWidth > 600;
-              return Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: isWideScreen ? 800 : double.infinity,
-                  ),
-                  child: SafeArea(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            // Show loading indicator while fetching data
-                            if (viewModel.isLoading)
-                              const CircularProgressIndicator()
-                            else ...[
-                              PromptDetailsSection(
-                                titleController: titleController,
-                                descriptionController: descriptionController,
-                                contentController: contentController,
-                                selectedCategory: viewModel.selectedCategory,
-                                selectedLanguage: viewModel.selectedLanguage,
-                                isPublic: viewModel.isPublic,
-                                onCategoryChanged: (value) {
-                                  if (value != null)
-                                    viewModel.setCategory(value);
-                                },
-                                onLanguageChanged: (value) {
-                                  if (value != null)
-                                    viewModel.setLanguage(value);
-                                },
-                                onPublicChanged: (value) {
-                                  viewModel.setIsPublic(value);
-                                },
-                              ),
-                              const SizedBox(height: 16),
-                              PromptDetailActionButtons(
-                                title: titleController.text,
-                                onSaveChange: () => _savePrompt(viewModel),
-                                onDelete: () => _deletePrompt(viewModel),
-                              ),
+              if (viewModel.promptDetailState == PromptDetailState.loading) {
+                return LoadingIndicatorWidget();
+              } else if (viewModel.promptDetailState ==
+                  PromptDetailState.success) {
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: isWideScreen ? 800 : double.infinity,
+                    ),
+                    child: SafeArea(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              // Show loading indicator while fetching data
+                              if (viewModel.isLoading)
+                                const CircularProgressIndicator()
+                              else ...[
+                                PromptDetailsSection(
+                                  titleController: titleController,
+                                  descriptionController: descriptionController,
+                                  contentController: contentController,
+                                  selectedCategory: viewModel.selectedCategory,
+                                  selectedLanguage: viewModel.selectedLanguage,
+                                  isPublic: viewModel.isPublic,
+                                  onCategoryChanged: (value) {
+                                    if (value != null)
+                                      viewModel.setCategory(value);
+                                  },
+                                  onLanguageChanged: (value) {
+                                    if (value != null)
+                                      viewModel.setLanguage(value);
+                                  },
+                                  onPublicChanged: (value) {
+                                    viewModel.setIsPublic(value);
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+                                PromptDetailActionButtons(
+                                  title: titleController.text,
+                                  onSaveChange: () => _savePrompt(viewModel),
+                                  onDelete: () => _deletePrompt(viewModel),
+                                ),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              );
+                );
+              } else {
+                return FailureStateWidget(
+                  onRetry: () {
+                    viewModel.loadPromptDetails();
+                  },
+                );
+              }
             },
           ),
         );
