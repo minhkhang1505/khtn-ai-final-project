@@ -39,7 +39,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
               height: 60,
               alignment: Alignment.center,
               child: Text(
-                'AI Bots',
+                'Chat Conversations',
                 style: TextStyle(
                   fontSize: 20,
                   color: colorScheme.primary,
@@ -53,22 +53,15 @@ class _ChatDrawerState extends State<ChatDrawer> {
               child: ListView(
                 padding: EdgeInsets.zero, 
                 children: [
-                  // --- Action buttons ---
-                  // ListTile(
-                  //   leading: const Icon(Icons.add),
-                  //   title: const Text('Create Bot'),
-                  //   onTap: () {
-                  //     Navigator.pushNamed(context, '/bots/new');
-                  //     // TODO: Create new chat page with bot
-                  //   },
-                  // ),
-                  // ListTile(
-                  //   leading: const Icon(Icons.edit),
-                  //   title: const Text('Edit Bot'),
-                  //   onTap: () {
-                  //     Navigator.pushNamed(context, '/bots/edit', arguments: bot);
-                  //   },
-                  // ),
+                  // Action buttons
+                  ListTile(
+                    leading: const Icon(Icons.add),
+                    title: const Text('New Chat'),
+                    onTap: () {
+                      Navigator.pop(context); // Close drawer
+                      vm.newChat();
+                    },
+                  ),
                   const SizedBox(height: 10),
 
                   // Your Bots
