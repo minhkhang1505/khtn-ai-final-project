@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
@@ -140,11 +141,14 @@ class RouteGenerator {
         );
 
       case AppRoutes.promptDetails:
-        final promptId = settings.arguments as String?;
-        if (promptId == null || promptId.isEmpty) {
-          debugPrint('Khang - Error: promptId is null or empty');
-          return _errorRoute('promptDetails - Missing promptId');
+        final prompt = settings.arguments as PromptEntity?;
+        if (prompt == null || prompt.id.isEmpty) {
+          debugPrint('Khang - Error: prompt is null or prompt.id is empty');
+          return _errorRoute('promptDetails - Missing prompt');
         }
+        debugPrint(
+          'Khang - Route received prompt: ${prompt.id} - ${prompt.title}',
+        );
         return _buildRoute(
           settings: settings,
           builder: (context) {
@@ -159,7 +163,7 @@ class RouteGenerator {
                   repository: promptViewModel.deletePromptUseCase.repository,
                 ),
                 deletePromptUseCase: promptViewModel.deletePromptUseCase,
-                promptId: promptId,
+                prompt: prompt,
               )..loadPromptDetails(),
               child: const PromptDetailPage(),
             );

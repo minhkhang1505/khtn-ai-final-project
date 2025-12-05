@@ -126,7 +126,7 @@ class PromptRequest {
   bool? isPublic;
 
   ///prompt id
-  String? id;
+  String? _id;
 
   ///limit
   double? limit;
@@ -141,11 +141,11 @@ class PromptRequest {
     this.category,
     this.isFavorite,
     this.isPublic,
-    this.id,
+    String? id,
     this.limit,
     this.offset,
     this.query,
-  });
+  }) : _id = id;
 
   PromptRequest copyWith({
     CategoryType? category,
@@ -159,7 +159,7 @@ class PromptRequest {
     category: category ?? this.category,
     isFavorite: isFavorite ?? this.isFavorite,
     isPublic: isPublic ?? this.isPublic,
-    id: id ?? this.id,
+    id: id ?? this._id,
     limit: limit ?? this.limit,
     offset: offset ?? this.offset,
     query: query ?? this.query,
@@ -170,7 +170,7 @@ class PromptRequest {
       if (category != null) 'category': category.toString().split('.').last,
       if (isFavorite != null) 'isFavorite': isFavorite,
       if (isPublic != null) 'isPublic': isPublic,
-      if (id != null) 'id': id,
+      if (_id != null) '_id': _id,
       if (limit != null) 'limit': limit,
       if (offset != null) 'offset': offset,
       if (query != null) 'query': query,

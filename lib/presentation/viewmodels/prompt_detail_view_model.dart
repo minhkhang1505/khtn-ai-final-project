@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
+import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/delete_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/udpate_prompt_usecase.dart';
@@ -10,13 +11,13 @@ class PromptDetailViewModel extends ChangeNotifier {
   final GetPromptUseCase getPromptUseCase;
   final UpdatePromptUsecase updatePromptUseCase;
   final DeletePromptUsecase deletePromptUseCase;
-  final String promptId;
+  final PromptEntity prompt;
 
   PromptDetailViewModel({
     required this.getPromptUseCase,
     required this.updatePromptUseCase,
     required this.deletePromptUseCase,
-    required this.promptId,
+    required this.prompt,
   });
 
   PromptDetailState _promptDetailState = PromptDetailState.initial;
@@ -81,40 +82,22 @@ class PromptDetailViewModel extends ChangeNotifier {
   Future<bool> loadPromptDetails() async {
     try {
       _setState(PromptDetailState.loading);
-      if (promptId.isEmpty || promptId == 'unknown') {
-        _errorMessage = 'Invalid prompt ID: $promptId';
-        debugPrint('Khang - Error: Invalid prompt ID: $promptId');
+
+      if (prompt.id.isEmpty) {
+        _errorMessage = 'Invalid prompt ID: $prompt';
+        debugPrint('Khang - Error: Invalid prompt ID: $prompt');
         _setState(PromptDetailState.failure);
         return false;
       }
 
-      debugPrint('Khang - Loading prompt details for ID: $promptId');
-      final PromptRequest queryRequest = PromptRequest(
-        id: promptId,
-        limit: 1,
-        offset: 0,
-      );
+      debugPrint('Khang - Loading prompt details for ID: ${prompt.id}');
 
-      final response = await getPromptUseCase.call(queryRequest);
-
-      if (response.items.isEmpty) {
-        _errorMessage = 'Prompt not found';
-        _setState(PromptDetailState.failure);
-        return false;
-      }
-
-      final currentPrompt = response.items[0];
-
-      for (var item in response.items) {
-        debugPrint('Khang - Fetched prompt item: ${item.id} - ${item.title}');
-      }
-
-      _title = currentPrompt.title;
-      _description = currentPrompt.description ?? "";
-      _content = currentPrompt.content;
-      _selectedCategory = currentPrompt.category;
-      _selectedLanguage = currentPrompt.language;
-      _isPublic = currentPrompt.isPublic;
+      _title = prompt.title;
+      _description = prompt.description ?? "";
+      _content = prompt.content;
+      _selectedCategory = prompt.category;
+      _selectedLanguage = prompt.language;
+      _isPublic = prompt.isPublic;
 
       _setState(PromptDetailState.success);
       return true;
@@ -127,7 +110,7 @@ class PromptDetailViewModel extends ChangeNotifier {
 
   Future<bool> deletePrompt() async {
     try {
-      final success = await deletePromptUseCase.call(promptId);
+      final success = await deletePromptUseCase.call(prompt.id);
       return success;
     } catch (e) {
       _errorMessage = 'Failed to delete prompt: $e';
@@ -154,7 +137,7 @@ class PromptDetailViewModel extends ChangeNotifier {
         title: title,
       );
 
-      final response = await updatePromptUseCase.call(promptId, updateRequest);
+      final response = await updatePromptUseCase.call(prompt.id, updateRequest);
       return response;
     } catch (e) {
       _errorMessage = 'Failed to update prompt: $e';
