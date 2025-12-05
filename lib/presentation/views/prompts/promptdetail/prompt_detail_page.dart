@@ -4,18 +4,55 @@ import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widge
 import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/widgets/prompt_detail_action_buttons.dart';
 import 'package:provider/provider.dart';
 
-class PromptDetailPage extends StatelessWidget {
+class PromptDetailPage extends StatefulWidget {
   const PromptDetailPage({super.key});
 
-  void _savePrompt(BuildContext context, PromptDetailViewModel viewModel) {
-    viewModel.updatePrompt();
+  @override
+  State<PromptDetailPage> createState() => _PromptDetailPageState();
+}
+
+class _PromptDetailPageState extends State<PromptDetailPage> {
+  late TextEditingController titleController;
+  late TextEditingController descriptionController;
+  late TextEditingController contentController;
+
+  @override
+  void initState() {
+    super.initState();
+    titleController = TextEditingController();
+    descriptionController = TextEditingController();
+    contentController = TextEditingController();
+
+    // Initialize ViewModel after widget tree is ready
+    Future.microtask(() {
+      final viewModel = context.read<PromptDetailViewModel>();
+      viewModel.loadPromptDetails();
+    });
   }
 
-  void _deletePrompt(BuildContext context, PromptDetailViewModel viewModel) {
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    contentController.dispose();
+    super.dispose();
+  }
+
+  void _savePrompt(PromptDetailViewModel viewModel) {
+    viewModel.updatePrompt(
+      title: titleController.text,
+      description: descriptionController.text,
+      content: contentController.text,
+    );
+  }
+
+  void _deletePrompt(PromptDetailViewModel viewModel) {
     viewModel.deletePrompt();
   }
 
-  void _backToPromptsList(BuildContext context) {
+  void _backToPromptsList() {
+    final viewModel = context.read<PromptDetailViewModel>();
+    viewModel.clearItem();
     Navigator.pop(context);
   }
 
@@ -23,15 +60,20 @@ class PromptDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<PromptDetailViewModel>(
       builder: (context, viewModel, child) {
+        // Update controllers when data is loaded
+        if (!viewModel.isLoading && titleController.text.isEmpty) {
+          titleController.text = viewModel.title;
+          descriptionController.text = viewModel.description;
+          contentController.text = viewModel.content;
+        }
+
         return Scaffold(
           appBar: AppBar(
             centerTitle: false,
             title: const Text('Prompt Detail'),
             leading: IconButton(
-              onPressed: viewModel.isLoading
-                  ? null
-                  : () => _backToPromptsList(context),
-              icon: Icon(Icons.arrow_back_ios),
+              onPressed: viewModel.isLoading ? null : _backToPromptsList,
+              icon: const Icon(Icons.arrow_back_ios),
             ),
           ),
           body: LayoutBuilder(
@@ -49,34 +91,36 @@ class PromptDetailPage extends StatelessWidget {
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           children: [
-                            PromptDetailsSection(
-                              titleController: viewModel.titleController,
-                              descriptionController:
-                                  viewModel.descriptionController,
-                              contentController: viewModel.contentController,
-                              selectedCategory: viewModel.selectedCategory,
-                              selectedLanguage: viewModel.selectedLanguage,
-                              isPublic: viewModel.isPublic,
-                              onCategoryChanged: (value) {
-                                if (value != null) viewModel.setCategory(value);
-                              },
-                              onLanguageChanged: (value) {
-                                if (value != null) viewModel.setLanguage(value);
-                              },
-                              onPublicChanged: (value) {
-                                viewModel.setIsPublic(value);
-                              },
-                            ),
-                            SizedBox(height: 16),
-                            PromptDetailActionButtons(
-                              title: viewModel.titleController.text,
-                              onSaveChange: viewModel.isLoading
-                                  ? () {}
-                                  : () => _savePrompt(context, viewModel),
-                              onDelete: viewModel.isLoading
-                                  ? () {}
-                                  : () => _deletePrompt(context, viewModel),
-                            ),
+                            // Show loading indicator while fetching data
+                            if (viewModel.isLoading)
+                              const CircularProgressIndicator()
+                            else ...[
+                              PromptDetailsSection(
+                                titleController: titleController,
+                                descriptionController: descriptionController,
+                                contentController: contentController,
+                                selectedCategory: viewModel.selectedCategory,
+                                selectedLanguage: viewModel.selectedLanguage,
+                                isPublic: viewModel.isPublic,
+                                onCategoryChanged: (value) {
+                                  if (value != null)
+                                    viewModel.setCategory(value);
+                                },
+                                onLanguageChanged: (value) {
+                                  if (value != null)
+                                    viewModel.setLanguage(value);
+                                },
+                                onPublicChanged: (value) {
+                                  viewModel.setIsPublic(value);
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              PromptDetailActionButtons(
+                                title: titleController.text,
+                                onSaveChange: () => _savePrompt(viewModel),
+                                onDelete: () => _deletePrompt(viewModel),
+                              ),
+                            ],
                           ],
                         ),
                       ),

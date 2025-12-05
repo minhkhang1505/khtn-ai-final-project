@@ -70,41 +70,44 @@ class PromptDetailsSection extends StatelessWidget {
             controller: contentController,
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: PromptDropdownField<String>(
-                  label: "Category",
-                  initialSelection: selectedCategory,
-                  onSelected: onCategoryChanged,
-                  entries: categories
-                      .map(
-                        (category) => DropdownMenuEntry(
-                          value: category.id.name,
-                          label: category.name,
-                        ),
-                      )
-                      .toList(),
+          if (selectedCategory == null)
+            CircularProgressIndicator()
+          else
+            Row(
+              children: [
+                Expanded(
+                  child: PromptDropdownField<String>(
+                    label: "Category",
+                    initialSelection: selectedCategory,
+                    onSelected: onCategoryChanged,
+                    entries: categories
+                        .map(
+                          (category) => DropdownMenuEntry(
+                            value: category.id.name,
+                            label: category.name,
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: PromptDropdownField<String>(
-                  label: "Language",
-                  initialSelection: selectedLanguage,
-                  onSelected: onLanguageChanged,
-                  entries: languages
-                      .map(
-                        (language) => DropdownMenuEntry(
-                          value: language.code,
-                          label: language.name,
-                        ),
-                      )
-                      .toList(),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: PromptDropdownField<String>(
+                    label: "Language",
+                    initialSelection: selectedLanguage,
+                    onSelected: onLanguageChanged,
+                    entries: languages
+                        .map(
+                          (language) => DropdownMenuEntry(
+                            value: language.code,
+                            label: language.name,
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           const SizedBox(height: 16),
           PublicPromptSwitch(isPublic: isPublic, onChanged: onPublicChanged),
         ],

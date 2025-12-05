@@ -140,7 +140,11 @@ class RouteGenerator {
         );
 
       case AppRoutes.promptDetails:
-        final promptId = settings.arguments as String;
+        final promptId = settings.arguments as String?;
+        if (promptId == null || promptId.isEmpty) {
+          debugPrint('Khang - Error: promptId is null or empty');
+          return _errorRoute('promptDetails - Missing promptId');
+        }
         return _buildRoute(
           settings: settings,
           builder: (context) {

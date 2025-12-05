@@ -15,15 +15,17 @@ class PromptDetailViewModel extends ChangeNotifier {
     required this.updatePromptUseCase,
     required this.deletePromptUseCase,
     required this.promptId,
-  }) {
-    titleController = TextEditingController();
-    descriptionController = TextEditingController();
-    contentController = TextEditingController();
-  }
+  });
 
-  late TextEditingController titleController;
-  late TextEditingController descriptionController;
-  late TextEditingController contentController;
+  // Domain/UI state only (no controllers)
+  String _title = '';
+  String get title => _title;
+
+  String _description = '';
+  String get description => _description;
+
+  String _content = '';
+  String get content => _content;
 
   late String _selectedCategory;
   String get selectedCategory => _selectedCategory;
@@ -55,19 +57,51 @@ class PromptDetailViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearItem() {
+    _title = '';
+    _description = '';
+    _content = '';
+    _selectedCategory = '';
+    _selectedLanguage = '';
+    _isPublic = true;
+    _errorMessage = '';
+    notifyListeners();
+  }
+
   Future<bool> loadPromptDetails() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final PromptRequest queryRequest = PromptRequest(query: promptId);
+      if (promptId.isEmpty || promptId == 'unknown') {
+        _errorMessage = 'Invalid prompt ID: $promptId';
+        debugPrint('Khang - Error: Invalid prompt ID: $promptId');
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+
+      debugPrint('Khang - Loading prompt details for ID: $promptId');
+      final PromptRequest queryRequest = PromptRequest(
+        id: promptId,
+        limit: 1,
+        offset: 0,
+      );
       final response = await getPromptUseCase.call(queryRequest);
+      debugPrint('Khang - Loaded prompt details: ${response.items}');
+
+      if (response.items.isEmpty) {
+        _errorMessage = 'Prompt not found';
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
 
       final currentPrompt = response.items[0];
 
-      titleController.text = currentPrompt.title;
-      descriptionController.text = currentPrompt.description ?? "";
-      contentController.text = currentPrompt.content;
+      _title = currentPrompt.title;
+      _description = currentPrompt.description ?? "";
+      _content = currentPrompt.content;
       _selectedCategory = currentPrompt.category;
       _selectedLanguage = currentPrompt.language;
       _isPublic = currentPrompt.isPublic;
@@ -76,6 +110,7 @@ class PromptDetailViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       _errorMessage = 'Failed to load prompt details: $e';
+      debugPrint('Khang - Exception: $e');
       notifyListeners();
       return false;
     } finally {
@@ -98,15 +133,19 @@ class PromptDetailViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> updatePrompt() async {
+  Future<bool> updatePrompt({
+    required String title,
+    required String description,
+    required String content,
+  }) async {
     try {
       final updateRequest = PromptCreationAndUpdateRequest(
         category: _selectedCategory,
-        content: contentController.text,
-        description: descriptionController.text,
+        content: content,
+        description: description,
         isPublic: _isPublic,
         language: _selectedLanguage,
-        title: titleController.text,
+        title: title,
       );
 
       final response = await updatePromptUseCase.call(promptId, updateRequest);
@@ -119,13 +158,5 @@ class PromptDetailViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    descriptionController.dispose();
-    contentController.dispose();
-    super.dispose();
   }
 }

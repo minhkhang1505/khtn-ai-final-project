@@ -38,7 +38,7 @@ class PromptPaggingResponse {
           (json['items'] as List<dynamic>?)
               ?.map(
                 (item) => PromptModel(
-                  id: item['id'] as String? ?? '',
+                  id: item['_id'] as String? ?? '',
                   category: item['category'] as String? ?? '',
                   content: item['content'] as String? ?? '',
                   createdAt: item['createdAt'] as String? ?? '',
@@ -125,6 +125,9 @@ class PromptRequest {
   bool? isFavorite;
   bool? isPublic;
 
+  ///prompt id
+  String? id;
+
   ///limit
   double? limit;
 
@@ -138,6 +141,7 @@ class PromptRequest {
     this.category,
     this.isFavorite,
     this.isPublic,
+    this.id,
     this.limit,
     this.offset,
     this.query,
@@ -147,6 +151,7 @@ class PromptRequest {
     CategoryType? category,
     bool? isFavorite,
     bool? isPublic,
+    String? id,
     double? limit,
     double? offset,
     String? query,
@@ -154,6 +159,7 @@ class PromptRequest {
     category: category ?? this.category,
     isFavorite: isFavorite ?? this.isFavorite,
     isPublic: isPublic ?? this.isPublic,
+    id: id ?? this.id,
     limit: limit ?? this.limit,
     offset: offset ?? this.offset,
     query: query ?? this.query,
@@ -164,6 +170,7 @@ class PromptRequest {
       if (category != null) 'category': category.toString().split('.').last,
       if (isFavorite != null) 'isFavorite': isFavorite,
       if (isPublic != null) 'isPublic': isPublic,
+      if (id != null) 'id': id,
       if (limit != null) 'limit': limit,
       if (offset != null) 'offset': offset,
       if (query != null) 'query': query,

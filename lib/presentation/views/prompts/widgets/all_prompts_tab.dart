@@ -9,6 +9,7 @@ class AllPromptsTab extends StatelessWidget {
   const AllPromptsTab({super.key, required this.prompts, this.onFavoriteTap});
 
   void _handleItemTap(BuildContext context, PromptEntity prompt) {
+    debugPrint('Khang - Navigating to PromptDetailPage for prompt id: ${prompt.id}');
     Navigator.pushNamed(context, '/prompts/details', arguments: prompt.id);
   }
 
