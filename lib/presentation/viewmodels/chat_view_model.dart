@@ -70,8 +70,12 @@ class ChatViewModel extends ChangeNotifier {
 
     if (trimmed.isEmpty) return false;
 
-    // Clear files after successful validation
-    clearFiles();
+    if (trimmed.length > 5000) {
+      _error = "Message exceeds maximum length of 5000 characters.";
+      debugPrint("Error: $_error");
+      notifyListeners();
+      return false;
+    }
 
     // Create a user message and append
     final userMsg = ChatMessageModel.createMessage(trimmed, 'user', []);
@@ -165,6 +169,11 @@ class ChatViewModel extends ChangeNotifier {
         messages.add(replyMsg);
       }
       updateMetadata();
+
+      // Auto-scroll to last message after loading conversation
+      Future.delayed(const Duration(milliseconds: 300), () {
+        scrollToBottom();
+      });
     } catch (e) {
       debugPrint("Error fetching conversations: $e");
       _error = e.toString();

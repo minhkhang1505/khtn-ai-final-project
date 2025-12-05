@@ -122,9 +122,11 @@ class _MessageBubbleState extends State<MessageBubble> {
             AnimatedOpacity(
               opacity: _isHovered ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 200),
-              child: Padding(
+                child: Padding(
                 padding: const EdgeInsets.only(left: 12, right: 12, bottom: 4),
-                child: TextButton.icon(
+                child: Tooltip(
+                  message: 'Copy message',
+                  child: TextButton.icon(
                   onPressed: _isHovered ? widget.onCopy : null,
                   icon: Icon(
                     Icons.copy,
@@ -134,11 +136,12 @@ class _MessageBubbleState extends State<MessageBubble> {
                   label: const SizedBox.shrink(),
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+                    horizontal: 8,
+                    vertical: 4,
                     ),
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   ),
                 ),
               ),
