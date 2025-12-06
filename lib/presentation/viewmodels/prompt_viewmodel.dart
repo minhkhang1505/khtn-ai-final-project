@@ -147,6 +147,11 @@ class PromptViewmodel extends ChangeNotifier {
   Future<bool> getFavoritePrompts() =>
       _fetchPrompts(isFavorite: true, resetOffset: true);
 
+  Future<bool> refreshPrompts() {
+    _prompts.clear();
+    return _fetchPrompts(resetOffset: true);
+  }
+
   Future<bool> createPrompt(PromptCreationAndUpdateRequest newPrompt) async {
     try {
       final response = await createPromptUseCase.call(newPrompt);
@@ -160,9 +165,7 @@ class PromptViewmodel extends ChangeNotifier {
   }
 
   Future<bool> loadMorePrompts() {
-    return _fetchPrompts(
-      resetOffset: false,
-    );
+    return _fetchPrompts(resetOffset: false);
   }
 
   Future<bool> loadMoreCategoryPrompts() {

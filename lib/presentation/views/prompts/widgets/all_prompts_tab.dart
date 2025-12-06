@@ -42,6 +42,11 @@ class _AllPromptsTabState extends State<AllPromptsTab> {
     }
   }
 
+  Future<void> _onRefresh() async {
+    final viewModel = context.read<PromptViewmodel>();
+    await viewModel.refreshPrompts();
+  }
+
   void _handleItemTap(BuildContext context, PromptEntity prompt) {
     Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
   }
@@ -51,33 +56,39 @@ class _AllPromptsTabState extends State<AllPromptsTab> {
     final viewModel = context.watch<PromptViewmodel>();
     final prompts = widget.prompts;
 
-    return ListView.builder(
-      controller: _scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: prompts.length + 1,
-      itemBuilder: (context, index) {
-        if (index == prompts.length) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Center(
-              child: switch (viewModel.loadMoreState) {
-                LoadMoreState.loading => const CircularProgressIndicator(),
-                LoadMoreState.noMoreData => const Text(
-                  "No more prompts to load.",
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                LoadMoreState.idle => const SizedBox.shrink(),
-              },
-            ),
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      color: Theme.of(context).primaryColor,
+
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        controller: _scrollController,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        itemCount: prompts.length + 1,
+        itemBuilder: (context, index) {
+          if (index == prompts.length) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: switch (viewModel.loadMoreState) {
+                  LoadMoreState.loading => const CircularProgressIndicator(),
+                  LoadMoreState.noMoreData => const Text(
+                    "No more prompts to load.",
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                  LoadMoreState.idle => const SizedBox.shrink(),
+                },
+              ),
+            );
+          }
+          final prompt = prompts[index];
+          return PromptItem(
+            onTap: () => _handleItemTap(context, prompt),
+            prompt: prompt,
+            onFavoriteTap: () => widget.onFavoriteTap?.call(prompt),
           );
-        }
-        final prompt = prompts[index];
-        return PromptItem(
-          onTap: () => _handleItemTap(context, prompt),
-          prompt: prompt,
-          onFavoriteTap: () => widget.onFavoriteTap?.call(prompt),
-        );
-      },
+        },
+      ),
     );
   }
 }
