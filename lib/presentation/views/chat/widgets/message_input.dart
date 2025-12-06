@@ -20,7 +20,9 @@ class _MessageInputState extends State<MessageInput> {
   void _handleSend() {
     final text = _controller.text.trim();
     final vm = context.read<ChatViewModel>();
-    if (text.isEmpty || vm.files.isEmpty) return;
+    if (text.isEmpty && vm.files.isEmpty) {
+      return;
+    }
 
     widget.onSend(text);
     _controller.clear();

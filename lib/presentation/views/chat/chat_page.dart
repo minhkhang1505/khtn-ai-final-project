@@ -48,14 +48,13 @@ class ChatPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Text(
-                      "Something went wrong: ${vm.error}",
-                      style: TextStyle(
-                      color: colorScheme.error,
-                      fontWeight: FontWeight.bold,
-                      ),
+                  Text(
+                    "Something went wrong: ${vm.error}",
+                    style: TextStyle(
+                    color: colorScheme.error,
+                    fontWeight: FontWeight.bold,
                     ),
                   ),
                   IconButton(
