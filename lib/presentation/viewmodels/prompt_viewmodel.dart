@@ -28,6 +28,8 @@ class PromptViewmodel extends ChangeNotifier {
     required this.removePromptFromFavoriteUsecase,
   });
 
+  CategoryType? _currentSelectedCategory;
+
   PromptViewState _state = PromptViewState.initial;
   PromptViewState get viewState => _state;
 
@@ -137,8 +139,10 @@ class PromptViewmodel extends ChangeNotifier {
 
   Future<bool> getAllPrompts() => _fetchPrompts(resetOffset: true);
 
-  Future<bool> getPromptByCategory(CategoryType category) =>
-      _fetchPrompts(category: category, resetOffset: true);
+  Future<bool> getPromptByCategory(CategoryType category) {
+    _currentSelectedCategory = category;
+    return _fetchPrompts(category: category, resetOffset: true);
+  }
 
   Future<bool> getFavoritePrompts() =>
       _fetchPrompts(isFavorite: true, resetOffset: true);
@@ -155,7 +159,12 @@ class PromptViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<bool> loadMorePrompts() => _fetchPrompts(resetOffset: false);
+  Future<bool> loadMorePrompts() {
+    return _fetchPrompts(
+      category: _currentSelectedCategory,
+      resetOffset: false,
+    );
+  }
 
   Future<bool> deletePrompt(String promptID) async {
     try {
