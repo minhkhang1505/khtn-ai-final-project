@@ -77,6 +77,11 @@ class ChatViewModel extends ChangeNotifier {
       return false;
     }
 
+    if (conversationId.isEmpty) {
+      // New conversation - reset metadata
+      conversationId = 'temp_id';
+    }
+
     // Create a user message and append
     final userMsg = ChatMessageModel.createMessage(trimmed, 'user', []);
     messages.add(userMsg);
@@ -99,6 +104,7 @@ class ChatViewModel extends ChangeNotifier {
       await addStreamingAssistantMessage(response.message);
 
       // Update metadata after message exchange
+      conversationId = response.conversationId;
       updateMetadata();
 
       // Scroll to bottom after a slight delay to ensure UI has updated
@@ -269,13 +275,20 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
     scrollToBottom();
 
-    for (int i = 0; i < fullText.length; i++) {
-      await Future.delayed(
-        const Duration(milliseconds: 100),
-      ); // Simulate streaming delay
-      msg.content = fullText.substring(0, i + 1);
+    // Stream multiple characters at once for faster display
+    const chunkSize = 3; // Display 3 characters at a time
+    const delayMs = 30; // Delay between chunks (much faster)
+
+    for (int i = 0; i < fullText.length; i += chunkSize) {
+      await Future.delayed(const Duration(milliseconds: delayMs));
+      final end = (i + chunkSize).clamp(0, fullText.length);
+      msg.content = fullText.substring(0, end);
       notifyListeners();
-      scrollToBottom();
+
+      // Only scroll every few chunks to reduce overhead
+      if (i % (chunkSize * 3) == 0 || end == fullText.length) {
+        scrollToBottom();
+      }
     }
 
     _isStreaming = false;
