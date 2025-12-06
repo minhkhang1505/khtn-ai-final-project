@@ -91,3 +91,18 @@ Future<String> getOrCreateGuid() async {
 
   return guid;
 }
+
+
+// Extension method to add GET with query parameters
+extension JarvisApiClientQueryExt on JarvisApiClient {
+  Future<Response> getWithQuery(String path, {Map<String, dynamic>? queryParameters}) async {
+    final accessToken = await localDataSource.getAccessToken();
+    final options = Options(
+      headers: {
+        if (accessToken != null && accessToken.isNotEmpty)
+          'Authorization': 'Bearer $accessToken',
+      },
+    );
+    return _dio.get(path, options: options, queryParameters: queryParameters);
+  }
+}

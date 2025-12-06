@@ -169,87 +169,84 @@ An intelligent, enterprise-grade Flutter application designed to streamline work
 lib/
 ├── core/                          # Cross-cutting concerns
 │   ├── constants/                 # App-wide constants
-│   │   ├── app_constants.dart
-│   │   ├── categories.dart
-│   │   ├── languages.dart
-│   │   └── sample_prompts.dart
 │   ├── theme/                     # App theming and styling
-│   │   ├── app_radius.dart
-│   │   ├── theme.dart
-│   │   └── util.dart
 │   ├── utils/                     # Utility functions
-│   │   └── responsive_helper.dart
 │   ├── errors/                    # Error handling
 │   ├── network/                   # Network utilities
 │   └── di/                        # Dependency injection setup
 │
 ├── data/                          # Data layer (implementation)
 │   ├── datasources/               # Data access (remote/local)
-│   │   ├── local/
-│   │   └── remote/
-│   ├── models/                    # DTOs and serializers
-│   │   ├── agent_model.dart
-│   │   ├── bot_model.dart
-│   │   ├── knowledge_model.dart
-│   │   ├── message_model.dart
-│   │   ├── prompt_model.dart
-│   │   ├── workflow_model.dart
-│   │   └── workflow_step_model.dart
-│   └── repositories/              # Repository implementations
+│   │   ├── local/                 # Local data sources (e.g., cache, sqlite)
+│   │   └── remote/                # Remote data sources (API clients, network)
+│   ├── models/                    # DTOs, serializers and mappers
+│   │   ├── agent_model.dart       # Data transfer object for Agent
+│   │   ├── bot_model.dart         # DTO for Bot
+│   │   ├── knowledge_model.dart   # DTO for Knowledge source
+│   │   ├── message_model.dart     # DTO for Chat messages
+│   │   ├── prompt_model.dart      # DTO for Prompt objects
+│   │   ├── workflow_model.dart    # DTO for Workflow
+│   │   └── workflow_step_model.dart # DTO for Workflow steps
+│   └── repositories/              # Repository implementations (data -> domain)
+│       ├── agent_repository_impl.dart
+│       ├── bot_repository_impl.dart
+│       ├── knowledge_repository_impl.dart
+│       └── chat_repository_impl.dart
 │
 ├── domain/                        # Domain layer (business rules)
-│   ├── entities/                  # Core business objects
-│   │   ├── category.dart
-│   │   └── prompt_entity.dart
-│   ├── models/                    # Domain models
+│   ├── entities/                  # Core business objects (pure models)
+│   │   ├── agent.dart             # Agent entity (id, name, config)
+│   │   ├── bot.dart               # Bot entity
+│   │   ├── message.dart           # Message entity used in domain logic
+│   │   └── prompt.dart            # Prompt entity
+│   ├── models/                    # Domain-specific models / enums
 │   │   └── knowledge_source_type.dart
-│   ├── repositories/              # Repository interfaces
-│   └── usecases/                  # Application business logic
+│   ├── repositories/              # Repository interfaces (contracts)
+│   │   ├── agent_repository.dart  # Interface: AgentRepository
+│   │   ├── bot_repository.dart    # Interface: BotRepository
+│   │   ├── knowledge_repository.dart
+│   │   └── chat_repository.dart
+│   └── usecases/                  # Application business logic (use-cases)
+│       ├── agent/
+│       │   ├── get_agents.dart
+│       │   ├── get_agent_by_id.dart
+│       │   ├── create_agent.dart
+│       │   └── update_agent.dart
+│       ├── bot/
+│       │   ├── get_bots.dart
+│       │   ├── create_bot.dart
+│       │   └── update_bot.dart
+│       ├── knowledge/
+│       │   ├── upload_knowledge.dart
+│       │   └── search_knowledge.dart
+│       └── chat/
+│           ├── send_message.dart
+│           └── get_chat_history.dart
 │
 ├── presentation/                  # Presentation layer (MVVM)
-│   ├── common/                    # Shared widgets & styles
-│   │   ├── styles/
-│   │   └── widgets/               # Reusable UI components
-│   │       ├── ai_model_option_menu.dart
-│   │       ├── bot_search_bar.dart
-│   │       ├── category_option_menu.dart
-│   │       ├── custom_app_bar.dart
-│   │       ├── custom_back_button.dart
-│   │       ├── custom_text_field.dart
-│   │       └── expanded_button.dart
 │   ├── routes/                    # Navigation & routing
-│   │   ├── app_routes.dart
-│   │   └── route_generator.dart
 │   ├── services/                  # UI services
-│   │   ├── api_service.dart
-│   │   └── navigation_service.dart
 │   ├── viewmodels/                # ViewModels (ChangeNotifier)
-│   │   ├── agent_view_model.dart
-│   │   └── bot_view_model.dart
-│   ├── state/                     # Feature-specific state (optional)
-│   │   └── counter/               # Example placeholder
 │   └── views/                     # UI screens by feature
-│       ├── account/               # Account & settings
-│       ├── agents/                # Agent management
-│       ├── auth/                  # Authentication
-│       ├── bots/                  # Bot management
-│       ├── chat/                  # Chat interface
-│       ├── knowledge/             # Knowledge management
+│       ├── account/               # Account & settings screens
+│       ├── agents/                # Agent management screens
+│       ├── auth/                  # Authentication screens
+│       ├── bots/                  # Bot management screens
+│       ├── chat/                  # Chat interface screens
+│       ├── knowledge/             # Knowledge management screens
 │       ├── main/                  # Main/home screens
-│       ├── prompts/               # Prompt management
+│       ├── prompts/               # Prompt management screens
 │       └── splash/                # Splash screen
 │
 └── main.dart                      # App entry point
 ```
 
-<!-- ### Architecture Notes
+### Notes:
+- Removed detailed widget files to focus on repositories, models, viewmodels, and views.
+- The `lib/` directory is organized to follow Clean Architecture principles, ensuring scalability and maintainability.
+- Each layer (core, data, domain, presentation) has a specific responsibility, making the codebase modular and testable.
 
-- **Layer-First Organization:** Separation of concerns with clear layer boundaries
-- **Empty Directories:** Tracked with `.gitkeep` to maintain public structure visibility
-- **Feature Scalability:** Can transition to feature-first layout as the project grows
-- **Modular Design:** Each feature is independently testable and maintainable
-
---- -->
+---
 
 ## Installation & Setup
 
@@ -766,4 +763,4 @@ You are free to use, modify, and distribute this software for commercial and non
 
 - HCMUS Advanced Mobile Development Course instructors and peers
 - All contributors and issue reporters
-- The Flutter and Dart communities for continuous support -->
+- The Flutter and Dart communities for continuous support
