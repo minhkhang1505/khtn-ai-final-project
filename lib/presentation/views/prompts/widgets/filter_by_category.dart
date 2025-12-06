@@ -31,7 +31,7 @@ class _FilterByCategoryPageState extends State<FilterByCategoryPage> {
   }
 
   void _handleItemTap(BuildContext context, PromptEntity prompt) {
-    Navigator.pushNamed(context, '/prompt-detail', arguments: prompt);
+    Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
   }
 
   @override

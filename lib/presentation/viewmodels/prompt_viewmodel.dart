@@ -11,6 +11,8 @@ import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from
 
 enum PromptViewState { initial, loading, success, failure }
 
+enum LoadMoreState { idle, loading, noMoreData }
+
 class PromptViewmodel extends ChangeNotifier {
   final GetPromptUseCase getPromptUseCase;
   final CreatePromptUsecase createPromptUseCase;
@@ -34,6 +36,14 @@ class PromptViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
+  LoadMoreState _loadMoreState = LoadMoreState.idle;
+  LoadMoreState get loadMoreState => _loadMoreState;
+
+  void _setLoadMoreState(LoadMoreState loadMoreState) {
+    _loadMoreState = loadMoreState;
+    notifyListeners();
+  }
+
   final List<PromptEntity> _prompts = [];
   List<PromptEntity>? get prompts => _prompts;
 
@@ -43,7 +53,7 @@ class PromptViewmodel extends ChangeNotifier {
   final List<PromptEntity> _categoryPrompts = [];
   List<PromptEntity>? get categoryPrompts => _categoryPrompts;
 
-  double limit = 20;
+  double limit = 10;
   double offset = 0;
   bool hasNext = false;
 
@@ -53,8 +63,21 @@ class PromptViewmodel extends ChangeNotifier {
     bool resetOffset = false,
   }) async {
     try {
-      _setState(PromptViewState.loading);
       if (resetOffset) {
+        if (_state == PromptViewState.loading) {
+          return false; // Prevent multiple simultaneous fetches
+        }
+      } else {
+        if (_loadMoreState == LoadMoreState.loading ||
+            _loadMoreState == LoadMoreState.noMoreData) {
+          return false;
+        }
+      }
+
+      if (resetOffset) {
+        _setState(PromptViewState.loading);
+        _setLoadMoreState(LoadMoreState.idle);
+
         offset = 0;
         hasNext = false;
 
@@ -65,6 +88,8 @@ class PromptViewmodel extends ChangeNotifier {
         } else {
           _prompts.clear();
         }
+      } else {
+        _setLoadMoreState(LoadMoreState.loading);
       }
 
       final requestObject = PromptRequest(
@@ -87,12 +112,25 @@ class PromptViewmodel extends ChangeNotifier {
         _prompts.addAll(response.items.toEntityList());
       }
 
-      _setState(PromptViewState.success);
+      if (_state != PromptViewState.success) {
+        _setState(PromptViewState.success);
+      }
+
+      if (hasNext) {
+        _setLoadMoreState(LoadMoreState.idle);
+      } else {
+        _setLoadMoreState(LoadMoreState.noMoreData);
+      }
 
       return true;
     } catch (e) {
       debugPrint('PromptViewmodel: Error fetching prompts - $e');
-      _setState(PromptViewState.failure);
+
+      if (resetOffset) {
+        _setState(PromptViewState.failure);
+      } else {
+        _setLoadMoreState(LoadMoreState.idle);
+      }
       return false;
     }
   }
@@ -116,6 +154,8 @@ class PromptViewmodel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> loadMorePrompts() => _fetchPrompts(resetOffset: false);
 
   Future<bool> deletePrompt(String promptID) async {
     try {
