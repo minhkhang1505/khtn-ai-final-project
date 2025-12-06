@@ -28,6 +28,11 @@ class _MessageInputState extends State<MessageInput> {
     _controller.clear();
   }
 
+  void _onChanged(String value) {
+    final vm = context.read<ChatViewModel>();
+    vm.clearError();
+  }
+
   String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
@@ -155,6 +160,7 @@ class _MessageInputState extends State<MessageInput> {
                   keyboardType: TextInputType.multiline,
                   minLines: 1,
                   maxLines: null,
+                  onChanged: _onChanged,
                   decoration: InputDecoration(
                     hintText: "Type your message...",
                     prefixIcon: Padding(
