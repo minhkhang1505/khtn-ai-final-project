@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
-import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/empty_prompt_widget.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
 
-class FavoritePromptsTab extends StatefulWidget {
+class FavoritePromptsTab extends StatelessWidget {
   final List<PromptEntity> prompts;
   final Function(PromptEntity)? onFavoriteTap;
 
@@ -13,18 +13,13 @@ class FavoritePromptsTab extends StatefulWidget {
     this.onFavoriteTap,
   });
 
-  @override
-  State<FavoritePromptsTab> createState() => _FavoritePromptsTabState();
-}
-
-class _FavoritePromptsTabState extends State<FavoritePromptsTab> {
-  void handleItemTap(PromptEntity prompt) {
-    Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
+  void _handleItemTap(BuildContext context, PromptEntity prompt) {
+    Navigator.pushNamed(context, '/prompts/details', arguments: prompt.id);
   }
 
   @override
   Widget build(BuildContext context) {
-    final favoritePrompts = widget.prompts.where((p) => p.isFavorite).toList();
+    final favoritePrompts = prompts.where((p) => p.isFavorite).toList();
 
     if (favoritePrompts.isEmpty) {
       return EmptyPromptWidget(message: "No favorite prompts available.");
@@ -35,9 +30,9 @@ class _FavoritePromptsTabState extends State<FavoritePromptsTab> {
       children: [
         for (var prompt in favoritePrompts)
           PromptItem(
-            onTap: () => handleItemTap(prompt),
+            onTap: () => _handleItemTap(context, prompt),
             prompt: prompt,
-            onFavoriteTap: () => widget.onFavoriteTap?.call(prompt),
+            onFavoriteTap: () => onFavoriteTap?.call(prompt),
           ),
       ],
     );

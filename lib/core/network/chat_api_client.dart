@@ -26,6 +26,7 @@ class ChatApiClient {
         localDataSource: localDataSource,
         refreshTokenEndpoint: 'auth/sessions/current/refresh',
         baseUrl: AuthApiClient.baseUrl,
+        dio: _dio,
       ),
     );
 

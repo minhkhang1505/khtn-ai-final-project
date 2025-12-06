@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_detail_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_details_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/widgets/prompt_detail_action_buttons.dart';
+import 'package:provider/provider.dart';
 
 class PromptDetailPage extends StatefulWidget {
   const PromptDetailPage({super.key});
@@ -10,104 +14,134 @@ class PromptDetailPage extends StatefulWidget {
 }
 
 class _PromptDetailPageState extends State<PromptDetailPage> {
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _contentController = TextEditingController();
-
-  String? _selectedCategory;
-  String? _selectedLanguage;
-  bool _isPublic = true;
+  late TextEditingController titleController;
+  late TextEditingController descriptionController;
+  late TextEditingController contentController;
 
   @override
   void initState() {
     super.initState();
-    // Listen to changes for live preview
-    _titleController.addListener(_updatePreview);
-    _contentController.addListener(_updatePreview);
+    titleController = TextEditingController();
+    descriptionController = TextEditingController();
+    contentController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    _contentController.dispose();
+    titleController.dispose();
+    descriptionController.dispose();
+    contentController.dispose();
     super.dispose();
   }
 
-  void _updatePreview() {
-    setState(() {});
+  void _savePrompt(PromptDetailViewModel viewModel) {
+    viewModel.updatePrompt(
+      title: titleController.text,
+      description: descriptionController.text,
+      content: contentController.text,
+    );
   }
 
-  void _savePrompt() {
-    // TODO: Implement save logic here
-  }
-
-  void _deletePromp() {
-    // TODO: Implement cancel logic here
+  void _deletePrompt(PromptDetailViewModel viewModel) async {
+    final success = await viewModel.deletePrompt();
+    if (success) {
+      _backToPromptsList();
+    }
   }
 
   void _backToPromptsList() {
+    final viewModel = context.read<PromptDetailViewModel>();
+    viewModel.clearItem();
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: const Text('Prompt Detail'),
-        leading: IconButton(
-          onPressed: _backToPromptsList,
-          icon: Icon(Icons.arrow_back_ios),
-        ),
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final bool isWideScreen = constraints.maxWidth > 600;
-          return Align(
-            alignment: Alignment.topCenter,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: isWideScreen ? 800 : double.infinity,
-              ),
-              child: SafeArea(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        PromptDetailsSection(
-                          titleController: _titleController,
-                          descriptionController: _descriptionController,
-                          contentController: _contentController,
-                          selectedCategory: _selectedCategory,
-                          selectedLanguage: _selectedLanguage,
-                          isPublic: _isPublic,
-                          onCategoryChanged: (value) {
-                            setState(() => _selectedCategory = value);
-                          },
-                          onLanguageChanged: (value) {
-                            setState(() => _selectedLanguage = value);
-                          },
-                          onPublicChanged: (value) {
-                            setState(() => _isPublic = value);
-                          },
+    return Consumer<PromptDetailViewModel>(
+      builder: (context, viewModel, child) {
+        // Update controllers when data is loaded
+        if (!viewModel.isLoading && titleController.text.isEmpty) {
+          titleController.text = viewModel.title;
+          descriptionController.text = viewModel.description;
+          contentController.text = viewModel.content;
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: false,
+            title: const Text('Prompt Detail'),
+            leading: IconButton(
+              onPressed: viewModel.isLoading ? null : _backToPromptsList,
+              icon: const Icon(Icons.arrow_back_ios),
+            ),
+          ),
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              final bool isWideScreen = constraints.maxWidth > 600;
+              if (viewModel.promptDetailState == PromptDetailState.loading) {
+                return LoadingIndicatorWidget();
+              } else if (viewModel.promptDetailState ==
+                  PromptDetailState.success) {
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: isWideScreen ? 800 : double.infinity,
+                    ),
+                    child: SafeArea(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              // Show loading indicator while fetching data
+                              if (viewModel.isLoading)
+                                const CircularProgressIndicator()
+                              else ...[
+                                PromptDetailsSection(
+                                  titleController: titleController,
+                                  descriptionController: descriptionController,
+                                  contentController: contentController,
+                                  selectedCategory: viewModel.selectedCategory,
+                                  selectedLanguage: viewModel.selectedLanguage,
+                                  isPublic: viewModel.isPublic,
+                                  onCategoryChanged: (value) {
+                                    if (value != null)
+                                      viewModel.setCategory(value);
+                                  },
+                                  onLanguageChanged: (value) {
+                                    if (value != null)
+                                      viewModel.setLanguage(value);
+                                  },
+                                  onPublicChanged: (value) {
+                                    viewModel.setIsPublic(value);
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+                                PromptDetailActionButtons(
+                                  title: titleController.text,
+                                  onSaveChange: () => _savePrompt(viewModel),
+                                  onDelete: () => _deletePrompt(viewModel),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                        SizedBox(height: 16),
-                        PromptDetailActionButtons(
-                          title: _titleController.text,
-                          onSaveChange: _savePrompt,
-                          onDelete: _deletePromp,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+                );
+              } else {
+                return FailureStateWidget(
+                  onRetry: () {
+                    viewModel.loadPromptDetails();
+                  },
+                );
+              }
+            },
+          ), 
+        );
+      },
     );
   }
 }

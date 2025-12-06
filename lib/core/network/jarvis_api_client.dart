@@ -21,6 +21,7 @@ class JarvisApiClient {
         localDataSource: localDataSource,
         refreshTokenEndpoint: _refreshTokenEndpoint,
         baseUrl: AuthApiClient.baseUrl,
+        dio: _dio,
       ),
     );
     _dio.interceptors.add(LogInterceptor());
@@ -31,16 +32,9 @@ class JarvisApiClient {
     return JarvisApiClient._(guid);
   }
 
-  /// GET request with Authorization header support
+  /// GET request - Authorization skipped for /prompts endpoint
   Future<Response> get(String path, {Map<String, dynamic>? data}) async {
-    final accessToken = await localDataSource.getAccessToken();
-    final options = Options(
-      headers: {
-        if (accessToken != null && accessToken.isNotEmpty)
-          'Authorization': 'Bearer $accessToken',
-      },
-    );
-    return _dio.get(path, options: options);
+    return _dio.get(path, queryParameters: data);
   }
 
   Future<Response> post(String path, {Map<String, dynamic>? data}) async {

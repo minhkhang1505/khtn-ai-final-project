@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:khtn_ai_final_project/core/constants/categories.dart';
 import 'package:khtn_ai_final_project/data/mappers/prompt_mapper.dart';
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
@@ -7,6 +8,8 @@ import 'package:khtn_ai_final_project/domain/usecases/prompts/create_prompt_usec
 import 'package:khtn_ai_final_project/domain/usecases/prompts/delete_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from_favorite.dart';
+
+enum PromptViewState { initial, loading, success, failure }
 
 class PromptViewmodel extends ChangeNotifier {
   final GetPromptUseCase getPromptUseCase;
@@ -23,57 +26,84 @@ class PromptViewmodel extends ChangeNotifier {
     required this.removePromptFromFavoriteUsecase,
   });
 
+  PromptViewState _state = PromptViewState.initial;
+  PromptViewState get viewState => _state;
+
+  void _setState(PromptViewState viewState) {
+    _state = viewState;
+    notifyListeners();
+  }
+
   final List<PromptEntity> _prompts = [];
   List<PromptEntity>? get prompts => _prompts;
-  
+
   final List<PromptEntity> _favoritePrompts = [];
   List<PromptEntity>? get favoritePrompts => _favoritePrompts;
 
+  final List<PromptEntity> _categoryPrompts = [];
+  List<PromptEntity>? get categoryPrompts => _categoryPrompts;
+
   double limit = 20;
   double offset = 0;
-  bool isLoading = false;
   bool hasNext = false;
 
-  Future<bool> getAllPrompts() async {
-    if (isLoading) return false;
-    isLoading = true;
-    notifyListeners();
+  Future<bool> _fetchPrompts({
+    CategoryType? category,
+    bool isFavorite = false,
+    bool resetOffset = false,
+  }) async {
     try {
-      final requestObject = PromptRequest(limit: limit, offset: offset);
+      _setState(PromptViewState.loading);
+      if (resetOffset) {
+        offset = 0;
+        hasNext = false;
+
+        if (isFavorite) {
+          _favoritePrompts.clear();
+        } else if (category != null) {
+          _categoryPrompts.clear();
+        } else {
+          _prompts.clear();
+        }
+      }
+
+      final requestObject = PromptRequest(
+        limit: limit,
+        offset: offset,
+        category: category,
+        isFavorite: isFavorite,
+      );
+
       final response = await getPromptUseCase.call(requestObject);
+
       hasNext = response.hasNext;
       offset += limit;
-      _prompts.addAll(response.items.toEntityList());
-      notifyListeners();
+
+      if (isFavorite) {
+        _favoritePrompts.addAll(response.items.toEntityList());
+      } else if (category != null) {
+        _categoryPrompts.addAll(response.items.toEntityList());
+      } else {
+        _prompts.addAll(response.items.toEntityList());
+      }
+
+      _setState(PromptViewState.success);
+
       return true;
     } catch (e) {
       debugPrint('PromptViewmodel: Error fetching prompts - $e');
+      _setState(PromptViewState.failure);
       return false;
-    } finally {
-      isLoading = false;
-      notifyListeners();
     }
   }
 
-  Future<bool> getFavoritePrompts() async {
-    try {
-      final requestFavoritePrompts = PromptRequest(
-        limit: limit,
-        offset: offset,
-        isFavorite: true,
-      );
-      final response = await getPromptUseCase.call(requestFavoritePrompts);
-      hasNext = response.hasNext;
-      offset += limit;
-      _prompts.addAll(response.items.toEntityList());
-      return true;
-    } catch (e) {
-      debugPrint('PromptViewmodel: Error fetching favorite prompts - $e');
-      return false;
-    } finally {
-      notifyListeners();
-    }
-  }
+  Future<bool> getAllPrompts() => _fetchPrompts(resetOffset: true);
+
+  Future<bool> getPromptByCategory(CategoryType category) =>
+      _fetchPrompts(category: category, resetOffset: true);
+
+  Future<bool> getFavoritePrompts() =>
+      _fetchPrompts(isFavorite: true, resetOffset: true);
 
   Future<bool> createPrompt(PromptCreationAndUpdateRequest newPrompt) async {
     try {
@@ -122,6 +152,4 @@ class PromptViewmodel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // Add your methods here
 }

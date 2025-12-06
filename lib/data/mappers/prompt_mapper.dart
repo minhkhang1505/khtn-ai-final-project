@@ -1,7 +1,7 @@
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 
-extension PromptItemMapper on PromptItem {
+extension PromptItemMapper on PromptModel {
   PromptEntity toEntity() {
     return PromptEntity(
       id: id.isNotEmpty ? id : 'unknown',
@@ -26,7 +26,7 @@ extension PromptItemMapper on PromptItem {
   }
 }
 
-extension PromptItemListMapper on List<PromptItem> {
+extension PromptItemListMapper on List<PromptModel> {
   List<PromptEntity> toEntityList() {
     return map((item) => item.toEntity()).toList();
   }

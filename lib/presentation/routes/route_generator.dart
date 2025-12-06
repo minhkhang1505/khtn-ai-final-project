@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
@@ -14,6 +15,8 @@ import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.d
 import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/create_prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_detail_view_model.dart';
+import 'package:khtn_ai_final_project/domain/usecases/prompts/udpate_prompt_usecase.dart';
 
 import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/agents/create_agent_page.dart';
@@ -138,9 +141,33 @@ class RouteGenerator {
         );
 
       case AppRoutes.promptDetails:
+        final prompt = settings.arguments as PromptEntity?;
+        if (prompt == null || prompt.id.isEmpty) {
+          debugPrint('Khang - Error: prompt is null or prompt.id is empty');
+          return _errorRoute('promptDetails - Missing prompt');
+        }
+        debugPrint(
+          'Khang - Route received prompt: ${prompt.id} - ${prompt.title}',
+        );
         return _buildRoute(
           settings: settings,
-          builder: (_) => PromptDetailPage(),
+          builder: (context) {
+            final promptViewModel = Provider.of<PromptViewmodel>(
+              context,
+              listen: false,
+            );
+            return ChangeNotifierProvider(
+              create: (_) => PromptDetailViewModel(
+                getPromptUseCase: promptViewModel.getPromptUseCase,
+                updatePromptUseCase: UpdatePromptUsecase(
+                  repository: promptViewModel.deletePromptUseCase.repository,
+                ),
+                deletePromptUseCase: promptViewModel.deletePromptUseCase,
+                prompt: prompt,
+              )..loadPromptDetails(),
+              child: const PromptDetailPage(),
+            );
+          },
         );
 
       case AppRoutes.newKnowledgeSource:
