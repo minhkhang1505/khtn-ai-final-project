@@ -161,6 +161,12 @@ class PromptViewmodel extends ChangeNotifier {
 
   Future<bool> loadMorePrompts() {
     return _fetchPrompts(
+      resetOffset: false,
+    );
+  }
+
+  Future<bool> loadMoreCategoryPrompts() {
+    return _fetchPrompts(
       category: _currentSelectedCategory,
       resetOffset: false,
     );

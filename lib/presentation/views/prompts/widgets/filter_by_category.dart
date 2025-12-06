@@ -42,7 +42,7 @@ class _FilterByCategoryPageState extends State<FilterByCategoryPage> {
         debugPrint(
           'FilterByCategoryPage: Reached bottom, loading more prompts...',
         );
-        viewModel.loadMorePrompts();
+        viewModel.loadMoreCategoryPrompts();
       }
     }
   }
