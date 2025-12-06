@@ -152,6 +152,14 @@ class PromptViewmodel extends ChangeNotifier {
     return _fetchPrompts(resetOffset: true);
   }
 
+  Future<bool> refreshCategoryPrompts() {
+    _categoryPrompts.clear();
+    return _fetchPrompts(
+      category: _currentSelectedCategory,
+      resetOffset: true,
+    );
+  }
+
   Future<bool> createPrompt(PromptCreationAndUpdateRequest newPrompt) async {
     try {
       final response = await createPromptUseCase.call(newPrompt);

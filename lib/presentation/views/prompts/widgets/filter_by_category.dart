@@ -47,6 +47,11 @@ class _FilterByCategoryPageState extends State<FilterByCategoryPage> {
     }
   }
 
+  Future<void> _onRefresh() async {
+    final viewModel = context.read<PromptViewmodel>();
+    await viewModel.getPromptByCategory(widget.category);
+  }
+
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
@@ -94,40 +99,47 @@ class _FilterByCategoryPageState extends State<FilterByCategoryPage> {
             );
           }
 
-          return ListView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            itemCount: categoryPrompts.length,
-            itemBuilder: (context, index) {
-              if (index == categoryPrompts.length) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Center(
-                    child: switch (viewModel.loadMoreState) {
-                      LoadMoreState.loading =>
-                        const CircularProgressIndicator(),
-                      LoadMoreState.noMoreData => const Text(
-                        "No more prompts to load.",
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
-                      ),
-                      LoadMoreState.idle => const SizedBox.shrink(),
-                    },
-                  ),
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            color: Theme.of(context).primaryColor,
+
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: categoryPrompts.length,
+              itemBuilder: (context, index) {
+                if (index == categoryPrompts.length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: switch (viewModel.loadMoreState) {
+                        LoadMoreState.loading =>
+                          const CircularProgressIndicator(),
+                        LoadMoreState.noMoreData => const Text(
+                          "No more prompts to load.",
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                        LoadMoreState.idle => const SizedBox.shrink(),
+                      },
+                    ),
+                  );
+                }
+                final categoryPromptItem = categoryPrompts[index];
+                return PromptItem(
+                  onTap: () => _handleItemTap(context, categoryPromptItem),
+                  prompt: categoryPromptItem,
+                  onFavoriteTap: () async {
+                    if (categoryPromptItem.isFavorite) {
+                      await viewModel.removeFromFavorite(categoryPromptItem.id);
+                    } else {
+                      await viewModel.addPromptToFavorite(
+                        categoryPromptItem.id,
+                      );
+                    }
+                  },
                 );
-              }
-              final categoryPromptItem = categoryPrompts[index];
-              return PromptItem(
-                onTap: () => _handleItemTap(context, categoryPromptItem),
-                prompt: categoryPromptItem,
-                onFavoriteTap: () async {
-                  if (categoryPromptItem.isFavorite) {
-                    await viewModel.removeFromFavorite(categoryPromptItem.id);
-                  } else {
-                    await viewModel.addPromptToFavorite(categoryPromptItem.id);
-                  }
-                },
-              );
-            },
+              },
+            ),
           );
         },
       ),
