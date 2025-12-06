@@ -20,10 +20,17 @@ class _MessageInputState extends State<MessageInput> {
   void _handleSend() {
     final text = _controller.text.trim();
     final vm = context.read<ChatViewModel>();
-    if (text.isEmpty || vm.files.isEmpty) return;
+    if (text.isEmpty && vm.files.isEmpty) {
+      return;
+    }
 
     widget.onSend(text);
     _controller.clear();
+  }
+
+  void _onChanged(String value) {
+    final vm = context.read<ChatViewModel>();
+    vm.clearError();
   }
 
   String _formatFileSize(int bytes) {
@@ -153,6 +160,7 @@ class _MessageInputState extends State<MessageInput> {
                   keyboardType: TextInputType.multiline,
                   minLines: 1,
                   maxLines: null,
+                  onChanged: _onChanged,
                   decoration: InputDecoration(
                     hintText: "Type your message...",
                     prefixIcon: Padding(

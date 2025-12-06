@@ -43,28 +43,50 @@ class ChatPage extends StatelessWidget {
               child: CircularProgressIndicator(),
             ),
 
-            // Error message with close button
-            if (context.watch<ChatViewModel>().error != null)
+          // Error message
+          if (context.watch<ChatViewModel>().error != null)
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Something went wrong: ${vm.error}",
-                      style: TextStyle(
+              padding: ResponsiveHelper.horizontalPadding(context),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 600),
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: colorScheme.errorContainer,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.error_outline,
                       color: colorScheme.error,
-                      fontWeight: FontWeight.bold,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        vm.error ?? '',
+                        style: TextStyle(
+                          color: colorScheme.onErrorContainer,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close, color: colorScheme.error),
-                    onPressed: vm.clearError,
-                    constraints: const BoxConstraints(),
-                    padding: EdgeInsets.zero,
-                  ),
-                ],
+                    IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        size: 18,
+                        color: colorScheme.onErrorContainer,
+                      ),
+                      onPressed: () => vm.clearError(),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -73,11 +95,13 @@ class ChatPage extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: ResponsiveHelper.horizontalPadding(context),
-              child: MessageInput(onSend: (message) {
-                vm.clearError();
-                vm.sendMessage(message);
-                vm.clearFiles();
-              }),
+              child: MessageInput(
+                onSend: (message) {
+                  vm.clearError();
+                  vm.sendMessage(message);
+                  vm.clearFiles();
+                },
+              ),
             ),
           ),
         ],
