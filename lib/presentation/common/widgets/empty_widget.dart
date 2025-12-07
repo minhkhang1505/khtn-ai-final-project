@@ -11,6 +11,7 @@ class EmptyStateWidget extends StatelessWidget {
   final String? actionButtonLabel;
   final Widget? customIcon;
   final EdgeInsets? padding;
+  final Future<void> Function()? onRefresh;
 
   const EmptyStateWidget({
     super.key,
@@ -23,11 +24,12 @@ class EmptyStateWidget extends StatelessWidget {
     this.actionButtonLabel,
     this.customIcon,
     this.padding,
+    this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    Widget content = Center(
       child: Padding(
         padding: padding ?? const EdgeInsets.all(16.0),
         child: Column(
@@ -70,10 +72,22 @@ class EmptyStateWidget extends StatelessWidget {
         ),
       ),
     );
+
+    if (onRefresh != null) {
+      // Wrap in a scrollable for RefreshIndicator
+      content = RefreshIndicator(
+        onRefresh: onRefresh!,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [SizedBox(height: 80), content, SizedBox(height: 80)],
+        ),
+      );
+    }
+    return content;
   }
 }
 
 /// Backward compatibility - keeping old name as alias
 class EmptyPromptWidget extends EmptyStateWidget {
-  const EmptyPromptWidget({super.key, super.message = "No items available."});
+  const EmptyPromptWidget({super.key, super.message = "No items available.", super.onRefresh});
 }

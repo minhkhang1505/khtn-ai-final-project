@@ -121,6 +121,8 @@ class PromptDetailViewModel extends ChangeNotifier {
     }
   }
 
+  // Removed duplicate errorMessage getter
+
   Future<bool> updatePrompt({
     required String title,
     required String description,

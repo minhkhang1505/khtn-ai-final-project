@@ -11,6 +11,8 @@ import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from
 
 enum PromptViewState { initial, loading, success, failure }
 
+enum LoadMoreState { idle, loading, noMoreData }
+
 class PromptViewmodel extends ChangeNotifier {
   final GetPromptUseCase getPromptUseCase;
   final CreatePromptUsecase createPromptUseCase;
@@ -26,11 +28,21 @@ class PromptViewmodel extends ChangeNotifier {
     required this.removePromptFromFavoriteUsecase,
   });
 
+  CategoryType? _currentSelectedCategory;
+
   PromptViewState _state = PromptViewState.initial;
   PromptViewState get viewState => _state;
 
   void _setState(PromptViewState viewState) {
     _state = viewState;
+    notifyListeners();
+  }
+
+  LoadMoreState _loadMoreState = LoadMoreState.idle;
+  LoadMoreState get loadMoreState => _loadMoreState;
+
+  void _setLoadMoreState(LoadMoreState loadMoreState) {
+    _loadMoreState = loadMoreState;
     notifyListeners();
   }
 
@@ -43,7 +55,7 @@ class PromptViewmodel extends ChangeNotifier {
   final List<PromptEntity> _categoryPrompts = [];
   List<PromptEntity>? get categoryPrompts => _categoryPrompts;
 
-  double limit = 20;
+  double limit = 10;
   double offset = 0;
   bool hasNext = false;
 
@@ -53,8 +65,21 @@ class PromptViewmodel extends ChangeNotifier {
     bool resetOffset = false,
   }) async {
     try {
-      _setState(PromptViewState.loading);
       if (resetOffset) {
+        if (_state == PromptViewState.loading) {
+          return false; // Prevent multiple simultaneous fetches
+        }
+      } else {
+        if (_loadMoreState == LoadMoreState.loading ||
+            _loadMoreState == LoadMoreState.noMoreData) {
+          return false;
+        }
+      }
+
+      if (resetOffset) {
+        _setState(PromptViewState.loading);
+        _setLoadMoreState(LoadMoreState.idle);
+
         offset = 0;
         hasNext = false;
 
@@ -65,6 +90,8 @@ class PromptViewmodel extends ChangeNotifier {
         } else {
           _prompts.clear();
         }
+      } else {
+        _setLoadMoreState(LoadMoreState.loading);
       }
 
       final requestObject = PromptRequest(
@@ -87,23 +114,56 @@ class PromptViewmodel extends ChangeNotifier {
         _prompts.addAll(response.items.toEntityList());
       }
 
-      _setState(PromptViewState.success);
+      if (_state != PromptViewState.success) {
+        _setState(PromptViewState.success);
+      }
+
+      if (hasNext) {
+        _setLoadMoreState(LoadMoreState.idle);
+      } else {
+        _setLoadMoreState(LoadMoreState.noMoreData);
+      }
 
       return true;
     } catch (e) {
       debugPrint('PromptViewmodel: Error fetching prompts - $e');
-      _setState(PromptViewState.failure);
+
+      if (resetOffset) {
+        _setState(PromptViewState.failure);
+      } else {
+        _setLoadMoreState(LoadMoreState.idle);
+      }
       return false;
     }
   }
 
   Future<bool> getAllPrompts() => _fetchPrompts(resetOffset: true);
 
-  Future<bool> getPromptByCategory(CategoryType category) =>
-      _fetchPrompts(category: category, resetOffset: true);
+  Future<bool> getPromptByCategory(CategoryType category) {
+    _currentSelectedCategory = category;
+    return _fetchPrompts(category: category, resetOffset: true);
+  }
 
   Future<bool> getFavoritePrompts() =>
       _fetchPrompts(isFavorite: true, resetOffset: true);
+
+  Future<bool> refreshPrompts() {
+    _prompts.clear();
+    return _fetchPrompts(resetOffset: true);
+  }
+
+  Future<bool> refreshFavoritePrompts() {
+    _favoritePrompts.clear();
+    return _fetchPrompts(isFavorite: true, resetOffset: true);
+  }
+
+  Future<bool> refreshCategoryPrompts() {
+    _categoryPrompts.clear();
+    return _fetchPrompts(
+      category: _currentSelectedCategory,
+      resetOffset: true,
+    );
+  }
 
   Future<bool> createPrompt(PromptCreationAndUpdateRequest newPrompt) async {
     try {
@@ -115,6 +175,17 @@ class PromptViewmodel extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<bool> loadMorePrompts() {
+    return _fetchPrompts(resetOffset: false);
+  }
+
+  Future<bool> loadMoreCategoryPrompts() {
+    return _fetchPrompts(
+      category: _currentSelectedCategory,
+      resetOffset: false,
+    );
   }
 
   Future<bool> deletePrompt(String promptID) async {

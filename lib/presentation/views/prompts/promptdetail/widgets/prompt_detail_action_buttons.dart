@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 
 class PromptDetailActionButtons extends StatelessWidget {
   final String title;
@@ -11,6 +12,18 @@ class PromptDetailActionButtons extends StatelessWidget {
     required this.onSaveChange,
     required this.onDelete,
   });
+
+  void onDeleteButtonPressed(BuildContext context) {
+    ErrorDialogWidget.show(
+      context,
+      title: 'Confirm Deletion',
+      errorMessage: 'Are you sure you want to delete this prompt?',
+      onClose: () {},
+      showConfirmButton: true,
+      confirmText: 'Delete',
+      onConfirm: onDelete,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +40,7 @@ class PromptDetailActionButtons extends StatelessWidget {
                 side: BorderSide(color: colorScheme.outline),
               ),
             ),
-            onPressed: onDelete,
+            onPressed: () => onDeleteButtonPressed(context),
             child: const Text("Delete"),
           ),
         ),

@@ -21,18 +21,46 @@ class FilterByCategoryPage extends StatefulWidget {
 }
 
 class _FilterByCategoryPageState extends State<FilterByCategoryPage> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = Provider.of<PromptViewmodel>(context, listen: false);
       viewModel.getPromptByCategory(widget.category);
     });
   }
 
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent) {
+      final viewModel = context.read<PromptViewmodel>();
+
+      if (viewModel.loadMoreState == LoadMoreState.idle && viewModel.hasNext) {
+        debugPrint(
+          'FilterByCategoryPage: Reached bottom, loading more prompts...',
+        );
+        viewModel.loadMoreCategoryPrompts();
+      }
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    final viewModel = context.read<PromptViewmodel>();
+    await viewModel.getPromptByCategory(widget.category);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _handleItemTap(BuildContext context, PromptEntity prompt) {
-    // Navigate to prompt detail page
-    // Navigator.pushNamed(context, '/prompt-detail', arguments: prompt.id);
+    Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
   }
 
   @override
@@ -63,31 +91,55 @@ class _FilterByCategoryPageState extends State<FilterByCategoryPage> {
             );
           }
 
-          final prompts = viewModel.categoryPrompts ?? [];
+          final categoryPrompts = viewModel.categoryPrompts ?? [];
 
-          if (prompts.isEmpty) {
+          if (categoryPrompts.isEmpty) {
             return const EmptyPromptWidget(
               message: "No prompts available in this category.",
             );
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            itemCount: prompts.length,
-            itemBuilder: (context, index) {
-              final prompt = prompts[index];
-              return PromptItem(
-                onTap: () => _handleItemTap(context, prompt),
-                prompt: prompt,
-                onFavoriteTap: () async {
-                  if (prompt.isFavorite) {
-                    await viewModel.removeFromFavorite(prompt.id);
-                  } else {
-                    await viewModel.addPromptToFavorite(prompt.id);
-                  }
-                },
-              );
-            },
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            color: Theme.of(context).primaryColor,
+
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: categoryPrompts.length,
+              itemBuilder: (context, index) {
+                if (index == categoryPrompts.length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: switch (viewModel.loadMoreState) {
+                        LoadMoreState.loading =>
+                          const CircularProgressIndicator(),
+                        LoadMoreState.noMoreData => const Text(
+                          "No more prompts to load.",
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                        LoadMoreState.idle => const SizedBox.shrink(),
+                      },
+                    ),
+                  );
+                }
+                final categoryPromptItem = categoryPrompts[index];
+                return PromptItem(
+                  onTap: () => _handleItemTap(context, categoryPromptItem),
+                  prompt: categoryPromptItem,
+                  onFavoriteTap: () async {
+                    if (categoryPromptItem.isFavorite) {
+                      await viewModel.removeFromFavorite(categoryPromptItem.id);
+                    } else {
+                      await viewModel.addPromptToFavorite(
+                        categoryPromptItem.id,
+                      );
+                    }
+                  },
+                );
+              },
+            ),
           );
         },
       ),
