@@ -152,6 +152,11 @@ class PromptViewmodel extends ChangeNotifier {
     return _fetchPrompts(resetOffset: true);
   }
 
+  Future<bool> refreshFavoritePrompts() {
+    _favoritePrompts.clear();
+    return _fetchPrompts(isFavorite: true, resetOffset: true);
+  }
+
   Future<bool> refreshCategoryPrompts() {
     _categoryPrompts.clear();
     return _fetchPrompts(

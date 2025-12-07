@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_detail_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_details_section.dart';
@@ -34,12 +35,36 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
     super.dispose();
   }
 
-  void _savePrompt(PromptDetailViewModel viewModel) {
-    viewModel.updatePrompt(
+  Future<void> _savePrompt(
+    PromptDetailViewModel viewModel,
+  ) async {
+    final result = await viewModel.updatePrompt(
       title: titleController.text,
       description: descriptionController.text,
       content: contentController.text,
     );
+    if (!mounted) return;
+    if (!result) {
+      // Check for 403 in error message
+      final errorMsg = viewModel.errorMessage.toLowerCase();
+      if (errorMsg.contains('403') || errorMsg.contains('permission')) {
+        await ErrorDialogWidget.show(
+          context,
+          errorMessage: 'You do not have permission to update this prompt.',
+          title: 'Permission Denied',
+        );
+      } else {
+        await ErrorDialogWidget.show(
+          context,
+          errorMessage: viewModel.errorMessage.isNotEmpty
+              ? viewModel.errorMessage
+              : 'Failed to update prompt.',
+          title: 'Error',
+        );
+      }
+    } else {
+      Navigator.pop(context);
+    }
   }
 
   void _deletePrompt(PromptDetailViewModel viewModel) async {
@@ -120,7 +145,8 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
                                 const SizedBox(height: 16),
                                 PromptDetailActionButtons(
                                   title: titleController.text,
-                                  onSaveChange: () => _savePrompt(viewModel),
+                                  onSaveChange: () =>
+                                      _savePrompt(viewModel),
                                   onDelete: () => _deletePrompt(viewModel),
                                 ),
                               ],
@@ -139,7 +165,7 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
                 );
               }
             },
-          ), 
+          ),
         );
       },
     );
