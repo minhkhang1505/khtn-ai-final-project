@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class JarvisApiClient {
   final localDataSource = AuthLocalDataSourceImpl();
-  static const String baseUrl = 'https://api.dev.jarvis.cx/api/v1/';
+  static const String baseUrl = 'https://api.jarvis.cx/api/v1/';
   static const String _refreshTokenEndpoint = 'auth/sessions/current/refresh';
 
   final String guid;
