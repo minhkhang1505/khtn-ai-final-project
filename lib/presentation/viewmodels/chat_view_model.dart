@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:khtn_ai_final_project/data/models/token_usage_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
 
 import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
@@ -13,12 +14,14 @@ import 'package:khtn_ai_final_project/data/models/conversations/conversation_sen
 import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
+import 'package:khtn_ai_final_project/domain/usecases/get_user_usecase.dart';
 
 /// ViewModel responsible for chat page state.
 class ChatViewModel extends ChangeNotifier {
   final ChatUseCase chatUsecase;
+  final GetUserUseCase getUserUseCase;
 
-  ChatViewModel({required this.chatUsecase}) {
+  ChatViewModel({required this.chatUsecase, required this.getUserUseCase}) {
     // Fetch conversations on init
     getConversations();
   }
@@ -34,10 +37,14 @@ class ChatViewModel extends ChangeNotifier {
   String selectedModel = 'gpt-4o-mini';
   String conversationId = ''; // Default conversation ID
   String conversationTitle = 'Chat';
+  int remainingTokens = 0;
   String cursor = '';
   String? _error;
   bool _isLoading = false;
   bool _isStreaming = false;
+
+  // Getters
+  int get availableTokens => remainingTokens;
 
   bool get isStreaming => _isStreaming;
   bool get isBusy => _isLoading || _isStreaming;
@@ -99,6 +106,9 @@ class ChatViewModel extends ChangeNotifier {
         assistant: assistant,
       );
       final response = await chatUsecase.sendMessage(request);
+
+      // Update remaining tokens
+      remainingTokens = response.remainingUsage;
 
       // For streaming responses, simulate by appending chunks;
       await addStreamingAssistantMessage(response.message);
@@ -293,6 +303,17 @@ class ChatViewModel extends ChangeNotifier {
 
     _isStreaming = false;
     notifyListeners();
+  }
+
+  Future<TokenUsageModel> getUsage() {
+    try {
+      final response = getUserUseCase.getTokenUsage();
+      return response;
+    } catch (e) {
+      debugPrint("Error fetching token usage: $e");
+      _error = e.toString();
+      rethrow;
+    }
   }
 
   /// Add files to the current draft/files list

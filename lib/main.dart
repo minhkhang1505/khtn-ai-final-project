@@ -111,7 +111,8 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => ChatViewModel(
-            chatUsecase: ChatUseCase(chatRepository: chatRepository),
+            chatUsecase: ChatUseCase(chatRepository: chatRepository, ),
+            getUserUseCase: GetUserUseCase(userRepository: userRepository),
           ),
         ),
       ],
