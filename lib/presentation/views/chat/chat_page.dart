@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/presentation/views/chat/widgets/custom_input_message.dart';
 import 'package:provider/provider.dart';
 
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
@@ -95,13 +96,21 @@ class ChatPage extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: ResponsiveHelper.horizontalPadding(context),
-              child: MessageInput(
+              child: CustomInputMessage(
                 onSend: (message) {
                   vm.clearError();
                   vm.sendMessage(message);
                   vm.clearFiles();
                 },
               ),
+
+              // MessageInput(
+              //   onSend: (message) {
+              //     vm.clearError();
+              //     vm.sendMessage(message);
+              //     vm.clearFiles();
+              //   },
+              // ),
             ),
           ),
         ],
