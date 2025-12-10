@@ -106,9 +106,8 @@ class _ChatDrawerState extends State<ChatDrawer> {
                           );
 
                           if (confirm == true) {
-                            // TODO: Add delete conversation logic here
-                            // Call ViewModel to delete the conversation and update UI
-                            // API not implemented yet
+                            vm.deleteConversation(conversation.id);
+                            Navigator.pop(context); // Close drawer
                           }
                         },
                       ),

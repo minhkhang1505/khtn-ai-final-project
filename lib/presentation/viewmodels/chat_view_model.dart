@@ -1,7 +1,5 @@
 // ignore_for_file: unused_field
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:khtn_ai_final_project/data/models/token_usage_model.dart';
@@ -17,6 +15,7 @@ import 'package:khtn_ai_final_project/data/models/conversations/conversations_mo
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/get_user_usecase.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/delete_conversation_model.dart';
 
 /// ViewModel responsible for chat page state.
 class ChatViewModel extends ChangeNotifier {
@@ -160,8 +159,12 @@ class ChatViewModel extends ChangeNotifier {
       // For streaming responses, simulate by appending chunks;
       await addStreamingAssistantMessage(response.message);
 
+      // If new conversation, update ID
+      if (conversationId == 'temp_id') {
+        conversationIdSetter = response.conversationId;
+      }
+
       // Update metadata after message exchange
-      conversationIdSetter = response.conversationId;
       updateMetadata();
 
       // Scroll to bottom after a slight delay to ensure UI has updated
@@ -288,6 +291,7 @@ class ChatViewModel extends ChangeNotifier {
     conversationIdSetter = '';
     conversationTitleSetter = 'Chat';
     metadataSetter = MetadataModel.defaults();
+    errorSetter = null;
     notifyListeners();
   }
 
@@ -356,6 +360,32 @@ class ChatViewModel extends ChangeNotifier {
     } catch (e) {
       errorSetter = e.toString();
       rethrow;
+    }
+  }
+
+  void deleteConversation(String conversationId) async {
+    try {
+      isLoadingSetter = true;
+      await chatUsecase.deleteConversation(
+        DeleteConversationRequestModel(
+          conversationId: conversationId,
+          assistantId: selectedModel,
+          assistantModel: 'agentic',
+        ),
+      );
+
+      // Remove from local list
+      conversations.removeWhere((conv) => conv.id == conversationId);
+
+      // If the deleted conversation was the currently open one, open a new chat
+      if (this.conversationId == conversationId) {
+        newChat();
+      } else {
+        notifyListeners();
+      }
+      isLoadingSetter = false;
+    } catch (e) {
+      errorSetter = e.toString();
     }
   }
 
