@@ -24,21 +24,25 @@ class ChatPage extends StatelessWidget {
       drawer: ChatDrawer(),
       body: Column(
         children: [
-          // Message list or welcome message
-          Expanded(
+            // Message list or welcome message
+            Expanded(
             child: vm.conversationId.isEmpty
-                ? Center(
-                    child: Text(
-                      'Hello! Start a new conversation🎉',
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  )
-                : // Message list
-                  MessageList(scrollController: vm.scrollController),
-          ),
+              ? Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                'Hello! Start a new conversation🎉',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: colorScheme.primary,
+                ),
+                textAlign: TextAlign.center,
+                ),
+              ),
+              )
+              : // Message list
+              MessageList(scrollController: vm.scrollController),
+            ),
 
           // Loading indicator
           if (context.watch<ChatViewModel>().isLoading)
