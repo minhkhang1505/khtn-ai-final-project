@@ -8,6 +8,7 @@ import 'widgets/chat_app_bar.dart';
 import 'widgets/chat_drawer.dart';
 import 'widgets/message_input.dart';
 import 'widgets/message_list.dart';
+import 'widgets/usage_button.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/message_popup.dart';
 
 /// Chat page - Main chat interface
@@ -23,6 +24,7 @@ class ChatPage extends StatelessWidget {
       drawer: ChatDrawer(),
       body: Column(
         children: [
+          // Message list or welcome message
           Expanded(
             child: vm.conversationId.isEmpty
                 ? Center(
@@ -38,6 +40,7 @@ class ChatPage extends StatelessWidget {
                   MessageList(scrollController: vm.scrollController),
           ),
 
+          // Loading indicator
           if (context.watch<ChatViewModel>().isLoading)
             const Padding(
               padding: EdgeInsets.all(8),
@@ -95,9 +98,17 @@ class ChatPage extends StatelessWidget {
                     ],
                   ),
                 ),
-
               ),
             ),
+
+          // Usage button - positioned above message input
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: ResponsiveHelper.horizontalPadding(context),
+              child: const UsageButton(),
+            ),
+          ),
 
           // Message input field
           Align(
@@ -106,7 +117,6 @@ class ChatPage extends StatelessWidget {
               padding: ResponsiveHelper.horizontalPadding(context),
               child: MessageInput(
                 onSend: (message) {
-                  vm.clearError();
                   vm.sendMessage(message);
                   vm.clearFiles();
                 },

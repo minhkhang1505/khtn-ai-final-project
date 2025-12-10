@@ -13,8 +13,8 @@ class TokenUsageModel {
 
   factory TokenUsageModel.fromJson(Map<String, dynamic> json) {
     return TokenUsageModel(
-      availableTokens: json['available_tokens'],
-      totalTokens: json['total_tokens'],
+      availableTokens: json['availableTokens'],
+      totalTokens: json['totalTokens'],
       unlimited: json['unlimited'],
       date: json['date'],
     );
@@ -22,10 +22,19 @@ class TokenUsageModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'available_tokens': availableTokens,
-      'total_tokens': totalTokens,
+      'availableTokens': availableTokens,
+      'totalTokens': totalTokens,
       'unlimited': unlimited,
       'date': date,
     };
+  }
+
+  factory TokenUsageModel.defaults() {
+    return TokenUsageModel(
+      availableTokens: 50,
+      totalTokens: 50,
+      unlimited: false,
+      date: '',
+    );
   }
 }
