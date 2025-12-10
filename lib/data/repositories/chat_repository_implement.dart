@@ -4,7 +4,7 @@ import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart'
 import 'package:khtn_ai_final_project/data/models/chat/send_message.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
-
+import 'package:khtn_ai_final_project/data/models/conversations/delete_conversation_model.dart';
 
 class ChatRepositoryImpl implements ChatRepository {
   final ChatRemoteDataSource remoteDataSource;
@@ -33,5 +33,10 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<GetConversationHistoryResponseModel> getConversationHistory(GetConversationHistoryRequestModel getConversationHistoryRequest) async {
     final response = await remoteDataSource.getConversationHistory(getConversationHistoryRequest);
     return response;
+  }
+
+  @override
+  Future<void> deleteConversation(DeleteConversationRequestModel deleteConversationRequestModel) async {
+    await remoteDataSource.deleteConversation(deleteConversationRequestModel);
   }
 }

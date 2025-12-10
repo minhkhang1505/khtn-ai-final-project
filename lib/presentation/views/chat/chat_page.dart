@@ -8,6 +8,8 @@ import 'widgets/chat_app_bar.dart';
 import 'widgets/chat_drawer.dart';
 import 'widgets/message_input.dart';
 import 'widgets/message_list.dart';
+import 'widgets/usage_button.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/message_popup.dart';
 
 /// Chat page - Main chat interface
 class ChatPage extends StatelessWidget {
@@ -22,21 +24,27 @@ class ChatPage extends StatelessWidget {
       drawer: ChatDrawer(),
       body: Column(
         children: [
-          Expanded(
+            // Message list or welcome message
+            Expanded(
             child: vm.conversationId.isEmpty
-                ? Center(
-                    child: Text(
-                      'Hello! Start a new conversation🎉',
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  )
-                : // Message list
-                  MessageList(scrollController: vm.scrollController),
-          ),
+              ? Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                'Hello! Start a new conversation🎉',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: colorScheme.primary,
+                ),
+                textAlign: TextAlign.center,
+                ),
+              ),
+              )
+              : // Message list
+              MessageList(scrollController: vm.scrollController),
+            ),
 
+          // Loading indicator
           if (context.watch<ChatViewModel>().isLoading)
             const Padding(
               padding: EdgeInsets.all(8),
@@ -55,40 +63,56 @@ class ChatPage extends StatelessWidget {
                   color: colorScheme.errorContainer,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: colorScheme.error,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        vm.error ?? '',
-                        style: TextStyle(
-                          color: colorScheme.onErrorContainer,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 13,
+                child: InkWell(
+                  onTap: () {
+                    if (vm.error != null && vm.error!.isNotEmpty) {
+                      MessagePopup.show(context, message: vm.error!);
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: colorScheme.error,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          vm.error ?? '',
+                          style: TextStyle(
+                            color: colorScheme.onErrorContainer,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                          ),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.close,
-                        size: 18,
-                        color: colorScheme.onErrorContainer,
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          size: 18,
+                          color: colorScheme.onErrorContainer,
+                        ),
+                        onPressed: () => vm.clearError(),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
                       ),
-                      onPressed: () => vm.clearError(),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
+
+          // Usage button - positioned above message input
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: ResponsiveHelper.horizontalPadding(context),
+              child: const UsageButton(),
+            ),
+          ),
 
           // Message input field
           Align(
@@ -97,7 +121,6 @@ class ChatPage extends StatelessWidget {
               padding: ResponsiveHelper.horizontalPadding(context),
               child: MessageInput(
                 onSend: (message) {
-                  vm.clearError();
                   vm.sendMessage(message);
                   vm.clearFiles();
                 },

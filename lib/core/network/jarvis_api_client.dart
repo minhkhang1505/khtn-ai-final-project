@@ -105,4 +105,15 @@ extension JarvisApiClientQueryExt on JarvisApiClient {
     );
     return _dio.get(path, options: options, queryParameters: queryParameters);
   }
+
+  Future<Response> deleteWithQuery(String path, {Map<String, dynamic>? queryParameters}) async {
+    final accessToken = await localDataSource.getAccessToken();
+    final options = Options(
+      headers: {
+        if (accessToken != null && accessToken.isNotEmpty)
+          'Authorization': 'Bearer $accessToken',
+      },
+    );
+    return _dio.delete(path, options: options, queryParameters: queryParameters);
+  }
 }

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:khtn_ai_final_project/data/models/token_usage_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
 
 import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
@@ -13,14 +14,18 @@ import 'package:khtn_ai_final_project/data/models/conversations/conversation_sen
 import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
+import 'package:khtn_ai_final_project/domain/usecases/get_user_usecase.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/delete_conversation_model.dart';
 
 /// ViewModel responsible for chat page state.
 class ChatViewModel extends ChangeNotifier {
   final ChatUseCase chatUsecase;
+  final GetUserUseCase getUserUseCase;
 
-  ChatViewModel({required this.chatUsecase}) {
+  ChatViewModel({required this.chatUsecase, required this.getUserUseCase}) {
     // Fetch conversations on init
     getConversations();
+    getUsage();
   }
 
   // State variables
@@ -34,10 +39,57 @@ class ChatViewModel extends ChangeNotifier {
   String selectedModel = 'gpt-4o-mini';
   String conversationId = ''; // Default conversation ID
   String conversationTitle = 'Chat';
+  TokenUsageModel tokenUsage = TokenUsageModel.defaults();
   String cursor = '';
   String? _error;
   bool _isLoading = false;
   bool _isStreaming = false;
+
+  // Setters
+  set conversationIdSetter(String id) {
+    conversationId = id;
+    notifyListeners();
+  }
+  set conversationTitleSetter(String title) {
+    conversationTitle = title;
+    notifyListeners();
+  }
+  set selectedModelSetter(String model) {
+    selectedModel = model;
+    notifyListeners();
+  }
+  // set assistantSetter(AssistantModel assistantModel) {
+  //   assistant = assistantModel;
+  //   notifyListeners();
+  // }
+  set metadataSetter(MetadataModel metadataModel) {
+    metadata = metadataModel;
+    notifyListeners();
+  }
+  set filesSetter(List<PlatformFile> fileList) {
+    files = fileList;
+    notifyListeners();
+  }
+  set errorSetter(String? message) {
+    _error = message;
+    scrollToBottom();
+    notifyListeners();
+  }
+  set isLoadingSetter(bool loading) {
+    _isLoading = loading;
+    notifyListeners();
+  }
+  // set isStreamingSetter(bool streaming) {
+  //   _isStreaming = streaming;
+  //   notifyListeners();
+  // }
+  set tokenUsageSetter(TokenUsageModel usage) {
+    tokenUsage = usage;
+    notifyListeners();
+  }
+
+  // Getters
+  int get availableTokens => tokenUsage.availableTokens;
 
   bool get isStreaming => _isStreaming;
   bool get isBusy => _isLoading || _isStreaming;
@@ -62,18 +114,20 @@ class ChatViewModel extends ChangeNotifier {
     final trimmed = content.trim();
 
     if (files.isNotEmpty) {
-      _error = "File upload not implemented yet.";
-      debugPrint("Error: $_error");
-      notifyListeners();
+      errorSetter = "File upload not implemented yet.";
       return false;
     }
 
+    // Validate message
     if (trimmed.isEmpty) return false;
 
     if (trimmed.length > 5000) {
-      _error = "Message exceeds maximum length of 5000 characters.";
-      debugPrint("Error: $_error");
-      notifyListeners();
+      errorSetter = "Message exceeds maximum length of 5000 characters.";
+      return false;
+    }
+
+    if (tokenUsage.availableTokens <= 0) {
+      errorSetter = "Insufficient tokens to send message.";
       return false;
     }
 
@@ -88,8 +142,7 @@ class ChatViewModel extends ChangeNotifier {
     Future.delayed(const Duration(milliseconds: 100), () {
       scrollToBottom();
     });
-    _isLoading = true;
-    notifyListeners();
+    isLoadingSetter = true;
 
     try {
       final request = SendMessageRequestModel(
@@ -100,11 +153,18 @@ class ChatViewModel extends ChangeNotifier {
       );
       final response = await chatUsecase.sendMessage(request);
 
+      // Update remaining tokens
+      tokenUsage.availableTokens = response.remainingUsage;
+
       // For streaming responses, simulate by appending chunks;
       await addStreamingAssistantMessage(response.message);
 
+      // If new conversation, update ID
+      if (conversationId == 'temp_id') {
+        conversationIdSetter = response.conversationId;
+      }
+
       // Update metadata after message exchange
-      conversationId = response.conversationId;
       updateMetadata();
 
       // Scroll to bottom after a slight delay to ensure UI has updated
@@ -115,8 +175,7 @@ class ChatViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       // On error, add a simple assistant message describing failure
-      debugPrint("Error sending message: $e");
-      _error = e.toString();
+      errorSetter = e.toString();
       return false;
     } finally {
       _isLoading = false;
@@ -137,8 +196,7 @@ class ChatViewModel extends ChangeNotifier {
 
       conversations = response.items;
     } catch (e) {
-      debugPrint("Error fetching conversations: $e");
-      _error = e.toString();
+      errorSetter = e.toString();
       return false;
     } finally {
       _isLoading = false;
@@ -181,8 +239,7 @@ class ChatViewModel extends ChangeNotifier {
         scrollToBottom();
       });
     } catch (e) {
-      debugPrint("Error fetching conversations: $e");
-      _error = e.toString();
+      errorSetter = e.toString();
       return false;
     } finally {
       _isLoading = false;
@@ -219,8 +276,7 @@ class ChatViewModel extends ChangeNotifier {
       });
     } catch (e) {
       // On error, add a simple assistant message describing failure
-      debugPrint("Error chatting with bot: $e");
-      _error = e.toString();
+      errorSetter = e.toString();
       return false;
     } finally {
       _isLoading = false;
@@ -232,9 +288,10 @@ class ChatViewModel extends ChangeNotifier {
   /// New chat - clear messages and reset metadata
   void newChat() {
     messages.clear();
-    conversationId = '';
-    conversationTitle = 'Chat';
-    metadata = MetadataModel.defaults();
+    conversationIdSetter = '';
+    conversationTitleSetter = 'Chat';
+    metadataSetter = MetadataModel.defaults();
+    errorSetter = null;
     notifyListeners();
   }
 
@@ -246,7 +303,7 @@ class ChatViewModel extends ChangeNotifier {
 
   /// Update metadata based on current conversation ID and messages
   void updateMetadata() {
-    metadata = MetadataModel(
+    metadataSetter = MetadataModel(
       conversation: ConversationSendRequestModel(
         id: conversationId,
         messages: messages,
@@ -295,6 +352,43 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void getUsage() async {
+    try {
+      final response = await getUserUseCase.getTokenUsage();
+      tokenUsageSetter = response;
+      return;
+    } catch (e) {
+      errorSetter = e.toString();
+      rethrow;
+    }
+  }
+
+  void deleteConversation(String conversationId) async {
+    try {
+      isLoadingSetter = true;
+      await chatUsecase.deleteConversation(
+        DeleteConversationRequestModel(
+          conversationId: conversationId,
+          assistantId: selectedModel,
+          assistantModel: 'agentic',
+        ),
+      );
+
+      // Remove from local list
+      conversations.removeWhere((conv) => conv.id == conversationId);
+
+      // If the deleted conversation was the currently open one, open a new chat
+      if (this.conversationId == conversationId) {
+        newChat();
+      } else {
+        notifyListeners();
+      }
+      isLoadingSetter = false;
+    } catch (e) {
+      errorSetter = e.toString();
+    }
+  }
+
   /// Add files to the current draft/files list
   void addFiles(List<PlatformFile> newFiles) {
     files.addAll(newFiles);
@@ -320,10 +414,7 @@ class ChatViewModel extends ChangeNotifier {
 
   /// Clear all selected files
   void clearFiles() {
-    if (files.isNotEmpty) {
-      files.clear();
-      notifyListeners();
-    }
+    filesSetter = [];
   }
 
   /// Clear conversation
@@ -334,7 +425,6 @@ class ChatViewModel extends ChangeNotifier {
 
   /// Clear error message
   void clearError() {
-    _error = null;
-    notifyListeners();
+    errorSetter = null;
   }
 }

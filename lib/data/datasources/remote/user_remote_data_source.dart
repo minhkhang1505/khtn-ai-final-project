@@ -1,8 +1,10 @@
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/user_models.dart';
+import 'package:khtn_ai_final_project/data/models/token_usage_model.dart';
 
 abstract class UserRemoteDataSource {
   Future<UserResponse> getCurrentUser();
+  Future<TokenUsageModel> getTokenUsage();
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -12,5 +14,11 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<UserResponse> getCurrentUser() async {
     final response = await client.get('/auth/me', data: {});
     return UserResponse.fromJson(response.data);
+  }
+
+  @override
+  Future<TokenUsageModel> getTokenUsage() async {
+    final response = await client.get('/tokens/usage', data: {});
+    return TokenUsageModel.fromJson(response.data);
   }
 }

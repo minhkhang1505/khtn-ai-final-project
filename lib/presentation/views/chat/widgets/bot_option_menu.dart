@@ -40,12 +40,11 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
     return PopupMenuButton<String>(
       onSelected: (value) {
         final selected = models.firstWhere((model) => model["name"] == value);
-        setState(() {
-          // Update selected model
-          vm.selectedModel = selected["id"];
-        });
+        // setState(() {
+        //   vm.selectedModel = selected["id"];
+        // });
+        vm.selectedModelSetter = selected["id"];
 
-        //vm.selectedModel = value;
         vm.assistant = AssistantModel(
           model: 'dify',
           name: selected["name"],
@@ -69,7 +68,7 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
                 child: Text(
                   name,
                   style: const TextStyle(fontWeight: FontWeight.w600),
-                  //overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
               ),

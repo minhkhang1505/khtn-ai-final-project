@@ -6,7 +6,6 @@ import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 class ChatApiClient {
   static const String baseUrl = 'https://api.jarvis.cx/api/v1/ai-chat/messages';
   final AuthLocalDataSource localDataSource;
-  String endpoint = '/messages';
 
   late final Dio _dio;
 
