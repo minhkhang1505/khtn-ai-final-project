@@ -4,7 +4,7 @@ import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_sou
 import 'package:khtn_ai_final_project/core/network/token_interceptor.dart';
 
 class AuthApiClient {
-  static const String baseUrl = 'https://auth-api.dev.jarvis.cx/api/v1/';
+  static const String baseUrl = 'https://auth-api.jarvis.cx/api/v1/';
   static const String _refreshTokenEndpoint = 'auth/sessions/current/refresh';
 
   final AuthLocalDataSource localDataSource = AuthLocalDataSourceImpl();
@@ -16,9 +16,9 @@ class AuthApiClient {
         baseUrl: baseUrl,
         headers: {
           'X-Stack-Access-Type': 'client',
-          'X-Stack-Project-Id': 'a914f06b-5e46-4966-8693-80e4b9f4f409',
+          'X-Stack-Project-Id': '45a1e2fd-77ee-4872-9fb7-987b8c119633',
           'X-Stack-Publishable-Client-Key':
-              'pck_tqsy29b64a585km2g4wnpc57ypjprzzdch8xzpq0xhayr',
+              'pck_7wjweasxxnfspvr20dvmyd9pjj0p9kp755bxxcm4ae1er',
           'Content-Type': 'application/json',
         },
       ),

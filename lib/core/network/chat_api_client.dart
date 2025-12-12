@@ -4,9 +4,8 @@ import 'package:khtn_ai_final_project/core/network/token_interceptor.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 
 class ChatApiClient {
-  static const String baseUrl = 'https://api.dev.jarvis.cx/api/v1/ai-chat';
+  static const String baseUrl = 'https://api.jarvis.cx/api/v1/ai-chat/messages';
   final AuthLocalDataSource localDataSource;
-  String endpoint = '/messages';
 
   late final Dio _dio;
 
@@ -14,9 +13,7 @@ class ChatApiClient {
     _dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       ),
     );
 
@@ -42,9 +39,10 @@ class ChatApiClient {
       _dio.get(path, queryParameters: queryParameters);
 
   // for get conversation history
-  Future<Response> getConversationHistory(String path,
-          {Map<String, dynamic>? queryParameters}) =>
-      _dio.get(path, queryParameters: queryParameters);
+  Future<Response> getConversationHistory(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) => _dio.get(path, queryParameters: queryParameters);
 
   // for send message
   Future<Response> post(String path, {Map<String, dynamic>? data}) =>

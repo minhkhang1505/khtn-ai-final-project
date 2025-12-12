@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class JarvisApiClient {
   final localDataSource = AuthLocalDataSourceImpl();
-  static const String baseUrl = 'https://api.dev.jarvis.cx/api/v1/';
+  static const String baseUrl = 'https://api.jarvis.cx/api/v1/';
   static const String _refreshTokenEndpoint = 'auth/sessions/current/refresh';
 
   final String guid;
@@ -104,5 +104,16 @@ extension JarvisApiClientQueryExt on JarvisApiClient {
       },
     );
     return _dio.get(path, options: options, queryParameters: queryParameters);
+  }
+
+  Future<Response> deleteWithQuery(String path, {Map<String, dynamic>? queryParameters}) async {
+    final accessToken = await localDataSource.getAccessToken();
+    final options = Options(
+      headers: {
+        if (accessToken != null && accessToken.isNotEmpty)
+          'Authorization': 'Bearer $accessToken',
+      },
+    );
+    return _dio.delete(path, options: options, queryParameters: queryParameters);
   }
 }
