@@ -144,8 +144,9 @@ class _MessageInputState extends State<MessageInput> {
                   ),
                 ),
               ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 150), // ~5 lines
+            // Let the input grow naturally without hard height caps to avoid overflow
+            Flexible(
+              fit: FlexFit.loose,
               child: Focus(
                 onKeyEvent: (node, event) {
                   if (event is KeyDownEvent &&
