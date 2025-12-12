@@ -30,6 +30,7 @@ class ChatViewModel extends ChangeNotifier {
 
   // State variables
   final ScrollController scrollController = ScrollController();
+  final TextEditingController inputController = TextEditingController();
 
   List<ChatMessageModel> messages = [];
   AssistantModel assistant = AssistantModel.defaults();
@@ -50,14 +51,17 @@ class ChatViewModel extends ChangeNotifier {
     conversationId = id;
     notifyListeners();
   }
+
   set conversationTitleSetter(String title) {
     conversationTitle = title;
     notifyListeners();
   }
+
   set selectedModelSetter(String model) {
     selectedModel = model;
     notifyListeners();
   }
+
   // set assistantSetter(AssistantModel assistantModel) {
   //   assistant = assistantModel;
   //   notifyListeners();
@@ -66,19 +70,23 @@ class ChatViewModel extends ChangeNotifier {
     metadata = metadataModel;
     notifyListeners();
   }
+
   set filesSetter(List<PlatformFile> fileList) {
     files = fileList;
     notifyListeners();
   }
+
   set errorSetter(String? message) {
     _error = message;
     scrollToBottom();
     notifyListeners();
   }
+
   set isLoadingSetter(bool loading) {
     _isLoading = loading;
     notifyListeners();
   }
+
   // set isStreamingSetter(bool streaming) {
   //   _isStreaming = streaming;
   //   notifyListeners();
@@ -107,6 +115,11 @@ class ChatViewModel extends ChangeNotifier {
     temp = metadata.toJson().toString();
 
     return temp;
+  }
+
+  void setInputMessage(String content) {
+    inputController.text = content;
+    notifyListeners();
   }
 
   /// Send a message as the user, append the user's message and the reply.
@@ -426,5 +439,12 @@ class ChatViewModel extends ChangeNotifier {
   /// Clear error message
   void clearError() {
     errorSetter = null;
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    inputController.dispose();
+    super.dispose();
   }
 }

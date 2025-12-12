@@ -1,21 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:khtn_ai_final_project/presentation/views/chat/widgets/custom_input_message.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 
 class MessageInput extends StatefulWidget {
   final void Function(String) onSend;
+  final TextEditingController? controller;
 
-  const MessageInput({super.key, required this.onSend});
+  const MessageInput({super.key, required this.onSend, this.controller});
 
   @override
   State<MessageInput> createState() => _MessageInputState();
 }
 
 class _MessageInputState extends State<MessageInput> {
-  final TextEditingController _controller = TextEditingController();
+  late final TextEditingController _controller;
   final FocusNode _textFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller ?? TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    _textFocusNode.dispose();
+    super.dispose();
+  }
 
   void _handleSend() {
     final text = _controller.text.trim();
@@ -26,11 +43,6 @@ class _MessageInputState extends State<MessageInput> {
 
     widget.onSend(text);
     _controller.clear();
-  }
-
-  void _onChanged(String value) {
-    final vm = context.read<ChatViewModel>();
-    vm.clearError();
   }
 
   String _formatFileSize(int bytes) {
@@ -132,8 +144,9 @@ class _MessageInputState extends State<MessageInput> {
                   ),
                 ),
               ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 150), // ~5 lines
+            // Let the input grow naturally without hard height caps to avoid overflow
+            Flexible(
+              fit: FlexFit.loose,
               child: Focus(
                 onKeyEvent: (node, event) {
                   if (event is KeyDownEvent &&
@@ -154,61 +167,27 @@ class _MessageInputState extends State<MessageInput> {
                   }
                   return KeyEventResult.ignored;
                 },
-                child: TextField(
+                child: CustomInputMessage(
                   controller: _controller,
-                  focusNode: _textFocusNode,
-                  keyboardType: TextInputType.multiline,
-                  minLines: 1,
-                  maxLines: null,
-                  onChanged: _onChanged,
-                  decoration: InputDecoration(
-                    hintText: "Type your message...",
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.only(left: 4, right: 4),
-                      child: IconButton(
-                        icon: Icon(Icons.add),
-                        color: colorScheme.primary,
-                        onPressed: isBusy
-                            ? null
-                            : () async {
-                                // Handle add button press - allow multiple file selection
-                                FilePickerResult? result = await FilePicker
-                                    .platform
-                                    .pickFiles(allowMultiple: true);
+                  onAttachFile: () async {
+                    if (isBusy) return;
+                    // Handle add button press - allow multiple file selection
+                    FilePickerResult? result = await FilePicker.platform
+                        .pickFiles(allowMultiple: true);
 
-                                if (result != null) {
-                                  try {
-                                    vm.addFiles(result.files);
-                                  } catch (_) {}
-                                  debugPrint(
-                                    "Selected ${result.files.length} file(s)",
-                                  );
-                                } else {
-                                  debugPrint("No file selected");
-                                }
-                              },
-                      ),
-                    ),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.only(left: 4, right: 4),
-                      child: IconButton(
-                        icon: const Icon(Icons.send_rounded),
-                        color: colorScheme.primary,
-                        onPressed: isBusy ? null : _handleSend,
-                      ),
-                    ),
-                    filled: true,
-                    enabled: !isBusy,
-                    fillColor: colorScheme.surfaceContainerHigh.withAlpha(200),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 16,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
+                    if (result != null) {
+                      try {
+                        vm.addFiles(result.files);
+                      } catch (_) {}
+                      debugPrint("Selected ${result.files.length} file(s)");
+                    } else {
+                      debugPrint("No file selected");
+                    }
+                  },
+                  onSend: (message) {
+                    vm.sendMessage(message);
+                    vm.clearFiles();
+                  },
                 ),
               ),
             ),
