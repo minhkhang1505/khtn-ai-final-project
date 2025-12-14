@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/CustomTabBar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
@@ -31,12 +32,15 @@ class _PromptModalContent extends StatefulWidget {
   State<_PromptModalContent> createState() => _PromptModalContentState();
 }
 
-class _PromptModalContentState extends State<_PromptModalContent> {
+class _PromptModalContentState extends State<_PromptModalContent>
+    with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
+  late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     _scrollController.addListener(_onScroll);
   }
 
@@ -44,6 +48,7 @@ class _PromptModalContentState extends State<_PromptModalContent> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -86,57 +91,75 @@ class _PromptModalContentState extends State<_PromptModalContent> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Text(
-              "Prompts",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: _onRefresh,
-              color: Theme.of(context).primaryColor,
-              child: ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                itemCount: prompts.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == prompts.length) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Center(
-                        child: switch (viewModel.loadMoreState) {
-                          LoadMoreState.loading =>
-                            const CircularProgressIndicator(),
-                          LoadMoreState.noMoreData => const Text(
-                            "No more prompts to load.",
-                            style: TextStyle(color: Colors.grey, fontSize: 12),
-                          ),
-                          LoadMoreState.idle => const SizedBox.shrink(),
-                        },
-                      ),
-                    );
-                  }
-                  final prompt = prompts[index];
-                  return PromptItem(
-                    onTap: () => _handleItemTap(context, prompt),
-                    prompt: prompt,
-                    onFavoriteTap: () {
-                      // Handle favorite toggle
-                    },
-                  );
-                },
+      child: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                "Prompts",
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-          ),
-        ],
+            CustomTabbar(
+              controller: _tabController,
+              tabLabels: const ['Public', 'Private'],
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildPromptList(prompts, viewModel),
+                  _buildPromptList(
+                    prompts.where((p) => p.isFavorite).toList(),
+                    viewModel,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPromptList(
+    List<PromptEntity> prompts,
+    PromptViewmodel viewModel,
+  ) {
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      color: Theme.of(context).primaryColor,
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        controller: _scrollController,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        itemCount: prompts.length + 1,
+        itemBuilder: (context, index) {
+          if (index == prompts.length) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: switch (viewModel.loadMoreState) {
+                  LoadMoreState.loading => const CircularProgressIndicator(),
+                  LoadMoreState.noMoreData => const Text(
+                    "No more prompts to load.",
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                  LoadMoreState.idle => const SizedBox.shrink(),
+                },
+              ),
+            );
+          }
+          final prompt = prompts[index];
+          return PromptItem(
+            onTap: () => _handleItemTap(context, prompt),
+            prompt: prompt,
+            onFavoriteTap: () {
+              // Handle favorite toggle
+            },
+          );
+        },
       ),
     );
   }
