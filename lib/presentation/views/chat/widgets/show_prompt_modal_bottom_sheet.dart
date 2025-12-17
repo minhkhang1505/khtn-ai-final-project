@@ -82,6 +82,7 @@ class _PromptModalContentState extends State<_PromptModalContent>
   Widget build(BuildContext context) {
     final viewModel = context.watch<PromptViewmodel>();
     final prompts = viewModel.prompts ?? [];
+    final privatePrompts = viewModel.privatePrompts ?? [];
 
     return Container(
       decoration: BoxDecoration(
@@ -95,7 +96,7 @@ class _PromptModalContentState extends State<_PromptModalContent>
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.fromLTRB(0, 30, 0, 8),
               child: Text(
                 "Prompts",
                 style: Theme.of(context).textTheme.titleLarge,
@@ -110,10 +111,7 @@ class _PromptModalContentState extends State<_PromptModalContent>
                 controller: _tabController,
                 children: [
                   _buildPromptList(prompts, viewModel),
-                  _buildPromptList(
-                    prompts.where((p) => p.isFavorite).toList(),
-                    viewModel,
-                  ),
+                  _buildPromptList(privatePrompts, viewModel),
                 ],
               ),
             ),
