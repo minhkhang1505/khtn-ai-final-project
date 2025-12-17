@@ -119,6 +119,9 @@ class PromptViewmodel extends ChangeNotifier {
         _prompts.addAll(response.items.toEntityList());
       }
 
+      // Ensure favorite flags are consistent across lists
+      _mergeFavoriteFlags();
+
       if (_state != PromptViewState.success) {
         _setState(PromptViewState.success);
       }
@@ -296,5 +299,27 @@ class PromptViewmodel extends ChangeNotifier {
         _favoritePrompts.removeAt(favIndex);
       }
     }
+  }
+
+  // Merge favorite flags from _favoritePrompts into other lists (only sets true,
+  // avoids incorrectly clearing if server data is partial)
+  void _mergeFavoriteFlags() {
+    final favIds = _favoritePrompts
+        .where((p) => p.isFavorite)
+        .map((p) => p.id)
+        .toSet();
+
+    void apply(List<PromptEntity> list) {
+      for (var i = 0; i < list.length; i++) {
+        final p = list[i];
+        if (favIds.contains(p.id) && !p.isFavorite) {
+          list[i] = p.copyWith(isFavorite: true);
+        }
+      }
+    }
+
+    apply(_prompts);
+    apply(_privatePrompts);
+    apply(_categoryPrompts);
   }
 }
