@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
-import 'package:khtn_ai_final_project/data/models/bot_model.dart';
+import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'widgets/edit_bot_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
