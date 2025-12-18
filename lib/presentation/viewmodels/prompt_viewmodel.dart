@@ -38,13 +38,37 @@ class PromptViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  LoadMoreState _loadMoreState = LoadMoreState.idle;
-  LoadMoreState get loadMoreState => _loadMoreState;
+  // All Prompts State
+  LoadMoreState _allLoadMoreState = LoadMoreState.idle;
+  LoadMoreState get allLoadMoreState => _allLoadMoreState;
+  double _allOffset = 0;
+  bool _allHasNext = false;
+  bool get allHasNext => _allHasNext;
 
-  void _setLoadMoreState(LoadMoreState loadMoreState) {
-    _loadMoreState = loadMoreState;
-    notifyListeners();
-  }
+  // Category Prompts State
+  LoadMoreState _categoryLoadMoreState = LoadMoreState.idle;
+  LoadMoreState get categoryLoadMoreState => _categoryLoadMoreState;
+  double _categoryOffset = 0;
+  bool _categoryHasNext = false;
+  bool get categoryHasNext => _categoryHasNext;
+
+  // Favorite Prompts State
+  LoadMoreState _favoriteLoadMoreState = LoadMoreState.idle;
+  LoadMoreState get favoriteLoadMoreState => _favoriteLoadMoreState;
+  double _favoriteOffset = 0;
+  bool _favoriteHasNext = false;
+  bool get favoriteHasNext => _favoriteHasNext;
+
+  // Private Prompts State
+  LoadMoreState _privateLoadMoreState = LoadMoreState.idle;
+  LoadMoreState get privateLoadMoreState => _privateLoadMoreState;
+  double _privateOffset = 0;
+  bool _privateHasNext = false;
+  bool get privateHasNext => _privateHasNext;
+
+  // Backward compatibility
+  LoadMoreState get loadMoreState => _allLoadMoreState;
+  bool get hasNext => _allHasNext;
 
   final List<PromptEntity> _prompts = [];
   List<PromptEntity>? get prompts => _prompts;
@@ -59,8 +83,6 @@ class PromptViewmodel extends ChangeNotifier {
   List<PromptEntity>? get categoryPrompts => _categoryPrompts;
 
   double limit = 10;
-  double offset = 0;
-  bool hasNext = false;
 
   Future<bool> _fetchPrompts({
     CategoryType? category,
@@ -69,38 +91,84 @@ class PromptViewmodel extends ChangeNotifier {
     bool isPublic = true,
   }) async {
     try {
+      // Determine current state variables
+      LoadMoreState currentLoadMoreState;
+      if (isFavorite) {
+        currentLoadMoreState = _favoriteLoadMoreState;
+      } else if (category != null) {
+        currentLoadMoreState = _categoryLoadMoreState;
+      } else if (!isPublic) {
+        currentLoadMoreState = _privateLoadMoreState;
+      } else {
+        currentLoadMoreState = _allLoadMoreState;
+      }
+
       if (resetOffset) {
         if (_state == PromptViewState.loading) {
           return false; // Prevent multiple simultaneous fetches
         }
       } else {
-        if (_loadMoreState == LoadMoreState.loading ||
-            _loadMoreState == LoadMoreState.noMoreData) {
+        if (currentLoadMoreState == LoadMoreState.loading ||
+            currentLoadMoreState == LoadMoreState.noMoreData) {
           return false;
         }
       }
 
       if (resetOffset) {
         _setState(PromptViewState.loading);
-        _setLoadMoreState(LoadMoreState.idle);
 
-        offset = 0;
-        hasNext = false;
-
+        // Reset specific state
         if (isFavorite) {
+          _favoriteLoadMoreState = LoadMoreState.idle;
+          _favoriteOffset = 0;
+          _favoriteHasNext = false;
           _favoritePrompts.clear();
         } else if (category != null) {
+          _categoryLoadMoreState = LoadMoreState.idle;
+          _categoryOffset = 0;
+          _categoryHasNext = false;
           _categoryPrompts.clear();
+        } else if (!isPublic) {
+          _privateLoadMoreState = LoadMoreState.idle;
+          _privateOffset = 0;
+          _privateHasNext = false;
+          _privatePrompts.clear();
         } else {
+          _allLoadMoreState = LoadMoreState.idle;
+          _allOffset = 0;
+          _allHasNext = false;
           _prompts.clear();
         }
+        notifyListeners();
       } else {
-        _setLoadMoreState(LoadMoreState.loading);
+        // Set loading state
+        if (isFavorite) {
+          _favoriteLoadMoreState = LoadMoreState.loading;
+        } else if (category != null) {
+          _categoryLoadMoreState = LoadMoreState.loading;
+        } else if (!isPublic) {
+          _privateLoadMoreState = LoadMoreState.loading;
+        } else {
+          _allLoadMoreState = LoadMoreState.loading;
+        }
+        notifyListeners();
+      }
+
+      // Get current offset for request
+      double requestOffset;
+      if (isFavorite) {
+        requestOffset = _favoriteOffset;
+      } else if (category != null) {
+        requestOffset = _categoryOffset;
+      } else if (!isPublic) {
+        requestOffset = _privateOffset;
+      } else {
+        requestOffset = _allOffset;
       }
 
       final requestObject = PromptRequest(
         limit: limit,
-        offset: offset,
+        offset: requestOffset,
         category: category,
         isFavorite: isFavorite,
         isPublic: isPublic,
@@ -108,15 +176,35 @@ class PromptViewmodel extends ChangeNotifier {
 
       final response = await getPromptUseCase.call(requestObject);
 
-      hasNext = response.hasNext;
-      offset += limit;
-
+      // Update state with response
       if (isFavorite) {
+        _favoriteHasNext = response.hasNext;
+        _favoriteOffset += limit;
         _favoritePrompts.addAll(response.items.toEntityList());
+        _favoriteLoadMoreState = response.hasNext
+            ? LoadMoreState.idle
+            : LoadMoreState.noMoreData;
       } else if (category != null) {
+        _categoryHasNext = response.hasNext;
+        _categoryOffset += limit;
         _categoryPrompts.addAll(response.items.toEntityList());
+        _categoryLoadMoreState = response.hasNext
+            ? LoadMoreState.idle
+            : LoadMoreState.noMoreData;
+      } else if (!isPublic) {
+        _privateHasNext = response.hasNext;
+        _privateOffset += limit;
+        _privatePrompts.addAll(response.items.toEntityList());
+        _privateLoadMoreState = response.hasNext
+            ? LoadMoreState.idle
+            : LoadMoreState.noMoreData;
       } else {
+        _allHasNext = response.hasNext;
+        _allOffset += limit;
         _prompts.addAll(response.items.toEntityList());
+        _allLoadMoreState = response.hasNext
+            ? LoadMoreState.idle
+            : LoadMoreState.noMoreData;
       }
 
       // Ensure favorite flags are consistent across lists
@@ -124,12 +212,8 @@ class PromptViewmodel extends ChangeNotifier {
 
       if (_state != PromptViewState.success) {
         _setState(PromptViewState.success);
-      }
-
-      if (hasNext) {
-        _setLoadMoreState(LoadMoreState.idle);
       } else {
-        _setLoadMoreState(LoadMoreState.noMoreData);
+        notifyListeners();
       }
 
       return true;
@@ -139,7 +223,16 @@ class PromptViewmodel extends ChangeNotifier {
       if (resetOffset) {
         _setState(PromptViewState.failure);
       } else {
-        _setLoadMoreState(LoadMoreState.idle);
+        if (isFavorite) {
+          _favoriteLoadMoreState = LoadMoreState.idle;
+        } else if (category != null) {
+          _categoryLoadMoreState = LoadMoreState.idle;
+        } else if (!isPublic) {
+          _privateLoadMoreState = LoadMoreState.idle;
+        } else {
+          _allLoadMoreState = LoadMoreState.idle;
+        }
+        notifyListeners();
       }
       return false;
     }
@@ -194,6 +287,14 @@ class PromptViewmodel extends ChangeNotifier {
       category: _currentSelectedCategory,
       resetOffset: false,
     );
+  }
+
+  Future<bool> loadMoreFavoritePrompts() {
+    return _fetchPrompts(isFavorite: true, resetOffset: false);
+  }
+
+  Future<bool> loadMorePrivatePrompts() {
+    return _fetchPrompts(isPublic: false, resetOffset: false);
   }
 
   Future<bool> deletePrompt(String promptID) async {
