@@ -32,10 +32,7 @@ class TokenInterceptor extends Interceptor {
     // Skip Authorization header for GET requests to prompts for get prompt not have status code 500
     final isGetPrompt =
         options.method == 'GET' && options.uri.path.contains('/prompts');
-    // if want to add Authorization header remove condition isGetPrompt and two lines below
-    if (!isGetPrompt && token != null && token.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer $token';
-    }
+        options.headers['Authorization'] = 'Bearer $token';
     handler.next(options);
   }
 

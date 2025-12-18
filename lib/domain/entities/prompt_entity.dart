@@ -66,7 +66,7 @@ class PromptEntity {
       'isFavorite': isFavorite,
       'createdBy': createdBy,
       'updatedBy': updatedBy,
-    };  
+    };
   }
 
   PromptEntity copyWith({
@@ -82,6 +82,8 @@ class PromptEntity {
     String? userId,
     String? userName,
     bool? isFavorite,
+    String? createdBy,
+    String? updatedBy,
   }) {
     return PromptEntity(
       id: id ?? this.id,
@@ -96,8 +98,8 @@ class PromptEntity {
       userId: userId ?? this.userId,
       userName: userName ?? this.userName,
       isFavorite: isFavorite ?? this.isFavorite,
-      createdBy: createdBy,
-      updatedBy: updatedBy,
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
     );
   }
 }

@@ -106,7 +106,8 @@ class _FilterByCategoryPageState extends State<FilterByCategoryPage> {
             child: ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              itemCount: categoryPrompts.length,
+              // +1 for the footer row (loading / no-more-data)
+              itemCount: categoryPrompts.length + 1,
               itemBuilder: (context, index) {
                 if (index == categoryPrompts.length) {
                   return Padding(
