@@ -17,7 +17,20 @@ class PromptRemoteDataSourceImpl implements PromptRemoteDataSource {
 
   @override
   Future<PromptPaggingResponse> getPrompts(PromptRequest request) async {
-    final response = await client.get('/prompts', data: request.toJson());
+    final query = request.toJson();
+    // Debug: show the query we'll send
+    // Example: {isFavorite: true, isPublic: true, limit: 10, offset: 0}
+    // This helps verify isFavorite=true is actually requested
+    // (LogInterceptor will also print the full URL)
+    // ignore: avoid_print
+    print(
+      '[PromptRemoteDataSource] GET /prompts with query: ' + query.toString(),
+    );
+    // Use authorized GET to ensure favorites/private filters work
+    final response = await client.getWithQuery(
+      '/prompts',
+      queryParameters: query,
+    );
 
     if (response.statusCode != 200) {
       throw Exception('Failed to load prompts');

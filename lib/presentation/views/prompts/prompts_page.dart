@@ -33,14 +33,15 @@ class PromptsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Load prompts when widget builds for the first time
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewmodel = Provider.of<PromptViewmodel>(context, listen: false);
       if (viewmodel.prompts == null || viewmodel.prompts!.isEmpty) {
-        viewmodel.getAllPrompts();
+        await viewmodel.getAllPrompts();
       }
       if (viewmodel.favoritePrompts == null ||
           viewmodel.favoritePrompts!.isEmpty) {
-        viewmodel.getFavoritePrompts();
+        debugPrint("❤️Loading favorite prompts...");
+        await viewmodel.getFavoritePrompts();
       }
     });
 
