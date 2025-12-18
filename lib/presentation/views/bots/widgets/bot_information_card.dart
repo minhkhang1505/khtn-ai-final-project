@@ -65,17 +65,17 @@ class BotInformationCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Description label
+            // Instructions label
             const Text(
-              'Description',
+              'Instructions (optional)',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
 
-            // Description input
+            // Instructions input
             TextField(
               decoration: InputDecoration(
-                hintText: 'What does this bot do?',
+                hintText: 'Describe how your bot should behave and respond.',
                 hintStyle: TextStyle(
                   color: colorScheme.onSurface.withAlpha(140),
                 ),
@@ -94,54 +94,34 @@ class BotInformationCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Category label and AI model
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Category *',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      CategoryOptionMenu(
-                        onChanged: (category) {
-                          // Handle category change if needed
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 16),
-                // AI Model dropdown
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'AI Model *',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      AiModelOptionMenu(
-                        onChanged: (model) {
-                          // Handle model change if needed
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            // Description label
+            const Text(
+              'Description (optional)',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
+            const SizedBox(height: 8),
+
+            // Description input
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'A brief description for your bot. (optional)',
+                hintStyle: TextStyle(
+                  color: colorScheme.onSurface.withAlpha(140),
+                ),
+                filled: true,
+                fillColor: colorScheme.surfaceContainerHigh.withAlpha(120),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 14,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: AppBorderRadius.medium,
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              maxLines: 1,
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),

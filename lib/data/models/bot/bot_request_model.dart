@@ -1,10 +1,10 @@
 // Create Bot Request
-class CreateBotRequestModel {
+class BotRequestModel {
   final String assistantName;
   final String instructions;
   final String description;
 
-  CreateBotRequestModel({
+  BotRequestModel({
     required this.assistantName,
     required this.instructions,
     required this.description,
@@ -50,31 +50,6 @@ class GetBotsRequestModel {
       'limit': limit,
       'is_favorite': is_favorite,
       'is_published': is_published,
-    };
-  }
-}
-
-
-
-// Update Bot Request
-class UpdateBotRequestModel {
-  final String assistantId;
-  final String assistantName;
-  final String instructions;
-  final String description;
-
-  UpdateBotRequestModel({
-    required this.assistantId,
-    required this.assistantName,
-    required this.instructions,
-    required this.description,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'assistant_name': assistantName,
-      'instructions': instructions,
-      'description': description,
     };
   }
 }

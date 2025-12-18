@@ -68,8 +68,8 @@ class _EditBotPageState extends State<EditBotPage> {
                   const SizedBox(height: AppSpacing.cardSpacing),
 
                   // Subagent Section
-                  SubagentCard(subagents: widget.bot.subagents),
-                  const SizedBox(height: AppSpacing.cardSpacing),
+                  //SubagentCard(subagents: widget.bot.subagents),
+                  //const SizedBox(height: AppSpacing.cardSpacing),
 
                   // Action Buttons
                   SaveActionButtonRow(

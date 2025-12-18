@@ -4,9 +4,9 @@ import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_response_model.dart';
 
 abstract class BotRemoteDataSource {
-  Future<BotModel> createBot(CreateBotRequestModel createBotRequest);
+  Future<BotModel> createBot(BotRequestModel createBotRequest);
   Future<GetBotsResponseModel> getBots(GetBotsRequestModel getBotsRequest);
-  Future<BotModel> updateBot(UpdateBotRequestModel updateBotRequest);
+  Future<BotModel> updateBot(String id, BotRequestModel botRequest);
   Future<void> deleteBot(String assistantId);
   Future<BotModel> getBot(String assistantId);
 }
@@ -18,10 +18,10 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
 
   //for create bot
   @override
-  Future<BotModel> createBot(CreateBotRequestModel createBotRequest) async {
+  Future<BotModel> createBot(BotRequestModel botRequest) async {
     final response = await client.post(
       '/kb-core/v1/ai-assistant',
-      data: createBotRequest.toJson(),
+      data: botRequest.toJson(),
     );
     return BotModel.fromJson(response.data);
   }
@@ -38,10 +38,10 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
 
   // for update bot
   @override
-  Future<BotModel> updateBot(UpdateBotRequestModel updateBotRequest) async {
+  Future<BotModel> updateBot(String id, BotRequestModel botRequest) async {
     final response = await client.getWithQuery(
-      '/kb-core/v1/ai-assistant/${updateBotRequest.assistantId}',
-      queryParameters: updateBotRequest.toJson(),
+      '/kb-core/v1/ai-assistant/$id',
+      queryParameters: botRequest.toJson(),
     );
     return BotModel.fromJson(response.data);
   }

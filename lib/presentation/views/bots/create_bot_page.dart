@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
-import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
+
 import 'package:khtn_ai_final_project/data/models/agent_model.dart';
+
 import 'package:khtn_ai_final_project/presentation/common/widgets/create_action_button_row.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/create_bot_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/message_popup.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
+
 import 'widgets/create_bot_app_bar.dart';
-import 'widgets/system_prompts_card.dart';
 import 'widgets/knowledge_base_card.dart';
 import 'widgets/bot_information_card.dart';
-import 'widgets/visibility_card.dart';
-import 'widgets/subagent_card.dart';
 
 /// Create Bot Page - Configure new AI bot settings
 class CreateBotPage extends StatefulWidget {
@@ -25,6 +29,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.read<CreateBotViewModel>();
     return Scaffold(
       appBar: const CreateBotAppBar(),
       body: SingleChildScrollView(
@@ -37,35 +42,33 @@ class _CreateBotPageState extends State<CreateBotPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Loading Indicator
+                  if (vm.isLoading)
+                    const LoadingIndicatorWidget(),
+
                   // Basic Information Section
                   const BotInformationCard(),
-                  const SizedBox(height: AppSpacing.cardSpacing),
-                  // System Prompts Section
-                  SystemPromptsCard(),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
                   // Knowledge Base Section
                   const KnowledgeBaseCard(),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
-                  // Visibility Section
-                  VisibilityCard(
-                    onStatusChanged: () {
-                      // TODO: Handle visibility status change
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.cardSpacing),
-
-                  // Subagent Section
-                  SubagentCard(subagents: subagents),
-                  const SizedBox(height: AppSpacing.cardSpacing),
-
                   // Action Buttons
                   const SizedBox(height: 12),
                   CreateActionButtonRow(
-                    onCreate: () {
-                      // Handle create bot action
+                    onCreate: () async {
+                      final isSuccess = await vm.createBot();
+                      if (isSuccess) {
+                        Navigator.pop(context);
+                      } else {
+                        // Show error message
+                        MessagePopup.show(
+                          context,
+                          title: 'Error',
+                          message: vm.errorMessage ?? 'Unknown error occurred',
+                        );
+                      }
                     },
                     onCancel: () {
                       Navigator.pop(context);

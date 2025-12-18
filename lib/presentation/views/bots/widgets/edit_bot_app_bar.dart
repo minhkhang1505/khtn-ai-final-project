@@ -25,7 +25,7 @@ class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
           Column(
             children: [
               Text(
-                bot.name,
+                bot.assistantName,
                 style: AppBarInfo.titleTextStyle,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -39,22 +39,22 @@ class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
             Text(bot.description, style: AppBarInfo.subtitleTextStyle),
         ],
       ),
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 16),
-          child: Chip(
-            label: Text(
-              bot.status,
-              style: TextStyle(
-                color: bot.status == 'Active' ? Colors.green : Colors.red,
-              ),
-            ),
-            backgroundColor: bot.status == 'Active'
-                ? Colors.green.withValues(alpha: 0.2)
-                : Colors.red.withValues(alpha: 0.2),
-          ),
-        ),
-      ],
+      // actions: [
+      //   Padding(
+      //     padding: EdgeInsets.only(right: 16),
+      //     child: Chip(
+      //       label: Text(
+      //         bot.status,
+      //         style: TextStyle(
+      //           color: bot.status == 'Active' ? Colors.green : Colors.red,
+      //         ),
+      //       ),
+      //       backgroundColor: bot.status == 'Active'
+      //           ? Colors.green.withValues(alpha: 0.2)
+      //           : Colors.red.withValues(alpha: 0.2),
+      //     ),
+      //   ),
+      // ],
     );
   }
 

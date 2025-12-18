@@ -39,7 +39,11 @@ class CreateActionButtonRow extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              if (onCreate != null) {
+                onCreate!();
+              }
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.primary,
               shape: RoundedRectangleBorder(

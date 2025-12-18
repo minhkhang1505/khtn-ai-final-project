@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/domain/repositories/bot_repository.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
@@ -8,10 +10,12 @@ import 'package:khtn_ai_final_project/data/datasources/remote/auth_remote_data_s
 import 'package:khtn_ai_final_project/data/datasources/remote/chat_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/prompt_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/user_remote_data_source.dart';
+import 'package:khtn_ai_final_project/data/datasources/remote/bot_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/repositories/auth_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/prompt_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/user_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/chat_repository_implement.dart';
+import 'package:khtn_ai_final_project/data/repositories/bot_repository_implement.dart';
 
 import 'package:khtn_ai_final_project/domain/repositories/auth_repository.dart';
 import 'package:khtn_ai_final_project/domain/repositories/chat_repository.dart';
@@ -25,11 +29,13 @@ import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase
 import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from_favorite.dart';
 import 'package:khtn_ai_final_project/domain/usecases/sign_up_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/bot_usecase.dart';
 
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/user_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/create_bot_view_model.dart';
 
 import 'package:khtn_ai_final_project/core/theme/util.dart';
 import 'package:khtn_ai_final_project/core/theme/theme.dart';
@@ -54,6 +60,9 @@ void main() async {
   final ChatRemoteDataSource chatRemoteDataSource =
       ChatRemoteDataSourceImpl(await JarvisApiClient.create());
 
+  final BotRemoteDataSource botRemoteDataSource =
+      BotRemoteDataSourceImpl(await JarvisApiClient.create());
+
   // Initialize UserApiClient with GUID support
   final userApiClient = await JarvisApiClient.create();
   final UserRemoteDataSource userRemoteDataSource = UserRemoteDataSourceImpl(
@@ -70,12 +79,11 @@ void main() async {
     promptRemoteDataSource,
   );
 
+  final ChatRepositoryImpl chatRepository = ChatRepositoryImpl(chatRemoteDataSource);
 
-  final ChatRepositoryImpl chatRepository = ChatRepositoryImpl(
-    chatRemoteDataSource
-  );
+  final UserRepositoryImpl userRepository = UserRepositoryImpl(userRemoteDataSource);
 
-  final userRepository = UserRepositoryImpl(userRemoteDataSource);
+  final BotRepositoryImpl botRepository = BotRepositoryImpl(botRemoteDataSource);
 
   // 3️⃣ Tầng UseCase
   final signUpUseCase = SignUpUseCase(repository: authRepository);
@@ -113,6 +121,12 @@ void main() async {
           create: (_) => ChatViewModel(
             chatUsecase: ChatUseCase(chatRepository: chatRepository, ),
             getUserUseCase: GetUserUseCase(userRepository: userRepository),
+          ),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) => CreateBotViewModel(
+            botUseCase: BotUseCase(botRepository: botRepository),
           ),
         ),
       ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/bot_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'widgets/bots_app_bar.dart';
 import 'widgets/bots_card.dart';
@@ -23,7 +23,7 @@ class _BotsPageState extends State<BotsPage>
   void initState() {
     super.initState();
     _botViewModel = BotViewModel();
-    _botViewModel.loadBots();
+    //_botViewModel.loadBots();
   }
 
   void _onAddBot() {
@@ -33,12 +33,7 @@ class _BotsPageState extends State<BotsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: "Bots",
-        subtitle: "Set up your AI assistant bot",
-        onCreatePressed: _onAddBot,
-        createButtonLabel: 'Add Bot',
-      ),
+      appBar: BotAppBar(onAddBot: _onAddBot),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWideScreen = constraints.maxWidth > 600;

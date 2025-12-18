@@ -19,7 +19,7 @@ class CreateBotAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Create NewBots', style: AppBarInfo.titleTextStyle),
+          Text('Create Bot', style: AppBarInfo.titleTextStyle),
           SizedBox(height: 4),
           if (ResponsiveHelper.isDesktop(context) ||
               ResponsiveHelper.isTablet(context))

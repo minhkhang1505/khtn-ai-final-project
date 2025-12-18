@@ -43,7 +43,7 @@ class BotCard extends StatelessWidget {
                 // Name of Bot
                 Expanded(
                   child: Text(
-                    bot.name,
+                    bot.assistantName,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -54,52 +54,35 @@ class BotCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
 
-                // Status Chip
-                if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Chip(
-                      labelPadding: EdgeInsets.zero,
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      label: Text(
-                        bot.status, 
-                        style: TextStyle(
-                          color: bot.status == 'Active' ? Colors.green : Colors.red,
-                        ),
-                      ),
-                      backgroundColor: bot.status == 'Active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
-                    ),
-                  ),
-
                 // Edit Bot button
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate to Edit Bot page
-                    Navigator.pushNamed(context, '/bots/edit', arguments: bot);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.resolveWith<Color?>((
-                      Set<WidgetState> states,
-                    ) {
-                      if (states.contains(WidgetState.pressed)) {
-                        return Colors.grey.shade300;
-                      }
-                      if (states.contains(WidgetState.hovered)) {
-                        return Colors.grey.shade400;
-                      }
-                      return Colors.transparent;
-                    }),
-                    elevation: WidgetStateProperty.all(0),
-                    overlayColor: WidgetStateProperty.all(Colors.transparent),
-                    shape: WidgetStateProperty.all(const CircleBorder()),
-                    padding: WidgetStateProperty.all(const EdgeInsets.all(0)),
-                  ),
-                  child: Icon(
-                    Icons.settings,
-                    size: 24,
-                    color: colorScheme.outline,
-                  ),
-                ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     // Navigate to Edit Bot page
+                //     Navigator.pushNamed(context, '/bots/edit', arguments: bot);
+                //   },
+                //   style: ButtonStyle(
+                //     backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+                //       Set<WidgetState> states,
+                //     ) {
+                //       if (states.contains(WidgetState.pressed)) {
+                //         return Colors.grey.shade300;
+                //       }
+                //       if (states.contains(WidgetState.hovered)) {
+                //         return Colors.grey.shade400;
+                //       }
+                //       return Colors.transparent;
+                //     }),
+                //     elevation: WidgetStateProperty.all(0),
+                //     overlayColor: WidgetStateProperty.all(Colors.transparent),
+                //     shape: WidgetStateProperty.all(const CircleBorder()),
+                //     padding: WidgetStateProperty.all(const EdgeInsets.all(0)),
+                //   ),
+                //   child: Icon(
+                //     Icons.settings,
+                //     size: 24,
+                //     color: colorScheme.outline,
+                //   ),
+                // ),
               ],
             ),
             // Description of Bot
@@ -113,35 +96,35 @@ class BotCard extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Category and Model Chips
-            Row(
-              children: [
-                Flexible(
-                  child: Chip(
-                    label: Text(
-                      bot.category,
-                      style: const TextStyle(fontSize: 12),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    backgroundColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: Chip(
-                    label: Text(
-                      bot.model,
-                      style: const TextStyle(color: Colors.black87, fontSize: 12),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    backgroundColor: Colors.white70,
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     Flexible(
+            //       child: Chip(
+            //         label: Text(
+            //           bot.category,
+            //           style: const TextStyle(fontSize: 12),
+            //           overflow: TextOverflow.ellipsis,
+            //           maxLines: 1,
+            //         ),
+            //         backgroundColor: Colors.transparent,
+            //         padding: const EdgeInsets.symmetric(horizontal: 4),
+            //       ),
+            //     ),
+            //     const SizedBox(width: 8),
+            //     Flexible(
+            //       child: Chip(
+            //         label: Text(
+            //           bot.model,
+            //           style: const TextStyle(color: Colors.black87, fontSize: 12),
+            //           overflow: TextOverflow.ellipsis,
+            //           maxLines: 1,
+            //         ),
+            //         backgroundColor: Colors.white70,
+            //         padding: const EdgeInsets.symmetric(horizontal: 4),
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),
