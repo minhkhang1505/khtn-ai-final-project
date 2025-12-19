@@ -1,24 +1,49 @@
 import 'bot_model.dart';
 
+class Data {
+  List<BotModel> bots;
+  Data({required this.bots});
+}
+
+class Meta {
+  int limit;
+  int offset;
+  int total;
+  bool hasNext;
+  Meta({
+    required this.limit,
+    required this.offset,
+    required this.total,
+    required this.hasNext,
+  });
+}
+
 // Get Bots Response
-// TODO: update model according to API response
 class GetBotsResponseModel {
-  final List<BotModel> bots;
-  final int total;
+  final Data data;
+  final Meta meta;
 
   GetBotsResponseModel({
-    required this.bots,
-    required this.total,
+    required this.data,
+    required this.meta,
   });
 
   factory GetBotsResponseModel.fromJson(Map<String, dynamic> json) {
-    var botsJson = json['bots'] as List;
-    List<BotModel> botsList =
+    final List<dynamic> botsJson = (json['data'] ?? []) as List;
+    final List<BotModel> botsList =
         botsJson.map((botJson) => BotModel.fromJson(botJson)).toList();
 
+    final Map<String, dynamic> metaJson =
+        (json['meta'] as Map<String, dynamic>? ?? {});
+
     return GetBotsResponseModel(
-      bots: botsList,
-      total: json['total'],
+      data: Data(bots: botsList),
+      meta: Meta(
+        limit: metaJson['limit'] ?? 0,
+        offset: metaJson['offset'] ?? 0,
+        total: metaJson['total'] ?? botsList.length,
+        hasNext: metaJson['hasNext'] ?? false,
+      ),
     );
   }
 }

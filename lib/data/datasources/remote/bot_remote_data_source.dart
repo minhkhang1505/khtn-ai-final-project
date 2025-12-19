@@ -1,4 +1,4 @@
-import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
+import 'package:khtn_ai_final_project/core/network/bot_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_response_model.dart';
@@ -12,7 +12,7 @@ abstract class BotRemoteDataSource {
 }
 
 class BotRemoteDataSourceImpl implements BotRemoteDataSource {
-  final JarvisApiClient client;
+  final BotApiClient client;
 
   BotRemoteDataSourceImpl(this.client);
 
@@ -29,19 +29,19 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
   //for get all bots
   @override
   Future<GetBotsResponseModel> getBots(GetBotsRequestModel getBotsRequest) async {
-    final response = await client.post(
+    final response = await client.get(
       '/kb-core/v1/ai-assistant',
-      data: getBotsRequest.toJson(),
+      queryParameters: getBotsRequest.toJson(),
     );
-    return GetBotsResponseModel.fromJson(response.data  );
+    return GetBotsResponseModel.fromJson(response.data);
   }
 
   // for update bot
   @override
   Future<BotModel> updateBot(String id, BotRequestModel botRequest) async {
-    final response = await client.getWithQuery(
+    final response = await client.patch(
       '/kb-core/v1/ai-assistant/$id',
-      queryParameters: botRequest.toJson(),
+      data: botRequest.toJson(),
     );
     return BotModel.fromJson(response.data);
   }

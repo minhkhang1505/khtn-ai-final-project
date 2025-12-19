@@ -10,7 +10,7 @@ class EmptyWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Text(
-          'Hello! Start a new conversation🎉',
+          'Hello! Start a new conversation',
           style: TextStyle(
             fontSize: 30,
             color: colorScheme.primary,

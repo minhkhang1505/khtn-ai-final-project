@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/CustomTabBar.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/custom_tab_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';

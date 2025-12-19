@@ -4,6 +4,7 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
+import 'package:khtn_ai_final_project/core/network/bot_api_client.dart';
 
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/auth_remote_data_source.dart';
@@ -61,7 +62,7 @@ void main() async {
       ChatRemoteDataSourceImpl(await JarvisApiClient.create());
 
   final BotRemoteDataSource botRemoteDataSource =
-      BotRemoteDataSourceImpl(await JarvisApiClient.create());
+      BotRemoteDataSourceImpl(await BotApiClient.create());
 
   // Initialize UserApiClient with GUID support
   final userApiClient = await JarvisApiClient.create();
@@ -123,7 +124,11 @@ void main() async {
             getUserUseCase: GetUserUseCase(userRepository: userRepository),
           ),
         ),
-
+        ChangeNotifierProvider(
+          create: (_) => BotViewModel(
+            botUseCase: BotUseCase(botRepository: botRepository),
+          ),
+        ),
         ChangeNotifierProvider(
           create: (_) => CreateBotViewModel(
             botUseCase: BotUseCase(botRepository: botRepository),

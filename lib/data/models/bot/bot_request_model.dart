@@ -25,31 +25,32 @@ enum BotOrder { asc, desc }
 class GetBotsRequestModel {
   final String q;
   final BotOrder order;
-  final String orderField;
+  final String order_field;
   final int offset;
   final int limit;
-  final bool is_favorite;
-  final bool is_published;
+  final bool? is_favorite;   // made optional
+  final bool? is_published;  // made optional
 
   GetBotsRequestModel({
     this.q = '',
     this.order = BotOrder.desc,
-    this.orderField = 'created_at',
+    this.order_field = 'createdAt', // matches API docs
     this.offset = 0,
-    this.limit = 20,
-    this.is_favorite = false,
-    this.is_published = false,
+    this.limit = 10,
+    this.is_favorite,
+    this.is_published,
   });
 
   Map<String, dynamic> toJson() {
-    return {
+    final Map<String, dynamic> params = {
       'q': q,
       'order': order == BotOrder.asc ? 'ASC' : 'DESC',
-      'order_field': orderField,
+      'order_field': order_field,
       'offset': offset,
       'limit': limit,
-      'is_favorite': is_favorite,
-      'is_published': is_published,
     };
+    if (is_favorite != null) params['is_favorite'] = is_favorite;
+    if (is_published != null) params['is_published'] = is_published;
+    return params;
   }
 }
