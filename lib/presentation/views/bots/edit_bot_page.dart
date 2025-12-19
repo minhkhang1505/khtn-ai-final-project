@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart' hide SearchBar;
+import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
-import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
-import 'widgets/edit_bot_app_bar.dart';
+import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
-import 'widgets/system_prompts_card.dart';
+import 'widgets/edit_bot_app_bar.dart';
 import 'widgets/knowledge_base_card.dart';
 import 'widgets/bot_information_card.dart';
 import 'widgets/bot_status_card.dart';
-import 'widgets/visibility_card.dart';
-import 'widgets/subagent_card.dart';
 
 /// Edit Bot Page - Configure AI bot settings
 class EditBotPage extends StatefulWidget {
@@ -25,6 +24,7 @@ class _EditBotPageState extends State<EditBotPage> {
 
   @override
   Widget build(BuildContext context) {
+    final editBotViewModel = context.watch<EditBotViewModel>();
     return Scaffold(
       appBar: EditBotAppBar(bot: widget.bot),
       body: SingleChildScrollView(
@@ -40,8 +40,8 @@ class _EditBotPageState extends State<EditBotPage> {
                   // Status & Actions Section
                   BotStatusCard(
                     bot: widget.bot,
-                    onStatusChanged: () {
-                      setState(() {});
+                    onDeleted: () async {
+                      await editBotViewModel.deleteBot();
                     },
                   ),
                   const SizedBox(height: AppSpacing.cardSpacing),
@@ -50,34 +50,17 @@ class _EditBotPageState extends State<EditBotPage> {
                   const BotInformationCard(),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
-                  // System Prompts Section
-                  const SystemPromptsCard(),
-                  const SizedBox(height: AppSpacing.cardSpacing),
-
                   // Knowledge Base Section
                   const KnowledgeBaseCard(),
                   const SizedBox(height: AppSpacing.cardSpacing),
-
-                  // Visibility Section
-                  VisibilityCard(
-                    onStatusChanged: () {
-                      // TODO: Handle visibility status change
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.cardSpacing),
-
-                  // Subagent Section
-                  //SubagentCard(subagents: widget.bot.subagents),
-                  //const SizedBox(height: AppSpacing.cardSpacing),
 
                   // Action Buttons
                   SaveActionButtonRow(
                     onCancel: () {
                       Navigator.pop(context);
                     },
-                    onSave: () {
-                      // TODO: Handle save action
+                    onSave: () async {
+                      await editBotViewModel.updateBot();
                     },
                   ),
                 ],

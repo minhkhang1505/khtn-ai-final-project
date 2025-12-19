@@ -37,6 +37,7 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.d
 import 'package:khtn_ai_final_project/presentation/viewmodels/user_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/create_bot_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 
 import 'package:khtn_ai_final_project/core/theme/util.dart';
 import 'package:khtn_ai_final_project/core/theme/theme.dart';
@@ -131,6 +132,11 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => CreateBotViewModel(
+            botUseCase: BotUseCase(botRepository: botRepository),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => EditBotViewModel(
             botUseCase: BotUseCase(botRepository: botRepository),
           ),
         ),

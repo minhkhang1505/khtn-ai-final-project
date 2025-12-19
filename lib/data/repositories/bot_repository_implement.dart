@@ -24,7 +24,7 @@ class BotRepositoryImpl implements BotRepository {
   }
 
   @override
-  Future<BotModel> getBot(String id) async {
+  Future<BotModel> getBotById(String id) async {
     final response = await remoteDataSource.getBot(id);
     return response;
   }

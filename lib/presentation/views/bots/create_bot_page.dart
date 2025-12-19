@@ -6,14 +6,15 @@ import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 
 import 'package:khtn_ai_final_project/data/models/agent_model.dart';
 
-import 'package:khtn_ai_final_project/presentation/common/widgets/create_action_button_row.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/create_bot_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/create_action_button_row.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/message_popup.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 
 import 'widgets/create_bot_app_bar.dart';
 import 'widgets/knowledge_base_card.dart';
 import 'widgets/bot_information_card.dart';
+import 'widgets/ai_model_card.dart';
 
 /// Create Bot Page - Configure new AI bot settings
 class CreateBotPage extends StatefulWidget {
@@ -29,7 +30,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.read<CreateBotViewModel>();
+    final createBotViewModel = context.read<CreateBotViewModel>();
     return Scaffold(
       appBar: const CreateBotAppBar(),
       body: SingleChildScrollView(
@@ -43,7 +44,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Loading Indicator
-                  if (vm.isLoading)
+                  if (createBotViewModel.isLoading)
                     const LoadingIndicatorWidget(),
 
                   // Basic Information Section
@@ -54,11 +55,19 @@ class _CreateBotPageState extends State<CreateBotPage> {
                   const KnowledgeBaseCard(),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
+                  // AI model Section
+                  AiModelCard(
+                    onChanged: (modelId) {
+                      createBotViewModel.setSelectedModel(modelId);
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.cardSpacing),
+
                   // Action Buttons
                   const SizedBox(height: 12),
                   CreateActionButtonRow(
                     onCreate: () async {
-                      final isSuccess = await vm.createBot();
+                      final isSuccess = await createBotViewModel.createBot();
                       if (isSuccess) {
                         Navigator.pop(context);
                       } else {
@@ -66,7 +75,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                         MessagePopup.show(
                           context,
                           title: 'Error',
-                          message: vm.errorMessage ?? 'Unknown error occurred',
+                          message: createBotViewModel.errorMessage ?? 'Unknown error occurred',
                         );
                       }
                     },

@@ -11,8 +11,8 @@ class BotUseCase {
 		return await botRepository.getBots(getBotsRequest);
 	}
 
-	Future<BotModel> getBot(String id) async {
-		return await botRepository.getBot(id);
+	Future<BotModel> getBotById(String id) async {
+		return await botRepository.getBotById(id);
 	}
 
 	Future<BotModel> createBot(BotRequestModel botRequest) async {

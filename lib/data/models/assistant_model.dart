@@ -21,6 +21,17 @@ enum AssistantModelType {
     }
   }
 
+  // Get display name of the model from id
+  static String nameFromId(String id) {
+    try {
+      return AssistantModelType.values
+          .firstWhere((e) => e.id == id)
+          .name;
+    } catch (_) {
+      return "Unknown Model";
+    }
+  }
+
   String get name {
     return switch (this) {
       AssistantModelType.CLAUDE_3_HAIKU => "Claude 3 Haiku",

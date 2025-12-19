@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/core/utils/icon_ai_model_helper.dart';
+import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 
 class AiModelOptionMenu extends StatefulWidget {
   final Function(String)? onChanged;
@@ -10,16 +12,17 @@ class AiModelOptionMenu extends StatefulWidget {
 }
 
 class _AiModelOptionMenuState extends State<AiModelOptionMenu> {
-  final List<String> models = [
-    'GPT-3.5',
-    'GPT-4',
-    'Claude',
-    'Claude 2',
-    'Bard',
-    'Llama 3',
-  ];
+  late final List<Map<String, String>> models;
 
   String? selectedModel;
+
+  @override
+  void initState() {
+    super.initState();
+    models = AssistantModelType.values
+        .map((m) => {'id': m.id, 'label': m.name})
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +35,9 @@ class _AiModelOptionMenuState extends State<AiModelOptionMenu> {
       onSelected: (index) {
         final model = models[index];
         setState(() {
-          selectedModel = model;
+          selectedModel = model['id'];
         });
-        widget.onChanged?.call(model);
+        widget.onChanged?.call(model['id']!);
       },
       constraints: BoxConstraints(
         minWidth: MediaQuery.of(context).size.width * 0.3,
@@ -46,9 +49,18 @@ class _AiModelOptionMenuState extends State<AiModelOptionMenu> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(models[index]),
-              if (selectedModel == models[index])
-                const Icon(Icons.check, color: Colors.blue, size: 18),
+              Row(
+                children: [
+                  Icon(
+                    IconAiModelHelper.iconForModel(models[index]['id']!),
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(models[index]['label']!),
+                ],
+              ),
+              if (selectedModel == models[index]['id'])
+                Icon(Icons.check, color: colorScheme.primary, size: 18),
             ],
           ),
         ),
@@ -65,17 +77,31 @@ class _AiModelOptionMenuState extends State<AiModelOptionMenu> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              selectedModel ?? "Select Model",
-              style: TextStyle(
-                color: selectedModel == null
-                    ? colorScheme.onSurfaceVariant
-                    : colorScheme.onSurface,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+
+                if (selectedModel != null)
+                  Icon(
+                    IconAiModelHelper.iconForModel(selectedModel!),
+                    size: 20,
+                  ),
+                const SizedBox(width: 8),
+                Text(
+                  selectedModel == null
+                      ? "Select Model"
+                      : models.firstWhere((m) => m['id'] == selectedModel)['label']!,
+                  style: TextStyle(
+                    color: selectedModel == null
+                        ? colorScheme.onSurfaceVariant
+                        : colorScheme.onSurface,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                const SizedBox(width: 8),
+              ],
             ),
-            const SizedBox(width: 8),
             const Icon(Icons.arrow_drop_down),
           ],
         ),

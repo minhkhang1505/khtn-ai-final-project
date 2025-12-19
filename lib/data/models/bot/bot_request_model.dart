@@ -3,11 +3,13 @@ class BotRequestModel {
   final String assistantName;
   final String instructions;
   final String description;
+  final String? model;
 
   BotRequestModel({
     required this.assistantName,
     required this.instructions,
     required this.description,
+    this.model,
   });
 
   Map<String, dynamic> toJson() {
@@ -15,6 +17,7 @@ class BotRequestModel {
       'assistant_name': assistantName,
       'instructions': instructions,
       'description': description,
+      if (model != null) 'model': model,
     };
   }
 }

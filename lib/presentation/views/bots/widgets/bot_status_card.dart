@@ -3,12 +3,12 @@ import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class BotStatusCard extends StatefulWidget {
   final dynamic bot;
-  final VoidCallback? onStatusChanged;
+  final VoidCallback? onDeleted;
 
   const BotStatusCard({
     super.key,
     required this.bot,
-    this.onStatusChanged,
+    this.onDeleted,
   });
 
   @override
@@ -39,7 +39,7 @@ class _BotStatusCardState extends State<BotStatusCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Status & Actions',
+              'Actions',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 18,
@@ -47,66 +47,59 @@ class _BotStatusCardState extends State<BotStatusCard> {
             ),
             const SizedBox(height: 16),
 
-            // Active toggle
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.bot.status,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: AppBorderRadius.medium,
+                      ),
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 24,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Enable or disable this agent',
-                      style: TextStyle(
-                        fontSize: 13,
-                      ),
+                    child: const Text(
+                      'Chat now',
+                      style: TextStyle(fontWeight: FontWeight.w600),
                     ),
-                  ],
+                  ),
                 ),
-                Switch(
-                  value: widget.bot.status == 'Active',
-                  onChanged: (value) {
-                    setState(() {
-                      widget.bot.status = value ? 'Active' : 'Inactive';
-                      widget.onStatusChanged?.call();
-                    });
-                    // TODO: update bot status here (e.g. call API)
-                  },
-                )
-              ],
-            ),
-            const SizedBox(height: 20),
+                const SizedBox(width: 16),
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // TODO: Handle delete
-                },
-                icon: const Icon(Icons.delete_outline),
-                label: const Text('Delete Bot'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.error,
-                  foregroundColor: colorScheme.onError, 
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.medium,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 24,
-                  ),
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      if (widget.onDeleted != null) {
+                        widget.onDeleted!();
+                      }
+                    },
+                    icon: const Icon(Icons.delete_outline),
+                    label: const Text('Delete'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.error,
+                      foregroundColor: colorScheme.onError, 
+                      shape: RoundedRectangleBorder(
+                        borderRadius: AppBorderRadius.medium,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 24,
+                      ),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
