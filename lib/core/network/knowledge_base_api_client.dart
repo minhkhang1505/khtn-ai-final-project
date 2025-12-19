@@ -32,8 +32,11 @@ class KnowledgeBaseApiClient {
     return KnowledgeBaseApiClient._(guid);
   }
 
-  Future<Response> get(String path, {Map<String, dynamic>? data}) async {
-    return _dio.get(path, queryParameters: data);
+  Future<Response> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    return _dio.get(path, queryParameters: queryParameters);
   }
 
   Future<Response> post(String path, {Map<String, dynamic>? data}) async {
@@ -49,7 +52,11 @@ class KnowledgeBaseApiClient {
     return _dio.post(path, data: data, options: options);
   }
 
-  Future<Response> patch(String path, {Map<String, dynamic>? data}) async {
+  Future<Response> patch(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? data,
+  }) async {
     final accessToken = await localDataSource.getAccessToken();
 
     final options = Options(
@@ -59,10 +66,13 @@ class KnowledgeBaseApiClient {
         'Content-Type': 'application/json',
       },
     );
-    return _dio.patch(path, data: data, options: options);
+    return _dio.patch(path, queryParameters: queryParameters, options: options);
   }
 
-  Future<Response> delete(String path, {Map<String, dynamic>? data}) async {
+  Future<Response> delete(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     final accessToken = await localDataSource.getAccessToken();
 
     final options = Options(
@@ -71,6 +81,10 @@ class KnowledgeBaseApiClient {
           'Authorization': 'Bearer $accessToken',
       },
     );
-    return _dio.delete(path, data: data, options: options);
+    return _dio.delete(
+      path,
+      options: options,
+      queryParameters: queryParameters,
+    );
   }
 }

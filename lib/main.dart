@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/core/network/knowledge_base_api_client.dart';
+import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
+import 'package:khtn_ai_final_project/data/repositories/knowledge_base_repository_implement.dart';
+import 'package:khtn_ai_final_project/domain/usecases/knowledge/get_knowledges_usecase.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
@@ -42,7 +47,6 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dar
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1️⃣ Tầng Data Source (API)
   final authApiClient = AuthApiClient();
   final AuthRemoteDataSource remoteDataSource = AuthRemoteDataSourceImpl(
     authApiClient,
@@ -50,17 +54,24 @@ void main() async {
   final AuthLocalDataSource localDataSource = AuthLocalDataSourceImpl();
   final PromptRemoteDataSource promptRemoteDataSource =
       PromptRemoteDataSourceImpl(await JarvisApiClient.create());
+  final KnowledgeBaseRemoteDataSource knowledgeBaseRemoteDataSource =
+      KnowledgeBaseRemoteDataSourceImpl(await KnowledgeBaseApiClient.create());
 
-  final ChatRemoteDataSource chatRemoteDataSource =
-      ChatRemoteDataSourceImpl(await JarvisApiClient.create());
+  final ChatRemoteDataSource chatRemoteDataSource = ChatRemoteDataSourceImpl(
+    await JarvisApiClient.create(),
+  );
 
-  // Initialize UserApiClient with GUID support
   final userApiClient = await JarvisApiClient.create();
   final UserRemoteDataSource userRemoteDataSource = UserRemoteDataSourceImpl(
     userApiClient,
   );
 
-  // 2️⃣ Tầng Repository
+  final getKnowledgesUsecase = GetKnowledgesUsecase(
+    KnowledgeBaseRepositoryImplement(
+      remoteDataSource: knowledgeBaseRemoteDataSource,
+    ),
+  );
+
   final AuthRepository authRepository = AuthRepositoryImpl(
     remoteDataSource: remoteDataSource,
     localDataSource: localDataSource,
@@ -70,9 +81,8 @@ void main() async {
     promptRemoteDataSource,
   );
 
-
   final ChatRepositoryImpl chatRepository = ChatRepositoryImpl(
-    chatRemoteDataSource
+    chatRemoteDataSource,
   );
 
   final userRepository = UserRepositoryImpl(userRemoteDataSource);
@@ -111,8 +121,13 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => ChatViewModel(
-            chatUsecase: ChatUseCase(chatRepository: chatRepository, ),
+            chatUsecase: ChatUseCase(chatRepository: chatRepository),
             getUserUseCase: GetUserUseCase(userRepository: userRepository),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => KnowledgeBaseViewmodel(
+            getKnowledgesUsecase: getKnowledgesUsecase,
           ),
         ),
       ],

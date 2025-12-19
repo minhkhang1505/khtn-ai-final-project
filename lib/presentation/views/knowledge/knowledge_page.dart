@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_filter.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_item.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
+import 'package:provider/provider.dart';
 
 /// Knowledge page - Knowledge base management
 class KnowledgePage extends StatefulWidget {
@@ -14,6 +16,14 @@ class KnowledgePage extends StatefulWidget {
 }
 
 class _KnowledgePageState extends State<KnowledgePage> {
+
+  @override
+  void initState() {
+    super.initState();
+    final viewModel =
+        Provider.of<KnowledgeBaseViewmodel>(context, listen: false);
+    viewModel.getAllKnowledges();
+  }
   void _onAddKnowledge() {
     Navigator.pushNamed(context, '/knowledge/new');
   }
