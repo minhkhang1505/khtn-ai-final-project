@@ -8,7 +8,6 @@ import 'package:khtn_ai_final_project/data/models/agent_model.dart';
 
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/create_bot_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/create_action_button_row.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/message_popup.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 
 import 'widgets/create_bot_app_bar.dart';
@@ -56,6 +55,8 @@ class _CreateBotPageState extends State<CreateBotPage> {
                   BotInformationCard(
                     assistantNameController: createBotViewModel.assistantNameController,
                     assistantNameError: createBotViewModel.assistantNameError,
+                    instructionsController: createBotViewModel.instructionsController,
+                    descriptionController: createBotViewModel.descriptionController,
                   ),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
@@ -68,6 +69,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                     onChanged: (modelId) {
                       createBotViewModel.setSelectedModel(modelId);
                     },
+                    errorText: createBotViewModel.modelError,
                   ),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
@@ -75,19 +77,78 @@ class _CreateBotPageState extends State<CreateBotPage> {
                   const SizedBox(height: 12),
                   CreateActionButtonRow(
                     onCreate: () async {
-                      final isSuccess = await createBotViewModel.createBot();
-                      if (isSuccess) {
-                        Navigator.pop(context);
-                      } else if (createBotViewModel.errorMessage != null) {
-                        // Show error message
-                        MessagePopup.show(
-                          context,
-                          title: 'Error',
-                          message: createBotViewModel.errorMessage ?? 'Unknown error occurred',
-                        );
-                      }
+                      final pageContext = context;
+                      await showDialog<void>(
+                        context: pageContext,
+                        barrierDismissible: false,
+                        builder: (dialogContext) {
+                          bool? success;
+                          String? resultMessage;
+
+                          return StatefulBuilder(
+                            builder: (context, setState) {
+                              Widget content;
+                              List<Widget> actions;
+
+                              if (createBotViewModel.isLoading) {
+                                content = Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                    SizedBox(width: 12),
+                                    Text('Creating bot...'),
+                                  ],
+                                );
+                                actions = [
+                                  TextButton(onPressed: null, child: const Text('Cancel')),
+                                ];
+                              } else if (success != null) {
+                                content = Text(resultMessage ?? (success == true ? 'Bot created successfully' : 'Failed to create bot'));
+                                actions = [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(dialogContext);
+                                      if (success == true) {
+                                        Navigator.pop(pageContext);
+                                      }
+                                    },
+                                    child: const Text('Close'),
+                                  ),
+                                ];
+                              } else {
+                                // Start creating
+                                Future.microtask(() async {
+                                  final ok = await createBotViewModel.createBot();
+                                  setState(() {
+                                    success = ok;
+                                    resultMessage = ok ? 'Bot created successfully' : (createBotViewModel.errorMessage ?? 'Failed to create bot');
+                                  });
+                                });
+                                content = Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                    SizedBox(width: 12),
+                                    Text('Creating bot...'),
+                                  ],
+                                );
+                                actions = [
+                                  TextButton(onPressed: null, child: const Text('Cancel')),
+                                ];
+                              }
+
+                              return AlertDialog(
+                                title: const Text('Create Bot'),
+                                content: content,
+                                actions: actions,
+                              );
+                            },
+                          );
+                        },
+                      );
                     },
                     onCancel: () {
+                      createBotViewModel.clearForm();
                       Navigator.pop(context);
                     },
                   ),

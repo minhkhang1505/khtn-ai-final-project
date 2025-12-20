@@ -37,8 +37,11 @@ class _BotFilterOptionMenuState extends State<BotFilterOptionMenu> {
       offset: const Offset(0, 40),
       onSelected: (index) {
         final key = options[index]['key']!;
-        botViewModel.filter = key;
-        widget.onChanged?.call(key);
+        // Only update and notify if the filter actually changed
+        if (botViewModel.filter != key) {
+          botViewModel.filter = key;
+          widget.onChanged?.call(key);
+        }
       },
       constraints: BoxConstraints(
         minWidth: MediaQuery.of(context).size.width * 0.25,

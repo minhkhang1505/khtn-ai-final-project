@@ -16,7 +16,25 @@ class EditBotViewModel extends ChangeNotifier {
   final TextEditingController instructionsController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
-  late BotModel bot;
+  String? assistantNameError;
+
+  late BotModel _bot;
+
+  void setupBot(BotModel bot) {
+    _isDataLoading = true;
+    notifyListeners();
+    _bot = bot;
+    assistantNameController.text = bot.assistantName;
+    instructionsController.text = bot.instructions;
+    descriptionController.text = bot.description;
+
+    // Data setup complete
+    _isDataLoading = false;
+    notifyListeners();
+  }
+
+  bool _isDataLoading = false;
+  bool get isDataLoading => _isDataLoading;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -24,35 +42,16 @@ class EditBotViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  Future<bool> loadBotData(String botId) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      final response = await botUseCase.getBotById(botId);
-      bot = response;
-
-      // Populate controllers with fetched data
-      assistantNameController.text = bot.assistantName;
-      instructionsController.text = bot.instructions;
-      descriptionController.text = bot.description;
-
-      _isLoading = false;
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _errorMessage = e.toString();
-      _isLoading = false;
-      notifyListeners();
-      return false;
-    }
-  }
-
   Future<bool> updateBot() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
+
+    if (!validateAssistantName()) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
 
     try {
       final BotRequestModel botRequest = BotRequestModel(
@@ -60,7 +59,10 @@ class EditBotViewModel extends ChangeNotifier {
         instructions: instructionsController.text.trim(),
         description: descriptionController.text.trim(),
       );
-      await botUseCase.updateBot(bot.id, botRequest);
+      
+      final updateFuture = botUseCase.updateBot(_bot.id, botRequest);
+      await Future.delayed(const Duration(seconds: 1));
+      await updateFuture;
 
       _isLoading = false;
       notifyListeners();
@@ -79,7 +81,9 @@ class EditBotViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await botUseCase.deleteBot(bot.id);
+      final deleteFuture = botUseCase.deleteBot(_bot.id);
+      await Future.delayed(const Duration(seconds: 1));
+      await deleteFuture;
 
       _isLoading = false;
       notifyListeners();
@@ -90,6 +94,24 @@ class EditBotViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  bool validateAssistantName() {
+    final name = assistantNameController.text.trim();
+    if (name.isEmpty) {
+      assistantNameError = 'Bot name is required.';
+      return false;
+    } else if (name.length < 3) {
+      assistantNameError = 'Bot name must be at least 3 characters.';
+      return false;
+    } else if (name.length > 100) {
+      assistantNameError = 'Bot name must be at most 100 characters.';
+      return false;
+    } else {
+      assistantNameError = null;
+    }
+    notifyListeners();
+    return true;
   }
 
   void clearForm() {

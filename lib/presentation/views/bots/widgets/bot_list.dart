@@ -5,7 +5,7 @@ import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'bots_card.dart';
 
 class BotList extends StatelessWidget {
-  final VoidCallback? onTap;
+  final ValueChanged<BotModel>? onTap;
   final List<BotModel> bots;
   const BotList({super.key, required this.bots, this.onTap});
 
@@ -24,7 +24,7 @@ class BotList extends StatelessWidget {
           ),
           child: InkWell(
             borderRadius: AppBorderRadius.medium,
-            onTap: () => onTap?.call(),
+            onTap: () => onTap?.call(bot),
             child: BotCard(bot: bot),
           ),
         );

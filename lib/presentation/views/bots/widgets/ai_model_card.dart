@@ -3,8 +3,9 @@ import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/ai_model_option_menu.dart';
 
 class AiModelCard extends StatelessWidget {
-  const AiModelCard({super.key, required this.onChanged});
+  const AiModelCard({super.key, required this.onChanged, this.errorText});
   final ValueChanged<String> onChanged;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,15 @@ class AiModelCard extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            AiModelOptionMenu(onChanged: onChanged)
+            AiModelOptionMenu(onChanged: onChanged),
+
+            if (errorText != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                errorText!,
+                style: TextStyle(color: colorScheme.error, fontSize: 12),
+              ),
+            ]
           ]
         ),
       ),

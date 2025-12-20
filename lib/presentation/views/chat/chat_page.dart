@@ -55,7 +55,7 @@ class ChatPage extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     if (vm.error != null && vm.error!.isNotEmpty) {
-                      MessagePopup.show(context, message: vm.error!);
+                      MessagePopup.show(context, message: vm.error!, title: 'Error');
                     }
                   },
                   child: Row(

@@ -23,12 +23,14 @@ class CreateBotViewModel extends ChangeNotifier {
   final TextEditingController descriptionController = TextEditingController();
 
   String? assistantNameError;
+  String? modelError;
 
   String? _selectedModelId;
   String? get selectedModelId => _selectedModelId;
 
   void setSelectedModel(String? modelId) {
     _selectedModelId = modelId;
+    modelError = null;
     notifyListeners();
   }
 
@@ -43,7 +45,9 @@ class CreateBotViewModel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    if (!validateAssistantName()) {
+    final isNameValid = validateAssistantName();
+    final isModelValid = validateModel();
+    if (!isNameValid || !isModelValid) {
       _isLoading = false;
       notifyListeners();
       return false;
@@ -57,7 +61,9 @@ class CreateBotViewModel extends ChangeNotifier {
         model: _selectedModelId,
       );
 
-      await botUseCase.createBot(botRequest);
+      final createFuture = botUseCase.createBot(botRequest);
+      await Future.delayed(const Duration(seconds: 1));
+      await createFuture;
 
       _isLoading = false;
       notifyListeners();
@@ -88,12 +94,25 @@ class CreateBotViewModel extends ChangeNotifier {
     return true;
   }
 
+  bool validateModel() {
+    if (_selectedModelId == null || _selectedModelId!.isEmpty) {
+      modelError = 'AI model is required.';
+      notifyListeners();
+      return false;
+    }
+    modelError = null;
+    notifyListeners();
+    return true;
+  }
+
   void clearForm() {
     assistantNameController.clear();
     instructionsController.clear();
     descriptionController.clear();
     _errorMessage = null;
     assistantNameError = null;
+    modelError = null;
+    _selectedModelId = null;
     notifyListeners();
   }
 

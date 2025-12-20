@@ -8,6 +8,7 @@ import 'package:khtn_ai_final_project/presentation/common/widgets/bot_filter_opt
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'widgets/bots_app_bar.dart';
 import 'widgets/bot_list.dart';
+import 'package:khtn_ai_final_project/presentation/routes/route_observer.dart';
 
 
 /// Bots page - Manage AI bots
@@ -18,7 +19,7 @@ class BotsPage extends StatefulWidget {
   State<BotsPage> createState() => _BotsPageState();
 }
 
-class _BotsPageState extends State<BotsPage> {
+class _BotsPageState extends State<BotsPage> with RouteAware {
   @override
   void initState() {
     super.initState();
@@ -29,10 +30,36 @@ class _BotsPageState extends State<BotsPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPush() {
+    // Called when the route has been pushed onto the navigator.
+    context.read<BotViewModel>().fetchBots();
+  }
+
+  @override
+  void didPopNext() {
+    // Called when a covered route is popped back to this route.
+    context.read<BotViewModel>().fetchBots();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final botViewModel = context.watch<BotViewModel>();
-    final displayedBots = botViewModel.bots;
 
     return Scaffold(
       appBar: BotAppBar(),
@@ -104,9 +131,13 @@ class _BotsPageState extends State<BotsPage> {
                     ),
                   ] else ...[
                     BotList(
-                      bots: displayedBots,
-                      onTap: () {
-                        Navigator.pushNamed(context, '/bots/detail');
+                      bots: botViewModel.bots,
+                      onTap: (bot) async {
+                        Navigator.pushNamed(
+                          context,
+                          '/bots/edit',
+                          arguments: bot,
+                        );
                       },
                     ),
                   ]

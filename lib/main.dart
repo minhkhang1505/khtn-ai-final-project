@@ -46,6 +46,7 @@ import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/routes/route_generator.dart';
 import 'package:khtn_ai_final_project/presentation/services/navigation_service.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
+import 'package:khtn_ai_final_project/presentation/routes/route_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -135,11 +136,6 @@ void main() async {
             botUseCase: BotUseCase(botRepository: botRepository),
           ),
         ),
-        ChangeNotifierProvider(
-          create: (_) => EditBotViewModel(
-            botUseCase: BotUseCase(botRepository: botRepository),
-          ),
-        ),
       ],
       child: const MyApp(),
     ),
@@ -167,6 +163,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: NavigationService.navigatorKey,
       initialRoute: AppRoutes.splash,
       onGenerateRoute: RouteGenerator.generateRoute,
+      navigatorObservers: [routeObserver],
     );
   }
 }

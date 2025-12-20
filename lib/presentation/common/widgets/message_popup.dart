@@ -7,13 +7,13 @@ class MessagePopup extends StatelessWidget {
   const MessagePopup({
     super.key, 
     required this.message,
-    this.title = 'Message',
+    required this.title,
   });
 
   static void show(
     BuildContext context, {
     required String message,
-    String title = 'Message',
+    required String title,
     VoidCallback? onConfirm,
   }) {
     showDialog(

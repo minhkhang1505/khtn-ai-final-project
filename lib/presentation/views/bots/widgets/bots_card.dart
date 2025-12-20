@@ -91,7 +91,7 @@ class BotCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
-                bot.description,
+                bot.description.isEmpty ? 'No description' : bot.description,
                 style: const TextStyle(fontSize: 16),
               ),
             ),

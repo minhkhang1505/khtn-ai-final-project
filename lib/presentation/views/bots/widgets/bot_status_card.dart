@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
-class BotStatusCard extends StatefulWidget {
+class BotStatusCard extends StatelessWidget {
   final dynamic bot;
   final VoidCallback? onDeleted;
 
@@ -11,11 +11,6 @@ class BotStatusCard extends StatefulWidget {
     this.onDeleted,
   });
 
-  @override
-  State<BotStatusCard> createState() => _BotStatusCardState();
-}
-
-class _BotStatusCardState extends State<BotStatusCard> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -76,11 +71,7 @@ class _BotStatusCardState extends State<BotStatusCard> {
 
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      if (widget.onDeleted != null) {
-                        widget.onDeleted!();
-                      }
-                    },
+                    onPressed: onDeleted,
                     icon: const Icon(Icons.delete_outline),
                     label: const Text('Delete'),
                     style: ElevatedButton.styleFrom(
