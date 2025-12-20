@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/create_knowledge_base_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
@@ -173,7 +174,7 @@ class RouteGenerator {
       case AppRoutes.newKnowledgeSource:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const NewKnowledgeScreen(),
+          builder: (context) => const NewKnowledgeScreen(),
         );
 
       case AppRoutes.knowledgeDetails:

@@ -3,7 +3,9 @@ import 'package:khtn_ai_final_project/core/network/knowledge_base_api_client.dar
 import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/repositories/knowledge_base_repository_implement.dart';
 import 'package:khtn_ai_final_project/domain/usecases/knowledge/get_knowledges_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/knowledge/create_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/create_knowledge_base_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
@@ -72,6 +74,12 @@ void main() async {
     ),
   );
 
+  final createKnowledgeUsecase = CreateKnowledgeUsecase(
+    repository: KnowledgeBaseRepositoryImplement(
+      remoteDataSource: knowledgeBaseRemoteDataSource,
+    ),
+  );
+
   final AuthRepository authRepository = AuthRepositoryImpl(
     remoteDataSource: remoteDataSource,
     localDataSource: localDataSource,
@@ -128,6 +136,11 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => KnowledgeBaseViewmodel(
             getKnowledgesUsecase: getKnowledgesUsecase,
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CreateKnowledgeBaseViewmodel(
+            createKnowledgeUsecase: createKnowledgeUsecase,
           ),
         ),
       ],

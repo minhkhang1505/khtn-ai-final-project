@@ -11,4 +11,9 @@ class KnowledgeBaseRepositoryImplement implements KnowledgeBaseRepository {
   Future<KnowledgeBasePaggingResponse> getKnowledgeBases(KnowledgeQuery query) {
     return remoteDataSource.getKnowledgeBases(query);
   }
+
+  @override
+  Future<KnowledgeModel> createKnowledge(KnowledgeBaseCreationAndUpdateRequest knowledge) {
+    return remoteDataSource.createKnowledgeBase(knowledge);
+  }
 }

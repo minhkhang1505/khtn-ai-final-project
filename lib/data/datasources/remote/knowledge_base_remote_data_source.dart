@@ -73,7 +73,7 @@ class KnowledgeBaseCreationAndUpdateRequest {
 
 abstract class KnowledgeBaseRemoteDataSource {
   Future<KnowledgeBasePaggingResponse> getKnowledgeBases(KnowledgeQuery query);
-  Future<bool> createKnowledgeBase(
+  Future<KnowledgeModel> createKnowledgeBase(
     KnowledgeBaseCreationAndUpdateRequest request,
   );
   // Future<bool> deleteKnowledgeBase(String knowledgeBaseId);
@@ -110,14 +110,14 @@ class KnowledgeBaseRemoteDataSourceImpl
   }
 
   @override
-  Future<bool> createKnowledgeBase(
+  Future<KnowledgeModel> createKnowledgeBase(
     KnowledgeBaseCreationAndUpdateRequest request,
   ) async {
     final response = await client.post(
       '/kb-core/v1/knowledge',
       data: request.toJson(),
     );
-    return response.statusCode == 201;
+    return response.data;
   }
 
   @override

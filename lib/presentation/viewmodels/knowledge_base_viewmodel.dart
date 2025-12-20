@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/mappers/knowledge_mapper.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
+import 'package:khtn_ai_final_project/domain/usecases/knowledge/create_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/knowledge/get_knowledges_usecase.dart';
 
 enum KnowledgeBaseState { initial, loading, success, failure }
@@ -35,23 +36,34 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
         KnowledgeQuery(offset: offset, limit: limit),
       );
 
+      // Map response data to entities using extension
       _knowledges.addAll(response.data.toEntityList());
 
       hasNext = response.meta.hasNext;
       offset += limit;
 
       _setState(KnowledgeBaseState.success);
-      if (_state == KnowledgeBaseState.success) {
-        for (var element in response.data) {
-          print("Khang: ${element.knowledgeName}");
-        }
-      }
       return true;
     } catch (e) {
+      print('Error fetching knowledges: $e');
       _setState(KnowledgeBaseState.failure);
       return false;
     }
   }
 
   Future<bool> getAllKnowledges() => _fetchKnowledges();
+
+  Future<bool> createNewKnowledge(KnowledgeEntity knowledge) async {
+    // Implement the logic to create a new knowledge entry
+    // This is a placeholder implementation
+    try {
+      // Simulate network call
+      await Future.delayed(const Duration(seconds: 1));
+      _knowledges.add(knowledge);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

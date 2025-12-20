@@ -23,6 +23,26 @@ class KnowledgeModel {
 }
 
 
+class KnowledgeRequest {
+    String? description;
+    String knowledgeName;
+
+    KnowledgeRequest({
+        this.description,
+        required this.knowledgeName,
+    });
+
+    KnowledgeRequest copyWith({
+        String? description,
+        String? knowledgeName,
+    }) => 
+        KnowledgeRequest(
+            description: description ?? this.description,
+            knowledgeName: knowledgeName ?? this.knowledgeName,
+        );
+}
+
+
 ///PageDto
 class KnowledgeBasePaggingResponse {
     List<KnowledgeResDto> data;
