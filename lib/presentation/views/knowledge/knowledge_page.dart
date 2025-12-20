@@ -14,8 +14,17 @@ import 'package:provider/provider.dart';
 class KnowledgePage extends StatelessWidget {
   const KnowledgePage({super.key});
 
-  void _onAddKnowledge(BuildContext context) {
-    Navigator.pushNamed(context, '/knowledge/new');
+  void _onAddKnowledge(BuildContext context) async {
+    final result = await Navigator.pushNamed(context, '/knowledge/new');
+
+    // Refresh data if knowledge was created successfully
+    if (result == true && context.mounted) {
+      final viewmodel = Provider.of<KnowledgeBaseViewmodel>(
+        context,
+        listen: false,
+      );
+      await viewmodel.getAllKnowledges();
+    }
   }
 
   @override

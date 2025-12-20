@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/core/network/knowledge_base_api_client.dart';
-import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
-import 'package:khtn_ai_final_project/data/repositories/knowledge_base_repository_implement.dart';
-import 'package:khtn_ai_final_project/domain/usecases/knowledge/get_knowledges_usecase.dart';
-import 'package:khtn_ai_final_project/domain/usecases/knowledge/create_knowledge_usecase.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/create_knowledge_base_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
+import 'package:khtn_ai_final_project/core/network/knowledge_base_api_client.dart';
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
 
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/auth_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/chat_remote_data_source.dart';
+import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/prompt_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/user_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/repositories/auth_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/prompt_repository_implement.dart';
+import 'package:khtn_ai_final_project/data/repositories/knowledge_base_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/user_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/chat_repository_implement.dart';
 
@@ -32,9 +28,11 @@ import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase
 import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from_favorite.dart';
 import 'package:khtn_ai_final_project/domain/usecases/sign_up_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/knowledge/get_knowledges_usecase.dart';
 
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/user_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 
@@ -58,7 +56,6 @@ void main() async {
       PromptRemoteDataSourceImpl(await JarvisApiClient.create());
   final KnowledgeBaseRemoteDataSource knowledgeBaseRemoteDataSource =
       KnowledgeBaseRemoteDataSourceImpl(await KnowledgeBaseApiClient.create());
-
   final ChatRemoteDataSource chatRemoteDataSource = ChatRemoteDataSourceImpl(
     await JarvisApiClient.create(),
   );
@@ -70,12 +67,6 @@ void main() async {
 
   final getKnowledgesUsecase = GetKnowledgesUsecase(
     KnowledgeBaseRepositoryImplement(
-      remoteDataSource: knowledgeBaseRemoteDataSource,
-    ),
-  );
-
-  final createKnowledgeUsecase = CreateKnowledgeUsecase(
-    repository: KnowledgeBaseRepositoryImplement(
       remoteDataSource: knowledgeBaseRemoteDataSource,
     ),
   );
@@ -136,11 +127,6 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => KnowledgeBaseViewmodel(
             getKnowledgesUsecase: getKnowledgesUsecase,
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => CreateKnowledgeBaseViewmodel(
-            createKnowledgeUsecase: createKnowledgeUsecase,
           ),
         ),
       ],

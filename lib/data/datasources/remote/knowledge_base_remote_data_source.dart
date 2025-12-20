@@ -76,7 +76,7 @@ abstract class KnowledgeBaseRemoteDataSource {
   Future<KnowledgeModel> createKnowledgeBase(
     KnowledgeBaseCreationAndUpdateRequest request,
   );
-  // Future<bool> deleteKnowledgeBase(String knowledgeBaseId);
+  Future<bool> deleteKnowledgeBase(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromFile(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromUrl(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromGDrive(String knowledgeBaseId);
@@ -117,7 +117,19 @@ class KnowledgeBaseRemoteDataSourceImpl
       '/kb-core/v1/knowledge',
       data: request.toJson(),
     );
-    return response.data;
+    final data = response.data;
+
+    if (data is Map<String, dynamic>) {
+      // Some APIs wrap payload as { "data": { ... } }
+      final payload = (data['data'] is Map<String, dynamic>)
+          ? (data['data'] as Map<String, dynamic>)
+          : data;
+      return KnowledgeModel.fromJson(payload);
+    }
+
+    throw Exception(
+      'Unexpected response format when creating knowledge base: ${data.runtimeType}',
+    );
   }
 
   @override

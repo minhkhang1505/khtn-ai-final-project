@@ -34,6 +34,7 @@ class CreateKnowledgeBaseViewmodel extends ChangeNotifier {
       _setState(CreateKnowledgeBaseState.success);
       return true;
     } catch (e) {
+      debugPrint("Khang: Error creating knowledge base: $e");
       _setState(CreateKnowledgeBaseState.failure);
       return false;
     }
