@@ -14,7 +14,7 @@ class BotRequestModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'assistant_name': assistantName,
+      'assistantName': assistantName,
       'instructions': instructions,
       'description': description,
       if (model != null) 'model': model,
@@ -26,34 +26,34 @@ enum BotOrder { asc, desc }
 
 // Get Bots Request
 class GetBotsRequestModel {
-  final String q;
-  final BotOrder order;
-  final String order_field;
-  final int offset;
-  final int limit;
-  final bool? is_favorite;   // made optional
-  final bool? is_published;  // made optional
+  String q;
+  BotOrder? order;
+  String? orderField;
+  int offset;
+  int limit;
+  bool? isFavorite;   // optional filter
+  bool? isPublished;  // optional filter
 
   GetBotsRequestModel({
     this.q = '',
-    this.order = BotOrder.desc,
-    this.order_field = 'createdAt', // matches API docs
+    this.order,
+    this.orderField,
     this.offset = 0,
     this.limit = 10,
-    this.is_favorite,
-    this.is_published,
+    this.isFavorite,
+    this.isPublished,
   });
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> params = {
       'q': q,
-      'order': order == BotOrder.asc ? 'ASC' : 'DESC',
-      'order_field': order_field,
       'offset': offset,
       'limit': limit,
     };
-    if (is_favorite != null) params['is_favorite'] = is_favorite;
-    if (is_published != null) params['is_published'] = is_published;
+    if (order != null) params['order'] = order == BotOrder.asc ? 'ASC' : 'DESC';
+    if (orderField != null && orderField!.isNotEmpty) params['order_field'] = orderField;
+    if (isFavorite != null) params['is_favorite'] = isFavorite;
+    if (isPublished != null) params['is_published'] = isPublished;
     return params;
   }
 }

@@ -30,9 +30,14 @@ class _CreateBotPageState extends State<CreateBotPage> {
 
   @override
   Widget build(BuildContext context) {
-    final createBotViewModel = context.read<CreateBotViewModel>();
+    final createBotViewModel = context.watch<CreateBotViewModel>();
     return Scaffold(
-      appBar: const CreateBotAppBar(),
+      appBar: CreateBotAppBar(
+        onBackPressed: () {
+          Navigator.of(context).pop();
+          createBotViewModel.clearForm();
+        },
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
@@ -48,7 +53,10 @@ class _CreateBotPageState extends State<CreateBotPage> {
                     const LoadingIndicatorWidget(),
 
                   // Basic Information Section
-                  const BotInformationCard(),
+                  BotInformationCard(
+                    assistantNameController: createBotViewModel.assistantNameController,
+                    assistantNameError: createBotViewModel.assistantNameError,
+                  ),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
                   // Knowledge Base Section
@@ -70,7 +78,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                       final isSuccess = await createBotViewModel.createBot();
                       if (isSuccess) {
                         Navigator.pop(context);
-                      } else {
+                      } else if (createBotViewModel.errorMessage != null) {
                         // Show error message
                         MessagePopup.show(
                           context,

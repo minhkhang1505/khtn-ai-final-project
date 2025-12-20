@@ -4,9 +4,11 @@ import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/bot_search_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/bot_filter_option_menu.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'widgets/bots_app_bar.dart';
-import 'widgets/bots_card.dart';
-import 'widgets/bot_filter_option_menu.dart';
+import 'widgets/bot_list.dart';
+
 
 /// Bots page - Manage AI bots
 class BotsPage extends StatefulWidget {
@@ -17,30 +19,20 @@ class BotsPage extends StatefulWidget {
 }
 
 class _BotsPageState extends State<BotsPage> {
-  String _selectedFilter = 'all';
+  @override
+  void initState() {
+    super.initState();
+    // Fetch bots after the first frame to avoid calling during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<BotViewModel>().fetchBots();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final botViewModel = context.watch<BotViewModel>();
-    // Compute displayed bots based on selected filter
-    final List displayedBots = (() {
-      final all = botViewModel.bots;
-      switch (_selectedFilter) {
-        case 'favorite':
-          return all.where((b) => b.isFavorite).toList();
-        case 'date':
-          final copy = List.from(all);
-          copy.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
-          return copy;
-        case 'name':
-          final copy = List.from(all);
-          copy.sort((a, b) => a.assistantName.compareTo(b.assistantName));
-          return copy;
-        case 'all':
-        default:
-          return all;
-      }
-    })();
+    final displayedBots = botViewModel.bots;
 
     return Scaffold(
       appBar: BotAppBar(),
@@ -65,13 +57,10 @@ class _BotsPageState extends State<BotsPage> {
                           // Row with filter dropdown (left) and create bot button (right)
                           Row(
                             children: [
-                              // Filter dropdown (extracted widget)
+                              // Filter dropdown
                               BotFilterOptionMenu(
-                                value: _selectedFilter,
-                                onChanged: (v) {
-                                  setState(() {
-                                    _selectedFilter = v;
-                                  });
+                                onChanged: (v) async {
+                                  await botViewModel.fetchBots();
                                 },
                               ),
                               const Spacer(),
@@ -91,31 +80,36 @@ class _BotsPageState extends State<BotsPage> {
                       ),
                     ),
                   ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final bot = displayedBots[index];
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          left: AppSpacing.horizontal - 4,
-                          right: AppSpacing.horizontal - 4,
-                          bottom: index == displayedBots.length - 1
-                              ? AppSpacing.vertical
-                              : AppSpacing.cardSpacing - 8,
+
+                  // Content based on loading state and bots list
+                  if (botViewModel.isLoading) ...[
+                    const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: LoadingIndicatorWidget(),
+                      ),
+                    ),
+                  ] else if (botViewModel.bots.isEmpty) ...[
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Text(
+                          'No bots found.',
+                          style: TextStyle(
+                            color: colorScheme.onSurfaceVariant,
+                            fontSize: 28,
+                          ),
                         ),
-                        child: InkWell(
-                          borderRadius: AppBorderRadius.medium,
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/bots/edit',
-                              arguments: bot,
-                            );
-                          },
-                          child: BotCard(bot: bot),
-                        ),
-                      );
-                    }, childCount: displayedBots.length),
-                  ),
+                      ),
+                    ),
+                  ] else ...[
+                    BotList(
+                      bots: displayedBots,
+                      onTap: () {
+                        Navigator.pushNamed(context, '/bots/detail');
+                      },
+                    ),
+                  ]
                 ],
               ),
             ),

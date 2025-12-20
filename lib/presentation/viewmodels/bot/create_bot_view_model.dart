@@ -6,14 +6,23 @@ class CreateBotViewModel extends ChangeNotifier {
   final BotUseCase botUseCase;
 
   CreateBotViewModel({required this.botUseCase}) {
-    assistantNameController.addListener(notifyListeners);
+    assistantNameController.addListener(_onAssistantNameChanged);
     instructionsController.addListener(notifyListeners);
     descriptionController.addListener(notifyListeners);
+  }
+
+  void _onAssistantNameChanged() {
+    if (assistantNameError != null) {
+      assistantNameError = null;
+    }
+    notifyListeners();
   }
 
   final TextEditingController assistantNameController = TextEditingController();
   final TextEditingController instructionsController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+
+  String? assistantNameError;
 
   String? _selectedModelId;
   String? get selectedModelId => _selectedModelId;
@@ -34,6 +43,12 @@ class CreateBotViewModel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
+    if (!validateAssistantName()) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
     try {
       final BotRequestModel botRequest = BotRequestModel(
         assistantName: assistantNameController.text.trim(),
@@ -41,6 +56,7 @@ class CreateBotViewModel extends ChangeNotifier {
         description: descriptionController.text.trim(),
         model: _selectedModelId,
       );
+
       await botUseCase.createBot(botRequest);
 
       _isLoading = false;
@@ -54,11 +70,30 @@ class CreateBotViewModel extends ChangeNotifier {
     }
   }
 
+  bool validateAssistantName() {
+    final name = assistantNameController.text.trim();
+    if (name.isEmpty) {
+      assistantNameError = 'Bot name is required.';
+      return false;
+    } else if (name.length < 3) {
+      assistantNameError = 'Bot name must be at least 3 characters.';
+      return false;
+    } else if (name.length > 100) {
+      assistantNameError = 'Bot name must be at most 100 characters.';
+      return false;
+    } else {
+      assistantNameError = null;
+    }
+    notifyListeners();
+    return true;
+  }
+
   void clearForm() {
     assistantNameController.clear();
     instructionsController.clear();
     descriptionController.clear();
     _errorMessage = null;
+    assistantNameError = null;
     notifyListeners();
   }
 

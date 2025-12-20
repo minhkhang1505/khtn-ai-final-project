@@ -3,7 +3,8 @@ import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 
 class CreateBotAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CreateBotAppBar({super.key});
+  final VoidCallback? onBackPressed;
+  const CreateBotAppBar({super.key, this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +12,7 @@ class CreateBotAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: true,
       centerTitle: false,
       leading: IconButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
+        onPressed: onBackPressed,
         icon: Icon(Icons.arrow_back_ios),
       ),
       title: Column(

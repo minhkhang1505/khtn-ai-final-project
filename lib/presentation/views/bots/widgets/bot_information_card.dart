@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/ai_model_option_menu.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/category_option_menu.dart';
 
 class BotInformationCard extends StatelessWidget {
-  const BotInformationCard({super.key});
+  const BotInformationCard({
+    super.key,
+    this.assistantNameController,
+    this.instructionsController,
+    this.descriptionController,
+    this.assistantNameError,
+  });
+
+  final TextEditingController? assistantNameController;
+  final TextEditingController? instructionsController;
+  final TextEditingController? descriptionController;
+  final String? assistantNameError;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -46,6 +56,7 @@ class BotInformationCard extends StatelessWidget {
 
             // Bot Name input
             TextField(
+              controller: assistantNameController,
               decoration: InputDecoration(
                 hintText: 'e.g., Customer Support Assistant',
                 hintStyle: TextStyle(
@@ -57,12 +68,43 @@ class BotInformationCard extends StatelessWidget {
                   horizontal: 12,
                   vertical: 14,
                 ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: AppBorderRadius.medium,
+                  borderSide: BorderSide(
+                    color: assistantNameError != null
+                        ? colorScheme.error
+                        : Colors.transparent,
+                    width: 1.5,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: AppBorderRadius.medium,
+                  borderSide: BorderSide(
+                    color: assistantNameError != null
+                        ? colorScheme.error
+                        : Colors.transparent,
+                    width: 1.5,
+                  ),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: AppBorderRadius.medium,
-                  borderSide: BorderSide.none,
+                  borderSide: const BorderSide(
+                    color: Colors.transparent,
+                    width: 1.5,
+                  ),
                 ),
               ),
             ),
+            if (assistantNameError != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                assistantNameError!,
+                style: TextStyle(
+                  color: colorScheme.error,
+                  fontSize: 12,
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
 
             // Instructions label
@@ -74,6 +116,7 @@ class BotInformationCard extends StatelessWidget {
 
             // Instructions input
             TextField(
+              controller: instructionsController,
               decoration: InputDecoration(
                 hintText: 'Describe how your bot should behave and respond.',
                 hintStyle: TextStyle(
@@ -103,6 +146,7 @@ class BotInformationCard extends StatelessWidget {
 
             // Description input
             TextField(
+              controller: descriptionController,
               decoration: InputDecoration(
                 hintText: 'A brief description for your bot. (optional)',
                 hintStyle: TextStyle(

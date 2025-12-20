@@ -6,42 +6,63 @@ import 'package:khtn_ai_final_project/domain/usecases/bot_usecase.dart';
 class BotViewModel extends ChangeNotifier {
   final BotUseCase botUseCase;
 
-  BotViewModel({required this.botUseCase}) {
-    fetchBots();
-  }
+  BotViewModel({required this.botUseCase});
 
   final List<BotModel> _bots = [];
-  String filter = 'all';
-
   List<BotModel> get bots => _bots;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  set isLoading (bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  String _filter = 'all';
+  String get filter => _filter;
+  set filter (String value) {
+    _filter = value;
+    notifyListeners();
+  }
+
   Future<void> fetchBots() async {
+    isLoading = true;
     try {
       final request = GetBotsRequestModel(
         q: '',
-        order: BotOrder.desc,
-        order_field: 'createdAt',
         offset: 0,
         limit: 10,
-        // Do not send is_favorite/is_published unless explicitly filtering
       );
-      final response = await botUseCase.getBots(request);
-      debugPrint('Fetched ${response.meta.total} bots from API.');
-      debugPrint('Bot data: ${response.data.bots}');
-      // Print empty line for better visibility in logs
-      for (int i = 0; i < 3; i++) {
-        debugPrint('\n');
-        debugPrint('');
+
+      switch (filter) {
+        case 'name':
+          request.orderField = 'assistantName';
+          request.order = BotOrder.asc;
+          break;
+        case 'date':
+          request.orderField = 'createdAt';
+          request.order = BotOrder.desc;
+          break;
+        case 'favorite':
+          request.isFavorite = true;
+          break;
+        case 'published':
+          request.isPublished = true;
+          break;
+        default:
+          // No additional filters
+          break;
       }
 
+      debugPrint('😁 Fetching bots with filter: $filter');
+
+      final response = await botUseCase.getBots(request);
       _bots.clear();
       _bots.addAll(response.data.bots);
-      notifyListeners();
     } catch (e) {
       debugPrint('Failed to fetch bots: $e');
+    } finally {
+      isLoading = false;
     }
   }
-  
-  // State variables for bot management can be added here
-  List<BotModel> botList = [];
 }
