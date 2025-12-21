@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/bot_model.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class BotViewModel extends ChangeNotifier {
   final List<BotModel> _bots = [];
 

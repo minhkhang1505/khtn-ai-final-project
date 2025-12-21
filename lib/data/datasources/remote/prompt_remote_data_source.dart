@@ -1,5 +1,6 @@
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
+import 'package:injectable/injectable.dart';
 
 abstract class PromptRemoteDataSource {
   Future<PromptPaggingResponse> getPrompts(PromptRequest request);
@@ -10,6 +11,7 @@ abstract class PromptRemoteDataSource {
   Future<bool> updatePrompt(String id, PromptCreationAndUpdateRequest request);
 }
 
+@LazySingleton(as: PromptRemoteDataSource)
 class PromptRemoteDataSourceImpl implements PromptRemoteDataSource {
   final JarvisApiClient client;
 

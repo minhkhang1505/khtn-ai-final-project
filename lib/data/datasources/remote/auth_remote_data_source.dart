@@ -1,5 +1,6 @@
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/auth_model.dart';
+import 'package:injectable/injectable.dart';
 
 abstract class AuthRemoteDataSource {
   Future<AuthResponse> signUp(SignUpRequest registerRequest);
@@ -8,6 +9,7 @@ abstract class AuthRemoteDataSource {
   Future<RefreshTokenResponse> refreshToken();
 }
 
+@LazySingleton(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final AuthApiClient client;
 

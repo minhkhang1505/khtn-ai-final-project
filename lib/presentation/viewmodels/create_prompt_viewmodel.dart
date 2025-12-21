@@ -3,7 +3,9 @@ import 'package:khtn_ai_final_project/core/constants/categories.dart';
 import 'package:khtn_ai_final_project/core/constants/languages.dart';
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/create_prompt_usecase.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class CreatePromptViewModel extends ChangeNotifier {
   final CreatePromptUsecase createPromptUseCase;
 

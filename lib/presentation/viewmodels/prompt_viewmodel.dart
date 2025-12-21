@@ -8,11 +8,13 @@ import 'package:khtn_ai_final_project/domain/usecases/prompts/create_prompt_usec
 import 'package:khtn_ai_final_project/domain/usecases/prompts/delete_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from_favorite.dart';
+import 'package:injectable/injectable.dart';
 
 enum PromptViewState { initial, loading, success, failure }
 
 enum LoadMoreState { idle, loading, noMoreData }
 
+@injectable
 class PromptViewmodel extends ChangeNotifier {
   final GetPromptUseCase getPromptUseCase;
   final CreatePromptUsecase createPromptUseCase;

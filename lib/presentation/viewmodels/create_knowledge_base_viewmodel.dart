@@ -1,9 +1,11 @@
 import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
 import 'package:khtn_ai_final_project/domain/usecases/knowledge/create_knowledge_usecase.dart';
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 
 enum CreateKnowledgeBaseState { initial, loading, success, failure }
 
+@injectable
 class CreateKnowledgeBaseViewmodel extends ChangeNotifier {
   CreateKnowledgeUsecase createKnowledgeUsecase;
   CreateKnowledgeBaseViewmodel({required this.createKnowledgeUsecase});

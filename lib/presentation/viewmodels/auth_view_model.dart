@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:khtn_ai_final_project/data/models/auth_model.dart';
-import 'package:khtn_ai_final_project/domain/usecases/login_usecase.dart';
-import 'package:khtn_ai_final_project/domain/usecases/logout_usecase.dart';
-import 'package:khtn_ai_final_project/domain/usecases/sign_up_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/auth/login_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/auth/logout_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/auth/sign_up_usecase.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class AuthViewModel extends ChangeNotifier {
   // ViewModel implementation will go here
   final SignUpUseCase signUpUseCase;

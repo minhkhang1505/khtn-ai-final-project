@@ -4,20 +4,23 @@ import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/delete_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/prompts/udpate_prompt_usecase.dart';
+import 'package:injectable/injectable.dart';
 
 enum PromptDetailState { initial, loading, success, failure }
 
+@injectable
 class PromptDetailViewModel extends ChangeNotifier {
   final GetPromptUseCase getPromptUseCase;
   final UpdatePromptUsecase updatePromptUseCase;
   final DeletePromptUsecase deletePromptUseCase;
   final PromptEntity prompt;
 
+  @factoryMethod
   PromptDetailViewModel({
     required this.getPromptUseCase,
     required this.updatePromptUseCase,
     required this.deletePromptUseCase,
-    required this.prompt,
+    @factoryParam required this.prompt,
   });
 
   PromptDetailState _promptDetailState = PromptDetailState.initial;

@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/core/network/token_interceptor.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/core/utils/guid_provider.dart';
 
+@preResolve
+@lazySingleton
 class KnowledgeBaseApiClient {
-  final localDataSource = AuthLocalDataSourceImpl();
+  final AuthLocalDataSource localDataSource;
 
   static const String baseUrl = 'https://knowledge-api.jarvis.cx/';
   static const String _refreshTokenEndpoint = 'auth/sessions/current/refresh';
@@ -13,7 +16,7 @@ class KnowledgeBaseApiClient {
   final String guid;
   late final Dio _dio;
 
-  KnowledgeBaseApiClient._(this.guid) {
+  KnowledgeBaseApiClient._(this.guid, this.localDataSource) {
     _dio = Dio(BaseOptions(baseUrl: baseUrl, headers: {'x-jarvis-guid': guid}));
 
     _dio.interceptors.add(
@@ -27,9 +30,12 @@ class KnowledgeBaseApiClient {
     _dio.interceptors.add(LogInterceptor());
   }
 
-  static Future<KnowledgeBaseApiClient> create() async {
+  @factoryMethod
+  static Future<KnowledgeBaseApiClient> create(
+    AuthLocalDataSource localDataSource,
+  ) async {
     final guid = await GuidProvider.getGuid();
-    return KnowledgeBaseApiClient._(guid);
+    return KnowledgeBaseApiClient._(guid, localDataSource);
   }
 
   Future<Response> get(

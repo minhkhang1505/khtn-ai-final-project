@@ -1,8 +1,10 @@
+import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/data/models/auth_model.dart';
 import 'package:khtn_ai_final_project/domain/repositories/auth_repository.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/auth_remote_data_source.dart';
 
+@LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthLocalDataSource localDataSource;
@@ -34,7 +36,7 @@ class AuthRepositoryImpl implements AuthRepository {
         access: response.accessToken,
         refresh: response.refreshToken,
       );
-    } 
+    }
 
     return response;
   }
@@ -50,9 +52,7 @@ class AuthRepositoryImpl implements AuthRepository {
     final response = await remoteDataSource.refreshToken();
 
     if (response.accessToken.isNotEmpty) {
-      await localDataSource.saveTokens(
-        access: response.accessToken,
-      );
+      await localDataSource.saveTokens(access: response.accessToken);
     }
     return response;
   }

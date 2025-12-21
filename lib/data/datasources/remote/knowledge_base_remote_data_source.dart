@@ -1,5 +1,6 @@
 import 'package:khtn_ai_final_project/core/network/knowledge_base_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
+import 'package:injectable/injectable.dart';
 
 class KnowledgeQuery {
   double? limit;
@@ -88,6 +89,7 @@ abstract class KnowledgeBaseRemoteDataSource {
   );
 }
 
+@LazySingleton(as: KnowledgeBaseRemoteDataSource)
 class KnowledgeBaseRemoteDataSourceImpl
     implements KnowledgeBaseRemoteDataSource {
   final KnowledgeBaseApiClient client;

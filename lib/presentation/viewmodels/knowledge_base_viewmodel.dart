@@ -3,9 +3,11 @@ import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_rem
 import 'package:khtn_ai_final_project/data/mappers/knowledge_mapper.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/domain/usecases/knowledge/get_knowledges_usecase.dart';
+import 'package:injectable/injectable.dart';
 
 enum KnowledgeBaseState { initial, loading, success, failure }
 
+@injectable
 class KnowledgeBaseViewmodel extends ChangeNotifier {
   GetKnowledgesUsecase getKnowledgesUsecase;
 

@@ -4,16 +4,19 @@ import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
 import 'package:khtn_ai_final_project/domain/usecases/knowledge/delete_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/knowledge/update_knowledge_usecase.dart';
+import 'package:injectable/injectable.dart';
 
 enum KnowledgeDetailState { initial, loading, success, failure }
 
+@injectable
 class KnowledgeDetailViewmodel extends ChangeNotifier {
   final KnowledgeEntity knowledge;
   final UpdateKnowledgeBaseUsecase updateKnowledgeBaseUsecase;
   final DeleteKnowledgeBaseUsecase deleteKnowledgeBaseUsecase;
 
+@factoryMethod
   KnowledgeDetailViewmodel({
-    required this.knowledge,
+    @factoryParam required this.knowledge,
     required this.updateKnowledgeBaseUsecase,
     required this.deleteKnowledgeBaseUsecase,
   });

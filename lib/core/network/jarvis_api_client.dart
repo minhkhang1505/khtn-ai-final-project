@@ -1,18 +1,21 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/core/network/token_interceptor.dart';
 import 'package:khtn_ai_final_project/core/utils/guid_provider.dart';
 
+@preResolve
+@lazySingleton
 class JarvisApiClient {
-  final localDataSource = AuthLocalDataSourceImpl();
+  final AuthLocalDataSource localDataSource;
   static const String baseUrl = 'https://api.jarvis.cx/api/v1/';
   static const String _refreshTokenEndpoint = 'auth/sessions/current/refresh';
 
   final String guid;
   late final Dio _dio;
 
-  JarvisApiClient._(this.guid) {
+  JarvisApiClient._(this.guid, this.localDataSource) {
     _dio = Dio(BaseOptions(baseUrl: baseUrl, headers: {'x-jarvis-guid': guid}));
 
     _dio.interceptors.add(
@@ -26,9 +29,12 @@ class JarvisApiClient {
     _dio.interceptors.add(LogInterceptor());
   }
 
-  static Future<JarvisApiClient> create() async {
+  @factoryMethod
+  static Future<JarvisApiClient> create(
+    AuthLocalDataSource localDataSource,
+  ) async {
     final guid = await GuidProvider.getGuid();
-    return JarvisApiClient._(guid);
+    return JarvisApiClient._(guid, localDataSource);
   }
 
   /// GET request - Authorization skipped for /prompts endpoint

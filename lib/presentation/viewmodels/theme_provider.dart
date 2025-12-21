@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 
+@singleton
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
 
