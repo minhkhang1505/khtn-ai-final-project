@@ -1,11 +1,9 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
-import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_filter.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_item.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +21,7 @@ class KnowledgePage extends StatelessWidget {
         context,
         listen: false,
       );
-      await viewmodel.getAllKnowledges();
+      await viewmodel.refreshKnowledges();
     }
   }
 

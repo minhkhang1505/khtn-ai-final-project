@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/mappers/knowledge_mapper.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
-import 'package:khtn_ai_final_project/domain/usecases/knowledge/create_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/knowledge/get_knowledges_usecase.dart';
 
 enum KnowledgeBaseState { initial, loading, success, failure }
@@ -30,6 +29,12 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
   Future<bool> _fetchKnowledges({bool resetOffset = false}) async {
     if (_state == KnowledgeBaseState.loading) return false;
 
+    if (resetOffset) {
+      offset = 0.0;
+      hasNext = false;
+      _knowledges.clear();
+    }
+
     _setState(KnowledgeBaseState.loading);
     try {
       final response = await getKnowledgesUsecase(
@@ -52,6 +57,9 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
   }
 
   Future<bool> getAllKnowledges() => _fetchKnowledges();
+
+  /// Force reloading from the first page and clearing current cached list.
+  Future<bool> refreshKnowledges() => _fetchKnowledges(resetOffset: true);
 
   Future<bool> createNewKnowledge(KnowledgeEntity knowledge) async {
     // Implement the logic to create a new knowledge entry
