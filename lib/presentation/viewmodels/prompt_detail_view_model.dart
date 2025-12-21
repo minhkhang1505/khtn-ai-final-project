@@ -42,9 +42,6 @@ class PromptDetailViewModel extends ChangeNotifier {
   bool _isPublic = true;
   bool get isPublic => _isPublic;
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
 
@@ -128,7 +125,10 @@ class PromptDetailViewModel extends ChangeNotifier {
     required String description,
     required String content,
   }) async {
+    if (_promptDetailState == PromptDetailState.loading) return false;
+
     try {
+      _setState(PromptDetailState.loading);
       final updateRequest = PromptCreationAndUpdateRequest(
         category: _selectedCategory,
         content: content,
@@ -139,14 +139,13 @@ class PromptDetailViewModel extends ChangeNotifier {
       );
 
       final response = await updatePromptUseCase.call(prompt.id, updateRequest);
+
+      _setState(PromptDetailState.success);
       return response;
     } catch (e) {
       _errorMessage = 'Failed to update prompt: $e';
-      notifyListeners();
+      _setState(PromptDetailState.failure);
       return false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 }

@@ -13,7 +13,23 @@ class KnowledgeBaseRepositoryImplement implements KnowledgeBaseRepository {
   }
 
   @override
-  Future<KnowledgeModel> createKnowledge(KnowledgeBaseCreationAndUpdateRequest knowledge) {
+  Future<KnowledgeModel> createKnowledge(
+    KnowledgeBaseCreationAndUpdateRequest knowledge,
+  ) {
     return remoteDataSource.createKnowledgeBase(knowledge);
+  }
+
+  @override
+  Future<KnowledgeBasePaggingResponse> updateKnowledge(
+    String id,
+    KnowledgeBaseCreationAndUpdateRequest knowledge,
+  ) {
+    return remoteDataSource.updateKnowledgeBase(id, knowledge);
+  }
+
+  @override
+  Future<bool> deleteKnowledge(String id) {
+    final success = remoteDataSource.deleteKnowledgeBase(id);
+    return success;
   }
 }

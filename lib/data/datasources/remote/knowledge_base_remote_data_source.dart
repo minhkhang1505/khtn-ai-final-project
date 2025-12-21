@@ -82,7 +82,7 @@ abstract class KnowledgeBaseRemoteDataSource {
   // Future<bool> addKnowledgeBaseFromGDrive(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromSlack(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromConfluence(String knowledgeBaseId);
-  Future<bool> updateKnowledgeBase(
+  Future<KnowledgeBasePaggingResponse> updateKnowledgeBase(
     String id,
     KnowledgeBaseCreationAndUpdateRequest request,
   );
@@ -157,7 +157,7 @@ class KnowledgeBaseRemoteDataSourceImpl
   // Future<bool> addKnowledgeBaseFromConfluence(String knowledgeBaseId) {}
 
   @override
-  Future<bool> updateKnowledgeBase(
+  Future<KnowledgeBasePaggingResponse> updateKnowledgeBase(
     String id,
     KnowledgeBaseCreationAndUpdateRequest request,
   ) async {
@@ -166,6 +166,6 @@ class KnowledgeBaseRemoteDataSourceImpl
       data: request.toJson(),
       queryParameters: {'id': id},
     );
-    return response.statusCode == 200;
+    return KnowledgeBasePaggingResponse.fromJson(response.data);
   }
 }

@@ -4,4 +4,6 @@ import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 abstract class KnowledgeBaseRepository {
   Future<KnowledgeBasePaggingResponse> getKnowledgeBases(KnowledgeQuery query);
   Future<KnowledgeModel> createKnowledge(KnowledgeBaseCreationAndUpdateRequest knowledge);
+  Future<KnowledgeBasePaggingResponse> updateKnowledge(String id, KnowledgeBaseCreationAndUpdateRequest knowledge);
+  Future<bool> deleteKnowledge(String id);
 }

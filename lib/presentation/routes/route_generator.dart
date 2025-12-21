@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/create_knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/domain/usecases/knowledge/delete_knowledge_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/knowledge/update_knowledge_usecase.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_detail_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
@@ -178,9 +181,26 @@ class RouteGenerator {
         );
 
       case AppRoutes.knowledgeDetails:
+        final knowledge = settings.arguments as KnowledgeEntity?;
+        if (knowledge == null || knowledge.id.isEmpty) {
+          return _errorRoute('knowledgeDetails - Missing knowledge');
+        }
         return _buildRoute(
           settings: settings,
-          builder: (_) => KnowledgeDetailScreen(),
+          builder: (context) {
+            return ChangeNotifierProvider(
+              create: (context) => KnowledgeDetailViewmodel(
+                knowledge: knowledge,
+                updateKnowledgeBaseUsecase: UpdateKnowledgeBaseUsecase(
+                  repository: Provider.of(context, listen: false),
+                ),
+                deleteKnowledgeBaseUsecase: DeleteKnowledgeBaseUsecase(
+                  repository: Provider.of(context, listen: false),
+                ),
+              )..loadKnowledgeDetails(),
+              child: KnowledgeDetailScreen(),
+            );
+          },
         );
 
       case AppRoutes.agents:

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
+import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
@@ -23,6 +25,11 @@ class KnowledgePage extends StatelessWidget {
       );
       await viewmodel.refreshKnowledges();
     }
+  }
+
+  void _onItemTap(BuildContext context, KnowledgeEntity knowledge) {
+    // Navigate to knowledge details page
+    Navigator.pushNamed(context, '/knowledge/details', arguments: knowledge);
   }
 
   @override
