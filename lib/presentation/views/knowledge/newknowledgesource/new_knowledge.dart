@@ -157,7 +157,7 @@ class _NewKnowledgeScreenState extends State<NewKnowledgeScreen> {
               ),
             },
           );
-        },
+        }
       ),
     );
   }
