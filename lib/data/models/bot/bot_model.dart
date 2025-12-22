@@ -1,5 +1,10 @@
 import '../assistant_model.dart';
 
+class Permission {
+  final List<String> permissions;
+  Permission({required this.permissions});
+}
+
 class BotModel {
   final String id;
   final String assistantName;
@@ -17,6 +22,7 @@ class BotModel {
   final String? createdBy;
   final String? updatedBy;
   final String? deletedAt;
+  final Permission? permissions;
 
   BotModel({
     required this.id,
@@ -35,6 +41,7 @@ class BotModel {
     required this.createdBy,
     required this.updatedBy,
     required this.deletedAt,
+    this.permissions,
   });
 
   factory BotModel.fromJson(Map<String, dynamic> json) {
@@ -64,6 +71,11 @@ class BotModel {
       createdBy: json['created_by'] ?? json['createdBy']?.toString(),
       updatedBy: json['updated_by'] ?? json['updatedBy']?.toString(),
       deletedAt: json['deleted_at'] ?? json['deletedAt']?.toString(),
+      permissions: json['permissions'] != null
+          ? Permission(
+              permissions: List<String>.from(json['permissions'] as List<dynamic>),
+            )
+          : null,
     );
   }
 
@@ -81,16 +93,17 @@ class BotModel {
       'instructions': instructions,
       'model': model?.id,
       'config': config,
-      'user_id': userId,
-      'is_default': isDefault,
-      'is_favorite': isFavorite,
+      'userId': userId,
+      'isDefault': isDefault,
+      'isFavorite': isFavorite,
       'open_ai_assistant_id': openAiAssistantId,
       'open_ai_thread_id_play': openAiThreadIdPlay,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-      'created_by': createdBy,
-      'updated_by': updatedBy,
-      'deleted_at': deletedAt,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'createdBy': createdBy,
+      'updatedBy': updatedBy,
+      'deletedAt': deletedAt,
+      'permissions': permissions?.permissions,
     };
   }
 }

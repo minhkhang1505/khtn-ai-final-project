@@ -73,12 +73,8 @@ class BotViewModel extends ChangeNotifier {
     try {
       final request = GetBotsRequestModel(
         q: _searchQuery,
-        order: BotOrder.asc,
-        orderField: 'assistantName',
         offset: _offset,
         limit: _limit,
-        isFavorite: false,
-        isPublished: false,
       );
 
       switch (filter) {
@@ -107,7 +103,7 @@ class BotViewModel extends ChangeNotifier {
       _bots.clear();
       _bots.addAll(response.data.bots);
       _offset = _limit;
-      _hasNext = response.meta.hasNext;
+      _hasNext = false;
     } catch (e) {
       debugPrint('Failed to fetch bots: $e');
     } finally {
@@ -116,6 +112,7 @@ class BotViewModel extends ChangeNotifier {
     }
   }
 
+  // This feature is not implemented in the backend yet
   Future<void> loadMoreBots() async {
     if (_isLoadingMore || !_hasNext || _isLoading) return;
 
@@ -162,6 +159,48 @@ class BotViewModel extends ChangeNotifier {
     } finally {
       _isLoadingMore = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> toggleFavoriteBotInList(String botId) async {
+    try {
+      debugPrint('😁 Toggling favorite for bot: $botId');
+      
+      // Find the bot index
+      final botIndex = _bots.indexWhere((bot) => bot.id == botId);
+      if (botIndex == -1) return;
+
+      // Toggle the favorite state locally
+      final currentBot = _bots[botIndex];
+      final newFavoriteState = !currentBot.isFavorite;
+
+      // Call the API to toggle favorite
+      await botUseCase.toggleFavorite(botId);
+
+      // Update the bot in the list
+      final updatedBot = BotModel(
+        id: currentBot.id,
+        assistantName: currentBot.assistantName,
+        description: currentBot.description,
+        instructions: currentBot.instructions,
+        model: currentBot.model,
+        config: currentBot.config,
+        userId: currentBot.userId,
+        isDefault: currentBot.isDefault,
+        isFavorite: newFavoriteState,
+        openAiAssistantId: currentBot.openAiAssistantId,
+        openAiThreadIdPlay: currentBot.openAiThreadIdPlay,
+        createdAt: currentBot.createdAt,
+        updatedAt: currentBot.updatedAt,
+        createdBy: currentBot.createdBy,
+        updatedBy: currentBot.updatedBy,
+        deletedAt: currentBot.deletedAt,
+      );
+
+      _bots[botIndex] = updatedBot;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Failed to toggle favorite: $e');
     }
   }
 }

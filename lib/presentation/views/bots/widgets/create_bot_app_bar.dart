@@ -13,7 +13,7 @@ class CreateBotAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: false,
       leading: IconButton(
         onPressed: onBackPressed,
-        icon: Icon(Icons.arrow_back_ios),
+        icon: Icon(Icons.arrow_back_rounded),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

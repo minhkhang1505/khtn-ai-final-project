@@ -40,7 +40,7 @@ class _EditBotPageState extends State<EditBotPage> {
 
     return Scaffold(
       appBar: EditBotAppBar(
-        bot: editBotViewModel.bot,
+        bot: widget.bot,
         onBackPressed: () {
           Navigator.of(context).pop();
           editBotViewModel.clearForm();

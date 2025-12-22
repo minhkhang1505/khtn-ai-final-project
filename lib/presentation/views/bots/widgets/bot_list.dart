@@ -6,8 +6,10 @@ import 'bots_card.dart';
 
 class BotList extends StatelessWidget {
   final ValueChanged<BotModel>? onTap;
+  final ValueChanged<String>? onFavoriteToggle;
+  final Future<void> Function(BotModel)? onEdit;
   final List<BotModel> bots;
-  const BotList({super.key, required this.bots, this.onTap});
+  const BotList({super.key, required this.bots, this.onTap, this.onFavoriteToggle, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,13 @@ class BotList extends StatelessWidget {
           child: InkWell(
             borderRadius: AppBorderRadius.medium,
             onTap: () => onTap?.call(bot),
-            child: BotCard(bot: bot),
+            child: BotCard(
+              bot: bot,
+              onFavoriteToggle: () {
+                onFavoriteToggle?.call(bot.id);
+              },
+              onEdit: onEdit != null ? () => onEdit!(bot) : null,
+            ),
           ),
         );
       }, childCount: bots.length),

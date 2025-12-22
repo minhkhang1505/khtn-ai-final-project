@@ -65,7 +65,7 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
   @override
   void didPopNext() {
     // Called when a covered route is popped back to this route.
-    // context.read<BotViewModel>().fetchBots();
+    // Intentionally no fetch here to avoid duplicate calls from popup routes
   }
 
   @override
@@ -112,8 +112,11 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
                               const Spacer(),
                               // Create Bot button
                               ElevatedButton.icon(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, '/bots/new');
+                                onPressed: () async {
+                                  await Navigator.pushNamed(context, '/bots/new');
+                                  if (mounted) {
+                                    await botViewModel.fetchBots();
+                                  }
                                 },
                                 icon: const Icon(Icons.add),
                                 label: const Text('Create Bot'),
@@ -153,11 +156,27 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
                     BotList(
                       bots: botViewModel.bots,
                       onTap: (bot) async {
-                        Navigator.pushNamed(
+                        await Navigator.pushNamed(
                           context,
                           '/bots/edit',
                           arguments: bot,
                         );
+                        if (mounted) {
+                          await botViewModel.fetchBots();
+                        }
+                      },
+                      onEdit: (bot) async {
+                        await Navigator.pushNamed(
+                          context,
+                          '/bots/edit',
+                          arguments: bot,
+                        );
+                        if (mounted) {
+                          await botViewModel.fetchBots();
+                        }
+                      },
+                      onFavoriteToggle: (botId) {
+                        botViewModel.toggleFavoriteBotInList(botId);
                       },
                     ),                    
                     if (botViewModel.isLoadingMore)
