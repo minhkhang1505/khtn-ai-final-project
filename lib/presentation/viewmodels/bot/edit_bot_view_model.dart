@@ -107,13 +107,9 @@ class EditBotViewModel extends ChangeNotifier {
   Future<void> toggleFavorite() async {
     try {
       final newFavoriteState = !_bot.isFavorite;
-      final botRequest = BotRequestModel(
-        assistantName: _bot.assistantName,
-        instructions: _bot.instructions,
-        description: _bot.description,
-        isFavorite: newFavoriteState,
-      );
-      final updatedBot = await botUseCase.updateBot(_bot.id, botRequest);
+      debugPrint('😁 Toggling favorite to: $newFavoriteState');
+
+      final updatedBot = await botUseCase.toggleFavorite(_bot.id);
       _bot = updatedBot;
       _botNullable = updatedBot;
       isFavoriteNotifier.value = newFavoriteState;

@@ -4,6 +4,7 @@ import 'favorite_button_toggle.dart';
 
 class BotActionCard extends StatelessWidget {
   final dynamic bot;
+  final VoidCallback? onCanceled;
   final VoidCallback? onDeleted;
   final VoidCallback? onFavoriteToggle;
   final ValueNotifier<bool>? isFavoriteNotifier;
@@ -12,6 +13,7 @@ class BotActionCard extends StatelessWidget {
     super.key,
     required this.bot,
     this.onDeleted,
+    this.onCanceled,
     this.onFavoriteToggle,
     this.isFavoriteNotifier,
   });
@@ -65,14 +67,16 @@ class BotActionCard extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      if (onCanceled != null) {
+                        onCanceled!();
+                      }
                     },
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: AppBorderRadius.medium,
                       ),
                       side: BorderSide(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: colorScheme.outline,
                       ),
                       padding: const EdgeInsets.symmetric(
                         vertical: 16,
@@ -89,7 +93,11 @@ class BotActionCard extends StatelessWidget {
 
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: onDeleted,
+                    onPressed: () {
+                      if (onDeleted != null) {
+                        onDeleted!();
+                      }
+                    },
                     icon: const Icon(Icons.delete_outline),
                     label: const Text('Delete'),
                     style: ElevatedButton.styleFrom(

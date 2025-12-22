@@ -8,5 +8,5 @@ abstract class BotRepository {
   Future<BotModel> createBot(BotRequestModel botRequest);
   Future<BotModel> updateBot(String id, BotRequestModel botRequest);
   Future<void> deleteBot(String id);
-  Future<BotModel> toggleFavorite(String id, bool isFavorite);
+  Future<BotModel> toggleFavorite(String id);
 }

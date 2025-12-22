@@ -27,7 +27,7 @@ class BotUseCase {
 		return await botRepository.deleteBot(id);
 	}
 
-	Future<BotModel> toggleFavorite(String id, bool isFavorite) async {
-		return await botRepository.toggleFavorite(id, isFavorite);
-	}
+  Future<BotModel> toggleFavorite(String id) async {
+    return await botRepository.toggleFavorite(id);
+  }
 }

@@ -20,17 +20,17 @@ class FavoriteButtonToggle extends StatelessWidget {
         
         return OutlinedButton.icon(
           onPressed: onToggle,
-          icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+          icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: isFavorite ? Colors.red : null),
           label: Text(isFavorite ? 'Remove from Favorites' : 'Add to Favorites'),
           style: OutlinedButton.styleFrom(
             shape: RoundedRectangleBorder(
               borderRadius: AppBorderRadius.medium,
             ),
             side: BorderSide(
-              color: isFavorite ? colorScheme.primary : colorScheme.outline,
-              width: isFavorite ? 2 : 1,
+              color: colorScheme.outline,
+              width: 1,
             ),
-            foregroundColor: isFavorite ? colorScheme.primary : null,
+            foregroundColor: colorScheme.primary,
             padding: const EdgeInsets.symmetric(
               vertical: 16,
               horizontal: 24,

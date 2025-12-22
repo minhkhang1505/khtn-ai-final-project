@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model.dart';
 
 class BotFilterOptionMenu extends StatefulWidget {
   final ValueChanged<String>? onChanged;
+  final String? initialValue;
 
-  const BotFilterOptionMenu({super.key, this.onChanged});
+  const BotFilterOptionMenu({super.key, this.onChanged, this.initialValue});
 
   @override
   State<BotFilterOptionMenu> createState() => _BotFilterOptionMenuState();
@@ -28,7 +27,6 @@ class _BotFilterOptionMenuState extends State<BotFilterOptionMenu> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final botViewModel = context.read<BotViewModel>();
 
     return PopupMenuButton<int>(
       shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
@@ -38,8 +36,8 @@ class _BotFilterOptionMenuState extends State<BotFilterOptionMenu> {
       onSelected: (index) {
         final key = options[index]['key']!;
         // Only update if the filter actually changed
-        if (botViewModel.filter != key) {
-          botViewModel.setFilter(key);
+        if (widget.initialValue != key) {
+          // Delegate filter change to parent via onChanged to avoid double fetch
           widget.onChanged?.call(key);
         }
       },
@@ -54,7 +52,7 @@ class _BotFilterOptionMenuState extends State<BotFilterOptionMenu> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(options[index]['label']!),
-              if (botViewModel.filter == options[index]['key'])
+              if (widget.initialValue == options[index]['key'])
                 Icon(Icons.check, color: colorScheme.primary, size: 18),
             ],
           ),
@@ -73,7 +71,7 @@ class _BotFilterOptionMenuState extends State<BotFilterOptionMenu> {
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.4),
               child: Text(
-                options.firstWhere((o) => o['key'] == botViewModel.filter, orElse: () => options[0])['label']!,
+                options.firstWhere((o) => o['key'] == widget.initialValue, orElse: () => options[0])['label']!,
                 style: TextStyle(
                   color: colorScheme.onSurface,
                 ),

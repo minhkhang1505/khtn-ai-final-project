@@ -36,6 +36,7 @@ class BotViewModel extends ChangeNotifier {
     _filter = filter;
     _offset = 0;
     _hasNext = true;
+    fetchBots();
   }
 
   String _searchQuery = '';
@@ -99,6 +100,8 @@ class BotViewModel extends ChangeNotifier {
           // No additional filters
           break;
       }
+
+      //debugPrint('😁 Fetching bots with request: ${request.toJson()}');
 
       final response = await botUseCase.getBots(request);
       _bots.clear();

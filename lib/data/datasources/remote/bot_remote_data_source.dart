@@ -6,10 +6,10 @@ import 'package:khtn_ai_final_project/data/models/bot/bot_response_model.dart';
 abstract class BotRemoteDataSource {
   Future<BotModel> createBot(BotRequestModel createBotRequest);
   Future<GetBotsResponseModel> getBots(GetBotsRequestModel getBotsRequest);
-  Future<BotModel> updateBot(String id, BotRequestModel botRequest);
+  Future<BotModel> updateBot(String assistantId, BotRequestModel botRequest);
   Future<void> deleteBot(String assistantId);
   Future<BotModel> getBot(String assistantId);
-  Future<BotModel> toggleFavorite(String id, bool isFavorite);
+  Future<BotModel> toggleFavorite(String assistantId);
 }
 
 class BotRemoteDataSourceImpl implements BotRemoteDataSource {
@@ -39,9 +39,9 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
 
   // for update bot
   @override
-  Future<BotModel> updateBot(String id, BotRequestModel botRequest) async {
+  Future<BotModel> updateBot(String assistantId, BotRequestModel botRequest) async {
     final response = await client.patch(
-      '/kb-core/v1/ai-assistant/$id',
+      '/kb-core/v1/ai-assistant/$assistantId',
       data: botRequest.toJson(),
     );
     return BotModel.fromJson(response.data);
@@ -65,12 +65,11 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
     return BotModel.fromJson(response.data);
   }
 
-  // for toggle favorite
+  // for update favorite
   @override
-  Future<BotModel> toggleFavorite(String id, bool isFavorite) async {
-    final response = await client.patch(
-      '/kb-core/v1/ai-assistant/$id',
-      data: {'is_favorite': isFavorite},
+  Future<BotModel> toggleFavorite(String assistantId) async {
+    final response = await client.post(
+      '/kb-core/v1/ai-assistant/$assistantId/favorite',
     );
     return BotModel.fromJson(response.data);
   }

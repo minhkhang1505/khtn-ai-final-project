@@ -56,6 +56,14 @@ class BotCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
 
+                // Favorite indicator
+                Icon(
+                  bot.isFavorite ? Icons.favorite : Icons.favorite_border,
+                  size: 22,
+                  color: bot.isFavorite ? Colors.red : colorScheme.outline,
+                ),
+                const SizedBox(width: 8),
+
                 // Edit Bot button
                 ElevatedButton(
                   onPressed: () {

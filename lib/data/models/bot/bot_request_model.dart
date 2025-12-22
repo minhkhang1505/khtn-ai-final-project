@@ -19,6 +19,7 @@ class BotRequestModel {
       'assistantName': assistantName,
       'instructions': instructions,
       'description': description,
+      'is_favorite': isFavorite,
       if (model != null) 'model': model,
     };
   }

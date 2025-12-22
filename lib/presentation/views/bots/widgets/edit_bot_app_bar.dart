@@ -4,9 +4,10 @@ import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 
 class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final VoidCallback? onBackPressed;
   final BotModel bot;
 
-  const EditBotAppBar({super.key, required this.bot});
+  const EditBotAppBar({super.key, required this.bot, this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +15,8 @@ class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: true,
       centerTitle: false,
       leading: IconButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        icon: Icon(Icons.arrow_back_ios),
+        onPressed: onBackPressed,
+        icon: Icon(Icons.arrow_back_rounded),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

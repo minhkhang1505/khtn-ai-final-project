@@ -59,13 +59,13 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
   @override
   void didPush() {
     // Called when the route has been pushed onto the navigator.
-    context.read<BotViewModel>().fetchBots();
+    //context.read<BotViewModel>().fetchBots();
   }
 
   @override
   void didPopNext() {
     // Called when a covered route is popped back to this route.
-    context.read<BotViewModel>().fetchBots();
+    // context.read<BotViewModel>().fetchBots();
   }
 
   @override
@@ -104,11 +104,13 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
                             children: [
                               // Filter dropdown
                               BotFilterOptionMenu(
-                                onChanged: (v) async {
-                                  await botViewModel.fetchBots();
+                                initialValue: botViewModel.filter,
+                                onChanged: (v) {
+                                  botViewModel.setFilter(v);
                                 },
                               ),
                               const Spacer(),
+                              // Create Bot button
                               ElevatedButton.icon(
                                 onPressed: () {
                                   Navigator.pushNamed(context, '/bots/new');
@@ -166,7 +168,8 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
                             child: CircularProgressIndicator(),
                           ),
                         ),
-                      ),                  ]
+                      ),                  
+                  ]
                 ],
               ),
             ),

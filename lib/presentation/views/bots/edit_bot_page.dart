@@ -39,7 +39,13 @@ class _EditBotPageState extends State<EditBotPage> {
     final editBotViewModel = context.watch<EditBotViewModel>();
 
     return Scaffold(
-      appBar: EditBotAppBar(bot: widget.bot),
+      appBar: EditBotAppBar(
+        bot: editBotViewModel.bot,
+        onBackPressed: () {
+          Navigator.of(context).pop();
+          editBotViewModel.clearForm();
+        },
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
@@ -59,6 +65,10 @@ class _EditBotPageState extends State<EditBotPage> {
                       isFavoriteNotifier: editBotViewModel.isFavoriteNotifier,
                       onFavoriteToggle: () async {
                         await editBotViewModel.toggleFavorite();
+                      },
+                      onCanceled: () {
+                        editBotViewModel.clearForm();
+                        Navigator.pop(context);
                       },
                       onDeleted: () async {
                         final pageContext = context;
