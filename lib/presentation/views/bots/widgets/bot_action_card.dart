@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'favorite_button_toggle.dart';
 
-class BotStatusCard extends StatelessWidget {
+class BotActionCard extends StatelessWidget {
   final dynamic bot;
   final VoidCallback? onDeleted;
+  final VoidCallback? onFavoriteToggle;
+  final ValueNotifier<bool>? isFavoriteNotifier;
 
-  const BotStatusCard({
+  const BotActionCard({
     super.key,
     required this.bot,
     this.onDeleted,
+    this.onFavoriteToggle,
+    this.isFavoriteNotifier,
   });
 
   @override
@@ -41,6 +46,19 @@ class BotStatusCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
+
+            // Favorite button
+            Row(
+              children: [
+                Expanded(
+                  child: FavoriteButtonToggle(
+                    isFavoriteNotifier: isFavoriteNotifier ?? ValueNotifier<bool>(false),
+                    onToggle: onFavoriteToggle,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
 
             Row(
               children: [

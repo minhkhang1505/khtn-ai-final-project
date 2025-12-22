@@ -4,11 +4,13 @@ class BotRequestModel {
   final String instructions;
   final String description;
   final String? model;
+  final bool? isFavorite;
 
   BotRequestModel({
     required this.assistantName,
     required this.instructions,
     required this.description,
+    this.isFavorite,
     this.model,
   });
 

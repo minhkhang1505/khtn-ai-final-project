@@ -30,9 +30,12 @@ class BotViewModel extends ChangeNotifier {
 
   String _filter = 'all';
   String get filter => _filter;
-  set filter (String value) {
-    _filter = value;
-    notifyListeners();
+  
+  void setFilter(String filter) {
+    if (_filter == filter) return; // Avoid duplicate calls
+    _filter = filter;
+    _offset = 0;
+    _hasNext = true;
   }
 
   String _searchQuery = '';
@@ -40,8 +43,9 @@ class BotViewModel extends ChangeNotifier {
   
   Timer? _debounceTimer;
 
-  void setSearchQuery(String query) {
+  void onSearchChanged(String query) {
     _searchQuery = query;
+    isLoading = true;
     notifyListeners();
     
     // Cancel previous timer
@@ -96,8 +100,6 @@ class BotViewModel extends ChangeNotifier {
           break;
       }
 
-      debugPrint('Fetching bots with filter: $filter, request: ${request.toJson()}');
-
       final response = await botUseCase.getBots(request);
       _bots.clear();
       _bots.addAll(response.data.bots);
@@ -107,6 +109,7 @@ class BotViewModel extends ChangeNotifier {
       debugPrint('Failed to fetch bots: $e');
     } finally {
       isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -147,11 +150,7 @@ class BotViewModel extends ChangeNotifier {
           break;
       }
 
-      debugPrint('😁Fetching more bots with filter: $filter, request: ${request.toJson()}');
-
       final response = await botUseCase.getBots(request);
-
-      debugPrint('😁Fetching more bots response: ${response.toJson()}');
       _bots.addAll(response.data.bots);
       _offset += _limit;
       _hasNext = response.meta.hasNext;

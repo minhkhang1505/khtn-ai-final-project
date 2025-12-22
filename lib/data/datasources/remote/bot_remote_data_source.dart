@@ -9,6 +9,7 @@ abstract class BotRemoteDataSource {
   Future<BotModel> updateBot(String id, BotRequestModel botRequest);
   Future<void> deleteBot(String assistantId);
   Future<BotModel> getBot(String assistantId);
+  Future<BotModel> toggleFavorite(String id, bool isFavorite);
 }
 
 class BotRemoteDataSourceImpl implements BotRemoteDataSource {
@@ -60,6 +61,16 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
   Future<BotModel> getBot(String assistantId) async {
     final response = await client.get(
       '/kb-core/v1/ai-assistant/$assistantId',
+    );
+    return BotModel.fromJson(response.data);
+  }
+
+  // for toggle favorite
+  @override
+  Future<BotModel> toggleFavorite(String id, bool isFavorite) async {
+    final response = await client.patch(
+      '/kb-core/v1/ai-assistant/$id',
+      data: {'is_favorite': isFavorite},
     );
     return BotModel.fromJson(response.data);
   }

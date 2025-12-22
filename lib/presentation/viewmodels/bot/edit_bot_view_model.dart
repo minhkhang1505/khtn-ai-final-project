@@ -15,15 +15,23 @@ class EditBotViewModel extends ChangeNotifier {
   final TextEditingController assistantNameController = TextEditingController();
   final TextEditingController instructionsController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  final ValueNotifier<bool> isFavoriteNotifier = ValueNotifier<bool>(false);
 
   String? assistantNameError;
 
   late BotModel _bot;
+  BotModel? _botNullable;
+  
+  BotModel get bot => _bot;
+
+  bool get isFavorite => _botNullable?.isFavorite ?? false;
 
   void setupBot(BotModel bot) {
     _isDataLoading = true;
     notifyListeners();
     _bot = bot;
+    _botNullable = bot;
+    isFavoriteNotifier.value = bot.isFavorite;
     assistantNameController.text = bot.assistantName;
     instructionsController.text = bot.instructions;
     descriptionController.text = bot.description;
@@ -59,8 +67,6 @@ class EditBotViewModel extends ChangeNotifier {
         instructions: instructionsController.text.trim(),
         description: descriptionController.text.trim(),
       );
-
-      debugPrint('😁 Updating bot with ID: ${_bot.id}');
       
       final updateFuture = botUseCase.updateBot(_bot.id, botRequest);
       await Future.delayed(const Duration(seconds: 1));
@@ -95,6 +101,27 @@ class EditBotViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return false;
+    }
+  }
+
+  Future<void> toggleFavorite() async {
+    try {
+      final newFavoriteState = !_bot.isFavorite;
+      final botRequest = BotRequestModel(
+        assistantName: _bot.assistantName,
+        instructions: _bot.instructions,
+        description: _bot.description,
+        isFavorite: newFavoriteState,
+      );
+      final updatedBot = await botUseCase.updateBot(_bot.id, botRequest);
+      _bot = updatedBot;
+      _botNullable = updatedBot;
+      isFavoriteNotifier.value = newFavoriteState;
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      debugPrint('Failed to toggle favorite: $e');
+      notifyListeners();
     }
   }
 

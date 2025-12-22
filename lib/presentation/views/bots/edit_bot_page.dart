@@ -10,7 +10,7 @@ import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget
 import 'widgets/edit_bot_app_bar.dart';
 import 'widgets/knowledge_base_card.dart';
 import 'widgets/bot_information_card.dart';
-import 'widgets/bot_status_card.dart';
+import 'widgets/bot_action_card.dart';
 
 /// Edit Bot Page - Configure AI bot settings
 class EditBotPage extends StatefulWidget {
@@ -53,9 +53,13 @@ class _EditBotPageState extends State<EditBotPage> {
                   if (editBotViewModel.isDataLoading)
                     const LoadingIndicatorWidget(),
                   if (!editBotViewModel.isDataLoading) ...[
-                  // Status & Actions Section
-                    BotStatusCard(
+                    // Status & Actions Section
+                    BotActionCard(
                       bot: widget.bot,
+                      isFavoriteNotifier: editBotViewModel.isFavoriteNotifier,
+                      onFavoriteToggle: () async {
+                        await editBotViewModel.toggleFavorite();
+                      },
                       onDeleted: () async {
                         final pageContext = context;
                         await showDialog<void>(

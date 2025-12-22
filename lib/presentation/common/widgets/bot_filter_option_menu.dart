@@ -37,9 +37,9 @@ class _BotFilterOptionMenuState extends State<BotFilterOptionMenu> {
       offset: const Offset(0, 40),
       onSelected: (index) {
         final key = options[index]['key']!;
-        // Only update and notify if the filter actually changed
+        // Only update if the filter actually changed
         if (botViewModel.filter != key) {
-          botViewModel.filter = key;
+          botViewModel.setFilter(key);
           widget.onChanged?.call(key);
         }
       },

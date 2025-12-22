@@ -40,4 +40,10 @@ class BotRepositoryImpl implements BotRepository {
     final response = await remoteDataSource.updateBot(id, botRequest);
     return response;
   }
+
+  @override
+  Future<BotModel> toggleFavorite(String id, bool isFavorite) async {
+    final response = await remoteDataSource.toggleFavorite(id, isFavorite);
+    return response;
+  }
 }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model.dart';
 
 class BotSearch extends StatefulWidget {
-  const BotSearch({super.key});
+  final ValueChanged<String>? onChanged;
+  const BotSearch({super.key, this.onChanged});
 
   @override
   State<BotSearch> createState() => _BotSearchState();
@@ -22,14 +21,15 @@ class _BotSearchState extends State<BotSearch> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final botViewModel = context.read<BotViewModel>();
 
     return Padding(
       padding: const EdgeInsets.all(0),
       child: TextField(
         controller: _searchController,
         onChanged: (value) {
-          botViewModel.setSearchQuery(value);
+          if (widget.onChanged != null) {
+            widget.onChanged!(value);
+          }
         },
         decoration: InputDecoration(
           hintText: 'Search bots...',
@@ -39,7 +39,9 @@ class _BotSearchState extends State<BotSearch> {
                   icon: const Icon(Icons.clear),
                   onPressed: () {
                     _searchController.clear();
-                    botViewModel.setSearchQuery('');
+                    if (widget.onChanged != null) {
+                      widget.onChanged!('');
+                    }
                   },
                 )
               : null,

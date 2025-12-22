@@ -92,7 +92,12 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          BotSearch(),
+                          // Search bar
+                          BotSearch(
+                            onChanged: (value) {
+                              botViewModel.onSearchChanged(value);
+                            },
+                          ),
                           const SizedBox(height: 12),
                           // Row with filter dropdown (left) and create bot button (right)
                           Row(
