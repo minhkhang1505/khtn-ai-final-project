@@ -7,6 +7,7 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_
 import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 
+import 'widgets/ai_model_card.dart';
 import 'widgets/edit_bot_app_bar.dart';
 import 'widgets/knowledge_base_card.dart';
 import 'widgets/bot_information_card.dart';
@@ -173,6 +174,16 @@ class _EditBotPageState extends State<EditBotPage> {
                     // Knowledge Base Section
                     const KnowledgeBaseCard(),
                     const SizedBox(height: AppSpacing.cardSpacing),
+
+                    // AI model Section
+                    AiModelCard(
+                      onChanged: (modelId) {
+                        // Read-only, no action needed
+                      },
+                      errorText: null,
+                      initialModel: widget.bot.model?.id,
+                      isReadOnly: true,
+                    ),
 
                     // Action Buttons
                     SaveActionButtonRow(

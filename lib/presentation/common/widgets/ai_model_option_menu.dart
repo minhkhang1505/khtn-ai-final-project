@@ -5,7 +5,14 @@ import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 
 class AiModelOptionMenu extends StatefulWidget {
   final Function(String)? onChanged;
-  const AiModelOptionMenu({super.key, this.onChanged});
+  final String? initialModel;
+  final bool isReadOnly;
+  const AiModelOptionMenu({
+    super.key,
+    this.onChanged,
+    required this.initialModel,
+    this.isReadOnly = false,
+  });
 
   @override
   State<AiModelOptionMenu> createState() => _AiModelOptionMenuState();
@@ -19,6 +26,7 @@ class _AiModelOptionMenuState extends State<AiModelOptionMenu> {
   @override
   void initState() {
     super.initState();
+    selectedModel = widget.initialModel;
     models = AssistantModelType.values
         .map((m) => {'id': m.id, 'label': m.name})
         .toList();
@@ -27,7 +35,10 @@ class _AiModelOptionMenuState extends State<AiModelOptionMenu> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final bool isEnabled = !widget.isReadOnly;
+
     return PopupMenuButton<int>(
+      enabled: isEnabled,
       shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
       color: colorScheme.surface,
       elevation: 6,
@@ -102,7 +113,7 @@ class _AiModelOptionMenuState extends State<AiModelOptionMenu> {
                 const SizedBox(width: 8),
               ],
             ),
-            const Icon(Icons.arrow_drop_down),
+            if (!widget.isReadOnly) const Icon(Icons.arrow_drop_down),
           ],
         ),
       ),

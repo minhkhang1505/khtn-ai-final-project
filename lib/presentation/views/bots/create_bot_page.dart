@@ -70,6 +70,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                       createBotViewModel.setSelectedModel(modelId);
                     },
                     errorText: createBotViewModel.modelError,
+                    initialModel: null,
                   ),
                   const SizedBox(height: AppSpacing.cardSpacing),
 

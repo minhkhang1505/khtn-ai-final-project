@@ -3,9 +3,17 @@ import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/ai_model_option_menu.dart';
 
 class AiModelCard extends StatelessWidget {
-  const AiModelCard({super.key, required this.onChanged, this.errorText});
+  const AiModelCard({
+    super.key,
+    required this.onChanged,
+    this.errorText,
+    this.initialModel,
+    this.isReadOnly = false,
+  });
   final ValueChanged<String> onChanged;
   final String? errorText;
+  final String? initialModel;
+  final bool isReadOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +44,19 @@ class AiModelCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
 
-            const Text(
-              'Select the AI model for your bot (It can not be changed later)',
-              style: TextStyle(fontSize: 14),
+            Text(
+              isReadOnly
+                  ? 'AI model (cannot be changed after creation)'
+                  : 'Select the AI model for your bot (It can not be changed later)',
+              style: const TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 20),
 
-            AiModelOptionMenu(onChanged: onChanged),
+            AiModelOptionMenu(
+              onChanged: onChanged,
+              initialModel: initialModel,
+              isReadOnly: isReadOnly,
+            ),
 
             if (errorText != null) ...[
               const SizedBox(height: 8),
