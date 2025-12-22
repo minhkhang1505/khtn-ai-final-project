@@ -72,4 +72,25 @@ class BotModel {
     if (value is String) return value.toLowerCase() == 'true';
     return false;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'assistant_name': assistantName,
+      'description': description,
+      'instructions': instructions,
+      'model': model?.id,
+      'config': config,
+      'user_id': userId,
+      'is_default': isDefault,
+      'is_favorite': isFavorite,
+      'open_ai_assistant_id': openAiAssistantId,
+      'open_ai_thread_id_play': openAiThreadIdPlay,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+      'created_by': createdBy,
+      'updated_by': updatedBy,
+      'deleted_at': deletedAt,
+    };
+  }
 }

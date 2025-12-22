@@ -20,6 +20,8 @@ class BotsPage extends StatefulWidget {
 }
 
 class _BotsPageState extends State<BotsPage> with RouteAware {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -27,6 +29,15 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<BotViewModel>().fetchBots();
     });
+    
+    // Add scroll listener for pagination
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      context.read<BotViewModel>().loadMoreBots();
+    }
   }
 
   @override
@@ -40,6 +51,7 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     routeObserver.unsubscribe(this);
     super.dispose();
   }
@@ -72,6 +84,7 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
                 maxWidth: isWideScreen ? 1200 : double.infinity,
               ),
               child: CustomScrollView(
+                controller: _scrollController,
                 slivers: [
                   SliverToBoxAdapter(
                     child: Padding(
@@ -139,8 +152,16 @@ class _BotsPageState extends State<BotsPage> with RouteAware {
                           arguments: bot,
                         );
                       },
-                    ),
-                  ]
+                    ),                    
+                    if (botViewModel.isLoadingMore)
+                      const SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ),                  ]
                 ],
               ),
             ),

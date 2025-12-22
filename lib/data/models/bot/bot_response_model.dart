@@ -46,5 +46,17 @@ class GetBotsResponseModel {
       ),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'data': data.bots.map((bot) => bot.assistantName).toList(),
+      // 'meta': {
+      //   'limit': meta.limit,
+      //   'offset': meta.offset,
+      //   'total': meta.total,
+      //   'hasNext': meta.hasNext,
+      // },
+    };
+  }
 }
 

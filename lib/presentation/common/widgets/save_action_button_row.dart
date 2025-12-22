@@ -39,7 +39,11 @@ class SaveActionButtonRow extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              if (onSave != null) {
+                onSave!();
+              }
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.primary,
               shape: RoundedRectangleBorder(

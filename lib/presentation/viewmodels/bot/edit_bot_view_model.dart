@@ -59,6 +59,8 @@ class EditBotViewModel extends ChangeNotifier {
         instructions: instructionsController.text.trim(),
         description: descriptionController.text.trim(),
       );
+
+      debugPrint('😁 Updating bot with ID: ${_bot.id}');
       
       final updateFuture = botUseCase.updateBot(_bot.id, botRequest);
       await Future.delayed(const Duration(seconds: 1));

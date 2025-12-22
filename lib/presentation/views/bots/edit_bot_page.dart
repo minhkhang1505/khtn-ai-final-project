@@ -163,11 +163,79 @@ class _EditBotPageState extends State<EditBotPage> {
                     // Action Buttons
                     SaveActionButtonRow(
                       onCancel: () {
-                        //editBotViewModel.resetChanges();
+                        editBotViewModel.clearForm();
                         Navigator.pop(context);
                       },
                       onSave: () async {
-                        await editBotViewModel.updateBot();
+                        final pageContext = context;
+                        await showDialog<void>(
+                          context: pageContext,
+                          barrierDismissible: false,
+                          builder: (dialogContext) {
+                            bool? success;
+                            String? resultMessage;
+
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                Widget content;
+                                List<Widget> actions;
+
+                                if (editBotViewModel.isLoading) {
+                                  content = Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                      SizedBox(width: 12),
+                                      Text('Updating bot...'),
+                                    ],
+                                  );
+                                  actions = [
+                                    TextButton(onPressed: null, child: const Text('Cancel')),
+                                  ];
+                                } else if (success != null) {
+                                  content = Text(resultMessage ?? (success == true ? 'Bot updated successfully' : 'Failed to update bot'));
+                                  actions = [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(dialogContext);
+                                        if (success == true) {
+                                          Navigator.pop(pageContext);
+                                        }
+                                      },
+                                      child: const Text('Close'),
+                                    ),
+                                  ];
+                                } else {
+                                  // Start updating
+                                  Future.microtask(() async {
+                                    final ok = await editBotViewModel.updateBot();
+                                    setState(() {
+                                      success = ok;
+                                      resultMessage = ok ? 'Bot updated successfully' : (editBotViewModel.errorMessage ?? 'Failed to update bot');
+                                    });
+                                  });
+                                  content = Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                      SizedBox(width: 12),
+                                      Text('Updating bot...'),
+                                    ],
+                                  );
+                                  actions = [
+                                    TextButton(onPressed: null, child: const Text('Cancel')),
+                                  ];
+                                }
+
+                                return AlertDialog(
+                                  title: const Text('Update Bot'),
+                                  content: content,
+                                  actions: actions,
+                                );
+                              },
+                            );
+                          },
+                        );
                       },
                     ),
                   ],

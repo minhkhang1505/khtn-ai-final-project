@@ -109,6 +109,7 @@ class _CreateBotPageState extends State<CreateBotPage> {
                                     onPressed: () {
                                       Navigator.pop(dialogContext);
                                       if (success == true) {
+                                        createBotViewModel.clearForm();
                                         Navigator.pop(pageContext);
                                       }
                                     },
