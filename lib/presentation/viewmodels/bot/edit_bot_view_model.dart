@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/bot_usecase.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class EditBotViewModel extends ChangeNotifier {
   final BotUseCase botUseCase;
 

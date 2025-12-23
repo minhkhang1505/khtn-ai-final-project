@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 // import 'package:khtn_ai_final_project/data/models/user_models.dart';
 import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/logout_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/widgets.dart';
@@ -36,7 +37,7 @@ class _AccountPageState extends State<AccountPage>
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = sl<ThemeProvider>();
     final user = context.watch<UserViewModel>().user;
     return Scaffold(
       appBar: AppBar(

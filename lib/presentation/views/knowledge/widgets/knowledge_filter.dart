@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class KnowledgeFilter {
   final String id;
@@ -45,9 +48,12 @@ class _FilterChipMenuState extends State<FilterChipMenu> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        // Capture viewmodel before opening bottom sheet
+        final vm = context.read<KnowledgeBaseViewmodel>();
+
         final result = await showModalBottomSheet<KnowledgeFilter>(
           context: context,
-          builder: (context) => Container(
+          builder: (bottomSheetContext) => Container(
             padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -58,21 +64,21 @@ class _FilterChipMenuState extends State<FilterChipMenu> {
                     width: 24,
                     height: 24,
                     colorFilter: ColorFilter.mode(
-                      Theme.of(context).colorScheme.primary,
+                      Theme.of(bottomSheetContext).colorScheme.primary,
                       BlendMode.srcIn,
                     ),
                   ),
                   title: Text(filter.label),
                   onTap: () {
-                    Navigator.pop(context, filter);
+                    Navigator.of(bottomSheetContext).pop(filter);
                   },
                 );
               }).toList(),
             ),
           ),
         );
-        if (result != null) {
-          setState(() => selected = result);
+        if (result != null && mounted) {
+          await _handleFilterChange(result, vm);
         }
       },
       child: Chip(
@@ -95,5 +101,30 @@ class _FilterChipMenuState extends State<FilterChipMenu> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleFilterChange(
+    KnowledgeFilter newFilter,
+    KnowledgeBaseViewmodel vm,
+  ) async {
+    setState(() => selected = newFilter);
+
+    try {
+      if (newFilter.id == 'all') {
+        await vm.refreshKnowledges();
+      } else if (newFilter.id == 'createdAt') {
+        await vm.sortKnowledgesByField('createdAt');
+      } else if (newFilter.id == 'ascending') {
+        await vm.sortKnowledgesBy(KnowledgeOrder.ASC);
+      } else if (newFilter.id == 'descending') {
+        await vm.sortKnowledgesBy(KnowledgeOrder.DESC);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:khtn_ai_final_project/data/models/agent_model.dart';
 import 'package:khtn_ai_final_project/data/models/workflow_model.dart' show Workflow;
+import 'package:injectable/injectable.dart';
 
+@injectable
 class AgentViewModel extends ChangeNotifier {
   final List<AgentModel> _agents = [];
 

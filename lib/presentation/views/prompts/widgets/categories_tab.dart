@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/category.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/category_item.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/filter_by_category.dart';
+import 'package:provider/provider.dart';
 
 class CategoriesTab extends StatelessWidget {
   final List<Category> categories;
@@ -28,12 +30,16 @@ class CategoriesTab extends StatelessWidget {
                 categoryName: category.name,
                 iconPath: category.iconPath,
                 onTap: () {
+                  final viewModel = context.read<PromptViewmodel>();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => FilterByCategoryPage(
-                        category: category.id,
-                        categoryName: category.name,
+                      builder: (context) => ChangeNotifierProvider.value(
+                        value: viewModel,
+                        child: FilterByCategoryPage(
+                          category: category.id,
+                          categoryName: category.name,
+                        ),
                       ),
                     ),
                   );

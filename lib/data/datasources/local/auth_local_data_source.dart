@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:injectable/injectable.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> saveTokens({required String access, String? refresh});
@@ -7,6 +8,7 @@ abstract class AuthLocalDataSource {
   Future<void> clearTokens();
 }
 
+@LazySingleton(as: AuthLocalDataSource)
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   //final SharedPreferences prefs;
   static const String _accessToken = 'access_token';
@@ -18,7 +20,6 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> saveTokens({required String access, String? refresh}) async {
-
     await _storage.write(key: _accessToken, value: access);
     if (refresh != null) {
       await _storage.write(key: _refreshToken, value: refresh);

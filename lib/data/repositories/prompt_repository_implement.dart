@@ -1,7 +1,9 @@
+import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/prompt_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/models/prompt_model.dart';
 import 'package:khtn_ai_final_project/domain/repositories/prompt_repository.dart';
 
+@LazySingleton(as: PromptRepository)
 class PromptRepositoryImpl implements PromptRepository {
   final PromptRemoteDataSource remoteDataSource;
   PromptRepositoryImpl(this.remoteDataSource);

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../../../data/models/knowledge_model.dart';
+import '../../../../domain/entities/knowledge_entity.dart';
 
 class KnowledgeItem extends StatelessWidget {
   final String iconPath;
-  final KnowledgeModel knowledge;
+  final KnowledgeEntity knowledge;
   const KnowledgeItem({
     super.key,
     required this.knowledge,

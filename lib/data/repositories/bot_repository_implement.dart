@@ -4,8 +4,9 @@ import 'package:khtn_ai_final_project/data/datasources/remote/bot_remote_data_so
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_response_model.dart';
+import 'package:injectable/injectable.dart';
 
-
+@LazySingleton(as: BotRepository)
 class BotRepositoryImpl implements BotRepository {
   final BotRemoteDataSource remoteDataSource;
 
@@ -18,7 +19,9 @@ class BotRepositoryImpl implements BotRepository {
   }
 
   @override
-  Future<GetBotsResponseModel> getBots(GetBotsRequestModel getBotsRequest) async {
+  Future<GetBotsResponseModel> getBots(
+    GetBotsRequestModel getBotsRequest,
+  ) async {
     final response = await remoteDataSource.getBots(getBotsRequest);
     return response;
   }
