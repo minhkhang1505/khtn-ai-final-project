@@ -92,7 +92,9 @@ class _EditBotPageState extends State<EditBotPage> {
                                       SizedBox(
                                         width: 24,
                                         height: 24,
-                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
                                       ),
                                       SizedBox(width: 12),
                                       Text('Deleting...'),
@@ -105,7 +107,12 @@ class _EditBotPageState extends State<EditBotPage> {
                                     ),
                                   ];
                                 } else if (success != null) {
-                                  content = Text(resultMessage ?? (success == true ? 'Bot deleted successfully' : 'Failed to delete bot'));
+                                  content = Text(
+                                    resultMessage ??
+                                        (success == true
+                                            ? 'Bot deleted successfully'
+                                            : 'Failed to delete bot'),
+                                  );
                                   actions = [
                                     TextButton(
                                       onPressed: () {
@@ -113,7 +120,9 @@ class _EditBotPageState extends State<EditBotPage> {
                                         if (success == true) {
                                           Navigator.pop(pageContext, {
                                             'deleted': true,
-                                            'message': resultMessage ?? 'Bot deleted successfully',
+                                            'message':
+                                                resultMessage ??
+                                                'Bot deleted successfully',
                                           });
                                         }
                                       },
@@ -121,7 +130,9 @@ class _EditBotPageState extends State<EditBotPage> {
                                     ),
                                   ];
                                 } else {
-                                  content = const Text('Are you sure you want to delete this bot? This action cannot be undone.');
+                                  content = const Text(
+                                    'Are you sure you want to delete this bot? This action cannot be undone.',
+                                  );
                                   actions = [
                                     TextButton(
                                       onPressed: () {
@@ -131,19 +142,27 @@ class _EditBotPageState extends State<EditBotPage> {
                                     ),
                                     ElevatedButton.icon(
                                       onPressed: () async {
-                                        final vm = pageContext.read<EditBotViewModel>();
+                                        final vm = pageContext
+                                            .read<EditBotViewModel>();
                                         final ok = await vm.deleteBot();
                                         final errorMsg = vm.errorMessage;
                                         setState(() {
                                           success = ok;
-                                          resultMessage = ok ? 'Bot deleted successfully' : (errorMsg ?? 'Failed to delete bot');
+                                          resultMessage = ok
+                                              ? 'Bot deleted successfully'
+                                              : (errorMsg ??
+                                                    'Failed to delete bot');
                                         });
                                       },
                                       icon: const Icon(Icons.delete_outline),
                                       label: const Text('Delete'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Theme.of(context).colorScheme.error,
-                                        foregroundColor: Theme.of(context).colorScheme.onError,
+                                        backgroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.error,
+                                        foregroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.onError,
                                       ),
                                     ),
                                   ];
@@ -164,10 +183,13 @@ class _EditBotPageState extends State<EditBotPage> {
 
                     // Basic Information Section
                     BotInformationCard(
-                      assistantNameController: editBotViewModel.assistantNameController,
+                      assistantNameController:
+                          editBotViewModel.assistantNameController,
                       assistantNameError: editBotViewModel.assistantNameError,
-                      instructionsController: editBotViewModel.instructionsController,
-                      descriptionController: editBotViewModel.descriptionController,
+                      instructionsController:
+                          editBotViewModel.instructionsController,
+                      descriptionController:
+                          editBotViewModel.descriptionController,
                     ),
                     const SizedBox(height: AppSpacing.cardSpacing),
 
@@ -177,12 +199,9 @@ class _EditBotPageState extends State<EditBotPage> {
 
                     // AI model Section
                     AiModelCard(
-                      onChanged: (modelId) {
-                        // Read-only, no action needed
-                      },
                       errorText: null,
-                      initialModel: widget.bot.model?.id,
                       isReadOnly: true,
+                      fixedModelId: widget.bot.model?.id,
                     ),
 
                     // Action Buttons
@@ -209,16 +228,30 @@ class _EditBotPageState extends State<EditBotPage> {
                                   content = Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: const [
-                                      SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                      SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
                                       SizedBox(width: 12),
                                       Text('Updating bot...'),
                                     ],
                                   );
                                   actions = [
-                                    TextButton(onPressed: null, child: const Text('Cancel')),
+                                    TextButton(
+                                      onPressed: null,
+                                      child: const Text('Cancel'),
+                                    ),
                                   ];
                                 } else if (success != null) {
-                                  content = Text(resultMessage ?? (success == true ? 'Bot updated successfully' : 'Failed to update bot'));
+                                  content = Text(
+                                    resultMessage ??
+                                        (success == true
+                                            ? 'Bot updated successfully'
+                                            : 'Failed to update bot'),
+                                  );
                                   actions = [
                                     TextButton(
                                       onPressed: () {
@@ -233,22 +266,35 @@ class _EditBotPageState extends State<EditBotPage> {
                                 } else {
                                   // Start updating
                                   Future.microtask(() async {
-                                    final ok = await editBotViewModel.updateBot();
+                                    final ok = await editBotViewModel
+                                        .updateBot();
                                     setState(() {
                                       success = ok;
-                                      resultMessage = ok ? 'Bot updated successfully' : (editBotViewModel.errorMessage ?? 'Failed to update bot');
+                                      resultMessage = ok
+                                          ? 'Bot updated successfully'
+                                          : (editBotViewModel.errorMessage ??
+                                                'Failed to update bot');
                                     });
                                   });
                                   content = Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: const [
-                                      SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                      SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
                                       SizedBox(width: 12),
                                       Text('Updating bot...'),
                                     ],
                                   );
                                   actions = [
-                                    TextButton(onPressed: null, child: const Text('Cancel')),
+                                    TextButton(
+                                      onPressed: null,
+                                      child: const Text('Cancel'),
+                                    ),
                                   ];
                                 }
 

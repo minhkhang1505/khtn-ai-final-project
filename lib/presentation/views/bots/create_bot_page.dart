@@ -53,10 +53,13 @@ class _CreateBotPageState extends State<CreateBotPage> {
 
                   // Basic Information Section
                   BotInformationCard(
-                    assistantNameController: createBotViewModel.assistantNameController,
+                    assistantNameController:
+                        createBotViewModel.assistantNameController,
                     assistantNameError: createBotViewModel.assistantNameError,
-                    instructionsController: createBotViewModel.instructionsController,
-                    descriptionController: createBotViewModel.descriptionController,
+                    instructionsController:
+                        createBotViewModel.instructionsController,
+                    descriptionController:
+                        createBotViewModel.descriptionController,
                   ),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
@@ -66,11 +69,8 @@ class _CreateBotPageState extends State<CreateBotPage> {
 
                   // AI model Section
                   AiModelCard(
-                    onChanged: (modelId) {
-                      createBotViewModel.setSelectedModel(modelId);
-                    },
                     errorText: createBotViewModel.modelError,
-                    initialModel: null,
+                    isReadOnly: false,
                   ),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
@@ -95,16 +95,30 @@ class _CreateBotPageState extends State<CreateBotPage> {
                                 content = Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: const [
-                                    SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                    SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
                                     SizedBox(width: 12),
                                     Text('Creating bot...'),
                                   ],
                                 );
                                 actions = [
-                                  TextButton(onPressed: null, child: const Text('Cancel')),
+                                  TextButton(
+                                    onPressed: null,
+                                    child: const Text('Cancel'),
+                                  ),
                                 ];
                               } else if (success != null) {
-                                content = Text(resultMessage ?? (success == true ? 'Bot created successfully' : 'Failed to create bot'));
+                                content = Text(
+                                  resultMessage ??
+                                      (success == true
+                                          ? 'Bot created successfully'
+                                          : 'Failed to create bot'),
+                                );
                                 actions = [
                                   TextButton(
                                     onPressed: () {
@@ -120,22 +134,35 @@ class _CreateBotPageState extends State<CreateBotPage> {
                               } else {
                                 // Start creating
                                 Future.microtask(() async {
-                                  final ok = await createBotViewModel.createBot();
+                                  final ok = await createBotViewModel
+                                      .createBot();
                                   setState(() {
                                     success = ok;
-                                    resultMessage = ok ? 'Bot created successfully' : (createBotViewModel.errorMessage ?? 'Failed to create bot');
+                                    resultMessage = ok
+                                        ? 'Bot created successfully'
+                                        : (createBotViewModel.errorMessage ??
+                                              'Failed to create bot');
                                   });
                                 });
                                 content = Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: const [
-                                    SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                    SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
                                     SizedBox(width: 12),
                                     Text('Creating bot...'),
                                   ],
                                 );
                                 actions = [
-                                  TextButton(onPressed: null, child: const Text('Cancel')),
+                                  TextButton(
+                                    onPressed: null,
+                                    child: const Text('Cancel'),
+                                  ),
                                 ];
                               }
 

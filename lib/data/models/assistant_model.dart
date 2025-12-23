@@ -2,7 +2,7 @@
 
 enum AssistantModelType {
   CLAUDE_3_HAIKU("claude-3-haiku-20240307"),
-  //CLAUDE_3_SONNET("claude-3-sonnet-20240229"),
+  //CLAUDE_3_SONNET("claude-3-sonnet-20240229"), This is not available currently
   GEMINI_15_FLASH("gemini-1.5-flash-latest"),
   GEMINI_15_PRO("gemini-1.5-pro-latest"),
   GPT_4_O("gpt-4o"),
@@ -11,13 +11,13 @@ enum AssistantModelType {
 
   const AssistantModelType(this.id); 
 
-  static AssistantModelType? fromId(String id) {
+  static AssistantModelType fromId(String id) {
     try {
       return AssistantModelType.values.firstWhere(
         (value) => value.id == id,
       );
     } on StateError {
-      return null;
+      return AssistantModelType.GPT_4O_MINI;
     }
   }
 
