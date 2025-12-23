@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 class KnowledgeQuery {
   double? limit;
   double? offset;
-  Order? order;
+  KnowledgeOrder? order;
   String? orderField;
   String? q;
 
@@ -22,7 +22,7 @@ class KnowledgeQuery {
       limit: (json['limit'] as num?)?.toDouble(),
       offset: (json['offset'] as num?)?.toDouble(),
       order: json['order'] != null
-          ? Order.values.firstWhere(
+          ? KnowledgeOrder.values.firstWhere(
               (e) => e.toString() == 'Order.' + (json['order'] as String),
             )
           : null,
@@ -42,7 +42,7 @@ class KnowledgeQuery {
   }
 }
 
-enum Order { ASC, DESC }
+enum KnowledgeOrder { ASC, DESC }
 
 class KnowledgeBaseCreationAndUpdateRequest {
   String? description;

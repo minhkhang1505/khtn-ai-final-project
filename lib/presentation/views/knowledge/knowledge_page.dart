@@ -46,9 +46,7 @@ class KnowledgePage extends StatelessWidget {
 
     return Consumer<KnowledgeBaseViewmodel>(
       builder: (context, vm, child) {
-        debugPrint("Khang: ${vm.knowledges?.length}");
         vm.knowledges?.forEach((knowledge) {
-          debugPrint('📚 Khang: ${knowledge.knowledgeName}');
         });
         return Scaffold(
           appBar: CustomAppBar(

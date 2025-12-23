@@ -12,13 +12,14 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
   GetKnowledgesUsecase getKnowledgesUsecase;
 
   KnowledgeBaseViewmodel({required this.getKnowledgesUsecase});
+
   KnowledgeBaseState _state = KnowledgeBaseState.initial;
   KnowledgeBaseState get state => _state;
 
   final List<KnowledgeEntity> _knowledges = [];
   List<KnowledgeEntity>? get knowledges => _knowledges;
 
-  var hasNext = false;
+  var hasNext = true;
   final loadMore = false;
   var offset = 0.0;
   final limit = 10.0;
@@ -28,19 +29,30 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> _fetchKnowledges({bool resetOffset = false}) async {
+  Future<bool> _fetchKnowledges({
+    bool resetOffset = false,
+    KnowledgeOrder order = KnowledgeOrder.DESC,
+    String? orderField,
+  }) async {
     if (_state == KnowledgeBaseState.loading) return false;
 
     if (resetOffset) {
       offset = 0.0;
-      hasNext = false;
+      hasNext = true;
       _knowledges.clear();
     }
+
+    if (!hasNext) return false;
 
     _setState(KnowledgeBaseState.loading);
     try {
       final response = await getKnowledgesUsecase(
-        KnowledgeQuery(offset: offset, limit: limit),
+        KnowledgeQuery(
+          offset: offset,
+          limit: limit,
+          order: order,
+          orderField: orderField,
+        ),
       );
 
       // Map response data to entities using extension
@@ -52,13 +64,19 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
       _setState(KnowledgeBaseState.success);
       return true;
     } catch (e) {
-      print('Error fetching knowledges: $e');
+      debugPrint('Error fetching knowledges: $e');
       _setState(KnowledgeBaseState.failure);
       return false;
     }
   }
 
   Future<bool> getAllKnowledges() => _fetchKnowledges();
+
+  Future<bool> sortKnowledgesBy(KnowledgeOrder order) =>
+      _fetchKnowledges(order: order, resetOffset: true);
+
+  Future<bool> sortKnowledgesByField(String orderField) =>
+      _fetchKnowledges(orderField: orderField, resetOffset: true);
 
   /// Force reloading from the first page and clearing current cached list.
   Future<bool> refreshKnowledges() => _fetchKnowledges(resetOffset: true);
