@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart' hide SearchBar;
+import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
-import 'package:khtn_ai_final_project/data/models/bot_model.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
-import 'widgets/edit_bot_app_bar.dart';
+import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
-import 'widgets/system_prompts_card.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
+
+import 'widgets/ai_model_card.dart';
+import 'widgets/edit_bot_app_bar.dart';
 import 'widgets/knowledge_base_card.dart';
 import 'widgets/bot_information_card.dart';
-import 'widgets/bot_status_card.dart';
-import 'widgets/visibility_card.dart';
-import 'widgets/subagent_card.dart';
+import 'widgets/bot_action_card.dart';
 
 /// Edit Bot Page - Configure AI bot settings
 class EditBotPage extends StatefulWidget {
@@ -24,9 +26,27 @@ class _EditBotPageState extends State<EditBotPage> {
   final Set<int> selectedIndices = {};
 
   @override
+  void initState() {
+    super.initState();
+    // Defer setup to after first frame to avoid notifying during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final editBotViewModel = context.read<EditBotViewModel>();
+      editBotViewModel.setupBot(widget.bot);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final editBotViewModel = context.watch<EditBotViewModel>();
+
     return Scaffold(
-      appBar: EditBotAppBar(bot: widget.bot),
+      appBar: EditBotAppBar(
+        bot: widget.bot,
+        onBackPressed: () {
+          Navigator.of(context).pop();
+          editBotViewModel.clearForm();
+        },
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Center(
@@ -37,49 +57,213 @@ class _EditBotPageState extends State<EditBotPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Status & Actions Section
-                  BotStatusCard(
-                    bot: widget.bot,
-                    onStatusChanged: () {
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.cardSpacing),
+                  if (editBotViewModel.isDataLoading)
+                    const LoadingIndicatorWidget(),
+                  if (!editBotViewModel.isDataLoading) ...[
+                    // Status & Actions Section
+                    BotActionCard(
+                      bot: widget.bot,
+                      isFavoriteNotifier: editBotViewModel.isFavoriteNotifier,
+                      onFavoriteToggle: () async {
+                        await editBotViewModel.toggleFavorite();
+                      },
+                      onCanceled: () {
+                        editBotViewModel.clearForm();
+                        Navigator.pop(context);
+                      },
+                      onDeleted: () async {
+                        final pageContext = context;
+                        await showDialog<void>(
+                          context: pageContext,
+                          barrierDismissible: false,
+                          builder: (dialogContext) {
+                            bool? success;
+                            String? resultMessage;
 
-                  // Basic Information Section
-                  const BotInformationCard(),
-                  const SizedBox(height: AppSpacing.cardSpacing),
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                Widget content;
+                                List<Widget> actions;
 
-                  // System Prompts Section
-                  const SystemPromptsCard(),
-                  const SizedBox(height: AppSpacing.cardSpacing),
+                                if (editBotViewModel.isLoading) {
+                                  content = Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Text('Deleting...'),
+                                    ],
+                                  );
+                                  actions = [
+                                    TextButton(
+                                      onPressed: null,
+                                      child: const Text('Cancel'),
+                                    ),
+                                  ];
+                                } else if (success != null) {
+                                  content = Text(resultMessage ?? (success == true ? 'Bot deleted successfully' : 'Failed to delete bot'));
+                                  actions = [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(dialogContext);
+                                        if (success == true) {
+                                          Navigator.pop(pageContext, {
+                                            'deleted': true,
+                                            'message': resultMessage ?? 'Bot deleted successfully',
+                                          });
+                                        }
+                                      },
+                                      child: const Text('Close'),
+                                    ),
+                                  ];
+                                } else {
+                                  content = const Text('Are you sure you want to delete this bot? This action cannot be undone.');
+                                  actions = [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(dialogContext);
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    ElevatedButton.icon(
+                                      onPressed: () async {
+                                        final vm = pageContext.read<EditBotViewModel>();
+                                        final ok = await vm.deleteBot();
+                                        final errorMsg = vm.errorMessage;
+                                        setState(() {
+                                          success = ok;
+                                          resultMessage = ok ? 'Bot deleted successfully' : (errorMsg ?? 'Failed to delete bot');
+                                        });
+                                      },
+                                      icon: const Icon(Icons.delete_outline),
+                                      label: const Text('Delete'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Theme.of(context).colorScheme.error,
+                                        foregroundColor: Theme.of(context).colorScheme.onError,
+                                      ),
+                                    ),
+                                  ];
+                                }
 
-                  // Knowledge Base Section
-                  const KnowledgeBaseCard(),
-                  const SizedBox(height: AppSpacing.cardSpacing),
+                                return AlertDialog(
+                                  title: const Text('Delete Bot'),
+                                  content: content,
+                                  actions: actions,
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    const SizedBox(height: AppSpacing.cardSpacing),
 
-                  // Visibility Section
-                  VisibilityCard(
-                    onStatusChanged: () {
-                      // TODO: Handle visibility status change
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.cardSpacing),
+                    // Basic Information Section
+                    BotInformationCard(
+                      assistantNameController: editBotViewModel.assistantNameController,
+                      assistantNameError: editBotViewModel.assistantNameError,
+                      instructionsController: editBotViewModel.instructionsController,
+                      descriptionController: editBotViewModel.descriptionController,
+                    ),
+                    const SizedBox(height: AppSpacing.cardSpacing),
 
-                  // Subagent Section
-                  SubagentCard(subagents: widget.bot.subagents),
-                  const SizedBox(height: AppSpacing.cardSpacing),
+                    // Knowledge Base Section
+                    const KnowledgeBaseCard(),
+                    const SizedBox(height: AppSpacing.cardSpacing),
 
-                  // Action Buttons
-                  SaveActionButtonRow(
-                    onCancel: () {
-                      Navigator.pop(context);
-                    },
-                    onSave: () {
-                      // TODO: Handle save action
-                    },
-                  ),
+                    // AI model Section
+                    AiModelCard(
+                      onChanged: (modelId) {
+                        // Read-only, no action needed
+                      },
+                      errorText: null,
+                      initialModel: widget.bot.model?.id,
+                      isReadOnly: true,
+                    ),
+
+                    // Action Buttons
+                    SaveActionButtonRow(
+                      onCancel: () {
+                        editBotViewModel.clearForm();
+                        Navigator.pop(context);
+                      },
+                      onSave: () async {
+                        final pageContext = context;
+                        await showDialog<void>(
+                          context: pageContext,
+                          barrierDismissible: false,
+                          builder: (dialogContext) {
+                            bool? success;
+                            String? resultMessage;
+
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                Widget content;
+                                List<Widget> actions;
+
+                                if (editBotViewModel.isLoading) {
+                                  content = Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                      SizedBox(width: 12),
+                                      Text('Updating bot...'),
+                                    ],
+                                  );
+                                  actions = [
+                                    TextButton(onPressed: null, child: const Text('Cancel')),
+                                  ];
+                                } else if (success != null) {
+                                  content = Text(resultMessage ?? (success == true ? 'Bot updated successfully' : 'Failed to update bot'));
+                                  actions = [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(dialogContext);
+                                        if (success == true) {
+                                          Navigator.pop(pageContext);
+                                        }
+                                      },
+                                      child: const Text('Close'),
+                                    ),
+                                  ];
+                                } else {
+                                  // Start updating
+                                  Future.microtask(() async {
+                                    final ok = await editBotViewModel.updateBot();
+                                    setState(() {
+                                      success = ok;
+                                      resultMessage = ok ? 'Bot updated successfully' : (editBotViewModel.errorMessage ?? 'Failed to update bot');
+                                    });
+                                  });
+                                  content = Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                                      SizedBox(width: 12),
+                                      Text('Updating bot...'),
+                                    ],
+                                  );
+                                  actions = [
+                                    TextButton(onPressed: null, child: const Text('Cancel')),
+                                  ];
+                                }
+
+                                return AlertDialog(
+                                  title: const Text('Update Bot'),
+                                  content: content,
+                                  actions: actions,
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),

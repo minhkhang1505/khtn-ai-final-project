@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:khtn_ai_final_project/core/utils/icon_ai_model_helper.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/data/models/bot_model.dart';
-import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
+import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
+import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 
 /// Card to display individual AI bot information
 class BotCard extends StatelessWidget {
   final BotModel bot;
+  final VoidCallback? onFavoriteToggle;
+  final Future<void> Function()? onEdit;
 
-  const BotCard({super.key, required this.bot});
+  const BotCard({
+    super.key,
+    required this.bot,
+    this.onFavoriteToggle,
+    this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    
     return Card(
       elevation: 0,
       color: colorScheme.surfaceContainerLow,
@@ -40,10 +49,10 @@ class BotCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
 
-                // Name of Bot
+                // Name of Bot (use model's display name)
                 Expanded(
                   child: Text(
-                    bot.name,
+                    bot.assistantName,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -54,28 +63,43 @@ class BotCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
 
-                // Status Chip
-                if (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Chip(
-                      labelPadding: EdgeInsets.zero,
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      label: Text(
-                        bot.status, 
-                        style: TextStyle(
-                          color: bot.status == 'Active' ? Colors.green : Colors.red,
-                        ),
-                      ),
-                      backgroundColor: bot.status == 'Active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
-                    ),
+                // Favorite indicator (clickable button)
+                ElevatedButton(
+                  onPressed: onFavoriteToggle,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+                      Set<WidgetState> states,
+                    ) {
+                      if (states.contains(WidgetState.pressed)) {
+                        return Colors.grey.shade300;
+                      }
+                      if (states.contains(WidgetState.hovered)) {
+                        return Colors.grey.shade400;
+                      }
+                      return Colors.transparent;
+                    }),
+                    elevation: WidgetStateProperty.all(0),
+                    overlayColor: WidgetStateProperty.all(Colors.transparent),
+                    shape: WidgetStateProperty.all(const CircleBorder()),
+                    padding: WidgetStateProperty.all(const EdgeInsets.all(0)),
                   ),
+                  child: Icon(
+                    bot.isFavorite ? Icons.favorite : Icons.favorite_border,
+                    size: 22,
+                    color: bot.isFavorite ? Colors.red : colorScheme.outline,
+                  ),
+                ),
+                const SizedBox(width: 8),
 
                 // Edit Bot button
                 ElevatedButton(
-                  onPressed: () {
-                    // Navigate to Edit Bot page
-                    Navigator.pushNamed(context, '/bots/edit', arguments: bot);
+                  onPressed: () async {
+                    if (onEdit != null) {
+                      await onEdit!();
+                    } else {
+                      // Navigate to Edit Bot page
+                      await Navigator.pushNamed(context, '/bots/edit', arguments: bot);
+                    }
                   },
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.resolveWith<Color?>((
@@ -106,42 +130,24 @@ class BotCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
-                bot.description,
+                bot.description.isEmpty ? 'No description' : bot.description,
                 style: const TextStyle(fontSize: 16),
               ),
             ),
             const SizedBox(height: 24),
 
-            // Category and Model Chips
+            // Model
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Flexible(
-                  child: Chip(
-                    label: Text(
-                      bot.category,
-                      style: const TextStyle(fontSize: 12),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    backgroundColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                  ),
-                ),
+                Icon(IconAiModelHelper.iconForModel(AssistantModelType.nameFromId(bot.model?.id ?? '')), size: 20),
                 const SizedBox(width: 8),
-                Flexible(
-                  child: Chip(
-                    label: Text(
-                      bot.model,
-                      style: const TextStyle(color: Colors.black87, fontSize: 12),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    backgroundColor: Colors.white70,
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                  ),
+                Text(
+                  AssistantModelType.nameFromId(bot.model?.id ?? ''),
+                  style: const TextStyle(fontSize: 14),
                 ),
               ],
-            ),
+            )
           ],
         ),
       ),

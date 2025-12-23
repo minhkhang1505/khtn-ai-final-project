@@ -3,7 +3,8 @@ import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 
 class CreateBotAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CreateBotAppBar({super.key});
+  final VoidCallback? onBackPressed;
+  const CreateBotAppBar({super.key, this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -11,15 +12,13 @@ class CreateBotAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: true,
       centerTitle: false,
       leading: IconButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        icon: Icon(Icons.arrow_back_ios),
+        onPressed: onBackPressed,
+        icon: Icon(Icons.arrow_back_rounded),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Create NewBots', style: AppBarInfo.titleTextStyle),
+          Text('Create Bot', style: AppBarInfo.titleTextStyle),
           SizedBox(height: 4),
           if (ResponsiveHelper.isDesktop(context) ||
               ResponsiveHelper.isTablet(context))

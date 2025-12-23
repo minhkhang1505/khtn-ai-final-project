@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:khtn_ai_final_project/core/utils/icon_ai_model_helper.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
-import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 
 class BotOptionMenu extends StatefulWidget {
@@ -28,21 +29,10 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final vm = context.read<ChatViewModel>();
-    // helper to pick an icon for a model name
-    IconData iconForModel(String name) {
-      final key = name.toLowerCase();
-      if (key.contains('gpt')) return Icons.smart_toy;
-      if (key.contains('dall') || key.contains('image')) return Icons.image;
-      if (key.contains('audio') || key.contains('whisper')) return Icons.mic;
-      return Icons.auto_awesome;
-    }
 
     return PopupMenuButton<String>(
       onSelected: (value) {
         final selected = models.firstWhere((model) => model["name"] == value);
-        // setState(() {
-        //   vm.selectedModel = selected["id"];
-        // });
         vm.selectedModelSetter = selected["id"];
 
         vm.assistant = AssistantModel(
@@ -62,7 +52,7 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(iconForModel(name), size: 20),
+              Icon(IconAiModelHelper.iconForModel(name), size: 20),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -87,7 +77,7 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              iconForModel(vm.selectedModel),
+              IconAiModelHelper.iconForModel(vm.selectedModel),
               size: 20, 
               color: colorScheme.onSurface,
             ),

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/views/chat/widgets/message_input.dart';
 import 'package:provider/provider.dart';
 
-import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
+import 'package:khtn_ai_final_project/presentation/views/chat/widgets/message_input.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/message_popup.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+
+import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 
 import 'widgets/chat_app_bar.dart';
 import 'widgets/chat_drawer.dart';
 import 'widgets/message_list.dart';
 import 'widgets/usage_button.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/message_popup.dart';
+import 'widgets/empty_widget.dart';
+
 
 /// Chat page - Main chat interface
 class ChatPage extends StatelessWidget {
@@ -27,29 +31,14 @@ class ChatPage extends StatelessWidget {
           // Message list or welcome message
           Expanded(
             child: vm.conversationId.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Hello! Start a new conversation🎉',
-                        style: TextStyle(
-                          fontSize: 30,
-                          color: colorScheme.primary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
+                ? const EmptyWidget()
                 : // Message list
                   MessageList(scrollController: vm.scrollController),
           ),
 
           // Loading indicator
           if (context.watch<ChatViewModel>().isLoading)
-            const Padding(
-              padding: EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
-            ),
+            const LoadingIndicatorWidget(),
 
           // Error message
           if (context.watch<ChatViewModel>().error != null)
@@ -66,7 +55,7 @@ class ChatPage extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     if (vm.error != null && vm.error!.isNotEmpty) {
-                      MessagePopup.show(context, message: vm.error!);
+                      MessagePopup.show(context, message: vm.error!, title: 'Error');
                     }
                   },
                   child: Row(

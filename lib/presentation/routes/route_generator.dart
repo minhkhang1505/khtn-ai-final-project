@@ -25,6 +25,8 @@ import 'package:khtn_ai_final_project/presentation/views/agents/edit_agent_page.
 import 'package:khtn_ai_final_project/presentation/views/bots/bots_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/bots/create_bot_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/bots/edit_bot_page.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 
 /// Centralized route generator for the application
 ///
@@ -217,7 +219,13 @@ class RouteGenerator {
         final editBot = args is Map<String, dynamic> ? args['bot'] : args;
         return _buildRoute(
           settings: settings,
-          builder: (_) => EditBotPage(bot: editBot),
+          builder: (context) {
+            final botViewModel = Provider.of<BotViewModel>(context, listen: false);
+            return ChangeNotifierProvider(
+              create: (_) => EditBotViewModel(botUseCase: botViewModel.botUseCase),
+              child: EditBotPage(bot: editBot),
+            );
+          },
         );
 
       default:

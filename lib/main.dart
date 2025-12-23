@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/domain/repositories/bot_repository.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
+import 'package:khtn_ai_final_project/core/network/bot_api_client.dart';
 
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/auth_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/chat_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/prompt_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/user_remote_data_source.dart';
+import 'package:khtn_ai_final_project/data/datasources/remote/bot_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/repositories/auth_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/prompt_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/user_repository_implement.dart';
 import 'package:khtn_ai_final_project/data/repositories/chat_repository_implement.dart';
+import 'package:khtn_ai_final_project/data/repositories/bot_repository_implement.dart';
 
 import 'package:khtn_ai_final_project/domain/repositories/auth_repository.dart';
 import 'package:khtn_ai_final_project/domain/repositories/chat_repository.dart';
@@ -25,11 +30,14 @@ import 'package:khtn_ai_final_project/domain/usecases/prompts/get_prompt_usecase
 import 'package:khtn_ai_final_project/domain/usecases/prompts/remove_prompt_from_favorite.dart';
 import 'package:khtn_ai_final_project/domain/usecases/sign_up_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/bot_usecase.dart';
 
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/user_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/create_bot_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 
 import 'package:khtn_ai_final_project/core/theme/util.dart';
 import 'package:khtn_ai_final_project/core/theme/theme.dart';
@@ -38,6 +46,7 @@ import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/routes/route_generator.dart';
 import 'package:khtn_ai_final_project/presentation/services/navigation_service.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
+import 'package:khtn_ai_final_project/presentation/routes/route_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +62,9 @@ void main() async {
 
   final ChatRemoteDataSource chatRemoteDataSource =
       ChatRemoteDataSourceImpl(await JarvisApiClient.create());
+
+  final BotRemoteDataSource botRemoteDataSource =
+      BotRemoteDataSourceImpl(await BotApiClient.create());
 
   // Initialize UserApiClient with GUID support
   final userApiClient = await JarvisApiClient.create();
@@ -70,12 +82,11 @@ void main() async {
     promptRemoteDataSource,
   );
 
+  final ChatRepositoryImpl chatRepository = ChatRepositoryImpl(chatRemoteDataSource);
 
-  final ChatRepositoryImpl chatRepository = ChatRepositoryImpl(
-    chatRemoteDataSource
-  );
+  final UserRepositoryImpl userRepository = UserRepositoryImpl(userRemoteDataSource);
 
-  final userRepository = UserRepositoryImpl(userRemoteDataSource);
+  final BotRepositoryImpl botRepository = BotRepositoryImpl(botRemoteDataSource);
 
   // 3️⃣ Tầng UseCase
   final signUpUseCase = SignUpUseCase(repository: authRepository);
@@ -115,6 +126,16 @@ void main() async {
             getUserUseCase: GetUserUseCase(userRepository: userRepository),
           ),
         ),
+        ChangeNotifierProvider(
+          create: (_) => BotViewModel(
+            botUseCase: BotUseCase(botRepository: botRepository),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CreateBotViewModel(
+            botUseCase: BotUseCase(botRepository: botRepository),
+          ),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -142,6 +163,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: NavigationService.navigatorKey,
       initialRoute: AppRoutes.splash,
       onGenerateRoute: RouteGenerator.generateRoute,
+      navigatorObservers: [routeObserver],
     );
   }
 }
