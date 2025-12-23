@@ -69,37 +69,16 @@ class _FilterChipMenuState extends State<FilterChipMenu> {
                     ),
                   ),
                   title: Text(filter.label),
-                  onTap: () async {
-                    try {
-                      if (filter.id == 'all') {
-                        await vm.refreshKnowledges();
-                      } else if (filter.id == 'createdAt') {
-                        await vm.sortKnowledgesByField('createdAt');
-                      } else if (filter.id == 'ascending') {
-                        await vm.sortKnowledgesBy(KnowledgeOrder.ASC);
-                      } else if (filter.id == 'descending') {
-                        await vm.sortKnowledgesBy(KnowledgeOrder.DESC);
-                      }
-                    } catch (e) {
-                      if (mounted && context.mounted) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text('Error: $e')));
-                      }
-                      return;
-                    }
-
-                    if (context.mounted) {
-                      Navigator.pop(context, filter);
-                    }
+                  onTap: () {
+                    Navigator.of(bottomSheetContext).pop(filter);
                   },
                 );
               }).toList(),
             ),
           ),
         );
-        if (result != null) {
-          setState(() => selected = result);
+        if (result != null && mounted) {
+          await _handleFilterChange(result, vm);
         }
       },
       child: Chip(
@@ -122,5 +101,30 @@ class _FilterChipMenuState extends State<FilterChipMenu> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleFilterChange(
+    KnowledgeFilter newFilter,
+    KnowledgeBaseViewmodel vm,
+  ) async {
+    setState(() => selected = newFilter);
+
+    try {
+      if (newFilter.id == 'all') {
+        await vm.refreshKnowledges();
+      } else if (newFilter.id == 'createdAt') {
+        await vm.sortKnowledgesByField('createdAt');
+      } else if (newFilter.id == 'ascending') {
+        await vm.sortKnowledgesBy(KnowledgeOrder.ASC);
+      } else if (newFilter.id == 'descending') {
+        await vm.sortKnowledgesBy(KnowledgeOrder.DESC);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
   }
 }
