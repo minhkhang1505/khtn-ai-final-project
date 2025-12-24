@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
+import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/agent_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/create_knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_detail_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/user_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
@@ -10,13 +21,11 @@ import 'package:khtn_ai_final_project/presentation/views/knowledge/newknowledges
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/create_new_prompt.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/prompt_detail_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart';
-import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/create_prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_detail_view_model.dart';
-import 'package:khtn_ai_final_project/domain/usecases/prompts/udpate_prompt_usecase.dart';
 
 import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/agents/create_agent_page.dart';
@@ -26,7 +35,7 @@ import 'package:khtn_ai_final_project/presentation/views/bots/bots_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/bots/create_bot_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/bots/edit_bot_page.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/create_bot_view_model.dart';
 
 /// Centralized route generator for the application
 ///
@@ -55,7 +64,19 @@ class RouteGenerator {
       case AppRoutes.main:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const HomePage(),
+          builder: (_) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => sl<PromptViewmodel>()),
+              ChangeNotifierProvider(
+                create: (_) => sl<KnowledgeBaseViewmodel>(),
+              ),
+              ChangeNotifierProvider(create: (_) => sl<BotViewModel>()),
+              ChangeNotifierProvider(create: (_) => sl<AgentViewModel>()),
+              ChangeNotifierProvider(create: (_) => sl<ChatViewModel>()),
+              ChangeNotifierProvider(create: (_) => sl<UserViewModel>()),
+            ],
+            child: const HomePage(),
+          ),
         );
 
       case AppRoutes.verificationEmail:
@@ -85,13 +106,19 @@ class RouteGenerator {
       case AppRoutes.login:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const LoginPage(), // 👈 Changed to actual LoginPage
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => sl<AuthViewModel>(),
+            child: const LoginPage(),
+          ), // 👈 Changed to actual LoginPage
         );
 
       case AppRoutes.register:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const RegisterPage(),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => sl<AuthViewModel>(),
+            child: const RegisterPage(),
+          ),
         );
 
       case AppRoutes.forgotPassword:
@@ -129,14 +156,8 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (context) {
-            final promptViewModel = Provider.of<PromptViewmodel>(
-              context,
-              listen: false,
-            );
             return ChangeNotifierProvider(
-              create: (_) => CreatePromptViewModel(
-                createPromptUseCase: promptViewModel.createPromptUseCase,
-              ),
+              create: (_) => sl<CreatePromptViewModel>(),
               child: const CreateNewPromptPage(),
             );
           },
@@ -154,19 +175,11 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (context) {
-            final promptViewModel = Provider.of<PromptViewmodel>(
-              context,
-              listen: false,
-            );
             return ChangeNotifierProvider(
-              create: (_) => PromptDetailViewModel(
-                getPromptUseCase: promptViewModel.getPromptUseCase,
-                updatePromptUseCase: UpdatePromptUsecase(
-                  repository: promptViewModel.deletePromptUseCase.repository,
-                ),
-                deletePromptUseCase: promptViewModel.deletePromptUseCase,
-                prompt: prompt,
-              )..loadPromptDetails(),
+              create: (_) =>
+                  sl<PromptDetailViewModel>(param1: prompt)
+                    ..loadPromptDetails(),
+
               child: const PromptDetailPage(),
             );
           },
@@ -175,13 +188,27 @@ class RouteGenerator {
       case AppRoutes.newKnowledgeSource:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const NewKnowledgeScreen(),
+          builder: (context) => ChangeNotifierProvider(
+            create: (_) => sl<CreateKnowledgeBaseViewmodel>(),
+            child: const NewKnowledgeScreen(),
+          ),
         );
 
       case AppRoutes.knowledgeDetails:
+        final knowledge = settings.arguments as KnowledgeEntity?;
+        if (knowledge == null || knowledge.id.isEmpty) {
+          return _errorRoute('knowledgeDetails - Missing knowledge');
+        }
         return _buildRoute(
           settings: settings,
-          builder: (_) => KnowledgeDetailScreen(),
+          builder: (context) {
+            return ChangeNotifierProvider(
+              create: (_) =>
+                  sl<KnowledgeDetailViewmodel>(param1: knowledge)
+                    ..loadKnowledgeDetails(),
+              child: KnowledgeDetailScreen(),
+            );
+          },
         );
 
       case AppRoutes.agents:
@@ -200,7 +227,11 @@ class RouteGenerator {
         final editAgent = args is Map<String, dynamic> ? args['agent'] : args;
         return _buildRoute(
           settings: settings,
-          builder: (_) => EditAgentPage(agent: editAgent),
+          builder: (_) => ChangeNotifierProvider(
+            // Nếu có EditAgentViewModel riêng thì dùng, ko thì dùng chung
+            create: (_) => sl<AgentViewModel>(),
+            child: EditAgentPage(agent: editAgent),
+          ),
         );
 
       case AppRoutes.bots:
@@ -212,20 +243,20 @@ class RouteGenerator {
       case AppRoutes.createNewBot:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const CreateBotPage(),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => sl<CreateBotViewModel>(),
+            child: const CreateBotPage(),
+          ),
         );
 
       case AppRoutes.editBot:
         final editBot = args is Map<String, dynamic> ? args['bot'] : args;
         return _buildRoute(
           settings: settings,
-          builder: (context) {
-            final botViewModel = Provider.of<BotViewModel>(context, listen: false);
-            return ChangeNotifierProvider(
-              create: (_) => EditBotViewModel(botUseCase: botViewModel.botUseCase),
-              child: EditBotPage(bot: editBot),
-            );
-          },
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => sl<EditBotViewModel>(),
+            child: EditBotPage(bot: editBot),
+          ),
         );
 
       default:

@@ -2,6 +2,7 @@ import 'package:khtn_ai_final_project/core/network/bot_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_response_model.dart';
+import 'package:injectable/injectable.dart';
 
 abstract class BotRemoteDataSource {
   Future<BotModel> createBot(BotRequestModel createBotRequest);
@@ -12,6 +13,7 @@ abstract class BotRemoteDataSource {
   Future<BotModel> toggleFavorite(String assistantId);
 }
 
+@LazySingleton(as: BotRemoteDataSource)
 class BotRemoteDataSourceImpl implements BotRemoteDataSource {
   final BotApiClient client;
 
@@ -29,7 +31,9 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
 
   //for get all bots
   @override
-  Future<GetBotsResponseModel> getBots(GetBotsRequestModel getBotsRequest) async {
+  Future<GetBotsResponseModel> getBots(
+    GetBotsRequestModel getBotsRequest,
+  ) async {
     final response = await client.get(
       '/kb-core/v1/ai-assistant',
       queryParameters: getBotsRequest.toJson(),
@@ -39,7 +43,10 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
 
   // for update bot
   @override
-  Future<BotModel> updateBot(String assistantId, BotRequestModel botRequest) async {
+  Future<BotModel> updateBot(
+    String assistantId,
+    BotRequestModel botRequest,
+  ) async {
     final response = await client.patch(
       '/kb-core/v1/ai-assistant/$assistantId',
       data: botRequest.toJson(),
@@ -50,18 +57,14 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
   // for delete bot
   @override
   Future<void> deleteBot(String assistantId) async {
-    await client.delete(
-      '/kb-core/v1/ai-assistant/$assistantId',
-    );
+    await client.delete('/kb-core/v1/ai-assistant/$assistantId');
     return;
   }
 
   // for get bot
   @override
   Future<BotModel> getBot(String assistantId) async {
-    final response = await client.get(
-      '/kb-core/v1/ai-assistant/$assistantId',
-    );
+    final response = await client.get('/kb-core/v1/ai-assistant/$assistantId');
     return BotModel.fromJson(response.data);
   }
 

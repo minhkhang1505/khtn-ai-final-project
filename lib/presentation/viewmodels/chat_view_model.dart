@@ -14,10 +14,11 @@ import 'package:khtn_ai_final_project/data/models/conversations/conversation_sen
 import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
-import 'package:khtn_ai_final_project/domain/usecases/get_user_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/auth/get_user_usecase.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/delete_conversation_model.dart';
+import 'package:injectable/injectable.dart';
 
-/// ViewModel responsible for chat page state.
+@injectable
 class ChatViewModel extends ChangeNotifier {
   final ChatUseCase chatUsecase;
   final GetUserUseCase getUserUseCase;
