@@ -7,6 +7,8 @@ import 'package:injectable/injectable.dart';
 
 enum KnowledgeBaseState { initial, loading, success, failure }
 
+enum LoadMoreKnowledgeState { idle, loading, noMore }
+
 @injectable
 class KnowledgeBaseViewmodel extends ChangeNotifier {
   GetKnowledgesUsecase getKnowledgesUsecase;
@@ -18,6 +20,9 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
 
   final List<KnowledgeEntity> _knowledges = [];
   List<KnowledgeEntity>? get knowledges => _knowledges;
+
+  LoadMoreKnowledgeState _loadMoreState = LoadMoreKnowledgeState.idle;
+  LoadMoreKnowledgeState get loadMoreState => _loadMoreState;
 
   var hasNext = true;
   final loadMore = false;
@@ -71,6 +76,8 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
   }
 
   Future<bool> getAllKnowledges() => _fetchKnowledges();
+
+  Future<bool> loadMoreKnowledges() => _fetchKnowledges(resetOffset: false);
 
   Future<bool> sortKnowledgesBy(KnowledgeOrder order) =>
       _fetchKnowledges(order: order, resetOffset: true);

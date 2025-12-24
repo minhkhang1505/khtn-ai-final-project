@@ -11,25 +11,27 @@ import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowl
 import 'package:provider/provider.dart';
 
 /// Knowledge page - Knowledge base management
-class KnowledgePage extends StatelessWidget {
+class KnowledgePage extends StatefulWidget {
   const KnowledgePage({super.key});
 
-  void _onAddKnowledge(BuildContext context) async {
-    final result = await Navigator.pushNamed(context, '/knowledge/new');
+  @override
+  State<KnowledgePage> createState() => _KnowledgePageState();
+}
 
-    // Refresh data if knowledge was created successfully
-    if (result == true && context.mounted) {
-      final viewmodel = Provider.of<KnowledgeBaseViewmodel>(
-        context,
-        listen: false,
-      );
-      await viewmodel.refreshKnowledges();
-    }
+class _KnowledgePageState extends State<KnowledgePage> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
   }
 
-  void _onItemTap(BuildContext context, KnowledgeEntity knowledge) {
-    // Navigate to knowledge details page
-    Navigator.pushNamed(context, '/knowledge/details', arguments: knowledge);
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,8 +48,7 @@ class KnowledgePage extends StatelessWidget {
 
     return Consumer<KnowledgeBaseViewmodel>(
       builder: (context, vm, child) {
-        vm.knowledges?.forEach((knowledge) {
-        });
+        vm.knowledges?.forEach((knowledge) {});
         return Scaffold(
           appBar: CustomAppBar(
             title: 'Knowledge',
@@ -93,17 +94,39 @@ class KnowledgePage extends StatelessWidget {
                                         message:
                                             "Not found any knowledge base. Please add new knowledge base.",
                                       )
-                                    : ListView.builder(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 8,
-                                        ),
-                                        itemCount: vm.knowledges!.length,
-                                        itemBuilder: (context, index) =>
-                                            KnowledgeItem(
+                                    : RefreshIndicator(
+                                        onRefresh: _onRefresh,
+                                        color: Theme.of(context).primaryColor,
+
+                                        child: ListView.builder(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 8,
+                                          ),
+                                          itemCount:
+                                              vm.knowledges!.length +
+                                              (vm.loadMoreState ==
+                                                      LoadMoreKnowledgeState
+                                                          .loading
+                                                  ? 1
+                                                  : 0),
+                                          itemBuilder: (context, index) {
+                                            if (index ==
+                                                vm.knowledges!.length) {
+                                              return const Padding(
+                                                padding: EdgeInsets.all(16.0),
+                                                child: Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
+                                              );
+                                            }
+                                            return KnowledgeItem(
                                               iconPath:
                                                   'assets/icons/ic_url.svg',
                                               knowledge: vm.knowledges![index],
-                                            ),
+                                            );
+                                          },
+                                        ),
                                       ),
                               ),
                             ],
@@ -119,5 +142,39 @@ class KnowledgePage extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _onAddKnowledge(BuildContext context) async {
+    final result = await Navigator.pushNamed(context, '/knowledge/new');
+
+    // Refresh data if knowledge was created successfully
+    if (result == true && context.mounted) {
+      final viewmodel = Provider.of<KnowledgeBaseViewmodel>(
+        context,
+        listen: false,
+      );
+      await viewmodel.refreshKnowledges();
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent) {
+      final vm = context.read<KnowledgeBaseViewmodel>();
+
+      if (vm.loadMoreState == LoadMoreKnowledgeState.idle && vm.hasNext) {
+        vm.loadMoreKnowledges();
+      }
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    final vm = context.read<KnowledgeBaseViewmodel>();
+    await vm.refreshKnowledges();
+  }
+
+  void _onItemTap(BuildContext context, KnowledgeEntity knowledge) {
+    // Navigate to knowledge details page
+    Navigator.pushNamed(context, '/knowledge/details', arguments: knowledge);
   }
 }
