@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
+import 'package:provider/provider.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 
 class BotOptionMenu extends StatefulWidget {
   const BotOptionMenu({super.key});
@@ -9,79 +12,66 @@ class BotOptionMenu extends StatefulWidget {
 }
 
 class _BotOptionMenuState extends State<BotOptionMenu> {
-  String selectedModel = "ChatGPT";
+  final List<Map<String, dynamic>> models = AssistantModelType.values.map((type) {
+    return {
+      "name": type.name,
+      "id": type.id,
+    };
+  }).toList();
 
-  final List<Map<String, dynamic>> models = [
-    {
-      "name": "ChatGPT Go",
-      "description": "Our smartest model & more",
-      "upgrade": true,
-    },
-    {
-      "name": "ChatGPT",
-      "description": "Great for everyday tasks",
-      "upgrade": false,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final vm = context.read<ChatViewModel>();
+    // helper to pick an icon for a model name
+    IconData iconForModel(String name) {
+      final key = name.toLowerCase();
+      if (key.contains('gpt')) return Icons.smart_toy;
+      if (key.contains('dall') || key.contains('image')) return Icons.image;
+      if (key.contains('audio') || key.contains('whisper')) return Icons.mic;
+      return Icons.auto_awesome;
+    }
+
     return PopupMenuButton<String>(
       onSelected: (value) {
-        setState(() => selectedModel = value);
+        final selected = models.firstWhere((model) => model["name"] == value);
+        // setState(() {
+        //   vm.selectedModel = selected["id"];
+        // });
+        vm.selectedModelSetter = selected["id"];
+
+        vm.assistant = AssistantModel(
+          model: 'dify',
+          name: selected["name"],
+          id: selected["id"],
+        );
       },
       color: colorScheme.surfaceBright,
       position: PopupMenuPosition.under,
       shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
       elevation: 4,
-      itemBuilder: (context) => models.map((model) {
+      itemBuilder: (context) => AssistantModelType.values.map((type) {
+        final name = type.name;
         return PopupMenuItem<String>(
-          value: model["name"],
+          value: name,
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Icon
-              const Icon(Icons.auto_awesome, size: 20),
+              Icon(iconForModel(name), size: 20),
               const SizedBox(width: 10),
-              // Content
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      model["name"],
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    Text(
-                      model["description"],
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ],
+                child: Text(
+                  name,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               ),
-              if (model["upgrade"])
-                Container(
-                  margin: const EdgeInsets.only(left: 8),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: const Text(
-                    "Upgrade",
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
             ],
           ),
         );
@@ -96,11 +86,17 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Icon(
+              iconForModel(vm.selectedModel),
+              size: 20, 
+              color: colorScheme.onSurface,
+            ),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
-                selectedModel, 
+                AssistantModelType.fromId(vm.selectedModel)?.name ?? 'Select Model',
                 style: const TextStyle(fontSize: 15),
-                overflow: TextOverflow.ellipsis,
+                //overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
             ),

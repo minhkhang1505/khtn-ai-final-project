@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import '../widgets/auth_header.dart';
 import 'widgets/register_form.dart';
+import 'package:provider/provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -9,7 +12,8 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage>
+    with TickerProviderStateMixin {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -26,19 +30,43 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _handleCreateAccount() {
-    Navigator.pushNamed(context, '/auth/register/verification-email');
-    // TODO: Implement create account logic
+  Future<bool> _checkInternetConnection() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult != ConnectivityResult.none;
+  }
+
+  void _handleCreateAccount() async {
+
+    if (!await _checkInternetConnection()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No internet connection. Please check your network.'),
+        ),
+      );
+      return; 
+    }
+
+    final viewModel = context.read<AuthViewModel>();
+    final success = await viewModel.signUp(
+      _emailController.text,
+      _passwordController.text,
+      _confirmPasswordController.text,
+      _fullNameController.text,
+    );
+    if (success) {
+      Navigator.pushNamed(context, '/main');
+    }
   }
 
   void _handleGoogleSignUp() {
-    Navigator.pushNamed(context, '/main');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Google sign up is not implemented yet.")),
+    );
     // TODO: Implement Google sign up logic
   }
 
   void _handleSignIn() {
     Navigator.pushNamed(context, '/auth/login');
-    // TODO: Navigate to sign in page
   }
 
   @override
@@ -80,6 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           onCreateAccount: _handleCreateAccount,
                           onGoogleSignUp: _handleGoogleSignUp,
                           onSignInTap: _handleSignIn,
+                          error: context.watch<AuthViewModel>(),
                         ),
                       ],
                     ),

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import '../../widgets/auth_text_field.dart';
 import '../../widgets/auth_divider.dart';
 import '../../widgets/google_auth_button.dart';
 import '../../widgets/auth_prompt.dart';
 import '../../widgets/auth_primary_button.dart';
 import 'remember_me_row.dart';
+import 'package:provider/provider.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   final TextEditingController? emailController;
   final TextEditingController? passwordController;
   final bool isRememberMeChecked;
@@ -16,6 +18,7 @@ class LoginForm extends StatelessWidget {
   final VoidCallback onSignIn;
   final VoidCallback onGoogleSignIn;
   final VoidCallback onSignUpTap;
+  final AuthViewModel loginError;
 
   const LoginForm({
     super.key,
@@ -27,12 +30,20 @@ class LoginForm extends StatelessWidget {
     required this.onSignIn,
     required this.onGoogleSignIn,
     required this.onSignUpTap,
+    required this.loginError,
   });
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  bool _obscureText = true; // Start with password hidden
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
+    final viewModel = context.watch<AuthViewModel>();
     return Container(
       height: 520,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -64,54 +75,46 @@ class LoginForm extends StatelessWidget {
           // Email field
           AuthTextField(
             label: "Email",
-            hintText: "Enter your email",
-            controller: emailController,
+            hintText: "John@example.com",
+            controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
-            onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Email cannot be empty";
-              }
-              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                return "Invalid email format";
-              }
-              return null;
-            },
+            error: widget.loginError.emailError,
           ),
           // Password field
           AuthTextField(
             label: "Password",
             hintText: "Enter your password",
-            controller: passwordController,
-            obscureText: true,
-            onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Password cannot be empty";
-              }
-              if (value.length < 8) {
-                return "Password must be at least 8 characters";
-              }
-              return null;
+            controller: widget.passwordController,
+            obscureText: _obscureText,
+            error: widget.loginError.passwordError ?? widget.loginError.error,
+            onSuffixIconPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
             },
+            suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
           ),
           // Remember me and Forgot password
           RememberMeRow(
-            isChecked: isRememberMeChecked,
-            onChanged: onRememberMeChanged,
-            onForgotPassword: onForgotPassword,
+            isChecked: widget.isRememberMeChecked,
+            onChanged: widget.onRememberMeChanged,
+            onForgotPassword: widget.onForgotPassword,
           ),
           // Sign In button
-          AuthPrimaryButton(onPressed: onSignIn, text: "Sign In"),
+          AuthPrimaryButton(
+            onPressed: widget.onSignIn,
+            text: "Sign In",
+            isLoading: viewModel.isLoading,
+          ),
           // Divider
           const AuthDivider(text: "Or continue with"),
           // Google Sign In button
-          GoogleAuthButton(onPressed: onGoogleSignIn),
+          GoogleAuthButton(onPressed: widget.onGoogleSignIn),
           // Sign up prompt
           AuthPrompt(
             question: "Don't have an account?",
             actionText: "Sign up",
-            onActionTap: onSignUpTap,
+            onActionTap: widget.onSignUpTap,
           ),
         ],
       ),

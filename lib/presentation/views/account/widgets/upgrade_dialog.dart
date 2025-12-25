@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/data/models/account_models.dart';
+import 'package:khtn_ai_final_project/data/models/user_models.dart';
 
 /// Dialog for displaying and confirming plan upgrade
 class UpgradeDialog extends StatelessWidget {

@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/category.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/category_item.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/filter_by_category.dart';
 
 class CategoriesTab extends StatelessWidget {
   final List<Category> categories;
-  final Function(Category)? onCategoryTap;
 
-  const CategoriesTab({
-    super.key,
-    required this.categories,
-    this.onCategoryTap,
-  });
+  const CategoriesTab({super.key, required this.categories});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // You can adjust the width threshold as needed for your design
         final isWide = constraints.maxWidth >= 800;
         final crossAxisCount = isWide ? 4 : 2;
+
         return GridView.count(
           primary: false,
           padding: const EdgeInsets.all(16),
@@ -31,7 +27,17 @@ class CategoriesTab extends StatelessWidget {
               CategoryItem(
                 categoryName: category.name,
                 iconPath: category.iconPath,
-                onTap: () => onCategoryTap?.call(category),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FilterByCategoryPage(
+                        category: category.id,
+                        categoryName: category.name,
+                      ),
+                    ),
+                  );
+                },
               ),
           ],
         );

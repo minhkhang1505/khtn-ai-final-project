@@ -1,0 +1,74 @@
+/// Models for the Account feature
+class UserResponse {
+  final String id;
+  final String email;
+  final String username;
+  final List<String> roles;
+  final Geo? geo;
+
+  UserResponse({
+    required this.id,
+    required this.email,
+    required this.username,
+    required this.roles,
+    this.geo,
+  });
+
+  factory UserResponse.fromJson(Map<String, dynamic> json) {
+    return UserResponse(
+      id: json['id'] ?? '',
+      email: json['email'] ?? '',
+      username: json['username'] ?? '',
+      roles: json['roles'] != null ? List<String>.from(json['roles']) : [],
+      geo: json['geo'] != null
+          ? Geo(
+              lat: json['geo']['lat'] ?? '0',
+              long: json['geo']['long'] ?? '0',
+            )
+          : null,
+    );
+  }
+}
+
+class Geo {
+  final String lat;
+  final String long;
+
+  Geo({required this.lat, required this.long});
+
+  /// Create a default Geo with zero coordinates
+  factory Geo.defaultLocation() => Geo(lat: '0', long: '0');
+
+  /// Check if geo is set to default/zero
+  bool get isDefault => lat == '0' && long == '0';
+}
+
+class PlanFeature {
+  final String title;
+  final String description;
+
+  PlanFeature({required this.title, required this.description});
+
+  // For backward compatibility with Map-based usage
+  Map<String, String> toMap() => {'title': title, 'description': description};
+}
+
+class SubscriptionPlan {
+  final String name;
+  final String price;
+  final String billingPeriod;
+  final String subtitle;
+  final DateTime? nextBillingDate;
+  final List<PlanFeature> features;
+  final bool isCurrent;
+
+  SubscriptionPlan({
+    required this.name,
+    required this.price,
+    required this.billingPeriod,
+    required this.subtitle,
+    this.nextBillingDate,
+    required this.features,
+    this.isCurrent = false,
+  });
+}

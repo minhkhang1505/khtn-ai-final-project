@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
+import 'package:provider/provider.dart';
 
-class FavoritePromptsTab extends StatefulWidget {
+class FavoritePromptsTab extends StatelessWidget {
   final List<PromptEntity> prompts;
   final Function(PromptEntity)? onFavoriteTap;
 
@@ -12,33 +15,40 @@ class FavoritePromptsTab extends StatefulWidget {
     this.onFavoriteTap,
   });
 
-  @override
-  State<FavoritePromptsTab> createState() => _FavoritePromptsTabState();
-}
+  void _handleItemTap(BuildContext context, PromptEntity prompt) {
+    Navigator.pushNamed(context, '/prompts/details', arguments: prompt.id);
+  }
 
-class _FavoritePromptsTabState extends State<FavoritePromptsTab> {
-  void handleItemTap(PromptEntity prompt) {
-    Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
+  Future<void> _onRefresh(BuildContext context) async {
+    final viewModel = context.read<PromptViewmodel>();
+    await viewModel.refreshFavoritePrompts();
   }
 
   @override
   Widget build(BuildContext context) {
-    final favoritePrompts = widget.prompts.where((p) => p.isFavorite).toList();
+    final favoritePrompts = prompts.where((p) => p.isFavorite).toList();
 
     if (favoritePrompts.isEmpty) {
-      return const Center(child: Text('No favorite prompts yet'));
+      return EmptyPromptWidget(
+        message: "No favorite prompts available.",
+        onRefresh: () => _onRefresh(context),
+      );
     }
 
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      children: [
-        for (var prompt in favoritePrompts)
-          PromptItem(
-            onTap: () => handleItemTap(prompt),
-            prompt: prompt,
-            onFavoriteTap: () => widget.onFavoriteTap?.call(prompt),
-          ),
-      ],
+    return RefreshIndicator(
+      onRefresh: () => _onRefresh(context),
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        children: [
+          for (var prompt in favoritePrompts)
+            PromptItem(
+              onTap: () => _handleItemTap(context, prompt),
+              prompt: prompt,
+              onFavoriteTap: () => onFavoriteTap?.call(prompt),
+            ),
+        ],
+      ),
     );
   }
 }

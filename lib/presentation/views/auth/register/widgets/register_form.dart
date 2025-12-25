@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
 import '../../widgets/auth_text_field.dart';
 import '../../widgets/auth_divider.dart';
 import '../../widgets/google_auth_button.dart';
 import '../../widgets/auth_prompt.dart';
 import '../../widgets/auth_primary_button.dart';
 import 'terms_checkbox.dart';
+import 'package:provider/provider.dart';
 
-class RegisterForm extends StatelessWidget {
+class RegisterForm extends StatefulWidget {
   final TextEditingController fullNameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
@@ -17,6 +19,7 @@ class RegisterForm extends StatelessWidget {
   final VoidCallback onCreateAccount;
   final VoidCallback onGoogleSignUp;
   final VoidCallback onSignInTap;
+  final AuthViewModel error;
 
   const RegisterForm({
     super.key,
@@ -29,11 +32,21 @@ class RegisterForm extends StatelessWidget {
     required this.onCreateAccount,
     required this.onGoogleSignUp,
     required this.onSignInTap,
+    required this.error,
   });
+
+  @override
+  State<RegisterForm> createState() => _RegisterFormState();
+}
+
+class _RegisterFormState extends State<RegisterForm> {
+  bool _obscureText = false; // Start with password hidden
+  bool _obscureConfirmText = false; // Start with confirm password hidden
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final viewModel = context.watch<AuthViewModel>();
 
     return Container(
       height: 680,
@@ -57,78 +70,64 @@ class RegisterForm extends StatelessWidget {
           AuthTextField(
             label: "Full name",
             hintText: "John Doe",
-            controller: fullNameController,
+            controller: widget.fullNameController,
             keyboardType: TextInputType.name,
-            onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Full name cannot be empty";
-              }
-              if (value.length < 3) {
-                return "Full name must be at least 3 characters";
-              }
-              return null;
-            },
+            error: widget.error.fullNameError,
           ),
           AuthTextField(
             label: "Email",
             hintText: "abc@example.com",
-            controller: emailController,
+            controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
-            onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Email cannot be empty";
-              }
-              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                return "Invalid email format";
-              }
-              return null;
-            },
+            error: widget.error.emailError,
           ),
           AuthTextField(
             label: "Password",
             hintText: "********",
-            controller: passwordController,
-            obscureText: true,
+            controller: widget.passwordController,
+            obscureText: _obscureText,
             onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Password cannot be empty";
-              }
-              if (value.length < 8) {
-                return "Password must be at least 8 characters";
-              }
-              return null;
+            suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
+            onSuffixIconPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
             },
+            error: widget.error.passwordError,
           ),
           AuthTextField(
             label: "Confirm Password",
             hintText: "********",
-            controller: confirmPasswordController,
-            obscureText: true,
-            onChanged: (value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Confirm Password cannot be empty";
-              }
-              if (value != passwordController.text) {
-                return "Passwords do not match";
-              }
-              return null;
+            controller: widget.confirmPasswordController,
+            obscureText: _obscureConfirmText,
+            suffixIcon: _obscureConfirmText
+                ? Icons.visibility
+                : Icons.visibility_off,
+            onSuffixIconPressed: () {
+              setState(() {
+                _obscureConfirmText = !_obscureConfirmText;
+              });
             },
+            error: widget.error.confirmPasswordError,
           ),
-          TermsCheckbox(isChecked: isTermsChecked, onChanged: onTermsChanged),
-          AuthPrimaryButton(onPressed: onCreateAccount, text: "Create Account"),
+          TermsCheckbox(
+            isChecked: widget.isTermsChecked,
+            onChanged: widget.onTermsChanged,
+          ),
+          AuthPrimaryButton(
+            onPressed: widget.onCreateAccount,
+            text: "Create Account",
+            isLoading: viewModel.isLoading,
+          ),
           const AuthDivider(),
           GoogleAuthButton(
-            onPressed: onGoogleSignUp,
+            onPressed: widget.onGoogleSignUp,
             text: "Sign in with Google",
           ),
           AuthPrompt(
             question: "Already have an account?",
             actionText: "Sign In",
-            onActionTap: onSignInTap,
+            onActionTap: widget.onSignInTap,
           ),
         ],
       ),
