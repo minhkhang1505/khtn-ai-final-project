@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 
 /// Usage button that displays remaining tokens and shows details on tap
 class UsageButton extends StatelessWidget {

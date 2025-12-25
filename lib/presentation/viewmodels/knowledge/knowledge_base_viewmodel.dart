@@ -36,10 +36,11 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
 
   Future<bool> _fetchKnowledges({
     bool resetOffset = false,
+    bool isLoadMore = false,
     KnowledgeOrder order = KnowledgeOrder.DESC,
     String? orderField,
   }) async {
-    if (_state == KnowledgeBaseState.loading) return false;
+    if (_state == KnowledgeBaseState.loading && !isLoadMore) return false;
 
     if (resetOffset) {
       offset = 0.0;
@@ -49,7 +50,11 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
 
     if (!hasNext) return false;
 
-    _setState(KnowledgeBaseState.loading);
+    // Chỉ thay đổi state chính khi không phải load more
+    if (!isLoadMore) {
+      _setState(KnowledgeBaseState.loading);
+    }
+
     try {
       final response = await getKnowledgesUsecase(
         KnowledgeQuery(
@@ -66,18 +71,44 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
       hasNext = response.meta.hasNext;
       offset += limit;
 
-      _setState(KnowledgeBaseState.success);
+      // Chỉ thay đổi state chính khi không phải load more
+      if (!isLoadMore) {
+        _setState(KnowledgeBaseState.success);
+      } else {
+        notifyListeners(); // Chỉ notify để update UI, không đổi state
+      }
       return true;
     } catch (e) {
       debugPrint('Error fetching knowledges: $e');
-      _setState(KnowledgeBaseState.failure);
+      if (!isLoadMore) {
+        _setState(KnowledgeBaseState.failure);
+      }
       return false;
     }
   }
 
   Future<bool> getAllKnowledges() => _fetchKnowledges();
 
-  Future<bool> loadMoreKnowledges() => _fetchKnowledges(resetOffset: false);
+  Future<bool> loadMoreKnowledges() async {
+    if (_loadMoreState == LoadMoreKnowledgeState.loading || !hasNext) {
+      return false;
+    }
+
+    _loadMoreState = LoadMoreKnowledgeState.loading;
+    notifyListeners();
+
+    final success = await _fetchKnowledges(
+      resetOffset: false,
+      isLoadMore: true,
+    );
+
+    _loadMoreState = hasNext
+        ? LoadMoreKnowledgeState.idle
+        : LoadMoreKnowledgeState.noMore;
+    notifyListeners();
+
+    return success;
+  }
 
   Future<bool> sortKnowledgesBy(KnowledgeOrder order) =>
       _fetchKnowledges(order: order, resetOffset: true);

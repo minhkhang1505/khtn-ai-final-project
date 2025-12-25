@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_detail_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form.dart';
 import 'package:provider/provider.dart';
 

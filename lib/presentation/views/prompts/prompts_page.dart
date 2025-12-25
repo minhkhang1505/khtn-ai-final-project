@@ -5,7 +5,7 @@ import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar
 import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/all_prompts_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/categories_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/favorite_prompts_tab.dart';

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/views/chat/widgets/message_input.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/message_popup.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 

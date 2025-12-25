@@ -52,20 +52,23 @@ class KnowledgeItem extends StatelessWidget {
               ),
             ),
             SizedBox(width: 6),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  knowledge.knowledgeName,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                Text(knowledge.description, style: TextStyle(fontSize: 14)),
-                Text(
-                  'Created at: ${knowledge.createdAt.toLocal()}',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    knowledge.knowledgeName,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    softWrap: true,
+                  ),
+                  Text(knowledge.description, style: TextStyle(fontSize: 14)),
+                  Text(
+                    'Created at: ${knowledge.createdAt.toLocal()}',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

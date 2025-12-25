@@ -5,7 +5,7 @@ import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar
 import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_filter.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_item.dart';
 import 'package:provider/provider.dart';
@@ -99,6 +99,7 @@ class _KnowledgePageState extends State<KnowledgePage> {
                                         color: Theme.of(context).primaryColor,
 
                                         child: ListView.builder(
+                                          controller: _scrollController,
                                           padding: const EdgeInsets.symmetric(
                                             vertical: 8,
                                           ),

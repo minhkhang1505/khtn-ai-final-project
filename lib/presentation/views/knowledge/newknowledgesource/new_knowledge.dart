@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/create_knowledge_base_viewmodel.dart';
-import 'package:khtn_ai_final_project/presentation/views/knowledge/constants/knowledge_constants.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/create_knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/core/constants/knowledge_constants.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form.dart';
 import 'package:provider/provider.dart';
 

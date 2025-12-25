@@ -3,11 +3,11 @@ import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 // import 'package:khtn_ai_final_project/data/models/user_models.dart';
 import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/logout_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/widgets.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/user_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth/user_view_model.dart';
 import 'package:provider/provider.dart';
 
 /// Account page - User profile and settings
