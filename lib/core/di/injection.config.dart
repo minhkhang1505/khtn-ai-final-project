@@ -59,7 +59,9 @@ import '../../presentation/viewmodels/auth_view_model.dart' as _i912;
 import '../../presentation/viewmodels/bot/bot_view_model.dart' as _i626;
 import '../../presentation/viewmodels/bot/create_bot_view_model.dart' as _i219;
 import '../../presentation/viewmodels/bot/edit_bot_view_model.dart' as _i24;
-import '../../presentation/viewmodels/chat_view_model.dart' as _i540;
+import '../../presentation/viewmodels/chat/chat_view_model.dart' as _i959;
+import '../../presentation/viewmodels/chat/model_selector_view_model.dart'
+    as _i279;
 import '../../presentation/viewmodels/create_knowledge_base_viewmodel.dart'
     as _i363;
 import '../../presentation/viewmodels/create_prompt_viewmodel.dart' as _i53;
@@ -249,13 +251,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i24.EditBotViewModel>(
       () => _i24.EditBotViewModel(botUseCase: gh<_i810.BotUseCase>()),
     );
+    gh.factory<_i279.ModelSelectorViewModel>(
+      () => _i279.ModelSelectorViewModel(botUseCase: gh<_i810.BotUseCase>()),
+    );
     gh.factory<_i363.CreateKnowledgeBaseViewmodel>(
       () => _i363.CreateKnowledgeBaseViewmodel(
         createKnowledgeUsecase: gh<_i42.CreateKnowledgeUsecase>(),
       ),
     );
-    gh.factory<_i540.ChatViewModel>(
-      () => _i540.ChatViewModel(
+    gh.factory<_i959.ChatViewModel>(
+      () => _i959.ChatViewModel(
         chatUsecase: gh<_i1013.ChatUseCase>(),
         getUserUseCase: gh<_i180.GetUserUseCase>(),
       ),

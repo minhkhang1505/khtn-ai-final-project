@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
@@ -18,12 +18,12 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final vm = context.read<ChatViewModel>();
+    final chatViewModel = context.read<ChatViewModel>();
     return AppBar(
       automaticallyImplyLeading: true,
       title: (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
           ? Text(
-              vm.conversationTitle,
+              chatViewModel.conversationTitle,
               style: AppBarInfo.titleTextStyle,
             )
           : null,
@@ -38,7 +38,11 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                   maxWidth: 200, 
                   minWidth: 50, 
                 ),
-                child: BotOptionMenu(),
+                child: BotOptionMenu(
+                  onSelected: (model) {
+                    chatViewModel.assistantModelSetter = model;
+                  }
+                ),
               ),
             ),
 
@@ -57,24 +61,6 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onPressed: () {
                   _onAddNewChat();
                 },
-                // () async {
-                //   final confirm = await showDialog<bool>(
-                //     context: context,
-                //     builder: (ctx) => AlertDialog(
-                //       title: const Text('Draft dialog data'),
-                //       content: Text(vm.messagesContent),
-                //       actions: [
-                //         TextButton(
-                //           onPressed: () => Navigator.of(ctx).pop(false),
-                //           child: const Text('Cancel'),
-                //         ),
-                //         TextButton(
-                //           onPressed: () => Navigator.of(ctx).pop(true),
-                //           child: const Text('Delete', style: TextStyle(color: Colors.red)),
-                //         ),
-                //       ],
-                //     ),
-                //   );
               ),
             ),
           ],

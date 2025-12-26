@@ -38,7 +38,7 @@ class ChatViewModel extends ChangeNotifier {
   MetadataModel metadata = MetadataModel.defaults();
   List<ConversationModel> conversations = [];
   List<PlatformFile> files = [];
-  String selectedModel = 'gpt-4o-mini';
+  String assistantModel = 'gpt-4o-mini';
   String conversationId = ''; // Default conversation ID
   String conversationTitle = 'Chat';
   TokenUsageModel tokenUsage = TokenUsageModel.defaults();
@@ -58,15 +58,15 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  set selectedModelSetter(String model) {
-    selectedModel = model;
+  set assistantModelSetter(String model) {
+    assistantModel = model;
     notifyListeners();
   }
 
-  // set assistantSetter(AssistantModel assistantModel) {
-  //   assistant = assistantModel;
-  //   notifyListeners();
-  // }
+  set assistantSetter(AssistantModel assistantModel) {
+    assistant = assistantModel;
+  }
+
   set metadataSetter(MetadataModel metadataModel) {
     metadata = metadataModel;
     notifyListeners();
@@ -203,7 +203,7 @@ class ChatViewModel extends ChangeNotifier {
         GetConversationsRequestModel(
           cursor: '',
           limit: 20,
-          assistantId: selectedModel.isNotEmpty == true ? selectedModel : null,
+          assistantId: assistantModel.isNotEmpty == true ? assistantModel : null,
           assistantModel: 'dify',
         ),
       );
@@ -227,7 +227,7 @@ class ChatViewModel extends ChangeNotifier {
         GetConversationHistoryRequestModel(
           cursor: '',
           limit: 100,
-          assistantId: selectedModel,
+          assistantId: assistantModel,
           assistantModel: 'dify',
           conversationId: conversationId,
         ),
@@ -383,7 +383,7 @@ class ChatViewModel extends ChangeNotifier {
       await chatUsecase.deleteConversation(
         DeleteConversationRequestModel(
           conversationId: conversationId,
-          assistantId: selectedModel,
+          assistantId: assistantModel,
           assistantModel: 'agentic',
         ),
       );

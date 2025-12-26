@@ -16,7 +16,7 @@ class AiModelOptionMenu extends StatelessWidget {
   });
 
   static final List<Map<String, String>> models = AssistantModelType.values
-      .map((m) => {'id': m.id, 'label': m.name})
+      .map((m) => {'id': m.id, 'label': m.displayName})
       .toList();
 
   @override

@@ -11,7 +11,7 @@ enum AssistantModelType {
 
   const AssistantModelType(this.id); 
 
-  static AssistantModelType fromId(String id) {
+  static AssistantModelType getModelFromId(String id) {
     try {
       return AssistantModelType.values.firstWhere(
         (value) => value.id == id,
@@ -21,18 +21,26 @@ enum AssistantModelType {
     }
   }
 
+  static String getModelId (AssistantModelType type) {
+    return type.id;
+  }
+
+  static List<String> get allModelIds {
+    return AssistantModelType.values.map((e) => e.id).toList();
+  }
+
   // Get display name of the model from id
   static String nameFromId(String id) {
     try {
       return AssistantModelType.values
           .firstWhere((e) => e.id == id)
-          .name;
+          .displayName;
     } catch (_) {
       return "Unknown Model";
     }
   }
 
-  String get name {
+  String get displayName {
     return switch (this) {
       AssistantModelType.CLAUDE_3_HAIKU => "Claude 3 Haiku",
       //AssistantModelType.CLAUDE_3_SONNET => "Claude 3 Sonnet",
@@ -49,7 +57,7 @@ class AssistantModel {
   String name;
   String id;
 
-  AssistantModel({required this.model, this.name = 'Default Assistant', this.id = ''});
+  AssistantModel({required this.model, this.name = 'GPT-4o Mini', this.id = 'gpt-4o-mini'});
 
   factory AssistantModel.fromJson(Map<String, dynamic> json) {
     return AssistantModel(

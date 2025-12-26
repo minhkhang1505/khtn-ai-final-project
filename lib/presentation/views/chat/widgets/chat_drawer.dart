@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 
 class ChatDrawer extends StatefulWidget {
   const ChatDrawer({super.key});
@@ -13,9 +13,27 @@ class ChatDrawer extends StatefulWidget {
 class _ChatDrawerState extends State<ChatDrawer> {
   final List<Map<String, dynamic>> models = AssistantModelType.values.map((type) {
     return {
-      "name": type.name,
+      "name": type.displayName,
     };
   }).toList();
+
+  String _getTimeDistance(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inSeconds < 60) {
+      return 'now';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}m ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}h ago';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays}d ago';
+    } else {
+      return '${difference.inDays}d ago';
+      // dateTime.toString().split(' ')[0];
+    }
+  }
 
   @override
   void initState() {
@@ -78,8 +96,43 @@ class _ChatDrawerState extends State<ChatDrawer> {
                   ),
 
                   ...conversations.map((conversation) {
+                    final isUserBot = conversation.bot.name.isNotEmpty;
                     return ListTile(
                         title: Text(conversation.title),
+                        subtitle: Row(
+                          children: [
+                            // Tag bot - show "Bot" badge if this is a user-created bot
+                            if (isUserBot) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: colorScheme.primary.withValues(alpha: 0.7),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Text(
+                                  'Bot',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    color: colorScheme.onPrimaryContainer,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                            ],
+                            Text(
+                            _getTimeDistance(DateTime.parse(conversation.createdAt)),
+                            style: const TextStyle(fontSize: 12),
+                            )
+                          ],
+                        ),
                         trailing: IconButton(
                         icon: Icon(
                           Icons.delete_outline,

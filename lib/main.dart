@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
-import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/theme/util.dart';
 import 'package:khtn_ai_final_project/core/theme/theme.dart';
 
