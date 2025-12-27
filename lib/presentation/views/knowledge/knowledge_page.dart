@@ -174,7 +174,7 @@ class _KnowledgePageState extends State<KnowledgePage> {
     await vm.refreshKnowledges();
   }
 
-  void _onItemTap(BuildContext context, KnowledgeEntity knowledge) async {
+  void onItemTap(BuildContext context, KnowledgeEntity knowledge) async {
     // Navigate to knowledge details page
     final result = await Navigator.pushNamed(
       context,
