@@ -67,59 +67,57 @@ class PromptsPage extends StatelessWidget {
                     constraints: BoxConstraints(
                       maxWidth: isWideScreen ? 1200 : double.infinity,
                     ),
-                    child: SafeArea(
-                      child: Column(
-                        children: [
-                          PromptsTabBar(
-                            controller: DefaultTabController.of(context),
-                          ),
-                          Expanded(
-                            child: TabBarView(
-                              children: [
-                                switch (viewmodel.viewState) {
-                                  PromptViewState.loading =>
-                                    LoadingIndicatorWidget(),
-                                  PromptViewState.failure => FailureStateWidget(
-                                    onRetry: () {
-                                      viewmodel.getAllPrompts();
-                                    },
-                                  ),
-                                  PromptViewState.initial => EmptyPromptWidget(
-                                    message:
-                                        "No prompts found. Please add new prompts.",
-                                  ),
-                                  PromptViewState.success => AllPromptsTab(
-                                    prompts: prompts,
-                                    onFavoriteTap: (prompt) =>
-                                        _handleFavoriteTap(context, prompt),
-                                  ),
-                                },
+                    child: Column(
+                      children: [
+                        PromptsTabBar(
+                          controller: DefaultTabController.of(context),
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            children: [
+                              switch (viewmodel.viewState) {
+                                PromptViewState.loading =>
+                                  LoadingIndicatorWidget(),
+                                PromptViewState.failure => FailureStateWidget(
+                                  onRetry: () {
+                                    viewmodel.getAllPrompts();
+                                  },
+                                ),
+                                PromptViewState.initial => EmptyPromptWidget(
+                                  message:
+                                      "No prompts found. Please add new prompts.",
+                                ),
+                                PromptViewState.success => AllPromptsTab(
+                                  prompts: prompts,
+                                  onFavoriteTap: (prompt) =>
+                                      _handleFavoriteTap(context, prompt),
+                                ),
+                              },
 
-                                CategoriesTab(categories: categories),
+                              CategoriesTab(categories: categories),
 
-                                switch (viewmodel.viewState) {
-                                  PromptViewState.loading =>
-                                    LoadingIndicatorWidget(),
-                                  PromptViewState.failure => FailureStateWidget(
-                                    onRetry: () {
-                                      viewmodel.getFavoritePrompts();
-                                    },
-                                  ),
-                                  PromptViewState.initial => EmptyPromptWidget(
-                                    message:
-                                        "No prompts found. Please add new prompts.",
-                                  ),
-                                  PromptViewState.success => FavoritePromptsTab(
-                                    prompts: favoritePrompts,
-                                    onFavoriteTap: (prompt) =>
-                                        _handleFavoriteTap(context, prompt),
-                                  ),
-                                },
-                              ],
-                            ),
+                              switch (viewmodel.viewState) {
+                                PromptViewState.loading =>
+                                  LoadingIndicatorWidget(),
+                                PromptViewState.failure => FailureStateWidget(
+                                  onRetry: () {
+                                    viewmodel.getFavoritePrompts();
+                                  },
+                                ),
+                                PromptViewState.initial => EmptyPromptWidget(
+                                  message:
+                                      "No prompts found. Please add new prompts.",
+                                ),
+                                PromptViewState.success => FavoritePromptsTab(
+                                  prompts: favoritePrompts,
+                                  onFavoriteTap: (prompt) =>
+                                      _handleFavoriteTap(context, prompt),
+                                ),
+                              },
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );

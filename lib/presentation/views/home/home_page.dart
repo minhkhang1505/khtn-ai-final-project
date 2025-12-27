@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     {'icon': 'assets/icons/ic_bot.svg', 'label': 'Bots'},
     {'icon': 'assets/icons/ic_agent.svg', 'label': 'Agents'},
     {'icon': 'assets/icons/ic_knowledge.svg', 'label': 'Knowledge'},
-    {'icon': 'assets/icons/ic_prompt.svg', 'label': 'Prompts'},
+    // {'icon': 'assets/icons/ic_prompt.svg', 'label': 'Prompts'},
     {'icon': 'assets/icons/ic_account.svg', 'label': 'Account'},
   ];
 
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
           BotsPage(),
           AgentsPage(),
           KnowledgePage(),
-          PromptsPage(),
+          // PromptsPage(),
           AccountPage(),
         ],
       ),
@@ -98,8 +98,8 @@ class _HomePageState extends State<HomePage> {
                       // Padding bên trong nút active
                       padding: const EdgeInsets.symmetric(vertical: 7),
                       width: isSelected
-                          ? 60
-                          : 50, // Active thì rộng hơn xíu (tuỳ chỉnh)
+                          ? 100
+                          : 61, // Active thì rộng hơn xíu (tuỳ chỉnh)
                       decoration: BoxDecoration(
                         // Nền active bao trọn cả cụm
                         color: isSelected

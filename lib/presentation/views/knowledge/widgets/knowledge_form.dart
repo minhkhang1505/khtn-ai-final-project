@@ -3,13 +3,11 @@ import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
 import 'package:khtn_ai_final_project/core/constants/knowledge_constants.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/file_input_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form_card.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_section_header.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_source_dropdown.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/labeled_text_field.dart';
-import 'package:provider/provider.dart';
 
 /// A reusable form widget for creating/editing knowledge sources
 class KnowledgeForm extends StatefulWidget {
@@ -19,6 +17,7 @@ class KnowledgeForm extends StatefulWidget {
   final KnowledgeSourceType? initialSourceType;
   final bool isEditMode;
   final VoidCallback? onEditPressed;
+  final Future<void> Function()? onDelete;
   final void Function({
     required String sourceName,
     required String sourceDescription,
@@ -36,6 +35,7 @@ class KnowledgeForm extends StatefulWidget {
     this.isEditMode = false,
     this.onEditPressed,
     this.onSave,
+    this.onDelete,
   });
 
   @override
@@ -169,18 +169,20 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
             onRightButtonPress: (widget.isEditMode && _hasChanges)
                 ? _handleSave
                 : null,
-            onLeftButtonPress: () {
-              ErrorDialogWidget.show(
-                context,
-                title: 'Delete Data Source',
-                errorMessage:
-                    'Are you sure you want to delete this data source?',
-                showConfirmButton: true,
-                confirmText: 'Delete',
-                onConfirm: _handleDelete,
-                onClose: () => Navigator.pop(context),
-              );
-            },
+            onLeftButtonPress: widget.onDelete != null
+                ? () {
+                    ErrorDialogWidget.show(
+                      context,
+                      title: 'Delete Data Source',
+                      errorMessage:
+                          'Are you sure you want to delete this data source?',
+                      showConfirmButton: true,
+                      confirmText: 'Delete',
+                      onConfirm: _handleDelete,
+                      onClose: () => Navigator.pop(context),
+                    );
+                  }
+                : null,
             isDisabled: (widget.isEditMode && _hasChanges),
             leftButtonLabel: "Delete",
             rightButtonLabel: "Save",
@@ -238,10 +240,6 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
         sourceType: _selectedSourceType,
       );
     }
-
-    context.read<KnowledgeDetailViewmodel>().updateKnowledge();
-
-    if (!context.mounted) return;
   }
 
   String? _validateSourceName(String? value) {
@@ -264,20 +262,8 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
   }
 
   Future<void> _handleDelete() async {
-    final vm = context.read<KnowledgeDetailViewmodel>();
-    final success = await vm.deleteKnowledge();
-
-    if (!mounted) return;
-
-    if (success) {
-      _backToKnowledgeBaseList();
+    if (widget.onDelete != null) {
+      await widget.onDelete!();
     }
-  }
-
-  void _backToKnowledgeBaseList() {
-    if (!mounted) return;
-
-    context.read<KnowledgeDetailViewmodel>().clearItem();
-    Navigator.pop(context, true); // Return true to indicate success
   }
 }

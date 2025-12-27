@@ -19,7 +19,7 @@ class CategoriesTab extends StatelessWidget {
 
         return GridView.count(
           primary: false,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
           crossAxisCount: crossAxisCount,

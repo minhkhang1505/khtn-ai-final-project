@@ -24,24 +24,31 @@ class SaveActionButtonRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Expanded(
-          child: OutlinedButton(
-            onPressed:
-                onLeftButtonPress ??
-                () {
-                  Navigator.pop(context);
-                },
-            style: OutlinedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: AppBorderRadius.medium,
-              ),
-              side: BorderSide(color: Theme.of(context).colorScheme.outline),
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            ),
-            child: Text(
-              leftButtonLabel,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ),
+          child: (onLeftButtonPress != null)
+              ? OutlinedButton(
+                  onPressed:
+                      onLeftButtonPress ??
+                      () {
+                        Navigator.pop(context);
+                      },
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppBorderRadius.medium,
+                    ),
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 24,
+                    ),
+                  ),
+                  child: Text(
+                    leftButtonLabel,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                )
+              : const SizedBox.shrink(),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -62,7 +69,7 @@ class SaveActionButtonRow extends StatelessWidget {
             child: Text(
               rightButtonLabel,
               style: TextStyle(
-                color: isDisabled
+                color: !isDisabled
                     ? colorScheme.onSurfaceVariant
                     : colorScheme.onPrimary,
                 fontWeight: FontWeight.w600,
