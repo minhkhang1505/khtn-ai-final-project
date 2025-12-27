@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_drawer_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 
 class ChatDrawer extends StatefulWidget {
-  const ChatDrawer({super.key});
+  final VoidCallback? onAddNewChat;
+  final VoidCallback? onNewChat;
+  final ValueChanged<String>? onConversationSelected;
+  const ChatDrawer({super.key, this.onNewChat, this.onAddNewChat, this.onConversationSelected});
 
   @override
   State<ChatDrawer> createState() => _ChatDrawerState();
 }
 
 class _ChatDrawerState extends State<ChatDrawer> {
-  final List<Map<String, dynamic>> models = AssistantModelType.values.map((type) {
-    return {
-      "name": type.displayName,
-    };
-  }).toList();
+  final ChatDrawerViewModel chatDrawerViewModel = sl<ChatDrawerViewModel>();
+  final ChatViewModel chatViewModel = sl<ChatViewModel>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   String _getTimeDistance(DateTime dateTime) {
     final now = DateTime.now();
@@ -36,150 +41,162 @@ class _ChatDrawerState extends State<ChatDrawer> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    final vm = context.read<ChatViewModel>();
-    vm.getConversations();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final vm = context.read<ChatViewModel>();
     final colorScheme = Theme.of(context).colorScheme;
-    final conversations = vm.conversations;
 
     return Drawer(
       child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 60,
-              alignment: Alignment.center,
-              child: Text(
-                'Chat Conversations',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero, 
-                children: [
-                  // Action buttons
-                  ListTile(
-                    leading: const Icon(Icons.add),
-                    title: const Text('New Chat'),
-                    onTap: () {
-                      Navigator.pop(context); // Close drawer
-                      vm.newChat();
-                    },
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Your Bots
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18.0),
-                    child: Text(
-                      'Your Conversations',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.grey[600],
-                      ),
+        child: AnimatedBuilder(
+          animation: chatDrawerViewModel,
+          builder: (context, _) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  height: 60,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Chat Conversations',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                ),
+                const SizedBox(height: 10),
 
-                  ...conversations.map((conversation) {
-                    final isUserBot = conversation.bot.name.isNotEmpty;
-                    return ListTile(
-                        title: Text(conversation.title),
-                        subtitle: Row(
-                          children: [
-                            // Tag bot - show "Bot" badge if this is a user-created bot
-                            if (isUserBot) ...[
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: colorScheme.primaryContainer,
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(
-                                    color: colorScheme.primary.withValues(alpha: 0.7),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Text(
-                                  'Bot',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                    color: colorScheme.onPrimaryContainer,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                            ],
-                            Text(
-                            _getTimeDistance(DateTime.parse(conversation.createdAt)),
-                            style: const TextStyle(fontSize: 12),
-                            )
-                          ],
-                        ),
-                        trailing: IconButton(
-                        icon: Icon(
-                          Icons.delete_outline,
-                          color: Colors.red,
-                          size: 20,
-                        ),
-                        onPressed: () async {
-                          final confirm = await showDialog<bool>(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('Delete conversation'),
-                              content: const Text('Are you sure you want to delete this conversation?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.of(ctx).pop(false),
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.of(ctx).pop(true),
-                                  child: const Text('Delete', style: TextStyle(color: Colors.red)),
-                                ),
-                              ],
-                            ),
-                          );
-
-                          if (confirm == true) {
-                            vm.deleteConversation(conversation.id);
-                            Navigator.pop(context); // Close drawer
-                          }
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      // Action buttons
+                      ListTile(
+                        leading: const Icon(Icons.add),
+                        title: const Text('New Chat'),
+                        onTap: () {
+                          Navigator.pop(context); // Close drawer
+                          widget.onAddNewChat?.call();
                         },
                       ),
-                      onTap: () {
-                        // Open chat with this conversation
-                        Navigator.pop(context); // Close drawer
-                        vm.conversationId = conversation.id;
-                        vm.conversationTitle = conversation.title;
-                        vm.clearMessages();
-                        vm.clearError();
-                        vm.getConversationHistory();
-                      },
-                    );
-                  }),
-                  const SizedBox(height: 10),
-                ],
-              ),
-            ),
-          ],
+                      const SizedBox(height: 10),
+
+                      // Your Conversations
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Text(
+                          'Your Conversations',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ),
+
+                      if (chatDrawerViewModel.isLoading)
+                        const Center(
+                          child: Column(
+                            children: [
+                              SizedBox(height: 20),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else ...chatDrawerViewModel.conversations.map((conversation) {
+                        final isUserBot = conversation.bot.name.isNotEmpty;
+                        return ListTile(
+                          title: Text(conversation.title),
+                          subtitle: Row(
+                            children: [
+                              // Tag bot - show "Bot" badge if this is a user-created bot
+                              if (isUserBot) ...[
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.primaryContainer,
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(
+                                      color: colorScheme.primary.withValues(alpha: 0.7),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Bot',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: colorScheme.onPrimaryContainer,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                              ],
+                              Text(
+                                _getTimeDistance(DateTime.parse(conversation.createdAt)),
+                                style: const TextStyle(fontSize: 12),
+                              )
+                            ],
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                            onPressed: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text('Delete conversation'),
+                                  content: const Text('Are you sure you want to delete this conversation?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(ctx).pop(false),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.of(ctx).pop(true),
+                                      child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (confirm == true) {
+                                chatDrawerViewModel.deleteConversation(conversation.id);
+                                if (chatViewModel.conversationId == conversation.id) {
+                                  widget.onNewChat?.call();
+                                }
+                              }
+                            },
+                          ),
+                          onTap: () {
+                            // Open chat with this conversation
+                            if (widget.onConversationSelected != null) {
+                              widget.onConversationSelected!(conversation.id);
+                            }
+                            Navigator.pop(context); // Close drawer
+                          },
+                        );
+                      }),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

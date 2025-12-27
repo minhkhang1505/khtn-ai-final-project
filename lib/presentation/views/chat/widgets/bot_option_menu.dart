@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/core/utils/ai_model_icon_helper.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/model_selector_view_model.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/bot/bot_view_model.dart';
 
 class BotOptionMenu extends StatefulWidget {
   final ValueChanged<String> onSelected;
@@ -26,18 +25,14 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final botVm = context.read<BotViewModel>();
-      botVm.fetchBots();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final modelSelectorViewModel = context.read<ModelSelectorViewModel>();
-    final botVm = context.watch<BotViewModel>();
-    final userBots = botVm.bots;
+    final modelSelectorViewModel = sl<ModelSelectorViewModel>();
+    final userBots = modelSelectorViewModel.userBots;
+    final baseModels = modelSelectorViewModel.baseModels;
 
     return PopupMenuButton<Map<String, dynamic>>(
       onSelected: (value) {
@@ -75,7 +70,7 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
         
         // Add base models
         items.addAll(
-          AssistantModelType.values.map((type) {
+          baseModels.map((type) {
             final name = type.displayName;
             return PopupMenuItem<Map<String, dynamic>>(
               value: {

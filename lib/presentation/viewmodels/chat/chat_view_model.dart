@@ -9,13 +9,11 @@ import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/send_message.dart';
 import 'package:khtn_ai_final_project/data/models/metadata_model.dart';
-import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_send_request_model.dart';
-import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/auth/get_user_usecase.dart';
-import 'package:khtn_ai_final_project/data/models/conversations/delete_conversation_model.dart';
+
 import 'package:injectable/injectable.dart';
 
 @injectable
@@ -25,7 +23,7 @@ class ChatViewModel extends ChangeNotifier {
 
   ChatViewModel({required this.chatUsecase, required this.getUserUseCase}) {
     // Fetch conversations on init
-    getConversations();
+    // getConversations();
     getUsage();
   }
 
@@ -36,7 +34,7 @@ class ChatViewModel extends ChangeNotifier {
   List<ChatMessageModel> messages = [];
   AssistantModel assistant = AssistantModel.defaults();
   MetadataModel metadata = MetadataModel.defaults();
-  List<ConversationModel> conversations = [];
+  //List<ConversationModel> conversations = [];
   List<PlatformFile> files = [];
   String assistantModel = 'gpt-4o-mini';
   String conversationId = ''; // Default conversation ID
@@ -92,6 +90,7 @@ class ChatViewModel extends ChangeNotifier {
   //   _isStreaming = streaming;
   //   notifyListeners();
   // }
+
   set tokenUsageSetter(TokenUsageModel usage) {
     tokenUsage = usage;
     notifyListeners();
@@ -123,6 +122,11 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void openChat(String conversationId) {
+    conversationIdSetter = conversationId;
+    getConversationHistory();
+  }
+
   /// Send a message as the user, append the user's message and the reply.
   Future<bool> sendMessage(String content) async {
     final trimmed = content.trim();
@@ -133,15 +137,9 @@ class ChatViewModel extends ChangeNotifier {
     }
 
     // Validate message
-    if (trimmed.isEmpty) return false;
-
-    if (trimmed.length > 5000) {
-      errorSetter = "Message exceeds maximum length of 5000 characters.";
-      return false;
-    }
-
-    if (tokenUsage.availableTokens <= 0) {
-      errorSetter = "Insufficient tokens to send message.";
+    final validationError = validateInputMessage(trimmed);
+    if (validationError.isNotEmpty) {
+      errorSetter = validationError;
       return false;
     }
 
@@ -173,10 +171,7 @@ class ChatViewModel extends ChangeNotifier {
       // For streaming responses, simulate by appending chunks;
       await addStreamingAssistantMessage(response.message);
 
-      // If new conversation, update ID
-      if (conversationId == 'temp_id') {
-        conversationIdSetter = response.conversationId;
-      }
+      conversationIdSetter = response.conversationId;
 
       // Update metadata after message exchange
       updateMetadata();
@@ -195,28 +190,6 @@ class ChatViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
-  }
-
-  Future<bool> getConversations() async {
-    try {
-      final response = await chatUsecase.getConversations(
-        GetConversationsRequestModel(
-          cursor: '',
-          limit: 20,
-          assistantId: assistantModel.isNotEmpty == true ? assistantModel : null,
-          assistantModel: 'dify',
-        ),
-      );
-
-      conversations = response.items;
-    } catch (e) {
-      errorSetter = e.toString();
-      return false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-    return true;
   }
 
   Future<bool> getConversationHistory() async {
@@ -299,6 +272,20 @@ class ChatViewModel extends ChangeNotifier {
     return true;
   }
 
+  String validateInputMessage(String content) {
+    final trimmed = content.trim();
+    if (trimmed.isEmpty) {
+      return "Message cannot be empty.";
+    }
+    if (trimmed.length > 5000) {
+      return "Message exceeds maximum length of 5000 characters.";
+    }
+    if (tokenUsage.availableTokens <= 0) {
+      return "Insufficient tokens to send message.";
+    }
+    return '';
+  }
+
   /// New chat - clear messages and reset metadata
   void newChat() {
     messages.clear();
@@ -374,32 +361,6 @@ class ChatViewModel extends ChangeNotifier {
     } catch (e) {
       errorSetter = e.toString();
       rethrow;
-    }
-  }
-
-  void deleteConversation(String conversationId) async {
-    try {
-      isLoadingSetter = true;
-      await chatUsecase.deleteConversation(
-        DeleteConversationRequestModel(
-          conversationId: conversationId,
-          assistantId: assistantModel,
-          assistantModel: 'agentic',
-        ),
-      );
-
-      // Remove from local list
-      conversations.removeWhere((conv) => conv.id == conversationId);
-
-      // If the deleted conversation was the currently open one, open a new chat
-      if (this.conversationId == conversationId) {
-        newChat();
-      } else {
-        notifyListeners();
-      }
-      isLoadingSetter = false;
-    } catch (e) {
-      errorSetter = e.toString();
     }
   }
 

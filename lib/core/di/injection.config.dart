@@ -59,6 +59,8 @@ import '../../presentation/viewmodels/auth_view_model.dart' as _i912;
 import '../../presentation/viewmodels/bot/bot_view_model.dart' as _i626;
 import '../../presentation/viewmodels/bot/create_bot_view_model.dart' as _i219;
 import '../../presentation/viewmodels/bot/edit_bot_view_model.dart' as _i24;
+import '../../presentation/viewmodels/chat/chat_drawer_view_model.dart'
+    as _i981;
 import '../../presentation/viewmodels/chat/chat_view_model.dart' as _i959;
 import '../../presentation/viewmodels/chat/model_selector_view_model.dart'
     as _i279;
@@ -187,6 +189,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1034.UpdateKnowledgeBaseUsecase(
         repository: gh<_i618.KnowledgeBaseRepository>(),
       ),
+    );
+    gh.factory<_i981.ChatDrawerViewModel>(
+      () => _i981.ChatDrawerViewModel(chatUsecase: gh<_i1013.ChatUseCase>()),
     );
     gh.factoryParam<
       _i688.KnowledgeDetailViewmodel,

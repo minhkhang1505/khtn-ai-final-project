@@ -25,7 +25,12 @@ class ChatPage extends StatelessWidget {
     final vm = context.read<ChatViewModel>();
     return Scaffold(
       appBar: ChatAppBar(onAddNewChat: () => vm.newChat()),
-      drawer: ChatDrawer(),
+      drawer: ChatDrawer(
+        onNewChat: () => vm.newChat(),
+        onAddNewChat: () => vm.newChat(),
+        onConversationSelected: (conversationId) => vm.openChat(conversationId)
+      ),
+
       body: Column(
         children: [
           // Message list or welcome message

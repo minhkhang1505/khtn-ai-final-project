@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
@@ -18,7 +18,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final chatViewModel = context.read<ChatViewModel>();
+    final chatViewModel = sl<ChatViewModel>();
     return AppBar(
       automaticallyImplyLeading: true,
       title: (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
