@@ -11,13 +11,16 @@ class ShowPromptModalBottomSheet extends StatelessWidget {
   const ShowPromptModalBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
+    // Lấy ChatViewModel từ parent context trước khi mở modal
+    final chatViewModel = context.read<ChatViewModel>();
+
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) {
+      builder: (modalContext) {
         return ChangeNotifierProvider(
           create: (_) => sl<PromptViewmodel>()..getAllPrompts(),
-          child: const _PromptModalContent(),
+          child: _PromptModalContent(chatViewModel: chatViewModel),
         );
       },
     );
@@ -30,7 +33,9 @@ class ShowPromptModalBottomSheet extends StatelessWidget {
 }
 
 class _PromptModalContent extends StatefulWidget {
-  const _PromptModalContent();
+  final ChatViewModel chatViewModel;
+
+  const _PromptModalContent({required this.chatViewModel});
 
   @override
   State<_PromptModalContent> createState() => _PromptModalContentState();
@@ -161,8 +166,7 @@ class _PromptModalContentState extends State<_PromptModalContent>
 
   void _handleItemTap(BuildContext context, PromptEntity prompt) {
     // get the content of the prompt and send it as a message, put it in the chat input box
-    final chatViewModel = context.read<ChatViewModel>();
-    chatViewModel.setInputMessage(prompt.content);
+    widget.chatViewModel.setInputMessage(prompt.content);
     Navigator.pop(context);
   }
 }

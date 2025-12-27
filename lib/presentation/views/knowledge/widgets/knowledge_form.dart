@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
 import 'package:khtn_ai_final_project/core/constants/knowledge_constants.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/file_input_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form_card.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_section_header.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_source_dropdown.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/labeled_text_field.dart';
+import 'package:provider/provider.dart';
 
 /// A reusable form widget for creating/editing knowledge sources
 class KnowledgeForm extends StatefulWidget {
@@ -79,20 +82,6 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
     _urlController.addListener(_checkForChanges);
   }
 
-  void _checkForChanges() {
-    final hasChanges =
-        _sourceNameController.text != _initialSourceName ||
-        _sourceDescriptionController.text != _initialSourceDescription ||
-        _urlController.text != _initialUrl ||
-        _selectedSourceType != _initialSourceType;
-
-    if (hasChanges != _hasChanges) {
-      setState(() {
-        _hasChanges = hasChanges;
-      });
-    }
-  }
-
   @override
   void dispose() {
     _sourceTypeController.dispose();
@@ -102,40 +91,8 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
     super.dispose();
   }
 
-  void _handleSave() {
-    if (_formKey.currentState?.validate() ?? false) {
-      widget.onSave?.call(
-        sourceName: _sourceNameController.text,
-        sourceDescription: _sourceDescriptionController.text,
-        url: _urlController.text,
-        sourceType: _selectedSourceType,
-      );
-    }
-  }
-
-  String? _validateSourceName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return KnowledgeConstants.sourceNameRequired;
-    }
-    return null;
-  }
-
-  String? _validateUrl(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return KnowledgeConstants.urlRequired;
-    }
-    // Basic URL validation
-    final urlPattern = r'^https?://';
-    if (!RegExp(urlPattern).hasMatch(value)) {
-      return KnowledgeConstants.invalidUrl;
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Form(
       key: _formKey,
       child: Column(
@@ -208,33 +165,119 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                 }
               },
             ),
+          SaveActionButtonRow(
+            onRightButtonPress: (widget.isEditMode && _hasChanges)
+                ? _handleSave
+                : null,
+            onLeftButtonPress: () {
+              ErrorDialogWidget.show(
+                context,
+                title: 'Delete Data Source',
+                errorMessage:
+                    'Are you sure you want to delete this data source?',
+                showConfirmButton: true,
+                confirmText: 'Delete',
+                onConfirm: _handleDelete,
+                onClose: () => Navigator.pop(context),
+              );
+            },
+            isDisabled: (widget.isEditMode && _hasChanges),
+            leftButtonLabel: "Delete",
+            rightButtonLabel: "Save",
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ElevatedButton(
-                onPressed: (widget.isEditMode && _hasChanges)
-                    ? _handleSave
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.primary,
-                  disabledBackgroundColor: colorScheme.surfaceContainerHighest,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.medium,
-                  ),
-                ),
-                child: Text(
-                  KnowledgeConstants.saveButton,
-                  style: TextStyle(
-                    color: (widget.isEditMode && _hasChanges)
-                        ? colorScheme.onPrimary
-                        : colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
+              // ElevatedButton(
+              //   onPressed: (widget.isEditMode && _hasChanges)
+              //       ? _handleSave
+              //       : null,
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: colorScheme.primary,
+              //     disabledBackgroundColor: colorScheme.surfaceContainerHighest,
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: AppBorderRadius.medium,
+              //     ),
+              //   ),
+              //   child: Text(
+              //     KnowledgeConstants.saveButton,
+              //     style: TextStyle(
+              //       color: (widget.isEditMode && _hasChanges)
+              //           ? colorScheme.onPrimary
+              //           : colorScheme.onSurfaceVariant,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  void _checkForChanges() {
+    final hasChanges =
+        _sourceNameController.text != _initialSourceName ||
+        _sourceDescriptionController.text != _initialSourceDescription ||
+        _urlController.text != _initialUrl ||
+        _selectedSourceType != _initialSourceType;
+
+    if (hasChanges != _hasChanges) {
+      setState(() {
+        _hasChanges = hasChanges;
+      });
+    }
+  }
+
+  void _handleSave() {
+    if (_formKey.currentState?.validate() ?? false) {
+      widget.onSave?.call(
+        sourceName: _sourceNameController.text,
+        sourceDescription: _sourceDescriptionController.text,
+        url: _urlController.text,
+        sourceType: _selectedSourceType,
+      );
+    }
+
+    context.read<KnowledgeDetailViewmodel>().updateKnowledge();
+
+    if (!context.mounted) return;
+  }
+
+  String? _validateSourceName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return KnowledgeConstants.sourceNameRequired;
+    }
+    return null;
+  }
+
+  String? _validateUrl(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return KnowledgeConstants.urlRequired;
+    }
+    // Basic URL validation
+    final urlPattern = r'^https?://';
+    if (!RegExp(urlPattern).hasMatch(value)) {
+      return KnowledgeConstants.invalidUrl;
+    }
+    return null;
+  }
+
+  Future<void> _handleDelete() async {
+    final vm = context.read<KnowledgeDetailViewmodel>();
+    final success = await vm.deleteKnowledge();
+
+    if (!mounted) return;
+
+    if (success) {
+      _backToKnowledgeBaseList();
+    }
+  }
+
+  void _backToKnowledgeBaseList() {
+    if (!mounted) return;
+
+    context.read<KnowledgeDetailViewmodel>().clearItem();
+    Navigator.pop(context, true); // Return true to indicate success
   }
 }

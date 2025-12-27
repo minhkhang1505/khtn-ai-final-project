@@ -24,6 +24,7 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
   @override
   void initState() {
     super.initState();
+
     _sourceDescriptionController = TextEditingController();
     _sourceNameController = TextEditingController();
     _urlController = TextEditingController();

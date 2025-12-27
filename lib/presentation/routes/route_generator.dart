@@ -166,12 +166,8 @@ class RouteGenerator {
       case AppRoutes.promptDetails:
         final prompt = settings.arguments as PromptEntity?;
         if (prompt == null || prompt.id.isEmpty) {
-          debugPrint('Khang - Error: prompt is null or prompt.id is empty');
           return _errorRoute('promptDetails - Missing prompt');
         }
-        debugPrint(
-          'Khang - Route received prompt: ${prompt.id} - ${prompt.title}',
-        );
         return _buildRoute(
           settings: settings,
           builder: (context) {

@@ -174,8 +174,21 @@ class _KnowledgePageState extends State<KnowledgePage> {
     await vm.refreshKnowledges();
   }
 
-  void _onItemTap(BuildContext context, KnowledgeEntity knowledge) {
+  void _onItemTap(BuildContext context, KnowledgeEntity knowledge) async {
     // Navigate to knowledge details page
-    Navigator.pushNamed(context, '/knowledge/details', arguments: knowledge);
+    final result = await Navigator.pushNamed(
+      context,
+      '/knowledge/details',
+      arguments: knowledge,
+    );
+
+    // Refresh data if knowledge was deleted successfully
+    if (result == true && context.mounted) {
+      final viewmodel = Provider.of<KnowledgeBaseViewmodel>(
+        context,
+        listen: false,
+      );
+      await viewmodel.refreshKnowledges();
+    }
   }
 }

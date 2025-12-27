@@ -14,7 +14,7 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
   final UpdateKnowledgeBaseUsecase updateKnowledgeBaseUsecase;
   final DeleteKnowledgeBaseUsecase deleteKnowledgeBaseUsecase;
 
-@factoryMethod
+  @factoryMethod
   KnowledgeDetailViewmodel({
     @factoryParam required this.knowledge,
     required this.updateKnowledgeBaseUsecase,
@@ -45,6 +45,13 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
 
   void setUrl(String url) {
     _url = url;
+    notifyListeners();
+  }
+
+  void clearItem() {
+    _knowledgeName = "";
+    _knowledgeDescription = "";
+    _url = "";
     notifyListeners();
   }
 
@@ -89,8 +96,8 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteKnowledge() async {
-    if (_state == KnowledgeDetailState.loading) return;
+  Future<bool> deleteKnowledge() async {
+    if (_state == KnowledgeDetailState.loading) return false;
 
     try {
       _setState(KnowledgeDetailState.loading);
@@ -102,14 +109,18 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
       } else {
         _setState(KnowledgeDetailState.failure);
       }
+      return success;
     } catch (e) {
-      print('Error deleting knowledge: $e');
+      debugPrint('Error deleting knowledge: $e');
       _setState(KnowledgeDetailState.failure);
+      return false;
     }
   }
 
   Future<bool> loadKnowledgeDetails() async {
     if (_state == KnowledgeDetailState.loading) return false;
+
+    debugPrint("Khang test knowledge id: ${knowledge.id}");
 
     try {
       _setState(KnowledgeDetailState.loading);
