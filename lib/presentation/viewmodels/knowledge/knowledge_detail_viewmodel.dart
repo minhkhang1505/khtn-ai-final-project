@@ -68,8 +68,9 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateKnowledge() async {
-    if (_state == KnowledgeDetailState.loading) return;
+  Future<bool> updateKnowledge() async {
+    if (_state == KnowledgeDetailState.loading) return false;
+
     try {
       _setState(KnowledgeDetailState.loading);
 
@@ -89,10 +90,16 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
         ),
       );
 
-      _setState(KnowledgeDetailState.success);
+      if (response.data.isNotEmpty) {
+        _setState(KnowledgeDetailState.success);
+      } else {
+        _setState(KnowledgeDetailState.failure);
+      }
+      return true;
     } catch (e) {
       print('Error updating knowledge: $e');
       _setState(KnowledgeDetailState.failure);
+      return false;
     }
   }
 
@@ -119,8 +126,6 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
 
   Future<bool> loadKnowledgeDetails() async {
     if (_state == KnowledgeDetailState.loading) return false;
-
-    debugPrint("Khang test knowledge id: ${knowledge.id}");
 
     try {
       _setState(KnowledgeDetailState.loading);

@@ -15,8 +15,6 @@ class NewKnowledgeScreen extends StatelessWidget {
     CreateKnowledgeBaseViewmodel viewmodel, {
     required String sourceName,
     required String sourceDescription,
-    required String url,
-    required sourceType,
   }) async {
     final response = await viewmodel.createNewKnowledge(
       sourceName,
@@ -80,15 +78,11 @@ class NewKnowledgeScreen extends StatelessWidget {
                                 ({
                                   required String sourceName,
                                   required String sourceDescription,
-                                  required String url,
-                                  required sourceType,
                                 }) => _handleSave(
                                   context,
                                   viewmodel,
                                   sourceName: sourceName,
                                   sourceDescription: sourceDescription,
-                                  url: url,
-                                  sourceType: sourceType,
                                 ),
                           ),
                         ),

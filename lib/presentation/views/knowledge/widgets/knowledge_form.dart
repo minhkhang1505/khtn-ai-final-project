@@ -18,11 +18,9 @@ class KnowledgeForm extends StatefulWidget {
   final bool isEditMode;
   final VoidCallback? onEditPressed;
   final Future<void> Function()? onDelete;
-  final void Function({
+  final Future<void> Function({
     required String sourceName,
     required String sourceDescription,
-    required String url,
-    required KnowledgeSourceType sourceType,
   })?
   onSave;
 
@@ -231,14 +229,14 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
     }
   }
 
-  void _handleSave() {
+  Future<void> _handleSave() async {
     if (_formKey.currentState?.validate() ?? false) {
-      widget.onSave?.call(
-        sourceName: _sourceNameController.text,
-        sourceDescription: _sourceDescriptionController.text,
-        url: _urlController.text,
-        sourceType: _selectedSourceType,
-      );
+      if (widget.onSave != null) {
+        await widget.onSave!(
+          sourceName: _sourceNameController.text,
+          sourceDescription: _sourceDescriptionController.text,
+        );
+      }
     }
   }
 

@@ -97,14 +97,10 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
                               ({
                                 required String sourceName,
                                 required String sourceDescription,
-                                required String url,
-                                required sourceType,
                               }) => _handleSave(
                                 context,
                                 sourceName: sourceName,
                                 sourceDescription: sourceDescription,
-                                url: url,
-                                sourceType: sourceType,
                               ),
                           onDelete: () => _handleDelete(context),
                         ),
@@ -133,36 +129,41 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     );
   }
 
-  void _handleSave(
+  Future<void> _handleSave(
     BuildContext context, {
     required String sourceName,
     required String sourceDescription,
-    required String url,
-    required sourceType,
-  }) {
-    // TODO: Implement update logic
-    // This is where you would call your repository/service to update the knowledge
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Knowledge source "$sourceName" updated successfully'),
-        backgroundColor: Colors.green,
-      ),
-    );
+  }) async {
+    final vm = context.read<KnowledgeDetailViewmodel>();
+    vm.setKnowledgeName(sourceName);
+    vm.setKnowledgeDescription(sourceDescription);
+    final success = await vm.updateKnowledge();
 
     // Navigate back after a short delay
-    Future.delayed(const Duration(seconds: 1), () {
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
-    });
+    if (!context.mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Knowledge source "$sourceName" updated successfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to update knowledge source. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _handleDelete(BuildContext context) async {
     final vm = context.read<KnowledgeDetailViewmodel>();
     final success = await vm.deleteKnowledge();
 
-    if (!mounted) return;
+    if (!context.mounted) return;
 
     if (success) {
       vm.clearItem();

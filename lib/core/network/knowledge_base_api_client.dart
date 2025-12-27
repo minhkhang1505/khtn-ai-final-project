@@ -72,7 +72,12 @@ class KnowledgeBaseApiClient {
         'Content-Type': 'application/json',
       },
     );
-    return _dio.patch(path, queryParameters: queryParameters, options: options);
+    return _dio.patch(
+      path,
+      queryParameters: queryParameters,
+      options: options,
+      data: data,
+    );
   }
 
   Future<Response> delete(
