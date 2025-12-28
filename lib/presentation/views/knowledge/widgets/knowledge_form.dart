@@ -14,7 +14,7 @@ class KnowledgeForm extends StatefulWidget {
   final String? initialSourceName;
   final String? initialSourceDescription;
   final String? initialUrl;
-  final KnowledgeSourceType? initialSourceType;
+  final DataSourceType? initialSourceType;
   final bool isEditMode;
   final VoidCallback? onEditPressed;
   final Future<void> Function()? onDelete;
@@ -46,8 +46,8 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
   late final TextEditingController _sourceNameController;
   late final TextEditingController _sourceDescriptionController;
   late final TextEditingController _urlController;
-  late KnowledgeSourceType _selectedSourceType;
-  late KnowledgeSourceType _initialSourceType;
+  late DataSourceType _selectedSourceType;
+  late DataSourceType _initialSourceType;
   late String _initialSourceName;
   late String _initialSourceDescription;
   late String _initialUrl;
@@ -56,8 +56,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
   @override
   void initState() {
     super.initState();
-    _selectedSourceType =
-        widget.initialSourceType ?? KnowledgeSourceTypes.all[0];
+    _selectedSourceType = widget.initialSourceType ?? DataSourceTypes.all[0];
     _initialSourceType = _selectedSourceType;
     _initialSourceName = widget.initialSourceName ?? '';
     _initialSourceDescription = widget.initialSourceDescription ?? '';
@@ -106,22 +105,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                       ? 'assets/icons/ic_edit.svg'
                       : null,
                 ),
-                const SizedBox(height: 24),
-                KnowledgeSourceDropdown(
-                  controller: _sourceTypeController,
-                  initialSelection: _selectedSourceType,
-                  enabled: widget.isEditMode,
-                  onSelected: (KnowledgeSourceType? source) {
-                    if (source != null) {
-                      setState(() {
-                        _selectedSourceType = source;
-                        _sourceTypeController.text = source.name;
-                      });
 
-                      _checkForChanges();
-                    }
-                  },
-                ),
                 const SizedBox(height: 16),
 
                 LabeledTextField(
@@ -140,29 +124,60 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   maxLines: null,
                   readOnly: !widget.isEditMode,
                 ),
-                const SizedBox(height: 16),
-                LabeledTextField(
-                  label: KnowledgeConstants.urlOrPathLabel,
-                  hintText: KnowledgeConstants.urlOrPathHint,
-                  controller: _urlController,
-                  validator: _validateUrl,
-                  keyboardType: TextInputType.url,
-                  readOnly: !widget.isEditMode,
-                ),
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          if (_selectedSourceType == KnowledgeSourceTypes.file)
-            FileInputSection(
-              onFilePicked: (file) {
-                if (file != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Đã chọn file: ${file.name}')),
-                  );
-                }
-              },
-            ),
+          ...(widget.onDelete != null
+              ? [
+                  const SizedBox(height: 12),
+
+                  KnowledgeFormCard(
+                    child: Column(
+                      children: [
+                        KnowledgeSourceDropdown(
+                          controller: _sourceTypeController,
+                          initialSelection: _selectedSourceType,
+                          enabled: widget.isEditMode,
+                          onSelected: (DataSourceType? source) {
+                            if (source != null) {
+                              setState(() {
+                                _selectedSourceType = source;
+                                _sourceTypeController.text = source.name;
+                              });
+
+                              _checkForChanges();
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        LabeledTextField(
+                          label: KnowledgeConstants.urlOrPathLabel,
+                          hintText: KnowledgeConstants.urlOrPathHint,
+                          controller: _urlController,
+                          validator: _validateUrl,
+                          keyboardType: TextInputType.url,
+                          readOnly: !widget.isEditMode,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (_selectedSourceType == DataSourceTypes.file)
+                    FileInputSection(
+                      onFilePicked: (file) {
+                        if (file != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Đã chọn file: ${file.name}'),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  if (_selectedSourceType == DataSourceTypes.file)
+                    const SizedBox(height: 12),
+                ]
+              : [const SizedBox(height: 12)]),
           SaveActionButtonRow(
             onRightButtonPress: (widget.isEditMode && _hasChanges)
                 ? _handleSave

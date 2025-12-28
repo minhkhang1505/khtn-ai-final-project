@@ -12,13 +12,11 @@ enum KnowledgeDetailState { initial, loading, success, failure }
 class KnowledgeDetailViewmodel extends ChangeNotifier {
   final KnowledgeEntity knowledge;
   final UpdateKnowledgeBaseUsecase updateKnowledgeBaseUsecase;
-  final DeleteKnowledgeBaseUsecase deleteKnowledgeBaseUsecase;
 
   @factoryMethod
   KnowledgeDetailViewmodel({
     @factoryParam required this.knowledge,
     required this.updateKnowledgeBaseUsecase,
-    required this.deleteKnowledgeBaseUsecase,
   });
 
   KnowledgeDetailState _state = KnowledgeDetailState.initial;
@@ -55,10 +53,10 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  KnowledgeSourceType _sourceType = KnowledgeSourceTypes.url;
-  KnowledgeSourceType get sourceType => _sourceType;
+  DataSourceType _sourceType = DataSourceTypes.url;
+  DataSourceType get sourceType => _sourceType;
 
-  void setSourceType(KnowledgeSourceType type) {
+  void setSourceType(DataSourceType type) {
     _sourceType = type;
     notifyListeners();
   }
@@ -98,27 +96,6 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
       return true;
     } catch (e) {
       print('Error updating knowledge: $e');
-      _setState(KnowledgeDetailState.failure);
-      return false;
-    }
-  }
-
-  Future<bool> deleteKnowledge() async {
-    if (_state == KnowledgeDetailState.loading) return false;
-
-    try {
-      _setState(KnowledgeDetailState.loading);
-
-      final success = await deleteKnowledgeBaseUsecase.call(knowledge.id);
-
-      if (success) {
-        _setState(KnowledgeDetailState.success);
-      } else {
-        _setState(KnowledgeDetailState.failure);
-      }
-      return success;
-    } catch (e) {
-      debugPrint('Error deleting knowledge: $e');
       _setState(KnowledgeDetailState.failure);
       return false;
     }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_data_source_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 /// Screen for viewing and editing knowledge source details
@@ -19,7 +21,7 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
   late TextEditingController _sourceNameController;
   late TextEditingController _sourceDescriptionController;
   late TextEditingController _urlController;
-  late KnowledgeSourceType initialSourceType;
+  late DataSourceType initialSourceType;
 
   @override
   void initState() {
@@ -28,7 +30,7 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     _sourceDescriptionController = TextEditingController();
     _sourceNameController = TextEditingController();
     _urlController = TextEditingController();
-    initialSourceType = KnowledgeSourceTypes.url;
+    initialSourceType = DataSourceTypes.url;
   }
 
   @override
@@ -63,6 +65,13 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
               },
             ),
           ),
+          floatingActionButton: vm.state == KnowledgeDetailState.success
+              ? FloatingActionButton.extended(
+                  onPressed: _showAddDataSourceBottomSheet,
+                  icon: const Icon(Icons.add),
+                  label: const Text("DataSource"),
+                )
+              : null,
           body: switch (vm.state) {
             KnowledgeDetailState.initial ||
             KnowledgeDetailState.loading => const LoadingIndicatorWidget(),
@@ -102,7 +111,7 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
                                 sourceName: sourceName,
                                 sourceDescription: sourceDescription,
                               ),
-                          onDelete: () => _handleDelete(context),
+                          // onDelete: () => _handleDelete(context),
                         ),
                       ),
                     ),
@@ -113,6 +122,15 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
           },
         );
       },
+    );
+  }
+
+  void _showAddDataSourceBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const AddDataSourceBottomSheet(),
     );
   }
 
@@ -159,15 +177,15 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     }
   }
 
-  Future<void> _handleDelete(BuildContext context) async {
-    final vm = context.read<KnowledgeDetailViewmodel>();
-    final success = await vm.deleteKnowledge();
+  // Future<void> _handleDelete(BuildContext context) async {
+  //   final vm = context.read<KnowledgeDetailViewmodel>();
+  //   final success = await vm.deleteKnowledge();
 
-    if (!context.mounted) return;
+  //   if (!context.mounted) return;
 
-    if (success) {
-      vm.clearItem();
-      Navigator.pop(context, true); // Return true to indicate success
-    }
-  }
+  //   if (success) {
+  //     vm.clearItem();
+  //     Navigator.pop(context, true); // Return true to indicate success
+  //   }
+  // }
 }

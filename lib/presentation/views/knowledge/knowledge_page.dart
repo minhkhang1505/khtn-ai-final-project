@@ -76,62 +76,62 @@ class _KnowledgePageState extends State<KnowledgePage> {
                     ),
                     child: Container(
                       color: Theme.of(context).colorScheme.surface,
-                      child: SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            children: [
-                              // Filter section
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: const [FilterChipMenu()],
-                              ),
-                              Expanded(
-                                child:
-                                    vm.knowledges == null ||
-                                        vm.knowledges!.isEmpty
-                                    ? EmptyPromptWidget(
-                                        message:
-                                            "Not found any knowledge base. Please add new knowledge base.",
-                                      )
-                                    : RefreshIndicator(
-                                        onRefresh: _onRefresh,
-                                        color: Theme.of(context).primaryColor,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: [
+                            // Filter section
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: const [FilterChipMenu()],
+                            ),
+                            Expanded(
+                              child:
+                                  vm.knowledges == null ||
+                                      vm.knowledges!.isEmpty
+                                  ? EmptyPromptWidget(
+                                      message:
+                                          "Not found any knowledge base. Please add new knowledge base.",
+                                    )
+                                  : RefreshIndicator(
+                                      onRefresh: _onRefresh,
+                                      color: Theme.of(context).primaryColor,
 
-                                        child: ListView.builder(
-                                          controller: _scrollController,
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 8,
-                                          ),
-                                          itemCount:
-                                              vm.knowledges!.length +
-                                              (vm.loadMoreState ==
-                                                      LoadMoreKnowledgeState
-                                                          .loading
-                                                  ? 1
-                                                  : 0),
-                                          itemBuilder: (context, index) {
-                                            if (index ==
-                                                vm.knowledges!.length) {
-                                              return const Padding(
-                                                padding: EdgeInsets.all(16.0),
-                                                child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                ),
-                                              );
-                                            }
-                                            return KnowledgeItem(
-                                              iconPath:
-                                                  'assets/icons/ic_url.svg',
-                                              knowledge: vm.knowledges![index],
-                                            );
-                                          },
+                                      child: ListView.builder(
+                                        controller: _scrollController,
+                                        padding: const EdgeInsets.fromLTRB(
+                                          0,
+                                          8,
+                                          0,
+                                          90,
                                         ),
+                                        itemCount:
+                                            vm.knowledges!.length +
+                                            (vm.loadMoreState ==
+                                                    LoadMoreKnowledgeState
+                                                        .loading
+                                                ? 1
+                                                : 0),
+                                        itemBuilder: (context, index) {
+                                          if (index == vm.knowledges!.length) {
+                                            return const Padding(
+                                              padding: EdgeInsets.all(16.0),
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            );
+                                          }
+                                          return KnowledgeItem(
+                                            iconPath:
+                                                'assets/icons/ic_knowledge.svg',
+                                            knowledge: vm.knowledges![index],
+                                          );
+                                        },
                                       ),
-                              ),
-                            ],
-                          ),
+                                    ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

@@ -7,6 +7,7 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_mod
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/create_knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasource_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth/user_view_model.dart';
@@ -198,11 +199,23 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (context) {
-            return ChangeNotifierProvider(
-              create: (_) =>
-                  sl<KnowledgeDetailViewmodel>(param1: knowledge)
-                    ..loadKnowledgeDetails(),
-              child: KnowledgeDetailScreen(),
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider(
+                  create: (_) => sl<DatasourceViewmodel>(),
+                ),
+                ChangeNotifierProvider(
+                  create: (_) =>
+                      sl<KnowledgeDetailViewmodel>(param1: knowledge)
+                        ..loadKnowledgeDetails(),
+                ),
+              ],
+              child: ChangeNotifierProvider(
+                create: (_) =>
+                    sl<KnowledgeDetailViewmodel>(param1: knowledge)
+                      ..loadKnowledgeDetails(),
+                child: KnowledgeDetailScreen(),
+              ),
             );
           },
         );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/mappers/knowledge_mapper.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
+import 'package:khtn_ai_final_project/domain/usecases/knowledge/delete_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/knowledge/get_knowledges_usecase.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,11 +10,17 @@ enum KnowledgeBaseState { initial, loading, success, failure }
 
 enum LoadMoreKnowledgeState { idle, loading, noMore }
 
+enum DeleteKnowledgeState { initial, loading, success, failure }
+
 @injectable
 class KnowledgeBaseViewmodel extends ChangeNotifier {
   GetKnowledgesUsecase getKnowledgesUsecase;
+  final DeleteKnowledgeBaseUsecase deleteKnowledgeBaseUsecase;
 
-  KnowledgeBaseViewmodel({required this.getKnowledgesUsecase});
+  KnowledgeBaseViewmodel({
+    required this.getKnowledgesUsecase,
+    required this.deleteKnowledgeBaseUsecase,
+  });
 
   KnowledgeBaseState _state = KnowledgeBaseState.initial;
   KnowledgeBaseState get state => _state;
@@ -23,6 +30,14 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
 
   LoadMoreKnowledgeState _loadMoreState = LoadMoreKnowledgeState.idle;
   LoadMoreKnowledgeState get loadMoreState => _loadMoreState;
+
+  DeleteKnowledgeState _deleteState = DeleteKnowledgeState.initial;
+  DeleteKnowledgeState get deleteState => _deleteState;
+
+  void _setDeleteState(DeleteKnowledgeState newState) {
+    _deleteState = newState;
+    notifyListeners();
+  }
 
   var hasNext = true;
   final loadMore = false;
@@ -129,6 +144,27 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteKnowledge(String id) async {
+    if (_state == DeleteKnowledgeState.loading) return false;
+
+    try {
+      _setDeleteState(DeleteKnowledgeState.loading);
+
+      final success = await deleteKnowledgeBaseUsecase.call(id);
+
+      if (success) {
+        _setDeleteState(DeleteKnowledgeState.success);
+      } else {
+        _setDeleteState(DeleteKnowledgeState.failure);
+      }
+      return success;
+    } catch (e) {
+      debugPrint('Error deleting knowledge: $e');
+      _setDeleteState(DeleteKnowledgeState.failure);
       return false;
     }
   }
