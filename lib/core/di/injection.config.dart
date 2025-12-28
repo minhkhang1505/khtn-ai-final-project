@@ -42,6 +42,8 @@ import '../../domain/usecases/auth/refresh_token_usecase.dart' as _i407;
 import '../../domain/usecases/auth/sign_up_usecase.dart' as _i270;
 import '../../domain/usecases/bot/bot_usecase.dart' as _i692;
 import '../../domain/usecases/chat/chat_usecase.dart' as _i423;
+import '../../domain/usecases/datasource/upload_multiple_file_usecase.dart'
+    as _i645;
 import '../../domain/usecases/knowledge/create_knowledge_usecase.dart' as _i42;
 import '../../domain/usecases/knowledge/delete_knowledge_usecase.dart' as _i291;
 import '../../domain/usecases/knowledge/get_knowledges_usecase.dart' as _i402;
@@ -88,7 +90,6 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.factory<_i1071.AgentViewModel>(() => _i1071.AgentViewModel());
-    gh.factory<_i838.DatasourceViewmodel>(() => _i838.DatasourceViewmodel());
     gh.singleton<_i338.ThemeProvider>(() => _i338.ThemeProvider());
     gh.lazySingleton<_i929.AuthLocalDataSource>(
       () => _i929.AuthLocalDataSourceImpl(),
@@ -178,6 +179,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i761.RemovePromptFromFavoriteUsecase>(
       () => _i761.RemovePromptFromFavoriteUsecase(gh<_i364.PromptRepository>()),
     );
+    gh.lazySingleton<_i645.UploadMultipleFileUsecase>(
+      () => _i645.UploadMultipleFileUsecase(
+        repository: gh<_i618.KnowledgeBaseRepository>(),
+      ),
+    );
     gh.lazySingleton<_i42.CreateKnowledgeUsecase>(
       () => _i42.CreateKnowledgeUsecase(
         repository: gh<_i618.KnowledgeBaseRepository>(),
@@ -248,6 +254,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i180.GetUserUseCase>(
       () => _i180.GetUserUseCase(userRepository: gh<_i271.UserRepository>()),
+    );
+    gh.factory<_i838.DatasourceViewmodel>(
+      () => _i838.DatasourceViewmodel(
+        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
+      ),
     );
     gh.factory<_i511.UserViewModel>(
       () => _i511.UserViewModel(getUserUseCase: gh<_i180.GetUserUseCase>()),

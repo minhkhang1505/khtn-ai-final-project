@@ -16,7 +16,7 @@ class KnowledgeItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         Navigator.pushNamed(
           context,

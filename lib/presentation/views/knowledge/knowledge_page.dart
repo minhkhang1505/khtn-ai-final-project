@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
@@ -126,6 +126,10 @@ class _KnowledgePageState extends State<KnowledgePage> {
                                             iconPath:
                                                 'assets/icons/ic_knowledge.svg',
                                             knowledge: vm.knowledges![index],
+                                            onDelete: () => _handleDelete(
+                                              context,
+                                              vm.knowledges![index].id,
+                                            ),
                                           );
                                         },
                                       ),
@@ -172,6 +176,43 @@ class _KnowledgePageState extends State<KnowledgePage> {
   Future<void> _onRefresh() async {
     final vm = context.read<KnowledgeBaseViewmodel>();
     await vm.refreshKnowledges();
+  }
+
+  Future<void> _handleDelete(BuildContext context, String knowledgeId) async {
+    // Show confirmation dialog first
+    final confirmed = await ErrorDialogWidget.show(
+      context,
+      title: 'Delete Knowledge',
+      errorMessage:
+          'Are you sure you want to delete this knowledge base? This action cannot be undone.',
+      showConfirmButton: true,
+      confirmText: 'Delete',
+    );
+
+    // Only proceed if user confirmed
+    if (confirmed != true || !context.mounted) return;
+
+    final vm = context.read<KnowledgeBaseViewmodel>();
+    final success = await vm.deleteKnowledge(knowledgeId);
+
+    if (!context.mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Knowledge base deleted successfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      vm.getAllKnowledges();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to delete knowledge base'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void onItemTap(BuildContext context, KnowledgeEntity knowledge) async {

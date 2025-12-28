@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
@@ -33,5 +34,12 @@ class KnowledgeBaseRepositoryImplement implements KnowledgeBaseRepository {
   Future<bool> deleteKnowledge(String id) {
     final success = remoteDataSource.deleteKnowledgeBase(id);
     return success;
+  }
+
+  @override
+  Future<bool> uploadMultipleFiles(
+    List<PlatformFile> files,
+  ) {
+    return remoteDataSource.uploadMultipleFiles(files);
   }
 }

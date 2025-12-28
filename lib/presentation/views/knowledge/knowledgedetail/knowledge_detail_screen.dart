@@ -213,18 +213,6 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     }
   }
 
-  // Future<void> _handleDelete(BuildContext context) async {
-  //   final vm = context.read<KnowledgeDetailViewmodel>();
-  //   final success = await vm.deleteKnowledge();
-
-  //   if (!context.mounted) return;
-
-  //   if (success) {
-  //     vm.clearItem();
-  //     Navigator.pop(context, true); // Return true to indicate success
-  //   }
-  // }
-
   Widget _buildEmptyDataSourceWidget() {
     return Container(
       padding: const EdgeInsets.all(32),

@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/network/knowledge_base_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:injectable/injectable.dart';
@@ -87,6 +90,10 @@ abstract class KnowledgeBaseRemoteDataSource {
     String id,
     KnowledgeBaseCreationAndUpdateRequest request,
   );
+
+  Future<bool> uploadMultipleFiles(
+    List<PlatformFile> files,
+  );
 }
 
 @LazySingleton(as: KnowledgeBaseRemoteDataSource)
@@ -169,5 +176,30 @@ class KnowledgeBaseRemoteDataSourceImpl
       queryParameters: {'id': id},
     );
     return KnowledgeBasePaggingResponse.fromJson(response.data);
+  }
+
+  @override
+  Future<bool> uploadMultipleFiles(
+    List<PlatformFile> files,
+  ) async {
+    final formData = FormData.fromMap({
+      'files': [
+        for (var file in files)
+          if (file.path != null)
+            await MultipartFile.fromFile(file.path!, filename: file.name),
+      ],
+    });
+
+    try {
+      final response = await client.post(
+        '/kb-core/v1/knowledge/files',
+        data: formData,
+      );
+
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      debugPrint("Lỗi upload: $e");
+      return false;
+    }
   }
 }
