@@ -4,24 +4,41 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
 class FileInputSection extends StatefulWidget {
-  final void Function(PlatformFile?)? onFilePicked;
-  const FileInputSection({super.key, this.onFilePicked});
+  final void Function(List<PlatformFile>)? onFilesPicked;
+  final List<PlatformFile>? initialFiles;
+  const FileInputSection({super.key, this.onFilesPicked, this.initialFiles});
 
   @override
   State<FileInputSection> createState() => _FileInputSectionState();
 }
 
 class _FileInputSectionState extends State<FileInputSection> {
-  PlatformFile? _selectedFile;
+  List<PlatformFile> _selectedFiles = [];
 
-  Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialFiles != null) {
+      _selectedFiles = List.from(widget.initialFiles!);
+    }
+  }
+
+  Future<void> _pickFiles() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
 
     if (result != null && result.files.isNotEmpty) {
-      final file = result.files.first;
-      setState(() => _selectedFile = file);
-      widget.onFilePicked?.call(file);
+      setState(() {
+        _selectedFiles.addAll(result.files);
+      });
+      widget.onFilesPicked?.call(_selectedFiles);
     }
+  }
+
+  void _removeFile(int index) {
+    setState(() {
+      _selectedFiles.removeAt(index);
+    });
+    widget.onFilesPicked?.call(_selectedFiles);
   }
 
   @override
@@ -56,9 +73,7 @@ class _FileInputSectionState extends State<FileInputSection> {
               ),
               minimumSize: const Size.fromHeight(48),
             ),
-            onPressed: () {
-              _pickFile();
-            },
+            onPressed: _pickFiles,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -70,26 +85,75 @@ class _FileInputSectionState extends State<FileInputSection> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text("Select File"),
+                Text(
+                  _selectedFiles.isEmpty ? "Select Files" : "Add More Files",
+                ),
               ],
             ),
           ),
           const SizedBox(height: 12),
-          if (_selectedFile != null)
-            Column(
-              children: [
-                const Divider(),
-                Text(
-                  'File: ${_selectedFile!.name}',
-                  style: const TextStyle(fontSize: 14),
-                ),
-                Text(
-                  'Size: ${(_selectedFile!.size / 1024).toStringAsFixed(2)} KB',
-                  style: TextStyle(color: colorScheme.onSurface.withAlpha(140)),
-                ),
-              ],
+          if (_selectedFiles.isNotEmpty) ...[
+            const Divider(),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _selectedFiles.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final file = _selectedFiles[index];
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerHighest,
+                    borderRadius: AppBorderRadius.medium,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.insert_drive_file,
+                        size: 20,
+                        color: colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              file.name,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              '${(file.size / 1024).toStringAsFixed(2)} KB',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: colorScheme.onSurface.withAlpha(140),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        onPressed: () => _removeFile(index),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          SizedBox(height: 12),
+            const SizedBox(height: 4),
+          ],
+          const SizedBox(height: 12),
         ],
       ),
     );

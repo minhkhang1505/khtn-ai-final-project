@@ -164,11 +164,15 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
                   const SizedBox(height: 12),
                   if (_selectedSourceType == DataSourceTypes.file)
                     FileInputSection(
-                      onFilePicked: (file) {
-                        if (file != null) {
+                      onFilesPicked: (files) {
+                        if (files.isNotEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Đã chọn file: ${file.name}'),
+                              content: Text(
+                                files.length == 1
+                                    ? 'Selected: ${files.first.name}'
+                                    : 'Selected ${files.length} files',
+                              ),
                             ),
                           );
                         }

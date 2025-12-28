@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasource_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_data_source_bottom_sheet.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/datasource/data_source_list.dart';
 import 'package:provider/provider.dart';
 
 /// Screen for viewing and editing knowledge source details
@@ -94,24 +96,58 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
                           horizontal: 16,
                           vertical: 12,
                         ),
-                        child: KnowledgeForm(
-                          initialSourceName: _sourceNameController.text,
-                          initialSourceDescription:
-                              _sourceDescriptionController.text,
-                          initialUrl: _urlController.text,
-                          initialSourceType: initialSourceType,
-                          isEditMode: _isEditMode,
-                          onEditPressed: _handleEdit,
-                          onSave:
-                              ({
-                                required String sourceName,
-                                required String sourceDescription,
-                              }) => _handleSave(
-                                context,
-                                sourceName: sourceName,
-                                sourceDescription: sourceDescription,
-                              ),
-                          // onDelete: () => _handleDelete(context),
+                        child: Column(
+                          children: [
+                            KnowledgeForm(
+                              initialSourceName: _sourceNameController.text,
+                              initialSourceDescription:
+                                  _sourceDescriptionController.text,
+                              initialUrl: _urlController.text,
+                              initialSourceType: initialSourceType,
+                              isEditMode: _isEditMode,
+                              onEditPressed: _handleEdit,
+                              onSave:
+                                  ({
+                                    required String sourceName,
+                                    required String sourceDescription,
+                                  }) => _handleSave(
+                                    context,
+                                    sourceName: sourceName,
+                                    sourceDescription: sourceDescription,
+                                  ),
+                              // onDelete: () => _handleDelete(context),
+                            ),
+                            const SizedBox(height: 24),
+                            Consumer<DatasourceViewmodel>(
+                              builder: (context, datasourceVm, child) {
+                                if (datasourceVm.dataSource.isEmpty) {
+                                  return _buildEmptyDataSourceWidget();
+                                }
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 8,
+                                      ),
+                                      child: Text(
+                                        'Data Sources',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 400,
+                                      child: const DataSourceList(),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -188,4 +224,39 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
   //     Navigator.pop(context, true); // Return true to indicate success
   //   }
   // }
+
+  Widget _buildEmptyDataSourceWidget() {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/ic_empty_list.svg',
+            height: 120,
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No Data Sources',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Add data sources to this knowledge base\nusing the button below',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+          ),
+          SizedBox(height: 100),
+        ],
+      ),
+    );
+  }
 }

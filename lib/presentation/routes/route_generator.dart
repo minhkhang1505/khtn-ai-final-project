@@ -210,12 +210,7 @@ class RouteGenerator {
                         ..loadKnowledgeDetails(),
                 ),
               ],
-              child: ChangeNotifierProvider(
-                create: (_) =>
-                    sl<KnowledgeDetailViewmodel>(param1: knowledge)
-                      ..loadKnowledgeDetails(),
-                child: KnowledgeDetailScreen(),
-              ),
+              child: const KnowledgeDetailScreen(),
             );
           },
         );

@@ -13,7 +13,7 @@ class AddFileDialog extends StatefulWidget {
 
 class _AddFileDialogState extends State<AddFileDialog> {
   final TextEditingController _promptController = TextEditingController();
-  PlatformFile? _selectedFile;
+  List<PlatformFile> _selectedFiles = [];
 
   @override
   void dispose() {
@@ -22,19 +22,19 @@ class _AddFileDialogState extends State<AddFileDialog> {
   }
 
   void _handleSubmit() {
-    if (_selectedFile == null) {
+    if (_selectedFiles.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select a file'),
+          content: Text('Please select at least one file'),
           backgroundColor: Colors.orange,
         ),
       );
       return;
     }
 
-    // Return the selected file and prompt
+    // Return the selected files and prompt
     Navigator.pop(context, {
-      'file': _selectedFile,
+      'files': _selectedFiles,
       'prompt': _promptController.text.trim(),
     });
   }
@@ -73,9 +73,10 @@ class _AddFileDialogState extends State<AddFileDialog> {
             const SizedBox(height: 24),
 
             FileInputSection(
-              onFilePicked: (file) {
+              initialFiles: _selectedFiles,
+              onFilesPicked: (files) {
                 setState(() {
-                  _selectedFile = file;
+                  _selectedFiles = files;
                 });
               },
             ),

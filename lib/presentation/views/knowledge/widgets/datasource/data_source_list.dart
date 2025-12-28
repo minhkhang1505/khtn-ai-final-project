@@ -4,14 +4,14 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasour
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/datasource/data_source_item.dart';
 import 'package:provider/provider.dart';
 
-class KnowledgeSourceList extends StatefulWidget {
-  const KnowledgeSourceList({super.key});
+class DataSourceList extends StatefulWidget {
+  const DataSourceList({super.key});
 
   @override
-  State<KnowledgeSourceList> createState() => _KnowledgeSourceListState();
+  State<DataSourceList> createState() => _DataSourceListState();
 }
 
-class _KnowledgeSourceListState extends State<KnowledgeSourceList> {
+class _DataSourceListState extends State<DataSourceList> {
   @override
   void initState() {
     super.initState();
