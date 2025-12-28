@@ -80,7 +80,7 @@ class _FileInputSectionState extends State<FileInputSection> {
               children: [
                 const Divider(),
                 Text(
-                  'Selected File: ${_selectedFile!.name}',
+                  'File: ${_selectedFile!.name}',
                   style: const TextStyle(fontSize: 14),
                 ),
                 Text(

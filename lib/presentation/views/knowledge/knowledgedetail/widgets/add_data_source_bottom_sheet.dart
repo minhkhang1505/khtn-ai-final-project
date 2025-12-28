@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_file_dialog.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_drive_dialog.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_url_dialog.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_confluence_dialog.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_slack_dialog.dart';
 
 /// Bottom sheet widget for adding data source
 class AddDataSourceBottomSheet extends StatelessWidget {
@@ -15,8 +20,8 @@ class AddDataSourceBottomSheet extends StatelessWidget {
         top: 16,
         bottom: MediaQuery.of(context).viewInsets.bottom + 16,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceBright,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
@@ -54,10 +59,7 @@ class AddDataSourceBottomSheet extends StatelessWidget {
                 iconAssetPath: dataSource.iconAssetPath,
                 title: dataSource.name,
                 subtitle: 'Add from ${dataSource.name}',
-                onTap: () {
-                  // TODO: Handle data source selection
-                  Navigator.pop(context, dataSource);
-                },
+                onTap: () => _handleDataSourceSelection(context, dataSource),
               ),
             ),
           ),
@@ -65,6 +67,68 @@ class AddDataSourceBottomSheet extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _handleDataSourceSelection(
+    BuildContext context,
+    DataSourceType dataSource,
+  ) async {
+    // Close the bottom sheet first
+    Navigator.pop(context);
+
+    // Handle different data source types
+    if (dataSource == DataSourceTypes.file) {
+      // Show file dialog
+      final result = await showDialog(
+        context: context,
+        builder: (context) => const AddFileDialog(),
+      );
+
+      if (result != null) {
+        // TODO: Handle file upload with result['file'] and result['prompt']
+
+      }
+    } else if (dataSource == DataSourceTypes.drive) {
+      // Show Google Drive dialog
+      final result = await showDialog(
+        context: context,
+        builder: (context) => const AddDriveDialog(),
+      );
+
+      if (result != null) {
+        // TODO: Handle Google Drive file with result['name'], result['fileId'], result['fileName'], and result['prompt']
+      }
+    } else if (dataSource == DataSourceTypes.url) {
+      // Show URL dialog
+      final result = await showDialog(
+        context: context,
+        builder: (context) => const AddUrlDialog(),
+      );
+
+      if (result != null) {
+        // TODO: Handle URL with result['name'] and result['url']
+      }
+    } else if (dataSource == DataSourceTypes.confluence) {
+      // Show Confluence dialog
+      final result = await showDialog(
+        context: context,
+        builder: (context) => const AddConfluenceDialog(),
+      );
+
+      if (result != null) {
+        // TODO: Handle Confluence with result['name'], result['url'], result['username'], and result['apiToken']
+      }
+    } else if (dataSource == DataSourceTypes.slack) {
+      // Show Slack dialog
+      final result = await showDialog(
+        context: context,
+        builder: (context) => const AddSlackDialog(),
+      );
+
+      if (result != null) {
+        // TODO: Handle Slack with result['name'] and result['botToken']
+      }
+    }
   }
 
   Widget _buildDataSourceOption(
@@ -80,7 +144,10 @@ class AddDataSourceBottomSheet extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
+          color: Theme.of(context).colorScheme.outline.withAlpha(30),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withAlpha(50),
+          ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -88,7 +155,7 @@ class AddDataSourceBottomSheet extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: SvgPicture.asset(
@@ -96,7 +163,7 @@ class AddDataSourceBottomSheet extends StatelessWidget {
                 width: 24,
                 height: 24,
                 colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColor,
+                  Theme.of(context).colorScheme.primary,
                   BlendMode.srcIn,
                 ),
               ),
