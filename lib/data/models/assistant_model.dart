@@ -2,7 +2,6 @@
 
 enum AssistantModelType {
   CLAUDE_3_HAIKU("claude-3-haiku-20240307"),
-  //CLAUDE_3_SONNET("claude-3-sonnet-20240229"), This is not available currently
   GEMINI_15_FLASH("gemini-1.5-flash-latest"),
   GEMINI_15_PRO("gemini-1.5-pro-latest"),
   GPT_4_O("gpt-4o"),
@@ -43,7 +42,6 @@ enum AssistantModelType {
   String get displayName {
     return switch (this) {
       AssistantModelType.CLAUDE_3_HAIKU => "Claude 3 Haiku",
-      //AssistantModelType.CLAUDE_3_SONNET => "Claude 3 Sonnet",
       AssistantModelType.GEMINI_15_FLASH => "Gemini 1.5 Flash",
       AssistantModelType.GEMINI_15_PRO => "Gemini 1.5 Pro",
       AssistantModelType.GPT_4_O => "GPT-4o",
@@ -78,7 +76,7 @@ class AssistantModel {
   factory AssistantModel.defaults() {
     return AssistantModel(
       model: "dify",
-      name: 'GPT_4O_MINI',
+      name: 'GPT 4o Mini',
       id: 'gpt-4o-mini',
     );
   }

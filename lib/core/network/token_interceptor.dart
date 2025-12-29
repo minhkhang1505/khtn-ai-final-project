@@ -25,9 +25,9 @@ class TokenInterceptor extends Interceptor {
     final token = await localDataSource.getAccessToken();
 
     //Debug print for tracing
-    print("➡️ REQUEST: ${options.method} ${options.uri}");
-    print("Headers: ${options.headers}");
-    print("Body: ${options.data}");
+    debugPrint("➡️ REQUEST: ${options.method} ${options.uri}");
+    debugPrint("Headers: ${options.headers}");
+    debugPrint("Body: ${options.data}");
 
     // Skip Authorization header for GET requests to prompts for get prompt not have status code 500
     final isGetPrompt =

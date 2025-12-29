@@ -3,10 +3,10 @@ import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/core/utils/ai_model_icon_helper.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat/model_selector_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_app_bar_view_model.dart';
 
 class BotOptionMenu extends StatefulWidget {
-  final ValueChanged<String> onSelected;
+  final ValueChanged<AssistantModel> onSelected;
   
   const BotOptionMenu({super.key, required this.onSelected});
 
@@ -15,13 +15,7 @@ class BotOptionMenu extends StatefulWidget {
 }
 
 class _BotOptionMenuState extends State<BotOptionMenu> {
-  final List<Map<String, dynamic>> models = AssistantModelType.values.map((type) {
-    return {
-      "name": type.displayName,
-      "id": type.id,
-    };
-  }).toList();
-
+  final ChatAppBarViewModel _modelSelectorViewModel = sl<ChatAppBarViewModel>();
   @override
   void initState() {
     super.initState();
@@ -30,24 +24,38 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final modelSelectorViewModel = sl<ModelSelectorViewModel>();
-    final userBots = modelSelectorViewModel.userBots;
-    final baseModels = modelSelectorViewModel.baseModels;
+    final userBots = _modelSelectorViewModel.userBots;
+    final baseModels = _modelSelectorViewModel.baseModels;
 
     return PopupMenuButton<Map<String, dynamic>>(
       onSelected: (value) {
-        if (value['type'] == 'model') {
-          modelSelectorViewModel.selectedModel = value['id'];
-        } else if (value['type'] == 'bot') {
-          // Handle bot selection - could store bot ID in viewmodel
-          modelSelectorViewModel.selectedModel = value['id'];
-        }
+        final String id = value['id'] as String;
+        final String name = value['name'] as String;
+        // TODO: mode == knowledge base (bot) or agentic
+        final String model = value['type'] == 'bot' ? 'custom-bot' : 'agentic';
+
+        final assistant = AssistantModel(model: model, id: id, name: name);
+        _modelSelectorViewModel.setSelectedAssistant(assistant);
+        widget.onSelected(assistant);
       },
       color: colorScheme.surfaceBright,
       position: PopupMenuPosition.under,
       shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
       elevation: 4,
       itemBuilder: (context) {
+        if (_modelSelectorViewModel.isLoading) {
+          return [
+            PopupMenuItem<Map<String, dynamic>>(
+              enabled: false,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: colorScheme.primary,
+                ),
+              ),
+            ),
+          ];
+        }
+
         List<PopupMenuEntry<Map<String, dynamic>>> items = [];
         
         // Add base models section
@@ -71,21 +79,21 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
         // Add base models
         items.addAll(
           baseModels.map((type) {
-            final name = type.displayName;
+            final displayName = type.displayName;
             return PopupMenuItem<Map<String, dynamic>>(
               value: {
                 'type': 'model',
                 'id': type.id,
-                'name': name,
+                'name': displayName,
               },
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  AiModelIconHelper.iconForModel(name, size: 20),
+                  AiModelIconHelper.iconForModel(displayName, size: 20),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      name,
+                      displayName,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -123,24 +131,17 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
               return PopupMenuItem<Map<String, dynamic>>(
                 value: {
                   'type': 'bot',
-                  'id': bot.openAiAssistantId ?? bot.id,
+                  'id': bot.id,
                   'name': bot.assistantName,
                   'botData': bot,
                 },
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: colorScheme.secondaryContainer,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Icon(
-                        Icons.smart_toy,
-                        size: 16,
-                        color: colorScheme.onSecondaryContainer,
-                      ),
+                    AiModelIconHelper.iconForModel(
+                      bot.assistantName,
+                      size: 16,
+                      color: colorScheme.onSecondaryContainer,
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -176,32 +177,42 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
         
         return items;
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: colorScheme.surfaceBright,
-          borderRadius: AppBorderRadius.medium,
-          border: Border.all(color: colorScheme.outlineVariant),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AiModelIconHelper.iconForModel(
-              modelSelectorViewModel.selectedModel,
-              size: 20,
-              color: colorScheme.onSurface,
+      child: AnimatedBuilder(
+        animation: _modelSelectorViewModel,
+        builder: (context, _) {
+
+          final assistant = _modelSelectorViewModel.selectedAssistant;
+          String displayName = assistant.name;
+
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceBright,
+              borderRadius: AppBorderRadius.medium,
+              border: Border.all(color: colorScheme.outlineVariant),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                AssistantModelType.getModelFromId(modelSelectorViewModel.selectedModel).displayName,
-                style: const TextStyle(fontSize: 15),
-                maxLines: 1,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+              AiModelIconHelper.iconForModel(
+                  displayName,
+                  size: 16,
+                  color: colorScheme.onSecondaryContainer,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    displayName,
+                    style: const TextStyle(fontSize: 15),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const Icon(Icons.arrow_drop_down),
+              ],
             ),
-            const Icon(Icons.arrow_drop_down),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

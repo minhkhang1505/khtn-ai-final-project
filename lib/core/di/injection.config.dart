@@ -62,7 +62,7 @@ import '../../presentation/viewmodels/bot/edit_bot_view_model.dart' as _i24;
 import '../../presentation/viewmodels/chat/chat_drawer_view_model.dart'
     as _i981;
 import '../../presentation/viewmodels/chat/chat_view_model.dart' as _i959;
-import '../../presentation/viewmodels/chat/model_selector_view_model.dart'
+import '../../presentation/viewmodels/chat/chat_app_bar_view_model.dart'
     as _i279;
 import '../../presentation/viewmodels/create_knowledge_base_viewmodel.dart'
     as _i363;
@@ -256,8 +256,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i24.EditBotViewModel>(
       () => _i24.EditBotViewModel(botUseCase: gh<_i810.BotUseCase>()),
     );
-    gh.factory<_i279.ModelSelectorViewModel>(
-      () => _i279.ModelSelectorViewModel(botUseCase: gh<_i810.BotUseCase>()),
+    gh.lazySingleton<_i279.ChatAppBarViewModel>(
+      () => _i279.ChatAppBarViewModel(botUseCase: gh<_i810.BotUseCase>()),
     );
     gh.factory<_i363.CreateKnowledgeBaseViewmodel>(
       () => _i363.CreateKnowledgeBaseViewmodel(

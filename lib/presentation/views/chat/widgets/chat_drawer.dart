@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_drawer_view_model.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 
 class ChatDrawer extends StatefulWidget {
   final VoidCallback? onAddNewChat;
-  final VoidCallback? onNewChat;
-  final ValueChanged<String>? onConversationSelected;
-  const ChatDrawer({super.key, this.onNewChat, this.onAddNewChat, this.onConversationSelected});
+  final ValueChanged<String>? onDeleted;
+  final ValueChanged<ConversationModel>? onConversationSelected;
+  const ChatDrawer({super.key, this.onDeleted, this.onAddNewChat, this.onConversationSelected});
 
   @override
   State<ChatDrawer> createState() => _ChatDrawerState();
@@ -15,7 +15,6 @@ class ChatDrawer extends StatefulWidget {
 
 class _ChatDrawerState extends State<ChatDrawer> {
   final ChatDrawerViewModel chatDrawerViewModel = sl<ChatDrawerViewModel>();
-  final ChatViewModel chatViewModel = sl<ChatViewModel>();
 
   @override
   void initState() {
@@ -175,16 +174,14 @@ class _ChatDrawerState extends State<ChatDrawer> {
 
                               if (confirm == true) {
                                 chatDrawerViewModel.deleteConversation(conversation.id);
-                                if (chatViewModel.conversationId == conversation.id) {
-                                  widget.onNewChat?.call();
-                                }
+                                widget.onDeleted?.call(conversation.id);
                               }
                             },
                           ),
                           onTap: () {
                             // Open chat with this conversation
                             if (widget.onConversationSelected != null) {
-                              widget.onConversationSelected!(conversation.id);
+                              widget.onConversationSelected!(conversation);
                             }
                             Navigator.pop(context); // Close drawer
                           },

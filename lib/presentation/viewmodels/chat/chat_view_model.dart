@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/data/models/token_usage_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
 
@@ -22,28 +23,22 @@ class ChatViewModel extends ChangeNotifier {
   final GetUserUseCase getUserUseCase;
 
   ChatViewModel({required this.chatUsecase, required this.getUserUseCase}) {
-    // Fetch conversations on init
-    // getConversations();
     getUsage();
   }
 
   // State variables
   final ScrollController scrollController = ScrollController();
-  final TextEditingController inputController = TextEditingController();
 
   List<ChatMessageModel> messages = [];
-  AssistantModel assistant = AssistantModel.defaults();
+  // AssistantModel assistant = AssistantModel.defaults();
   MetadataModel metadata = MetadataModel.defaults();
-  //List<ConversationModel> conversations = [];
-  List<PlatformFile> files = [];
-  String assistantModel = 'gpt-4o-mini';
   String conversationId = ''; // Default conversation ID
-  String conversationTitle = 'Chat';
   TokenUsageModel tokenUsage = TokenUsageModel.defaults();
   String cursor = '';
   String? _error;
   bool _isLoading = false;
   bool _isStreaming = false;
+  String _inputMessage = '';
 
   // Setters
   set conversationIdSetter(String id) {
@@ -51,27 +46,8 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  set conversationTitleSetter(String title) {
-    conversationTitle = title;
-    notifyListeners();
-  }
-
-  set assistantModelSetter(String model) {
-    assistantModel = model;
-    notifyListeners();
-  }
-
-  set assistantSetter(AssistantModel assistantModel) {
-    assistant = assistantModel;
-  }
-
   set metadataSetter(MetadataModel metadataModel) {
     metadata = metadataModel;
-    notifyListeners();
-  }
-
-  set filesSetter(List<PlatformFile> fileList) {
-    files = fileList;
     notifyListeners();
   }
 
@@ -86,11 +62,6 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // set isStreamingSetter(bool streaming) {
-  //   _isStreaming = streaming;
-  //   notifyListeners();
-  // }
-
   set tokenUsageSetter(TokenUsageModel usage) {
     tokenUsage = usage;
     notifyListeners();
@@ -104,6 +75,7 @@ class ChatViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get error => _error;
+  String get inputMessage => _inputMessage;
 
   String get messagesContent {
     String temp = metadata.conversation.messages
@@ -117,27 +89,19 @@ class ChatViewModel extends ChangeNotifier {
     return temp;
   }
 
-  void setInputMessage(String content) {
-    inputController.text = content;
-    notifyListeners();
-  }
-
-  void openChat(String conversationId) {
-    conversationIdSetter = conversationId;
-    getConversationHistory();
+  void openChat(ConversationModel conversation) {
+    conversationIdSetter = conversation.id;
+    clearError();
+    clearMessages();
+    updateMetadata();
+    getConversationHistory(conversation.bot.id);
   }
 
   /// Send a message as the user, append the user's message and the reply.
-  Future<bool> sendMessage(String content) async {
+  Future<bool> sendMessage(String content, AssistantModel assistant, List<PlatformFile> files) async {
     final trimmed = content.trim();
-
-    if (files.isNotEmpty) {
-      errorSetter = "File upload not implemented yet.";
-      return false;
-    }
-
     // Validate message
-    final validationError = validateInputMessage(trimmed);
+    final validationError = validateInputMessage(trimmed, files);
     if (validationError.isNotEmpty) {
       errorSetter = validationError;
       return false;
@@ -173,9 +137,6 @@ class ChatViewModel extends ChangeNotifier {
 
       conversationIdSetter = response.conversationId;
 
-      // Update metadata after message exchange
-      updateMetadata();
-
       // Scroll to bottom after a slight delay to ensure UI has updated
       Future.delayed(const Duration(milliseconds: 100), () {
         scrollToBottom();
@@ -192,7 +153,7 @@ class ChatViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> getConversationHistory() async {
+  Future<bool> getConversationHistory(String model) async {
     _isLoading = true;
     notifyListeners();
     try {
@@ -200,7 +161,7 @@ class ChatViewModel extends ChangeNotifier {
         GetConversationHistoryRequestModel(
           cursor: '',
           limit: 100,
-          assistantId: assistantModel,
+          assistantId: model,
           assistantModel: 'dify',
           conversationId: conversationId,
         ),
@@ -219,7 +180,6 @@ class ChatViewModel extends ChangeNotifier {
         );
         messages.add(replyMsg);
       }
-      updateMetadata();
 
       // Auto-scroll to last message after loading conversation
       Future.delayed(const Duration(milliseconds: 300), () {
@@ -235,7 +195,7 @@ class ChatViewModel extends ChangeNotifier {
     return true;
   }
 
-  Future<bool> chatWithBot(String content) async {
+  Future<bool> chatWithBot(String content, AssistantModel assistant, List<PlatformFile> files) async {
     final trimmed = content.trim();
     if (trimmed.isEmpty) return false;
 
@@ -249,6 +209,8 @@ class ChatViewModel extends ChangeNotifier {
         metadata: metadata,
         assistant: assistant,
       );
+      debugPrint(" ChatWithBotRequestModel: ${request.toJson()}");
+
       final response = await chatUsecase.chatWithBot(request);
       final replyMessage = ChatMessageModel.createMessage(
         response.message,
@@ -272,7 +234,12 @@ class ChatViewModel extends ChangeNotifier {
     return true;
   }
 
-  String validateInputMessage(String content) {
+  String validateInputMessage(String content, List<PlatformFile> files) {
+
+    if (files.isNotEmpty) {
+      return "File upload not implemented yet.";
+    }
+
     final trimmed = content.trim();
     if (trimmed.isEmpty) {
       return "Message cannot be empty.";
@@ -290,7 +257,6 @@ class ChatViewModel extends ChangeNotifier {
   void newChat() {
     messages.clear();
     conversationIdSetter = '';
-    conversationTitleSetter = 'Chat';
     metadataSetter = MetadataModel.defaults();
     errorSetter = null;
     notifyListeners();
@@ -299,6 +265,7 @@ class ChatViewModel extends ChangeNotifier {
   /// Add a pre-built message (useful for initializing from history)
   void addMessage(ChatMessageModel message) {
     messages.add(message);
+    updateMetadata();
     notifyListeners();
   }
 
@@ -364,34 +331,6 @@ class ChatViewModel extends ChangeNotifier {
     }
   }
 
-  /// Add files to the current draft/files list
-  void addFiles(List<PlatformFile> newFiles) {
-    files.addAll(newFiles);
-    notifyListeners();
-    // Ensure UI scrolls to bottom to reveal any new file UI
-    // Use delayed callback to allow UI to rebuild first
-    Future.delayed(const Duration(milliseconds: 150), () {
-      scrollToBottom();
-    });
-  }
-
-  /// Remove file at index
-  void removeFileAt(int index) {
-    if (index >= 0 && index < files.length) {
-      files.removeAt(index);
-      notifyListeners();
-      // Use delayed callback to allow UI to rebuild first
-      Future.delayed(const Duration(milliseconds: 150), () {
-        scrollToBottom();
-      });
-    }
-  }
-
-  /// Clear all selected files
-  void clearFiles() {
-    filesSetter = [];
-  }
-
   /// Clear conversation
   void clearMessages() {
     messages.clear();
@@ -403,10 +342,15 @@ class ChatViewModel extends ChangeNotifier {
     errorSetter = null;
   }
 
+  /// Set input message (for prompt injection)
+  void setInputMessage(String message) {
+    _inputMessage = message;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     scrollController.dispose();
-    inputController.dispose();
     super.dispose();
   }
 }

@@ -10,11 +10,17 @@ class ShowPromptModalBottomSheet extends StatelessWidget {
   const ShowPromptModalBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
+    // Get the PromptViewmodel from the parent context before opening the modal
+    final promptViewmodel = context.read<PromptViewmodel>();
+    
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return const _PromptModalContent();
+        return ChangeNotifierProvider<PromptViewmodel>.value(
+          value: promptViewmodel,
+          child: const _PromptModalContent(),
+        );
       },
     );
   }

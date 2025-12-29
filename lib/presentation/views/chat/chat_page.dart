@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_app_bar_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'package:khtn_ai_final_project/presentation/views/chat/widgets/message_input.dart';
@@ -22,23 +24,41 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final vm = context.read<ChatViewModel>();
+    // Listen to ChatViewModel changes so UI updates when conversation changes
+    final chatViewModel = context.watch<ChatViewModel>();
+    final modelSelectorViewModel = sl<ChatAppBarViewModel>();
+
     return Scaffold(
-      appBar: ChatAppBar(onAddNewChat: () => vm.newChat()),
+      appBar: ChatAppBar(
+        onAddNewChat: () => chatViewModel.newChat(),
+        onModelChanged: (model) {
+          // Update selected model in ModelSelectorViewModel
+        },
+      ),
       drawer: ChatDrawer(
-        onNewChat: () => vm.newChat(),
-        onAddNewChat: () => vm.newChat(),
-        onConversationSelected: (conversationId) => vm.openChat(conversationId)
+        onDeleted: (String conversationId) {
+          // If the deleted conversation is the current one, open new chat
+          if (chatViewModel.conversationId == conversationId) {
+            chatViewModel.newChat();
+          }
+        },
+        onAddNewChat: () => chatViewModel.newChat(),
+        onConversationSelected: (conversation) {
+            // Open chat with this conversation
+            chatViewModel.openChat(conversation);
+            // Set the selected model in model selector`
+            modelSelectorViewModel.setSelectedAssistant(conversation.bot);
+        },
       ),
 
       body: Column(
         children: [
           // Message list or welcome message
           Expanded(
-            child: vm.conversationId.isEmpty
+            child: chatViewModel.conversationId.isEmpty
                 ? const EmptyWidget()
                 : // Message list
-                  MessageList(scrollController: vm.scrollController),
+                  MessageList(scrollController: chatViewModel.scrollController),
           ),
 
           // Loading indicator
@@ -59,8 +79,8 @@ class ChatPage extends StatelessWidget {
                 ),
                 child: InkWell(
                   onTap: () {
-                    if (vm.error != null && vm.error!.isNotEmpty) {
-                      MessagePopup.show(context, message: vm.error!, title: 'Error');
+                    if (chatViewModel.error != null && chatViewModel.error!.isNotEmpty) {
+                      MessagePopup.show(context, message: chatViewModel.error!, title: 'Error');
                     }
                   },
                   child: Row(
@@ -73,7 +93,7 @@ class ChatPage extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          vm.error ?? '',
+                          chatViewModel.error ?? '',
                           style: TextStyle(
                             color: colorScheme.onErrorContainer,
                             fontWeight: FontWeight.w500,
@@ -89,7 +109,7 @@ class ChatPage extends StatelessWidget {
                           size: 18,
                           color: colorScheme.onErrorContainer,
                         ),
-                        onPressed: () => vm.clearError(),
+                        onPressed: () => chatViewModel.clearError(),
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                       ),
@@ -114,11 +134,9 @@ class ChatPage extends StatelessWidget {
             child: Padding(
               padding: ResponsiveHelper.horizontalPadding(context),
               child: MessageInput(
-                controller: vm.inputController,
-                onSend: (message) {
-                  vm.clearError();
-                  vm.sendMessage(message);
-                  vm.clearFiles();
+                onSend: (message, files) {
+                  final assistant = modelSelectorViewModel.selectedAssistant;
+                  chatViewModel.sendMessage(message, assistant, files);
                 },
               ),
             ),

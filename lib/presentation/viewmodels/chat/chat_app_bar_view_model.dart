@@ -6,15 +6,19 @@ import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
 
-@injectable
-class ModelSelectorViewModel extends ChangeNotifier {
+@lazySingleton
+class ChatAppBarViewModel extends ChangeNotifier {
   final BotUseCase botUseCase;
   
-  ModelSelectorViewModel({required this.botUseCase}) {
+  ChatAppBarViewModel({required this.botUseCase}) {
     initialize();
   }
 
-  String selectedModel = AssistantModelType.getModelId(AssistantModelType.GPT_4O_MINI);
+  String conversationTitle = 'Chat';
+
+  AssistantModel selectedAssistant = AssistantModel.defaults();
+
+  bool isLoading = false;
 
   List<AssistantModelType> baseModels = [];
 
@@ -36,8 +40,23 @@ class ModelSelectorViewModel extends ChangeNotifier {
   }
 
   Future<void> initialize() async {
+    isLoading = true;
+    notifyListeners();
+
     fetchBaseModels();
     await fetchAvailableModels();
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void setSelectedAssistant(AssistantModel assistant) {
+    selectedAssistant = assistant;
+    notifyListeners();
+  }
+
+  void setConversationTitle(String title) {
+    conversationTitle = title;
     notifyListeners();
   }
 }
