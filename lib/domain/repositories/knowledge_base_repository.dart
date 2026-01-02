@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
+import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 
 abstract class KnowledgeBaseRepository {
@@ -13,7 +14,7 @@ abstract class KnowledgeBaseRepository {
   );
   Future<bool> deleteKnowledge(String id);
 
-  Future<bool> uploadMultipleFiles(
-    List<PlatformFile> files,
-  );
+  Future<UploadResponse> uploadMultipleFiles(List<PlatformFile> files);
+
+  // Future<bool> importDataSourceIntoKnowledgeBase() {}
 }

@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/network/knowledge_base_api_client.dart';
+import 'package:khtn_ai_final_project/data/models/datasource/data_source_request.dart';
+import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:injectable/injectable.dart';
 
@@ -91,8 +93,11 @@ abstract class KnowledgeBaseRemoteDataSource {
     KnowledgeBaseCreationAndUpdateRequest request,
   );
 
-  Future<bool> uploadMultipleFiles(
-    List<PlatformFile> files,
+  Future<UploadResponse> uploadMultipleFiles(List<PlatformFile> files);
+
+  Future<bool> uploadFilesToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
   );
 }
 
@@ -179,9 +184,7 @@ class KnowledgeBaseRemoteDataSourceImpl
   }
 
   @override
-  Future<bool> uploadMultipleFiles(
-    List<PlatformFile> files,
-  ) async {
+  Future<UploadResponse> uploadMultipleFiles(List<PlatformFile> files) async {
     final formData = FormData.fromMap({
       'files': [
         for (var file in files)
@@ -196,10 +199,22 @@ class KnowledgeBaseRemoteDataSourceImpl
         data: formData,
       );
 
-      return response.statusCode == 200 || response.statusCode == 201;
+      return response.data;
     } catch (e) {
       debugPrint("Lỗi upload: $e");
-      return false;
+      return UploadResponse(files: []);
     }
+  }
+
+  @override
+  Future<bool> uploadFilesToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
+  ) async {
+    final response = await client.post(
+      '/kb-core/v1/knowledge/$knowledgeBaseId/datasources',
+      data: request,
+    );
+    return response.statusCode == 200 || response.statusCode == 201;
   }
 }
