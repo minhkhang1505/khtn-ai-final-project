@@ -67,7 +67,10 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
   }
 
   Future<bool> updateKnowledge() async {
-    if (_state == KnowledgeDetailState.loading) return false;
+
+    if (_state == KnowledgeDetailState.loading) {
+      return false;
+    }
 
     try {
       _setState(KnowledgeDetailState.loading);
@@ -80,7 +83,7 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
         userId: knowledge.userId,
       );
 
-      await updateKnowledgeBaseUsecase.call(
+      final response = await updateKnowledgeBaseUsecase.call(
         knowledge.id,
         KnowledgeBaseCreationAndUpdateRequest(
           knowledgeName: updatedKnowledge.knowledgeName,
@@ -88,10 +91,14 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
         ),
       );
 
-      _setState(KnowledgeDetailState.success);
-      return true;
-    } catch (e) {
-      print('Error updating knowledge: $e');
+      if (response.id.isNotEmpty) {
+        _setState(KnowledgeDetailState.success);
+        return true;
+      } else {
+        _setState(KnowledgeDetailState.failure);
+        return false;
+      }
+    } catch (e, stackTrace) {
       _setState(KnowledgeDetailState.failure);
       return false;
     }
@@ -109,7 +116,6 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
 
       _setState(KnowledgeDetailState.success);
     } catch (e) {
-      print('Error loading knowledge details: $e');
       _setState(KnowledgeDetailState.failure);
       return false;
     }

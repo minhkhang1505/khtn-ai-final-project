@@ -194,20 +194,28 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     required String sourceName,
     required String sourceDescription,
   }) async {
+
     final vm = context.read<KnowledgeDetailViewmodel>();
+    final navigator = Navigator.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     vm.setKnowledgeName(sourceName);
     vm.setKnowledgeDescription(sourceDescription);
+
     final success = await vm.updateKnowledge();
 
-    // Navigate back after a short delay
-    if (!context.mounted) return;
+    // Use mounted property from State instead of context.mounted
+    if (!mounted) {
+      return;
+    }
 
     if (success) {
+
       setState(() {
         _isEditMode = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text('Knowledge source "$sourceName" updated successfully'),
           backgroundColor: Colors.green,
@@ -215,9 +223,17 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
         ),
       );
 
-      _backToPromptsList();
+      // Wait for SnackBar and API propagation
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      if (!mounted) {
+        return;
+      }
+
+      // Pop with true to trigger knowledge list refresh
+      navigator.pop(true);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         const SnackBar(
           content: Text('Failed to update knowledge source. Please try again.'),
           backgroundColor: Colors.red,
