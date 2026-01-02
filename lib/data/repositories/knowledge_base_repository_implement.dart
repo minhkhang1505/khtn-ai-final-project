@@ -24,7 +24,7 @@ class KnowledgeBaseRepositoryImplement implements KnowledgeBaseRepository {
   }
 
   @override
-  Future<KnowledgeBasePaggingResponse> updateKnowledge(
+  Future<KnowledgeModel> updateKnowledge(
     String id,
     KnowledgeBaseCreationAndUpdateRequest knowledge,
   ) {
@@ -38,9 +38,7 @@ class KnowledgeBaseRepositoryImplement implements KnowledgeBaseRepository {
   }
 
   @override
-  Future<UploadResponse> uploadMultipleFiles(
-    List<PlatformFile> files,
-  ) {
+  Future<UploadResponse> uploadMultipleFiles(List<PlatformFile> files) {
     return remoteDataSource.uploadMultipleFiles(files);
   }
 }

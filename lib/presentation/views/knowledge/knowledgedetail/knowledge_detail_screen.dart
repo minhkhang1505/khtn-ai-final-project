@@ -183,6 +183,12 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     );
   }
 
+  void _backToPromptsList() {
+    final viewModel = context.read<KnowledgeDetailViewmodel>();
+    viewModel.clearItem();
+    Navigator.pop(context);
+  }
+
   Future<void> _handleSave(
     BuildContext context, {
     required String sourceName,
@@ -197,17 +203,25 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     if (!context.mounted) return;
 
     if (success) {
+      setState(() {
+        _isEditMode = false;
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Knowledge source "$sourceName" updated successfully'),
           backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
         ),
       );
+
+      _backToPromptsList();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Failed to update knowledge source. Please try again.'),
           backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
         ),
       );
     }

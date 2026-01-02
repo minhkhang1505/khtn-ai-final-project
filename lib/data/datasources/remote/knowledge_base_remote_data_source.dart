@@ -88,7 +88,7 @@ abstract class KnowledgeBaseRemoteDataSource {
   // Future<bool> addKnowledgeBaseFromGDrive(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromSlack(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromConfluence(String knowledgeBaseId);
-  Future<KnowledgeBasePaggingResponse> updateKnowledgeBase(
+  Future<KnowledgeModel> updateKnowledgeBase(
     String id,
     KnowledgeBaseCreationAndUpdateRequest request,
   );
@@ -171,7 +171,7 @@ class KnowledgeBaseRemoteDataSourceImpl
   // Future<bool> addKnowledgeBaseFromConfluence(String knowledgeBaseId) {}
 
   @override
-  Future<KnowledgeBasePaggingResponse> updateKnowledgeBase(
+  Future<KnowledgeModel> updateKnowledgeBase(
     String id,
     KnowledgeBaseCreationAndUpdateRequest request,
   ) async {
@@ -180,7 +180,20 @@ class KnowledgeBaseRemoteDataSourceImpl
       data: request.toJson(),
       queryParameters: {'id': id},
     );
-    return KnowledgeBasePaggingResponse.fromJson(response.data);
+
+    final data = response.data;
+
+    if (data is Map<String, dynamic>) {
+      // Some APIs wrap payload as { "data": { ... } }
+      final payload = (data['data'] is Map<String, dynamic>)
+          ? (data['data'] as Map<String, dynamic>)
+          : data;
+      return KnowledgeModel.fromJson(payload);
+    }
+
+    throw Exception(
+      'Unexpected response format when updating knowledge base: ${data.runtimeType}',
+    );
   }
 
   @override

@@ -80,7 +80,7 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
         userId: knowledge.userId,
       );
 
-      final response = await updateKnowledgeBaseUsecase.call(
+      await updateKnowledgeBaseUsecase.call(
         knowledge.id,
         KnowledgeBaseCreationAndUpdateRequest(
           knowledgeName: updatedKnowledge.knowledgeName,
@@ -88,11 +88,7 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
         ),
       );
 
-      if (response.data.isNotEmpty) {
-        _setState(KnowledgeDetailState.success);
-      } else {
-        _setState(KnowledgeDetailState.failure);
-      }
+      _setState(KnowledgeDetailState.success);
       return true;
     } catch (e) {
       print('Error updating knowledge: $e');

@@ -8,7 +8,7 @@ abstract class KnowledgeBaseRepository {
   Future<KnowledgeModel> createKnowledge(
     KnowledgeBaseCreationAndUpdateRequest knowledge,
   );
-  Future<KnowledgeBasePaggingResponse> updateKnowledge(
+  Future<KnowledgeModel> updateKnowledge(
     String id,
     KnowledgeBaseCreationAndUpdateRequest knowledge,
   );

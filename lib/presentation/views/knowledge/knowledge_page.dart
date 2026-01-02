@@ -130,6 +130,10 @@ class _KnowledgePageState extends State<KnowledgePage> {
                                               context,
                                               vm.knowledges![index].id,
                                             ),
+                                            onTap: () => onItemTap(
+                                              context,
+                                              vm.knowledges![index],
+                                            ),
                                           );
                                         },
                                       ),
@@ -223,13 +227,23 @@ class _KnowledgePageState extends State<KnowledgePage> {
       arguments: knowledge,
     );
 
-    // Refresh data if knowledge was deleted successfully
+    // Refresh data if knowledge was updated or deleted successfully
     if (result == true && context.mounted) {
       final viewmodel = Provider.of<KnowledgeBaseViewmodel>(
         context,
         listen: false,
       );
+      // Refresh the entire knowledge list to get latest data
       await viewmodel.refreshKnowledges();
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Knowledge list refreshed'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
     }
   }
 }

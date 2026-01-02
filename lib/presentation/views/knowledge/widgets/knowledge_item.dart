@@ -6,24 +6,29 @@ class KnowledgeItem extends StatelessWidget {
   final String iconPath;
   final KnowledgeEntity knowledge;
   final VoidCallback? onDelete;
+  final VoidCallback? onTap;
+
   const KnowledgeItem({
     super.key,
     required this.knowledge,
     required this.iconPath,
     this.onDelete,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          '/knowledge/details',
-          arguments: knowledge,
-        );
-      },
+      onTap:
+          onTap ??
+          () {
+            Navigator.pushNamed(
+              context,
+              '/knowledge/details',
+              arguments: knowledge,
+            );
+          },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.fromLTRB(16, 16, 0, 16),
