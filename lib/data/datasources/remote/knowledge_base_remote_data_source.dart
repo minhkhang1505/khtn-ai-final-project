@@ -152,7 +152,10 @@ class KnowledgeBaseRemoteDataSourceImpl
       '/kb-core/v1/knowledge/$knowledgeBaseId',
       queryParameters: {'knowledgeBaseId': knowledgeBaseId},
     );
-    return response.statusCode == 200;
+
+    final isSuccess = response.statusCode == 204 || response.statusCode == 200;
+
+    return isSuccess;
   }
 
   // @override

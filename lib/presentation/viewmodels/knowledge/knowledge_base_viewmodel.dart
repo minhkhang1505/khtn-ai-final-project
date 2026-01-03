@@ -132,7 +132,9 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
       _fetchKnowledges(orderField: orderField, resetOffset: true);
 
   /// Force reloading from the first page and clearing current cached list.
-  Future<bool> refreshKnowledges() => _fetchKnowledges(resetOffset: true);
+  Future<bool> refreshKnowledges() {
+    return _fetchKnowledges(resetOffset: true);
+  }
 
   Future<bool> createNewKnowledge(KnowledgeEntity knowledge) async {
     // Implement the logic to create a new knowledge entry
@@ -148,8 +150,11 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteKnowledge(String id) async {
-    if (_state == DeleteKnowledgeState.loading) return false;
+  Future<bool> deleteKnowledge(String id, {bool autoRefresh = false}) async {
+
+    if (_state == DeleteKnowledgeState.loading) {
+      return false;
+    }
 
     try {
       _setDeleteState(DeleteKnowledgeState.loading);
@@ -158,12 +163,16 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
 
       if (success) {
         _setDeleteState(DeleteKnowledgeState.success);
+
+        // Auto-refresh the list if requested
+        if (autoRefresh) {
+          await refreshKnowledges();
+        }
       } else {
         _setDeleteState(DeleteKnowledgeState.failure);
       }
       return success;
     } catch (e) {
-      debugPrint('Error deleting knowledge: $e');
       _setDeleteState(DeleteKnowledgeState.failure);
       return false;
     }

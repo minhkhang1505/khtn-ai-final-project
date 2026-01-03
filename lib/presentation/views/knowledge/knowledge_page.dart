@@ -197,7 +197,7 @@ class _KnowledgePageState extends State<KnowledgePage> {
     if (confirmed != true || !context.mounted) return;
 
     final vm = context.read<KnowledgeBaseViewmodel>();
-    final success = await vm.deleteKnowledge(knowledgeId);
+    final success = await vm.deleteKnowledge(knowledgeId, autoRefresh: true);
 
     if (!context.mounted) return;
 
@@ -206,9 +206,9 @@ class _KnowledgePageState extends State<KnowledgePage> {
         const SnackBar(
           content: Text('Knowledge base deleted successfully'),
           backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
         ),
       );
-      vm.getAllKnowledges();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
