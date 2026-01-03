@@ -1,42 +1,37 @@
-///AiEmailResponseDto
-class ResponseEmailRequest {
+///AiEmailSuggestedReplyIdeasDto
+class SuggestReplyIdeaRequest {
   String action;
   AssistantDto? assistant;
   String email;
-  String mainIdea;
-  AiEmailMetadata metadata;
+  AiEmailReplyIdeasMetadata metadata;
 
-  ResponseEmailRequest({
+  SuggestReplyIdeaRequest({
     required this.action,
     this.assistant,
     required this.email,
-    required this.mainIdea,
     required this.metadata,
   });
 
-  ResponseEmailRequest copyWith({
+  SuggestReplyIdeaRequest copyWith({
     String? action,
     AssistantDto? assistant,
     String? email,
-    String? mainIdea,
-    AiEmailMetadata? metadata,
-  }) => ResponseEmailRequest(
+    AiEmailReplyIdeasMetadata? metadata,
+  }) => SuggestReplyIdeaRequest(
     action: action ?? this.action,
     assistant: assistant ?? this.assistant,
     email: email ?? this.email,
-    mainIdea: mainIdea ?? this.mainIdea,
     metadata: metadata ?? this.metadata,
   );
 
-  factory ResponseEmailRequest.fromJson(Map<String, dynamic> json) {
-    return ResponseEmailRequest(
+  factory SuggestReplyIdeaRequest.fromJson(Map<String, dynamic> json) {
+    return SuggestReplyIdeaRequest(
       action: json['action'] as String,
       assistant: json['assistant'] != null
           ? AssistantDto.fromJson(json['assistant'] as Map<String, dynamic>)
           : null,
       email: json['email'] as String,
-      mainIdea: json['mainIdea'] as String,
-      metadata: AiEmailMetadata.fromJson(
+      metadata: AiEmailReplyIdeasMetadata.fromJson(
         json['metadata'] as Map<String, dynamic>,
       ),
     );
@@ -46,7 +41,6 @@ class ResponseEmailRequest {
     'action': action,
     'assistant': assistant?.toJson(),
     'email': email,
-    'mainIdea': mainIdea,
     'metadata': metadata.toJson(),
   };
 }
@@ -107,49 +101,44 @@ enum Id {
 
 enum Model { DIFY }
 
-///AiEmailMetadata
-class AiEmailMetadata {
+///AiEmailReplyIdeasMetadata
+class AiEmailReplyIdeasMetadata {
   List<EmailContent> context;
   String language;
   String receiver;
   String sender;
-  AiEmailStyleDto style;
   String subject;
 
-  AiEmailMetadata({
+  AiEmailReplyIdeasMetadata({
     required this.context,
     required this.language,
     required this.receiver,
     required this.sender,
-    required this.style,
     required this.subject,
   });
 
-  AiEmailMetadata copyWith({
+  AiEmailReplyIdeasMetadata copyWith({
     List<EmailContent>? context,
     String? language,
     String? receiver,
     String? sender,
-    AiEmailStyleDto? style,
     String? subject,
-  }) => AiEmailMetadata(
+  }) => AiEmailReplyIdeasMetadata(
     context: context ?? this.context,
     language: language ?? this.language,
     receiver: receiver ?? this.receiver,
     sender: sender ?? this.sender,
-    style: style ?? this.style,
     subject: subject ?? this.subject,
   );
 
-  factory AiEmailMetadata.fromJson(Map<String, dynamic> json) {
-    return AiEmailMetadata(
+  factory AiEmailReplyIdeasMetadata.fromJson(Map<String, dynamic> json) {
+    return AiEmailReplyIdeasMetadata(
       context: (json['context'] as List<dynamic>)
           .map((e) => EmailContent.fromJson(e as Map<String, dynamic>))
           .toList(),
       language: json['language'] as String,
       receiver: json['receiver'] as String,
       sender: json['sender'] as String,
-      style: AiEmailStyleDto.fromJson(json['style'] as Map<String, dynamic>),
       subject: json['subject'] as String,
     );
   }
@@ -159,7 +148,6 @@ class AiEmailMetadata {
     'language': language,
     'receiver': receiver,
     'sender': sender,
-    'style': style.toJson(),
     'subject': subject,
   };
 }
@@ -204,39 +192,5 @@ class EmailContent {
     'receiver': receiver,
     'sender': sender,
     'subject': subject,
-  };
-}
-
-///AiEmailStyleDto
-class AiEmailStyleDto {
-  String formality;
-  String length;
-  String tone;
-
-  AiEmailStyleDto({
-    required this.formality,
-    required this.length,
-    required this.tone,
-  });
-
-  AiEmailStyleDto copyWith({String? formality, String? length, String? tone}) =>
-      AiEmailStyleDto(
-        formality: formality ?? this.formality,
-        length: length ?? this.length,
-        tone: tone ?? this.tone,
-      );
-
-  factory AiEmailStyleDto.fromJson(Map<String, dynamic> json) {
-    return AiEmailStyleDto(
-      formality: json['formality'] as String,
-      length: json['length'] as String,
-      tone: json['tone'] as String,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    'formality': formality,
-    'length': length,
-    'tone': tone,
   };
 }
