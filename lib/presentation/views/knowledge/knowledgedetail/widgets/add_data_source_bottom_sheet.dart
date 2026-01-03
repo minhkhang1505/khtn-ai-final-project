@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
+import 'package:khtn_ai_final_project/domain/entities/datasource_type.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_file_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_drive_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_url_dialog.dart';
@@ -86,7 +86,6 @@ class AddDataSourceBottomSheet extends StatelessWidget {
 
       if (result != null) {
         // TODO: Handle file upload with result['file'] and result['prompt']
-
       }
     } else if (dataSource == DataSourceTypes.drive) {
       // Show Google Drive dialog

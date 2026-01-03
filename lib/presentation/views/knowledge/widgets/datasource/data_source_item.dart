@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/domain/models/datasource.dart';
+import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DataSourceItem extends StatelessWidget {
-  final DataSource dataSource;
+  final DataSourceEntity dataSource;
   final String iconPath;
-  final VoidCallback onTap;  
+  final VoidCallback onTap;
 
   const DataSourceItem({
     super.key,
@@ -60,8 +60,11 @@ class DataSourceItem extends StatelessWidget {
                     softWrap: true,
                   ),
                   Text(
-                    dataSource.isActive as String,
-                    style: TextStyle(fontSize: 14, color: Colors.green),
+                    dataSource.isActive ? 'Active' : 'Inactive',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: dataSource.isActive ? Colors.green : Colors.grey,
+                    ),
                   ),
                   Text(
                     'Created at: ${dataSource.createdAt}',
