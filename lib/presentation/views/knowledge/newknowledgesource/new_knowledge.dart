@@ -7,33 +7,45 @@ import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowl
 import 'package:provider/provider.dart';
 
 /// Screen for creating a new knowledge source
-class NewKnowledgeScreen extends StatelessWidget {
+class NewKnowledgeScreen extends StatefulWidget {
   const NewKnowledgeScreen({super.key});
 
+  @override
+  State<NewKnowledgeScreen> createState() => _NewKnowledgeScreenState();
+}
+
+class _NewKnowledgeScreenState extends State<NewKnowledgeScreen> {
   Future<void> _handleSave(
     BuildContext context,
     CreateKnowledgeBaseViewmodel viewmodel, {
     required String sourceName,
     required String sourceDescription,
-    required String url,
-    required sourceType,
   }) async {
+    final navigator = Navigator.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     final response = await viewmodel.createNewKnowledge(
       sourceName,
       sourceDescription,
     );
 
-    if (!context.mounted) return;
+    if (!mounted) return;
 
     if (response) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text('Knowledge source "$sourceName" saved successfully'),
           backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
         ),
       );
-      Navigator.of(context).pop(true);
-    }
+
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      if (!mounted) return;
+
+      navigator.pop(true);
+    } 
   }
 
   @override
@@ -80,15 +92,11 @@ class NewKnowledgeScreen extends StatelessWidget {
                                 ({
                                   required String sourceName,
                                   required String sourceDescription,
-                                  required String url,
-                                  required sourceType,
                                 }) => _handleSave(
                                   context,
                                   viewmodel,
                                   sourceName: sourceName,
                                   sourceDescription: sourceDescription,
-                                  url: url,
-                                  sourceType: sourceType,
                                 ),
                           ),
                         ),

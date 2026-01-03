@@ -22,7 +22,10 @@ class CreateKnowledgeBaseViewmodel extends ChangeNotifier {
     String knowledgeName,
     String description,
   ) async {
-    if (_state == CreateKnowledgeBaseState.loading) return false;
+    if (_state == CreateKnowledgeBaseState.loading) {
+      return false;
+    }
+
     try {
       _setState(CreateKnowledgeBaseState.loading);
 
@@ -30,14 +33,17 @@ class CreateKnowledgeBaseViewmodel extends ChangeNotifier {
         knowledgeName: knowledgeName,
         description: description,
       );
-      final result = await createKnowledgeUsecase.call(request);
-      debugPrint("Khang: Created knowledge base status: ${result}");
 
-      _setState(CreateKnowledgeBaseState.success);
-      return true;
+      final result = await createKnowledgeUsecase.call(request);
+
+      if (result.id.isNotEmpty) {
+        _setState(CreateKnowledgeBaseState.success);
+        return true;
+      } else {
+        _setState(CreateKnowledgeBaseState.failure);
+        return false;
+      }
     } catch (e) {
-      debugPrint("Khang: Error creating knowledge base: $e");
-      _setState(CreateKnowledgeBaseState.failure);
       return false;
     }
   }

@@ -39,7 +39,7 @@ class FavoritePromptsTab extends StatelessWidget {
       onRefresh: () => _onRefresh(context),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
         children: [
           for (var prompt in favoritePrompts)
             PromptItem(

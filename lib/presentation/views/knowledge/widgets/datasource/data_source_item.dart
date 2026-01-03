@@ -1,37 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/domain/models/datasource.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../../../domain/entities/knowledge_entity.dart';
 
-class KnowledgeItem extends StatelessWidget {
+class DataSourceItem extends StatelessWidget {
+  final DataSource dataSource;
   final String iconPath;
-  final KnowledgeEntity knowledge;
-  final VoidCallback? onDelete;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;  
 
-  const KnowledgeItem({
+  const DataSourceItem({
     super.key,
-    required this.knowledge,
+    required this.dataSource,
     required this.iconPath,
-    this.onDelete,
-    this.onTap,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap:
-          onTap ??
-          () {
-            Navigator.pushNamed(
-              context,
-              '/knowledge/details',
-              arguments: knowledge,
-            );
-          },
+    return GestureDetector(
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.fromLTRB(16, 16, 0, 16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
             color: colorScheme.outline.withAlpha(50),
@@ -65,28 +55,19 @@ class KnowledgeItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    knowledge.knowledgeName,
+                    dataSource.name,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     softWrap: true,
                   ),
-                  Text(knowledge.description, style: TextStyle(fontSize: 14)),
                   Text(
-                    'Created at: ${knowledge.createdAt.toLocal()}',
+                    dataSource.isActive as String,
+                    style: TextStyle(fontSize: 14, color: Colors.green),
+                  ),
+                  Text(
+                    'Created at: ${dataSource.createdAt}',
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
-              ),
-            ),
-            IconButton(
-              onPressed: onDelete,
-              icon: SvgPicture.asset(
-                'assets/icons/ic_delete.svg',
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  colorScheme.error,
-                  BlendMode.srcIn,
-                ),
               ),
             ),
           ],

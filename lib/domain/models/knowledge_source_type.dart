@@ -1,14 +1,14 @@
 /// Represents a type of knowledge source with its icon and name
-class KnowledgeSourceType {
+class DataSourceType {
   final String iconAssetPath;
   final String name;
 
-  const KnowledgeSourceType({required this.iconAssetPath, required this.name});
+  const DataSourceType({required this.iconAssetPath, required this.name});
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is KnowledgeSourceType &&
+      other is DataSourceType &&
           runtimeType == other.runtimeType &&
           iconAssetPath == other.iconAssetPath &&
           name == other.name;
@@ -18,31 +18,31 @@ class KnowledgeSourceType {
 }
 
 /// Available knowledge source types
-class KnowledgeSourceTypes {
-  static const slack = KnowledgeSourceType(
+class DataSourceTypes {
+  static const slack = DataSourceType(
     iconAssetPath: 'assets/icons/ic_slack.svg',
     name: 'Slack',
   );
 
-  static const drive = KnowledgeSourceType(
+  static const drive = DataSourceType(
     iconAssetPath: 'assets/icons/ic_drive.svg',
     name: 'Drive',
   );
 
-  static const confluence = KnowledgeSourceType(
+  static const confluence = DataSourceType(
     iconAssetPath: 'assets/icons/ic_confluence.svg',
     name: 'Confluence',
   );
 
-  static const url = KnowledgeSourceType(
+  static const url = DataSourceType(
     iconAssetPath: 'assets/icons/ic_url.svg',
     name: 'URL',
   );
 
-  static const file = KnowledgeSourceType(
+  static const file = DataSourceType(
     iconAssetPath: 'assets/icons/ic_file.svg',
     name: 'File',
   );
 
-  static const List<KnowledgeSourceType> all = [slack, drive, confluence, url, file];
+  static const List<DataSourceType> all = [slack, drive, confluence, url, file];
 }

@@ -12,13 +12,11 @@ enum KnowledgeDetailState { initial, loading, success, failure }
 class KnowledgeDetailViewmodel extends ChangeNotifier {
   final KnowledgeEntity knowledge;
   final UpdateKnowledgeBaseUsecase updateKnowledgeBaseUsecase;
-  final DeleteKnowledgeBaseUsecase deleteKnowledgeBaseUsecase;
 
-@factoryMethod
+  @factoryMethod
   KnowledgeDetailViewmodel({
     @factoryParam required this.knowledge,
     required this.updateKnowledgeBaseUsecase,
-    required this.deleteKnowledgeBaseUsecase,
   });
 
   KnowledgeDetailState _state = KnowledgeDetailState.initial;
@@ -48,10 +46,17 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  KnowledgeSourceType _sourceType = KnowledgeSourceTypes.url;
-  KnowledgeSourceType get sourceType => _sourceType;
+  void clearItem() {
+    _knowledgeName = "";
+    _knowledgeDescription = "";
+    _url = "";
+    notifyListeners();
+  }
 
-  void setSourceType(KnowledgeSourceType type) {
+  DataSourceType _sourceType = DataSourceTypes.url;
+  DataSourceType get sourceType => _sourceType;
+
+  void setSourceType(DataSourceType type) {
     _sourceType = type;
     notifyListeners();
   }
@@ -61,8 +66,12 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateKnowledge() async {
-    if (_state == KnowledgeDetailState.loading) return;
+  Future<bool> updateKnowledge() async {
+
+    if (_state == KnowledgeDetailState.loading) {
+      return false;
+    }
+
     try {
       _setState(KnowledgeDetailState.loading);
 
@@ -82,29 +91,16 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
         ),
       );
 
-      _setState(KnowledgeDetailState.success);
-    } catch (e) {
-      print('Error updating knowledge: $e');
-      _setState(KnowledgeDetailState.failure);
-    }
-  }
-
-  Future<void> deleteKnowledge() async {
-    if (_state == KnowledgeDetailState.loading) return;
-
-    try {
-      _setState(KnowledgeDetailState.loading);
-
-      final success = await deleteKnowledgeBaseUsecase.call(knowledge.id);
-
-      if (success) {
+      if (response.id.isNotEmpty) {
         _setState(KnowledgeDetailState.success);
+        return true;
       } else {
         _setState(KnowledgeDetailState.failure);
+        return false;
       }
-    } catch (e) {
-      print('Error deleting knowledge: $e');
+    } catch (e, stackTrace) {
       _setState(KnowledgeDetailState.failure);
+      return false;
     }
   }
 
@@ -120,7 +116,6 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
 
       _setState(KnowledgeDetailState.success);
     } catch (e) {
-      print('Error loading knowledge details: $e');
       _setState(KnowledgeDetailState.failure);
       return false;
     }

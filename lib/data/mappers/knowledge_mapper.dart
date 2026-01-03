@@ -4,13 +4,14 @@ import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 extension KnowledgeMapper on KnowledgeResDto {
   KnowledgeEntity toEntity() {
     return KnowledgeEntity(
+      id: id,
+      userId: userId,
       knowledgeName: knowledgeName,
       description: description,
       createdAt: createdAt,
       updatedAt: updatedAt,
       createdBy: createdBy,
       updatedBy: updatedBy,
-      userId: 'unknown', id: 'unknown',
     );
   }
 }

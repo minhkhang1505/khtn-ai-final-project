@@ -42,6 +42,8 @@ import '../../domain/usecases/auth/refresh_token_usecase.dart' as _i407;
 import '../../domain/usecases/auth/sign_up_usecase.dart' as _i270;
 import '../../domain/usecases/bot/bot_usecase.dart' as _i692;
 import '../../domain/usecases/chat/chat_usecase.dart' as _i423;
+import '../../domain/usecases/datasource/upload_multiple_file_usecase.dart'
+    as _i645;
 import '../../domain/usecases/knowledge/create_knowledge_usecase.dart' as _i42;
 import '../../domain/usecases/knowledge/delete_knowledge_usecase.dart' as _i291;
 import '../../domain/usecases/knowledge/get_knowledges_usecase.dart' as _i402;
@@ -54,14 +56,17 @@ import '../../domain/usecases/prompts/get_prompt_usecase.dart' as _i928;
 import '../../domain/usecases/prompts/remove_prompt_from_favorite.dart'
     as _i761;
 import '../../domain/usecases/prompts/udpate_prompt_usecase.dart' as _i662;
-import '../../presentation/viewmodels/agent/agent_view_model.dart' as _i771;
-import '../../presentation/viewmodels/auth/auth_view_model.dart' as _i912;
+import '../../presentation/viewmodels/agent/agent_view_model.dart' as _i1071;
+import '../../presentation/viewmodels/auth/auth_view_model.dart' as _i376;
+import '../../presentation/viewmodels/auth/user_view_model.dart' as _i511;
 import '../../presentation/viewmodels/bot/bot_view_model.dart' as _i626;
 import '../../presentation/viewmodels/bot/create_bot_view_model.dart' as _i219;
 import '../../presentation/viewmodels/bot/edit_bot_view_model.dart' as _i24;
-import '../../presentation/viewmodels/chat/chat_view_model.dart' as _i540;
+import '../../presentation/viewmodels/chat/chat_view_model.dart' as _i959;
 import '../../presentation/viewmodels/knowledge/create_knowledge_base_viewmodel.dart'
     as _i1046;
+import '../../presentation/viewmodels/knowledge/datasource_viewmodel.dart'
+    as _i838;
 import '../../presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart'
     as _i124;
 import '../../presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart'
@@ -72,7 +77,6 @@ import '../../presentation/viewmodels/prompt/prompt_detail_view_model.dart'
     as _i39;
 import '../../presentation/viewmodels/prompt/prompt_viewmodel.dart' as _i208;
 import '../../presentation/viewmodels/theme_provider.dart' as _i338;
-import '../../presentation/viewmodels/auth/user_view_model.dart' as _i458;
 import '../network/auth_api_client.dart' as _i752;
 import '../network/bot_api_client.dart' as _i18;
 import '../network/jarvis_api_client.dart' as _i963;
@@ -85,7 +89,7 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    gh.factory<_i771.AgentViewModel>(() => _i771.AgentViewModel());
+    gh.factory<_i1071.AgentViewModel>(() => _i1071.AgentViewModel());
     gh.singleton<_i338.ThemeProvider>(() => _i338.ThemeProvider());
     gh.lazySingleton<_i929.AuthLocalDataSource>(
       () => _i929.AuthLocalDataSourceImpl(),
@@ -175,6 +179,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i761.RemovePromptFromFavoriteUsecase>(
       () => _i761.RemovePromptFromFavoriteUsecase(gh<_i364.PromptRepository>()),
     );
+    gh.lazySingleton<_i645.UploadMultipleFileUsecase>(
+      () => _i645.UploadMultipleFileUsecase(
+        repository: gh<_i618.KnowledgeBaseRepository>(),
+      ),
+    );
     gh.lazySingleton<_i42.CreateKnowledgeUsecase>(
       () => _i42.CreateKnowledgeUsecase(
         repository: gh<_i618.KnowledgeBaseRepository>(),
@@ -190,6 +199,9 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i618.KnowledgeBaseRepository>(),
       ),
     );
+    gh.lazySingleton<_i505.BotRepository>(
+      () => _i983.BotRepositoryImpl(gh<_i778.BotRemoteDataSource>()),
+    );
     gh.factoryParam<
       _i1032.KnowledgeDetailViewmodel,
       _i54.KnowledgeEntity,
@@ -198,11 +210,7 @@ extension GetItInjectableX on _i174.GetIt {
       (knowledge, _) => _i1032.KnowledgeDetailViewmodel(
         knowledge: knowledge,
         updateKnowledgeBaseUsecase: gh<_i1034.UpdateKnowledgeBaseUsecase>(),
-        deleteKnowledgeBaseUsecase: gh<_i291.DeleteKnowledgeBaseUsecase>(),
       ),
-    );
-    gh.lazySingleton<_i505.BotRepository>(
-      () => _i983.BotRepositoryImpl(gh<_i778.BotRemoteDataSource>()),
     );
     gh.lazySingleton<_i402.GetKnowledgesUsecase>(
       () => _i402.GetKnowledgesUsecase(gh<_i618.KnowledgeBaseRepository>()),
@@ -231,18 +239,29 @@ extension GetItInjectableX on _i174.GetIt {
         createPromptUseCase: gh<_i175.CreatePromptUsecase>(),
       ),
     );
-    gh.factory<_i912.AuthViewModel>(
-      () => _i912.AuthViewModel(
+    gh.factory<_i376.AuthViewModel>(
+      () => _i376.AuthViewModel(
         signUpUseCase: gh<_i270.SignUpUseCase>(),
         loginUsecase: gh<_i461.LoginUsecase>(),
         logoutUsecase: gh<_i320.LogoutUsecase>(),
       ),
     );
+    gh.factory<_i124.KnowledgeBaseViewmodel>(
+      () => _i124.KnowledgeBaseViewmodel(
+        getKnowledgesUsecase: gh<_i402.GetKnowledgesUsecase>(),
+        deleteKnowledgeBaseUsecase: gh<_i291.DeleteKnowledgeBaseUsecase>(),
+      ),
+    );
     gh.lazySingleton<_i180.GetUserUseCase>(
       () => _i180.GetUserUseCase(userRepository: gh<_i271.UserRepository>()),
     );
-    gh.factory<_i458.UserViewModel>(
-      () => _i458.UserViewModel(getUserUseCase: gh<_i180.GetUserUseCase>()),
+    gh.factory<_i838.DatasourceViewmodel>(
+      () => _i838.DatasourceViewmodel(
+        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
+      ),
+    );
+    gh.factory<_i511.UserViewModel>(
+      () => _i511.UserViewModel(getUserUseCase: gh<_i180.GetUserUseCase>()),
     );
     gh.factory<_i1046.CreateKnowledgeBaseViewmodel>(
       () => _i1046.CreateKnowledgeBaseViewmodel(
@@ -257,11 +276,6 @@ extension GetItInjectableX on _i174.GetIt {
         prompt: prompt,
       ),
     );
-    gh.factory<_i124.KnowledgeBaseViewmodel>(
-      () => _i124.KnowledgeBaseViewmodel(
-        getKnowledgesUsecase: gh<_i402.GetKnowledgesUsecase>(),
-      ),
-    );
     gh.factory<_i626.BotViewModel>(
       () => _i626.BotViewModel(botUseCase: gh<_i692.BotUseCase>()),
     );
@@ -271,8 +285,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i24.EditBotViewModel>(
       () => _i24.EditBotViewModel(botUseCase: gh<_i692.BotUseCase>()),
     );
-    gh.factory<_i540.ChatViewModel>(
-      () => _i540.ChatViewModel(
+    gh.factory<_i959.ChatViewModel>(
+      () => _i959.ChatViewModel(
         chatUsecase: gh<_i423.ChatUseCase>(),
         getUserUseCase: gh<_i180.GetUserUseCase>(),
       ),

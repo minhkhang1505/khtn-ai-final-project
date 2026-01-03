@@ -1,4 +1,9 @@
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/network/knowledge_base_api_client.dart';
+import 'package:khtn_ai_final_project/data/models/datasource/data_source_request.dart';
+import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:injectable/injectable.dart';
 
@@ -83,9 +88,16 @@ abstract class KnowledgeBaseRemoteDataSource {
   // Future<bool> addKnowledgeBaseFromGDrive(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromSlack(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromConfluence(String knowledgeBaseId);
-  Future<KnowledgeBasePaggingResponse> updateKnowledgeBase(
+  Future<KnowledgeModel> updateKnowledgeBase(
     String id,
     KnowledgeBaseCreationAndUpdateRequest request,
+  );
+
+  Future<UploadResponse> uploadMultipleFiles(List<PlatformFile> files);
+
+  Future<bool> uploadFilesToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
   );
 }
 
@@ -140,7 +152,10 @@ class KnowledgeBaseRemoteDataSourceImpl
       '/kb-core/v1/knowledge/$knowledgeBaseId',
       queryParameters: {'knowledgeBaseId': knowledgeBaseId},
     );
-    return response.statusCode == 200;
+
+    final isSuccess = response.statusCode == 204 || response.statusCode == 200;
+
+    return isSuccess;
   }
 
   // @override
@@ -159,7 +174,7 @@ class KnowledgeBaseRemoteDataSourceImpl
   // Future<bool> addKnowledgeBaseFromConfluence(String knowledgeBaseId) {}
 
   @override
-  Future<KnowledgeBasePaggingResponse> updateKnowledgeBase(
+  Future<KnowledgeModel> updateKnowledgeBase(
     String id,
     KnowledgeBaseCreationAndUpdateRequest request,
   ) async {
@@ -168,6 +183,54 @@ class KnowledgeBaseRemoteDataSourceImpl
       data: request.toJson(),
       queryParameters: {'id': id},
     );
-    return KnowledgeBasePaggingResponse.fromJson(response.data);
+
+    final data = response.data;
+
+    if (data is Map<String, dynamic>) {
+      // Some APIs wrap payload as { "data": { ... } }
+      final payload = (data['data'] is Map<String, dynamic>)
+          ? (data['data'] as Map<String, dynamic>)
+          : data;
+      return KnowledgeModel.fromJson(payload);
+    }
+
+    throw Exception(
+      'Unexpected response format when updating knowledge base: ${data.runtimeType}',
+    );
+  }
+
+  @override
+  Future<UploadResponse> uploadMultipleFiles(List<PlatformFile> files) async {
+    final formData = FormData.fromMap({
+      'files': [
+        for (var file in files)
+          if (file.path != null)
+            await MultipartFile.fromFile(file.path!, filename: file.name),
+      ],
+    });
+
+    try {
+      final response = await client.post(
+        '/kb-core/v1/knowledge/files',
+        data: formData,
+      );
+
+      return response.data;
+    } catch (e) {
+      debugPrint("Lỗi upload: $e");
+      return UploadResponse(files: []);
+    }
+  }
+
+  @override
+  Future<bool> uploadFilesToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
+  ) async {
+    final response = await client.post(
+      '/kb-core/v1/knowledge/$knowledgeBaseId/datasources',
+      data: request,
+    );
+    return response.statusCode == 200 || response.statusCode == 201;
   }
 }

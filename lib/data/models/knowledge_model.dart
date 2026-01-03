@@ -31,7 +31,7 @@ class KnowledgeModel {
   factory KnowledgeModel.fromJson(Map<String, dynamic> json) {
     final createdAt = _tryParseDate(json['createdAt']) ?? DateTime.now();
     return KnowledgeModel(
-      id: (json['id'] ?? json['_id'] ?? json['knowledgeId'] ?? '').toString(),
+      id: (json['id'] ?? '').toString(),
       userId: (json['userId'] ?? '').toString(),
       knowledgeName:
           (json['knowledgeName'] ?? json['name'] ?? json['title'] ?? '')
@@ -104,6 +104,7 @@ class KnowledgeBasePaggingResponse {
 }
 
 class KnowledgeResDto {
+  String id;
   DateTime createdAt;
   String? createdBy;
   String description;
@@ -113,6 +114,7 @@ class KnowledgeResDto {
   String userId;
 
   KnowledgeResDto({
+    required this.id,
     required this.createdAt,
     this.createdBy,
     required this.description,
@@ -123,6 +125,7 @@ class KnowledgeResDto {
   });
 
   KnowledgeResDto copyWith({
+    String? id,
     DateTime? createdAt,
     String? createdBy,
     String? description,
@@ -131,6 +134,7 @@ class KnowledgeResDto {
     String? updatedBy,
     String? userId,
   }) => KnowledgeResDto(
+    id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
     createdBy: createdBy ?? this.createdBy,
     description: description ?? this.description,
@@ -142,6 +146,7 @@ class KnowledgeResDto {
 
   factory KnowledgeResDto.fromJson(Map<String, dynamic> json) {
     return KnowledgeResDto(
+      id: json['id'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       createdBy: json['createdBy'] as String?,
       description: json['description'] as String,
@@ -156,6 +161,7 @@ class KnowledgeResDto {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'createdAt': createdAt.toIso8601String(),
       if (createdBy != null) 'createdBy': createdBy,
       'description': description,
