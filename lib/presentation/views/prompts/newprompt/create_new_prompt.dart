@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/create_prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/create_prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_details_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_preview_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_action_buttons.dart';

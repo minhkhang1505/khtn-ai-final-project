@@ -176,10 +176,10 @@ class _EditAgentPageState extends State<EditAgentPage> {
 
                   // Action Buttons
                   SaveActionButtonRow(
-                    onCancel: () {
+                    onLeftButtonPress: () {
                       Navigator.pop(context);
                     },
-                    onSave: () {
+                    onRightButtonPress: () {
                       // TODO: Implement save functionality
                     },
                   ),

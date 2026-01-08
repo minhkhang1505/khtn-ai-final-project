@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import '../widgets/auth_header.dart';
 import 'widgets/register_form.dart';
 import 'package:provider/provider.dart';

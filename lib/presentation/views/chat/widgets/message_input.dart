@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:khtn_ai_final_project/presentation/views/chat/widgets/custom_input_message.dart';
 import 'package:provider/provider.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 
 class MessageInput extends StatefulWidget {
   final void Function(String) onSend;

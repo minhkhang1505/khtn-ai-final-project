@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_tab_bar.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:provider/provider.dart';
@@ -10,11 +11,17 @@ class ShowPromptModalBottomSheet extends StatelessWidget {
   const ShowPromptModalBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
+    // Lấy ChatViewModel từ parent context trước khi mở modal
+    final chatViewModel = context.read<ChatViewModel>();
+
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) {
-        return const _PromptModalContent();
+      builder: (modalContext) {
+        return ChangeNotifierProvider(
+          create: (_) => sl<PromptViewmodel>()..getAllPrompts(),
+          child: _PromptModalContent(chatViewModel: chatViewModel),
+        );
       },
     );
   }
@@ -26,7 +33,9 @@ class ShowPromptModalBottomSheet extends StatelessWidget {
 }
 
 class _PromptModalContent extends StatefulWidget {
-  const _PromptModalContent();
+  final ChatViewModel chatViewModel;
+
+  const _PromptModalContent({required this.chatViewModel});
 
   @override
   State<_PromptModalContent> createState() => _PromptModalContentState();
@@ -50,32 +59,6 @@ class _PromptModalContentState extends State<_PromptModalContent>
     _scrollController.dispose();
     _tabController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent) {
-      final viewModel = context.read<PromptViewmodel>();
-
-      if (viewModel.loadMoreState == LoadMoreState.idle && viewModel.hasNext) {
-        debugPrint(
-          'ShowPromptModalBottomSheet: Reached bottom, loading more prompts...',
-        );
-        viewModel.loadMorePrompts();
-      }
-    }
-  }
-
-  Future<void> _onRefresh() async {
-    final viewModel = context.read<PromptViewmodel>();
-    await viewModel.refreshPrompts();
-  }
-
-  void _handleItemTap(BuildContext context, PromptEntity prompt) {
-    // get the content of the prompt and send it as a message, put it in the chat input box
-    final chatViewModel = context.read<ChatViewModel>();
-    chatViewModel.setInputMessage(prompt.content);
-    Navigator.pop(context);
   }
 
   @override
@@ -160,5 +143,30 @@ class _PromptModalContentState extends State<_PromptModalContent>
         },
       ),
     );
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent) {
+      final viewModel = context.read<PromptViewmodel>();
+
+      if (viewModel.loadMoreState == LoadMoreState.idle && viewModel.hasNext) {
+        debugPrint(
+          'ShowPromptModalBottomSheet: Reached bottom, loading more prompts...',
+        );
+        viewModel.loadMorePrompts();
+      }
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    final viewModel = context.read<PromptViewmodel>();
+    await viewModel.refreshPrompts();
+  }
+
+  void _handleItemTap(BuildContext context, PromptEntity prompt) {
+    // get the content of the prompt and send it as a message, put it in the chat input box
+    widget.chatViewModel.setInputMessage(prompt.content);
+    Navigator.pop(context);
   }
 }

@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/agent_view_model.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/agent/agent_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/create_knowledge_base_viewmodel.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_detail_viewmodel.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/user_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/create_knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasource_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth/user_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
@@ -23,9 +24,9 @@ import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/pr
 import 'package:khtn_ai_final_project/presentation/views/splash/splash_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/login_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/register/register.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/create_prompt_viewmodel.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_detail_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/create_prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_detail_view_model.dart';
 
 import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/agents/create_agent_page.dart';
@@ -166,12 +167,8 @@ class RouteGenerator {
       case AppRoutes.promptDetails:
         final prompt = settings.arguments as PromptEntity?;
         if (prompt == null || prompt.id.isEmpty) {
-          debugPrint('Khang - Error: prompt is null or prompt.id is empty');
           return _errorRoute('promptDetails - Missing prompt');
         }
-        debugPrint(
-          'Khang - Route received prompt: ${prompt.id} - ${prompt.title}',
-        );
         return _buildRoute(
           settings: settings,
           builder: (context) {
@@ -202,11 +199,18 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (context) {
-            return ChangeNotifierProvider(
-              create: (_) =>
-                  sl<KnowledgeDetailViewmodel>(param1: knowledge)
-                    ..loadKnowledgeDetails(),
-              child: KnowledgeDetailScreen(),
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider(
+                  create: (_) => sl<DatasourceViewmodel>(),
+                ),
+                ChangeNotifierProvider(
+                  create: (_) =>
+                      sl<KnowledgeDetailViewmodel>(param1: knowledge)
+                        ..loadKnowledgeDetails(),
+                ),
+              ],
+              child: const KnowledgeDetailScreen(),
             );
           },
         );

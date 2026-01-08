@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_detail_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_detail_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_details_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/widgets/prompt_detail_action_buttons.dart';
 import 'package:provider/provider.dart';

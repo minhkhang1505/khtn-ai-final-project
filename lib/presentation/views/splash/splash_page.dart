@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
-import 'package:khtn_ai_final_project/presentation/services/navigation_service.dart';
+import 'package:khtn_ai_final_project/presentation/routes/navigation_service.dart';
 
 /// Splash screen page
 ///

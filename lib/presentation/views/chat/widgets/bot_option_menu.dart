@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/utils/ai_model_icon_helper.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 
 class BotOptionMenu extends StatefulWidget {
   const BotOptionMenu({super.key});

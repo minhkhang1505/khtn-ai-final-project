@@ -206,11 +206,11 @@ class _EditBotPageState extends State<EditBotPage> {
 
                     // Action Buttons
                     SaveActionButtonRow(
-                      onCancel: () {
+                      onLeftButtonPress: () {
                         editBotViewModel.clearForm();
                         Navigator.pop(context);
                       },
-                      onSave: () async {
+                      onRightButtonPress: () async {
                         final pageContext = context;
                         await showDialog<void>(
                           context: pageContext,

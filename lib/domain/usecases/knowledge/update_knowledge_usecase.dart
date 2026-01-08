@@ -8,7 +8,7 @@ class UpdateKnowledgeBaseUsecase {
   final KnowledgeBaseRepository repository;
   UpdateKnowledgeBaseUsecase({required this.repository});
 
-  Future<KnowledgeBasePaggingResponse> call(
+  Future<KnowledgeModel> call(
     String id,
     KnowledgeBaseCreationAndUpdateRequest knowledge,
   ) {

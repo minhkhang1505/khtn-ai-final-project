@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
 import 'package:provider/provider.dart';
 
@@ -68,7 +68,7 @@ class _AllPromptsTabState extends State<AllPromptsTab> {
         itemBuilder: (context, index) {
           if (index == prompts.length) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 100),
               child: Center(
                 child: switch (viewModel.loadMoreState) {
                   LoadMoreState.loading => const CircularProgressIndicator(),
