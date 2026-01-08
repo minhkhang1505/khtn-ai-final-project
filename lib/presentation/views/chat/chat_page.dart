@@ -26,7 +26,7 @@ class ChatPage extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     // Listen to ChatViewModel changes so UI updates when conversation changes
     final chatViewModel = context.watch<ChatViewModel>();
-    final modelSelectorViewModel = sl<ChatAppBarViewModel>();
+    final chatAppBarViewModel = sl<ChatAppBarViewModel>();
 
     return Scaffold(
       appBar: ChatAppBar(
@@ -47,7 +47,7 @@ class ChatPage extends StatelessWidget {
             // Open chat with this conversation
             chatViewModel.openChat(conversation);
             // Set the selected model in model selector`
-            modelSelectorViewModel.setSelectedAssistant(conversation.bot);
+            chatAppBarViewModel.openChat(conversation);
         },
       ),
 
@@ -135,8 +135,13 @@ class ChatPage extends StatelessWidget {
               padding: ResponsiveHelper.horizontalPadding(context),
               child: MessageInput(
                 onSend: (message, files) {
-                  final assistant = modelSelectorViewModel.selectedAssistant;
-                  chatViewModel.sendMessage(message, assistant, files);
+                  final assistant = chatAppBarViewModel.selectedAssistant;
+
+                  if (assistant.model == 'agentic') {
+                    chatViewModel.sendMessage(message, assistant, files);
+                  } else {
+                    chatViewModel.chatWithBot(message, assistant, files);
+                  }
                 },
               ),
             ),

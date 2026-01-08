@@ -20,13 +20,13 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final modelSelectorViewModel = sl<ChatAppBarViewModel>();
+    final chatAppBarViewModel = sl<ChatAppBarViewModel>();
 
     return AppBar(
       automaticallyImplyLeading: true,
       title: (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
           ? Text(
-              modelSelectorViewModel.conversationTitle,
+              chatAppBarViewModel.conversationTitle,
               style: AppBarInfo.titleTextStyle,
             )
           : null,

@@ -127,6 +127,7 @@ class ChatViewModel extends ChangeNotifier {
         metadata: metadata,
         assistant: assistant,
       );
+      debugPrint("😁 SendMessageRequestModel: ${request.toJson()}");
       final response = await chatUsecase.sendMessage(request);
 
       // Update remaining tokens
@@ -148,14 +149,12 @@ class ChatViewModel extends ChangeNotifier {
       errorSetter = e.toString();
       return false;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      isLoadingSetter = false;
     }
   }
 
   Future<bool> getConversationHistory(String model) async {
-    _isLoading = true;
-    notifyListeners();
+    isLoadingSetter = true;
     try {
       final response = await chatUsecase.getConversationHistory(
         GetConversationHistoryRequestModel(
@@ -189,8 +188,7 @@ class ChatViewModel extends ChangeNotifier {
       errorSetter = e.toString();
       return false;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      isLoadingSetter = false;
     }
     return true;
   }
@@ -199,8 +197,13 @@ class ChatViewModel extends ChangeNotifier {
     final trimmed = content.trim();
     if (trimmed.isEmpty) return false;
 
-    _isLoading = true;
-    notifyListeners();
+    // Create a user message and append
+    final userMsg = ChatMessageModel.createMessage(trimmed, 'user', []);
+    messages.add(userMsg);
+    Future.delayed(const Duration(milliseconds: 100), () {
+      scrollToBottom();
+    });
+    isLoadingSetter = true;
 
     try {
       final request = ChatWithBotRequestModel(
@@ -209,7 +212,7 @@ class ChatViewModel extends ChangeNotifier {
         metadata: metadata,
         assistant: assistant,
       );
-      debugPrint(" ChatWithBotRequestModel: ${request.toJson()}");
+      debugPrint("😁 ChatWithBotRequestModel: ${request.toJson()}");
 
       final response = await chatUsecase.chatWithBot(request);
       final replyMessage = ChatMessageModel.createMessage(
@@ -228,8 +231,7 @@ class ChatViewModel extends ChangeNotifier {
       errorSetter = e.toString();
       return false;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      isLoadingSetter = false;
     }
     return true;
   }

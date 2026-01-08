@@ -15,7 +15,7 @@ class BotOptionMenu extends StatefulWidget {
 }
 
 class _BotOptionMenuState extends State<BotOptionMenu> {
-  final ChatAppBarViewModel _modelSelectorViewModel = sl<ChatAppBarViewModel>();
+  final ChatAppBarViewModel chatAppBarViewModel = sl<ChatAppBarViewModel>();
   @override
   void initState() {
     super.initState();
@@ -24,18 +24,18 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final userBots = _modelSelectorViewModel.userBots;
-    final baseModels = _modelSelectorViewModel.baseModels;
+    final userBots = chatAppBarViewModel.userBots;
+    final baseModels = chatAppBarViewModel.baseModels;
 
     return PopupMenuButton<Map<String, dynamic>>(
       onSelected: (value) {
         final String id = value['id'] as String;
         final String name = value['name'] as String;
         // TODO: mode == knowledge base (bot) or agentic
-        final String model = value['type'] == 'bot' ? 'custom-bot' : 'agentic';
+        final String model = value['type'] == 'bot' ? '' : 'agentic';
 
         final assistant = AssistantModel(model: model, id: id, name: name);
-        _modelSelectorViewModel.setSelectedAssistant(assistant);
+        chatAppBarViewModel.setSelectedAssistant(assistant);
         widget.onSelected(assistant);
       },
       color: colorScheme.surfaceBright,
@@ -43,7 +43,9 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
       shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.medium),
       elevation: 4,
       itemBuilder: (context) {
-        if (_modelSelectorViewModel.isLoading) {
+        List<PopupMenuEntry<Map<String, dynamic>>> items = [];
+
+        if (chatAppBarViewModel.isLoading) {
           return [
             PopupMenuItem<Map<String, dynamic>>(
               enabled: false,
@@ -56,7 +58,15 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
           ];
         }
 
-        List<PopupMenuEntry<Map<String, dynamic>>> items = [];
+        // Check if userBots or baseModels are empty
+        if (userBots.isEmpty && baseModels.isEmpty) {
+          return [
+            const PopupMenuItem<Map<String, dynamic>>(
+              enabled: false,
+              child: Text('No models available'),
+            ),
+          ];
+        }
         
         // Add base models section
         items.add(
@@ -107,7 +117,6 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
         
         // Add user bots section if there are any
         if (userBots.isNotEmpty) {
-          items.add(const PopupMenuDivider());
           items.add(
             PopupMenuItem<Map<String, dynamic>>(
               enabled: false,
@@ -178,10 +187,10 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
         return items;
       },
       child: AnimatedBuilder(
-        animation: _modelSelectorViewModel,
+        animation: chatAppBarViewModel,
         builder: (context, _) {
 
-          final assistant = _modelSelectorViewModel.selectedAssistant;
+          final assistant = chatAppBarViewModel.selectedAssistant;
           String displayName = assistant.name;
 
           return Container(

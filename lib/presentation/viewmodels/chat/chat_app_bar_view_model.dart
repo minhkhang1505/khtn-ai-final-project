@@ -5,6 +5,7 @@ import 'package:khtn_ai_final_project/domain/usecases/bot_usecase.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 
 @lazySingleton
 class ChatAppBarViewModel extends ChangeNotifier {
@@ -50,8 +51,21 @@ class ChatAppBarViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void openChat(ConversationModel conversation) {
+    selectedAssistant = conversation.bot;
+    if (selectedAssistant.name.isEmpty) {
+      selectedAssistant.name = AssistantModelType.nameFromId(selectedAssistant.id);
+    }
+    conversationTitle = conversation.title;
+    debugPrint("🧐 OpenChat with assistant: ${selectedAssistant.toJson()}");
+    notifyListeners();
+  }
+
   void setSelectedAssistant(AssistantModel assistant) {
     selectedAssistant = assistant;
+    if (assistant.name.isEmpty) {
+      selectedAssistant.name = AssistantModelType.nameFromId(assistant.id);
+    }
     notifyListeners();
   }
 
