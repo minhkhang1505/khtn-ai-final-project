@@ -3,6 +3,7 @@ import 'package:khtn_ai_final_project/data/models/email/response_email_request.d
 import 'package:khtn_ai_final_project/data/models/email/response_email_response.dart';
 import 'package:khtn_ai_final_project/data/models/email/suggest_reply_idea_request.dart';
 import 'package:khtn_ai_final_project/data/models/email/suggest_reply_idea_response.dart';
+import 'package:injectable/injectable.dart';
 
 abstract class EmailRemoteDataSource {
   Future<ResponseEmailResponse> requestEmail(ResponseEmailRequest request);
@@ -12,6 +13,7 @@ abstract class EmailRemoteDataSource {
   );
 }
 
+@LazySingleton(as: EmailRemoteDataSource)
 class EmailRemoteDataSourceImpl implements EmailRemoteDataSource {
   final JarvisApiClient client;
 

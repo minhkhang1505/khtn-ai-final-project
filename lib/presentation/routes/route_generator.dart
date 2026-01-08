@@ -3,6 +3,7 @@ import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/agent/agent_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/aiemail/ai_email_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
@@ -11,6 +12,7 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasour
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth/user_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/views/account/aiemail/ai_response_email_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
@@ -261,6 +263,14 @@ class RouteGenerator {
             create: (_) => sl<EditBotViewModel>(),
             child: EditBotPage(bot: editBot),
           ),
+        );
+
+      case AppRoutes.aiEmail:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => sl<AiEmailViewmodel>(),
+            child: AIResponseEmailPage()),
         );
 
       default:

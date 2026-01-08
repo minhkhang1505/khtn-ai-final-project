@@ -74,25 +74,43 @@ class AssistantDto {
   };
 
   static Id _idFromJson(String value) {
-    return Id.values.firstWhere(
-      (e) => e.toString().split('.').last == value,
-      orElse: () => Id.CLAUDE_3_HAIKU_20240307,
-    );
+    // Map from API format to enum
+    const map = {
+      'claude-3-haiku-20240307': Id.CLAUDE_3_HAIKU_20240307,
+      'claude-3-sonnet-20240229': Id.CLAUDE_3_SONNET_20240229,
+      'gemini-1.5-flash-latest': Id.GEMINI_15_FLASH_LATEST,
+      'gemini-1.5-pro-latest': Id.GEMINI_15_PRO_LATEST,
+      'gpt-4o': Id.GPT_4_O,
+      'gpt-4o-mini': Id.GPT_4_O_MINI,
+    };
+    return map[value] ?? Id.CLAUDE_3_HAIKU_20240307;
   }
 
   static String _idToJson(Id value) {
-    return value.toString().split('.').last;
+    // Map from enum to API format
+    const map = {
+      Id.CLAUDE_3_HAIKU_20240307: 'claude-3-haiku-20240307',
+      Id.CLAUDE_3_SONNET_20240229: 'claude-3-sonnet-20240229',
+      Id.GEMINI_15_FLASH_LATEST: 'gemini-1.5-flash-latest',
+      Id.GEMINI_15_PRO_LATEST: 'gemini-1.5-pro-latest',
+      Id.GPT_4_O: 'gpt-4o',
+      Id.GPT_4_O_MINI: 'gpt-4o-mini',
+    };
+    return map[value] ?? 'claude-3-haiku-20240307';
   }
 
   static Model _modelFromJson(String value) {
-    return Model.values.firstWhere(
-      (e) => e.toString().split('.').last == value,
-      orElse: () => Model.DIFY,
-    );
+    if (value.toLowerCase() == 'dify') {
+      return Model.DIFY;
+    }
+    return Model.DIFY;
   }
 
   static String _modelToJson(Model value) {
-    return value.toString().split('.').last;
+    switch (value) {
+      case Model.DIFY:
+        return 'dify';
+    }
   }
 }
 
