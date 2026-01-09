@@ -40,34 +40,18 @@ class AiEmailViewmodel extends ChangeNotifier {
   /// Call AI Email API to generate email response
   /// Takes [request] as input and returns the generated email
   Future<bool> generateEmailResponse(EmailRequestEntity request) async {
-    if (_state == AiEmailState.loading) {
-      debugPrint(
-        '[Khang] generateEmailResponse: Already loading, skip request',
-      );
-      return false;
-    }
+    if (_state == AiEmailState.loading) return false;
 
     try {
-      debugPrint(
-        '[Khang] generateEmailResponse: Start - action: ${request.action}',
-      );
       _setState(AiEmailState.loading);
 
       final response = await aiEmailUsecase.call(request);
-
-      debugPrint(
-        '[Khang] generateEmailResponse: Success - email length: ${response.email.length}, remaining usage: ${response.remainingUsage}',
-      );
-
       _response = response;
       _errorMessage = null;
       _setState(AiEmailState.success);
 
       return true;
-    } catch (e, stackTrace) {
-      debugPrint('[Khang] generateEmailResponse: Error - $e');
-      debugPrintStack(stackTrace: stackTrace);
-
+    } catch (e) {
       _errorMessage = e.toString();
       _response = null;
       _setState(AiEmailState.failure);
@@ -79,32 +63,19 @@ class AiEmailViewmodel extends ChangeNotifier {
   /// Call AI Email API to generate reply ideas
   /// Takes [request] as input and returns a list of suggested reply ideas
   Future<bool> generateReplyIdeas(SuggestReplyIdeaRequestEntity request) async {
-    if (_state == AiEmailState.loading) {
-      debugPrint('[Khang] generateReplyIdeas: Already loading, skip request');
-      return false;
-    }
+    if (_state == AiEmailState.loading) return false;
 
     try {
-      debugPrint(
-        '[Khang] generateReplyIdeas: Start - action: ${request.action}',
-      );
       _setState(AiEmailState.loading);
 
       final response = await sugguestReplyIdeaUsecase.call(request);
-
-      debugPrint(
-        '[Khang] generateReplyIdeas: Success - ideas count: ${response.ideaCount}',
-      );
 
       _suggestReplyIdeaResponse = response;
       _errorMessage = null;
       _setState(AiEmailState.success);
 
       return true;
-    } catch (e, stackTrace) {
-      debugPrint('[Khang] generateReplyIdeas: Error - $e');
-      debugPrintStack(stackTrace: stackTrace);
-
+    } catch (e) {
       _errorMessage = e.toString();
       _suggestReplyIdeaResponse = null;
       _setState(AiEmailState.failure);
@@ -115,7 +86,6 @@ class AiEmailViewmodel extends ChangeNotifier {
 
   /// Reset viewmodel state
   void resetState() {
-    debugPrint('[Khang] resetState: Resetting to initial state');
     _state = AiEmailState.initial;
     _response = null;
     _suggestReplyIdeaResponse = null;
