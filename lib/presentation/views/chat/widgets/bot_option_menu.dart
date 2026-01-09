@@ -31,10 +31,11 @@ class _BotOptionMenuState extends State<BotOptionMenu> {
       onSelected: (value) {
         final String id = value['id'] as String;
         final String name = value['name'] as String;
-        // TODO: mode == knowledge base (bot) or agentic
-        final String model = value['type'] == 'bot' ? '' : 'agentic';
+        // mode == knowledge base (bot) or agentic
+        final String model = value['type'] == 'bot' ? 'knowledge-base' : 'agentic';
 
         final assistant = AssistantModel(model: model, id: id, name: name);
+        debugPrint('😊 Selected bot/model: ${assistant.toJson()}');
         chatAppBarViewModel.setSelectedAssistant(assistant);
         widget.onSelected(assistant);
       },

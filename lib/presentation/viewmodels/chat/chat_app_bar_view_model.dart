@@ -56,7 +56,6 @@ class ChatAppBarViewModel extends ChangeNotifier {
       selectedAssistant.name = AssistantModelType.nameFromId(selectedAssistant.id);
     }
     conversationTitle = conversation.title;
-    debugPrint("🧐 OpenChat with assistant: ${selectedAssistant.toJson()}");
     notifyListeners();
   }
 

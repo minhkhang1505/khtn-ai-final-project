@@ -137,6 +137,8 @@ class ChatPage extends StatelessWidget {
                 onSend: (message, files) {
                   final assistant = chatAppBarViewModel.selectedAssistant;
 
+                  debugPrint('😁 Sending message with assistant model: ${assistant.model}');
+
                   if (assistant.model == 'agentic') {
                     chatViewModel.sendMessage(message, assistant, files);
                   } else {

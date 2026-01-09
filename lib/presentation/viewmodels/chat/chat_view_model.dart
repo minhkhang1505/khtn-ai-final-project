@@ -195,7 +195,17 @@ class ChatViewModel extends ChangeNotifier {
 
   Future<bool> chatWithBot(String content, AssistantModel assistant, List<PlatformFile> files) async {
     final trimmed = content.trim();
-    if (trimmed.isEmpty) return false;
+    // Validate message
+    final validationError = validateInputMessage(trimmed, files);
+    if (validationError.isNotEmpty) {
+      errorSetter = validationError;
+      return false;
+    }
+
+    if (conversationId.isEmpty) {
+      // New conversation - reset metadata
+      conversationId = 'temp_id';
+    }
 
     // Create a user message and append
     final userMsg = ChatMessageModel.createMessage(trimmed, 'user', []);
@@ -213,8 +223,11 @@ class ChatViewModel extends ChangeNotifier {
         assistant: assistant,
       );
       debugPrint("😁 ChatWithBotRequestModel: ${request.toJson()}");
-
       final response = await chatUsecase.chatWithBot(request);
+
+      // Update remaining tokens
+      tokenUsage.availableTokens = response.remainingUsage;
+
       final replyMessage = ChatMessageModel.createMessage(
         response.message,
         'assistant',
@@ -226,6 +239,7 @@ class ChatViewModel extends ChangeNotifier {
       Future.delayed(const Duration(milliseconds: 100), () {
         scrollToBottom();
       });
+      return true;
     } catch (e) {
       // On error, add a simple assistant message describing failure
       errorSetter = e.toString();
@@ -233,7 +247,6 @@ class ChatViewModel extends ChangeNotifier {
     } finally {
       isLoadingSetter = false;
     }
-    return true;
   }
 
   String validateInputMessage(String content, List<PlatformFile> files) {
