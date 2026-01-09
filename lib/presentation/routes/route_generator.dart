@@ -66,6 +66,12 @@ class RouteGenerator {
         );
 
       case AppRoutes.main:
+        // Extract prompt content from arguments if available
+        String? promptContent;
+        if (args is Map<String, dynamic>) {
+          promptContent = args['promptContent'] as String?;
+        }
+
         return _buildRoute(
           settings: settings,
           builder: (_) => MultiProvider(
@@ -79,7 +85,7 @@ class RouteGenerator {
               ChangeNotifierProvider(create: (_) => sl<ChatViewModel>()),
               ChangeNotifierProvider(create: (_) => sl<UserViewModel>()),
             ],
-            child: const HomePage(),
+            child: HomePage(promptContent: promptContent),
           ),
         );
 
@@ -186,11 +192,24 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (context) {
-            return ChangeNotifierProvider(
-              create: (_) =>
-                  sl<PromptDetailViewModel>(param1: prompt)
-                    ..loadPromptDetails(),
+            // Try to get existing ChatViewModel from parent context
+            // If not available, create a new one
+            ChatViewModel? chatViewModel;
+            try {
+              chatViewModel = context.read<ChatViewModel>();
+            } catch (e) {
+              chatViewModel = sl<ChatViewModel>();
+            }
 
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider.value(value: chatViewModel),
+                ChangeNotifierProvider(
+                  create: (_) =>
+                      sl<PromptDetailViewModel>(param1: prompt)
+                        ..loadPromptDetails(),
+                ),
+              ],
               child: const PromptDetailPage(),
             );
           },
