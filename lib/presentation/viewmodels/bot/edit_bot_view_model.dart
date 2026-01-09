@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/bot/bot_usecase.dart';
+import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
@@ -23,12 +24,14 @@ class EditBotViewModel extends ChangeNotifier {
 
   late BotModel _bot;
   BotModel? _botNullable;
-  
+
   BotModel get bot => _bot;
 
   bool get isFavorite => _botNullable?.isFavorite ?? false;
 
-  void setupBot(BotModel bot) {
+  List<KnowledgeResDto> knowledges = [];
+
+  Future<void> setupBot(BotModel bot) async {
     _isDataLoading = true;
     notifyListeners();
     _bot = bot;
@@ -37,6 +40,8 @@ class EditBotViewModel extends ChangeNotifier {
     assistantNameController.text = bot.assistantName;
     instructionsController.text = bot.instructions;
     descriptionController.text = bot.description;
+
+    await getBotKnowledges();
 
     // Data setup complete
     _isDataLoading = false;
@@ -48,6 +53,9 @@ class EditBotViewModel extends ChangeNotifier {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  bool _isKnowledgeLoading = false;
+  bool get isKnowledgeLoading => _isKnowledgeLoading;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
@@ -69,7 +77,7 @@ class EditBotViewModel extends ChangeNotifier {
         instructions: instructionsController.text.trim(),
         description: descriptionController.text.trim(),
       );
-      
+
       final updateFuture = botUseCase.updateBot(_bot.id, botRequest);
       await Future.delayed(const Duration(seconds: 1));
       await updateFuture;
@@ -118,6 +126,65 @@ class EditBotViewModel extends ChangeNotifier {
     } catch (e) {
       _errorMessage = e.toString();
       debugPrint('Failed to toggle favorite: $e');
+      notifyListeners();
+    }
+  }
+
+  Future<bool> addKnowledgeToBot(String knowledgeId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await botUseCase.addKnowledgeToAssistant(_bot.id, knowledgeId);
+
+      await getBotKnowledges();
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> removeKnowledgeFromBot(String knowledgeId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await botUseCase.removeKnowledgeFromAssistant(_bot.id, knowledgeId);
+
+      await getBotKnowledges();
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<void> getBotKnowledges() async {
+    _isKnowledgeLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await botUseCase.getAssistantKnowledges(_bot.id);
+      knowledges = response.data;
+    } catch (e) {
+      _errorMessage = e.toString();
+      rethrow;
+    } finally {
+      _isKnowledgeLoading = false;
       notifyListeners();
     }
   }

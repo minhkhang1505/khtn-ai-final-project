@@ -12,6 +12,7 @@ import 'widgets/edit_bot_app_bar.dart';
 import 'widgets/knowledge_base_card.dart';
 import 'widgets/bot_information_card.dart';
 import 'widgets/bot_action_card.dart';
+import 'widgets/add_knowledge_dialog.dart';
 
 /// Edit Bot Page - Configure AI bot settings
 class EditBotPage extends StatefulWidget {
@@ -29,9 +30,9 @@ class _EditBotPageState extends State<EditBotPage> {
   void initState() {
     super.initState();
     // Defer setup to after first frame to avoid notifying during build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final editBotViewModel = context.read<EditBotViewModel>();
-      editBotViewModel.setupBot(widget.bot);
+      await editBotViewModel.setupBot(widget.bot);
     });
   }
 
@@ -194,7 +195,48 @@ class _EditBotPageState extends State<EditBotPage> {
                     const SizedBox(height: AppSpacing.cardSpacing),
 
                     // Knowledge Base Section
-                    const KnowledgeBaseCard(),
+                    KnowledgeBaseCard(
+                      knowledges: editBotViewModel.knowledges,
+                      isLoading: editBotViewModel.isKnowledgeLoading,
+                      onRefresh: () => editBotViewModel.getBotKnowledges(),
+                      onAddKnowledge: () async {
+                        final selectedKnowledgeId = await showDialog<String>(
+                          context: context,
+                          builder: (context) => AddKnowledgeDialog(
+                            excludeKnowledgeIds: editBotViewModel.knowledges
+                                .map((k) => k.id)
+                                .toList(),
+                          ),
+                        );
+
+                        if (selectedKnowledgeId != null && mounted) {
+                          final scaffold = ScaffoldMessenger.of(context);
+                          final success = await editBotViewModel
+                              .addKnowledgeToBot(selectedKnowledgeId);
+
+                          if (success) {
+                            scaffold.showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Knowledge added successfully',
+                                ),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } else {
+                            scaffold.showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  editBotViewModel.errorMessage ??
+                                      'Failed to add knowledge',
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
                     const SizedBox(height: AppSpacing.cardSpacing),
 
                     // AI model Section
