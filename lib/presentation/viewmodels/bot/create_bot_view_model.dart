@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
+import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/bot/bot_usecase.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,6 +9,7 @@ class CreateBotViewModel extends ChangeNotifier {
   final BotUseCase botUseCase;
 
   CreateBotViewModel({required this.botUseCase}) {
+    _selectedModelId = AssistantModelType.GPT_4O_MINI.id;
     assistantNameController.addListener(_onAssistantNameChanged);
     instructionsController.addListener(notifyListeners);
     descriptionController.addListener(notifyListeners);
@@ -114,7 +116,7 @@ class CreateBotViewModel extends ChangeNotifier {
     _errorMessage = null;
     assistantNameError = null;
     modelError = null;
-    _selectedModelId = null;
+    _selectedModelId = AssistantModelType.GPT_4O_MINI.id;
     notifyListeners();
   }
 

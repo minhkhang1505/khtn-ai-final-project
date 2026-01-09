@@ -53,6 +53,7 @@ dependencies:
   connectivity_plus: ^7.0.0
   uuid: ^4.5.2
   injectable_generator: ^2.11.1
+  injectable: ^2.7.1+4
 
 dev_dependencies:
   flutter_test:

@@ -4,6 +4,7 @@ import 'package:khtn_ai_final_project/data/datasources/remote/bot_remote_data_so
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_response_model.dart';
+import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: BotRepository)
@@ -47,6 +48,30 @@ class BotRepositoryImpl implements BotRepository {
   @override
   Future<BotModel> toggleFavorite(String id) async {
     final response = await remoteDataSource.toggleFavorite(id);
+    return response;
+  }
+
+  @override
+  Future<void> addKnowledgeToAssistant(
+    String assistantId,
+    String knowledgeId,
+  ) async {
+    await remoteDataSource.addKnowledgeToAssistant(assistantId, knowledgeId);
+  }
+
+  @override
+  Future<void> removeKnowledgeFromAssistant(
+    String assistantId,
+    String knowledgeId,
+  ) async {
+    await remoteDataSource.removeKnowledgeFromAssistant(assistantId, knowledgeId);
+  }
+
+  @override
+  Future<KnowledgeBasePaggingResponse> getAssistantKnowledges(
+    String assistantId,
+  ) async {
+    final response = await remoteDataSource.getAssistantKnowledges(assistantId);
     return response;
   }
 }

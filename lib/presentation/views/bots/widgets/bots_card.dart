@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:khtn_ai_final_project/core/utils/icon_ai_model_helper.dart';
+import 'package:khtn_ai_final_project/core/utils/ai_model_icon_helper.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
@@ -140,7 +140,7 @@ class BotCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(IconAiModelHelper.iconForModel(AssistantModelType.nameFromId(bot.model?.id ?? '')), size: 20),
+                AiModelIconHelper.iconForModel(AssistantModelType.nameFromId(bot.model?.id ?? ''), size: 20),
                 const SizedBox(width: 8),
                 Text(
                   AssistantModelType.nameFromId(bot.model?.id ?? ''),

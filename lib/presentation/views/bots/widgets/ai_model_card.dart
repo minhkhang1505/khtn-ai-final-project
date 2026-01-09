@@ -5,15 +5,13 @@ import 'package:khtn_ai_final_project/presentation/common/widgets/ai_model_optio
 class AiModelCard extends StatelessWidget {
   const AiModelCard({
     super.key,
-    required this.onChanged,
     this.errorText,
-    this.initialModel,
     this.isReadOnly = false,
+    this.fixedModelId,
   });
-  final ValueChanged<String> onChanged;
   final String? errorText;
-  final String? initialModel;
   final bool isReadOnly;
+  final String? fixedModelId; // For read-only display
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +51,8 @@ class AiModelCard extends StatelessWidget {
             const SizedBox(height: 20),
 
             AiModelOptionMenu(
-              onChanged: onChanged,
-              initialModel: initialModel,
               isReadOnly: isReadOnly,
+              fixedModelId: fixedModelId,
             ),
 
             if (errorText != null) ...[
@@ -64,8 +61,8 @@ class AiModelCard extends StatelessWidget {
                 errorText!,
                 style: TextStyle(color: colorScheme.error, fontSize: 12),
               ),
-            ]
-          ]
+            ],
+          ],
         ),
       ),
     );

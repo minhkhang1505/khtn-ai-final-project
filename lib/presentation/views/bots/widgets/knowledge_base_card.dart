@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
+import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/expanded_button.dart';
+import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_item.dart';
+import 'package:provider/provider.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 
 class KnowledgeBaseCard extends StatelessWidget {
-  const KnowledgeBaseCard({super.key});
+  const KnowledgeBaseCard({
+    super.key,
+    this.knowledges = const [],
+    this.isLoading = false,
+    this.onAddKnowledge,
+  });
+
+  final List<KnowledgeResDto> knowledges;
+  final bool isLoading;
+  final VoidCallback? onAddKnowledge;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +39,14 @@ class KnowledgeBaseCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Title
-            const Text(
-              'Knowledge Base',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Knowledge Base',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+              ],
             ),
             const SizedBox(height: 4),
 
@@ -39,63 +54,86 @@ class KnowledgeBaseCard extends StatelessWidget {
               "Enhance your bot’s intelligence by adding relevant knowledge sources.",
               style: TextStyle(fontSize: 14),
             ),
-            const SizedBox(height: 20),
-
-            // Upload Button
-            ExpandedButton(onPressed: () => {}, icon: const Icon(Icons.upload_file), label: 'Upload Documents'),
             const SizedBox(height: 16),
 
-            // Links
-            const Text(
-              'Links',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'https://example.com/knowledge-base',
-                hintStyle: TextStyle(
-                  color: colorScheme.onSurface.withAlpha(140),
-                  fontSize: 14,
-                ),
-                filled: true,
-                fillColor: colorScheme.surfaceContainerHigh.withAlpha(120),
-                border: OutlineInputBorder(
-                  borderRadius: AppBorderRadius.medium,
-                  borderSide: BorderSide.none,
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    Icons.add_link,
-                    color: colorScheme.primary,
+            if (isLoading)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   ),
-                  onPressed: () {
-                    // TODO: Handle link addition
-                  },
                 ),
+              )
+            else if (knowledges.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Text(
+                  'No knowledge linked to this bot yet.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              )
+            else
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final item = knowledges[index];
+                  return KnowledgeItem(
+                    iconPath: 'assets/icons/ic_knowledge.svg',
+                    knowledge: KnowledgeEntity(
+                      id: item.id,
+                      userId: item.userId,
+                      knowledgeName: item.knowledgeName,
+                      description: item.description,
+                      createdAt: item.createdAt,
+                      updatedAt: item.updatedAt,
+                      createdBy: item.createdBy,
+                      updatedBy: item.updatedBy,
+                    ),
+                    onDelete: () async {
+                      final vm = context.read<EditBotViewModel>();
+                      final scaffold = ScaffoldMessenger.of(context);
+                      final success = await vm.removeKnowledgeFromBot(item.id);
+                      if (success) {
+                        scaffold.showSnackBar(
+                          const SnackBar(
+                            content: Text('Knowledge removed successfully'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } else {
+                        scaffold.showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              vm.errorMessage ?? 'Failed to remove knowledge',
+                            ),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                  );
+                },
+                separatorBuilder: (context, index) => Divider(
+                  height: 12,
+                  color: colorScheme.outlineVariant.withAlpha(70),
+                ),
+                itemCount: knowledges.length,
               ),
+
+            const SizedBox(height: 16),
+
+            ExpandedButton(
+              icon: Icon(Icons.add),
+              label: 'Add knowledge',
+              onPressed: onAddKnowledge ?? () {},
             ),
-            const SizedBox(height: 20),
-
-            // Cloud Storage Options
-            const Text(
-              'Cloud Storage Options',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            ExpandedButton(onPressed: () {}, icon: const Icon(Icons.cloud_upload_outlined), label: 'Google Drive'),
-            const SizedBox(height: 12),
-
-            ExpandedButton(onPressed: () {}, icon: const Icon(Icons.cloud_upload_outlined), label: 'Slack'),
-            const SizedBox(height: 12),
           ],
         ),
       ),
