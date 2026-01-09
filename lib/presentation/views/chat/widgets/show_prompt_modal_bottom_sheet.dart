@@ -105,8 +105,18 @@ class _PromptModalContentState extends State<_PromptModalContent>
                         ),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/prompts');
+                    onPressed: () async {
+                      final result = await Navigator.pushNamed(
+                        context,
+                        '/prompts',
+                      );
+                      // If result is prompt content, close modal and set it
+                      if (result is String && result.isNotEmpty) {
+                        if (context.mounted) {
+                          Navigator.pop(context); // Close modal
+                          widget.chatViewModel.setInputMessage(result);
+                        }
+                      }
                     },
                     label: Text(
                       "All",

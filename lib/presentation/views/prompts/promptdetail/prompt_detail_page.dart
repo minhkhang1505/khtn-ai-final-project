@@ -3,6 +3,7 @@ import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget
 import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_detail_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_details_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/widgets/prompt_detail_action_buttons.dart';
 import 'package:provider/provider.dart';
@@ -62,9 +63,10 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: ElevatedButton(
-                  onPressed: () {
-                    //TODO: handle Use the prompt in chat
-                  },
+                  onPressed:
+                      viewModel.promptDetailState == PromptDetailState.loading
+                      ? null
+                      : () => _usePromptInChat(context, viewModel),
                   child: const Text('Use'),
                 ),
               ),
@@ -182,5 +184,11 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
     final viewModel = context.read<PromptDetailViewModel>();
     viewModel.clearItem();
     Navigator.pop(context);
+  }
+
+  void _usePromptInChat(BuildContext context, PromptDetailViewModel viewModel) {
+    final promptContent = contentController.text;
+
+    Navigator.of(context).pop(promptContent);
   }
 }
