@@ -31,6 +31,7 @@ class AppRoutes {
   static const String details = '/details';
 
   /// Create New Prompt
+  static const String prompts = '/prompts';
   static const String createNewPrompt = '/prompts/new';
   static const String promptDetails = '/prompts/details';
 
