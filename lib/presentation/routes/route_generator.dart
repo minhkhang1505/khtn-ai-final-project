@@ -6,6 +6,7 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/agent/agent_view_m
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_app_bar_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/create_knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasource_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';

@@ -1,7 +1,7 @@
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/delete_conversation_model.dart';
-import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/chat/chat_usecase.dart';
 
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';

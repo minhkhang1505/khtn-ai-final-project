@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';

@@ -183,12 +183,6 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     );
   }
 
-  void _backToPromptsList() {
-    final viewModel = context.read<KnowledgeDetailViewmodel>();
-    viewModel.clearItem();
-    Navigator.pop(context);
-  }
-
   Future<void> _handleSave(
     BuildContext context, {
     required String sourceName,
