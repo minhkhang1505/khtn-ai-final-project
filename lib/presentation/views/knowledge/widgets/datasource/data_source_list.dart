@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/domain/models/datasource.dart';
+import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasource_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/datasource/data_source_item.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +47,7 @@ class _DataSourceListState extends State<DataSourceList> {
     );
   }
 
-  void _onItemTap(DataSource dataSource) {
+  void _onItemTap(DataSourceEntity dataSource) {
     //TODO: Show model bottom sheet with data source details: title + description
   }
 }

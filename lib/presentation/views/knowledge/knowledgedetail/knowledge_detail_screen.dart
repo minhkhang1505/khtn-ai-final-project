@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
+import 'package:khtn_ai_final_project/domain/entities/datasource_type.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasource_viewmodel.dart';
@@ -194,7 +194,6 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     required String sourceName,
     required String sourceDescription,
   }) async {
-
     final vm = context.read<KnowledgeDetailViewmodel>();
     final navigator = Navigator.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -210,7 +209,6 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     }
 
     if (success) {
-
       setState(() {
         _isEditMode = false;
       });

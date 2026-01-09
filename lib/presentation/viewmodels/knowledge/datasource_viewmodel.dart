@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
-import 'package:khtn_ai_final_project/domain/models/datasource.dart';
+import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/upload_multiple_file_usecase.dart';
 
@@ -11,10 +11,10 @@ class DatasourceViewmodel extends ChangeNotifier {
 
   DatasourceViewmodel({required this.uploadMultipleFileUsecase});
 
-  List<DataSource> _dataSource = [];
-  List<DataSource> get dataSource => _dataSource;
+  List<DataSourceEntity> _dataSource = [];
+  List<DataSourceEntity> get dataSource => _dataSource;
 
-  void setDataSource(List<DataSource> sources) {
+  void setDataSource(List<DataSourceEntity> sources) {
     _dataSource = sources;
     notifyListeners();
   }

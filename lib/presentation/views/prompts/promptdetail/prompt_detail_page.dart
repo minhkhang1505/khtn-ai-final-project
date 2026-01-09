@@ -58,6 +58,17 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
                   : _backToPromptsList,
               icon: const Icon(Icons.arrow_back_ios),
             ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    //TODO: handle Use the prompt in chat
+                  },
+                  child: const Text('Use'),
+                ),
+              ),
+            ],
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {
