@@ -2,17 +2,17 @@ import 'package:flutter/material.dart' hide SearchBar;
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-
 import 'widgets/ai_model_card.dart';
 import 'widgets/edit_bot_app_bar.dart';
 import 'widgets/knowledge_base_card.dart';
 import 'widgets/bot_information_card.dart';
 import 'widgets/bot_action_card.dart';
-import 'widgets/add_knowledge_dialog.dart';
+import 'add_knowledge_page.dart';
 
 /// Edit Bot Page - Configure AI bot settings
 class EditBotPage extends StatefulWidget {
@@ -198,42 +198,46 @@ class _EditBotPageState extends State<EditBotPage> {
                     KnowledgeBaseCard(
                       knowledges: editBotViewModel.knowledges,
                       isLoading: editBotViewModel.isKnowledgeLoading,
-                      onRefresh: () => editBotViewModel.getBotKnowledges(),
                       onAddKnowledge: () async {
-                        final selectedKnowledgeId = await showDialog<String>(
-                          context: context,
-                          builder: (context) => AddKnowledgeDialog(
-                            excludeKnowledgeIds: editBotViewModel.knowledges
-                                .map((k) => k.id)
-                                .toList(),
+                        final selectedKnowledgeIds = await Navigator.of(context).push<List<String>>(
+                          MaterialPageRoute(
+                            builder: (context) => AddKnowledgePage(
+                              excludeKnowledgeIds: [],
+                              viewModel: editBotViewModel,
+                            ),
                           ),
                         );
 
-                        if (selectedKnowledgeId != null && mounted) {
+                        if (selectedKnowledgeIds != null && selectedKnowledgeIds.isNotEmpty && mounted) {
                           final scaffold = ScaffoldMessenger.of(context);
-                          final success = await editBotViewModel
-                              .addKnowledgeToBot(selectedKnowledgeId);
+                          
+                          // Add all selected knowledge bases
+                          for (final knowledgeId in selectedKnowledgeIds) {
+                            final success = await editBotViewModel
+                                .addKnowledgeToBot(knowledgeId);
 
-                          if (success) {
-                            scaffold.showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Knowledge added successfully',
+                            if (!success) {
+                              scaffold.showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    editBotViewModel.errorMessage ??
+                                        'Failed to add knowledge',
+                                  ),
+                                  backgroundColor: Colors.red,
                                 ),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          } else {
-                            scaffold.showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  editBotViewModel.errorMessage ??
-                                      'Failed to add knowledge',
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
+                              );
+                              return;
+                            }
                           }
+
+                          scaffold.showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Added ${selectedKnowledgeIds.length} knowledge base(s) successfully',
+                              ),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
                         }
                       },
                     ),

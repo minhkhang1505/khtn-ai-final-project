@@ -12,13 +12,11 @@ class KnowledgeBaseCard extends StatelessWidget {
     super.key,
     this.knowledges = const [],
     this.isLoading = false,
-    this.onRefresh,
     this.onAddKnowledge,
   });
 
   final List<KnowledgeResDto> knowledges;
   final bool isLoading;
-  final VoidCallback? onRefresh;
   final VoidCallback? onAddKnowledge;
 
   @override
@@ -48,12 +46,6 @@ class KnowledgeBaseCard extends StatelessWidget {
                   'Knowledge Base',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
-                if (onRefresh != null)
-                  IconButton(
-                    tooltip: 'Refresh',
-                    icon: const Icon(Icons.refresh),
-                    onPressed: onRefresh,
-                  ),
               ],
             ),
             const SizedBox(height: 4),

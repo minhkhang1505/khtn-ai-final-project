@@ -270,6 +270,12 @@ extension GetItInjectableX on _i174.GetIt {
         createKnowledgeUsecase: gh<_i42.CreateKnowledgeUsecase>(),
       ),
     );
+    gh.factory<_i24.EditBotViewModel>(
+      () => _i24.EditBotViewModel(
+        botUseCase: gh<_i692.BotUseCase>(),
+        getKnowledgesUsecase: gh<_i402.GetKnowledgesUsecase>(),
+      ),
+    );
     gh.factoryParam<_i39.PromptDetailViewModel, _i777.PromptEntity, dynamic>(
       (prompt, _) => _i39.PromptDetailViewModel(
         getPromptUseCase: gh<_i928.GetPromptUseCase>(),
@@ -283,9 +289,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i219.CreateBotViewModel>(
       () => _i219.CreateBotViewModel(botUseCase: gh<_i692.BotUseCase>()),
-    );
-    gh.factory<_i24.EditBotViewModel>(
-      () => _i24.EditBotViewModel(botUseCase: gh<_i692.BotUseCase>()),
     );
     gh.lazySingleton<_i514.ChatAppBarViewModel>(
       () => _i514.ChatAppBarViewModel(botUseCase: gh<_i692.BotUseCase>()),
