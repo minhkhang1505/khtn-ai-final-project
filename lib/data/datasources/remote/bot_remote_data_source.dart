@@ -2,6 +2,7 @@ import 'package:khtn_ai_final_project/core/network/bot_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/bot/bot_response_model.dart';
+import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class BotRemoteDataSource {
@@ -11,6 +12,11 @@ abstract class BotRemoteDataSource {
   Future<void> deleteBot(String assistantId);
   Future<BotModel> getBot(String assistantId);
   Future<BotModel> toggleFavorite(String assistantId);
+  Future<void> addKnowledgeToAssistant(String assistantId, String knowledgeId);
+  Future<void> removeKnowledgeFromAssistant(String assistantId, String knowledgeId);
+  Future<KnowledgeBasePaggingResponse> getAssistantKnowledges(
+    String assistantId,
+  );
 }
 
 @LazySingleton(as: BotRemoteDataSource)
@@ -75,5 +81,38 @@ class BotRemoteDataSourceImpl implements BotRemoteDataSource {
       '/kb-core/v1/ai-assistant/$assistantId/favorite',
     );
     return BotModel.fromJson(response.data);
+  }
+
+  // for add knowledge to assistant
+  @override
+  Future<void> addKnowledgeToAssistant(
+    String assistantId,
+    String knowledgeId,
+  ) async {
+    await client.post(
+      '/kb-core/v1/ai-assistant/$assistantId/knowledges/$knowledgeId',
+    );
+  }
+
+  // for remove knowledge from assistant
+  @override
+  Future<void> removeKnowledgeFromAssistant(
+    String assistantId,
+    String knowledgeId,
+  ) async {
+    await client.delete(
+      '/kb-core/v1/ai-assistant/$assistantId/knowledges/$knowledgeId',
+    );
+  }
+
+  // for get assistant knowledges
+  @override
+  Future<KnowledgeBasePaggingResponse> getAssistantKnowledges(
+    String assistantId,
+  ) async {
+    final response = await client.get(
+      '/kb-core/v1/ai-assistant/$assistantId/knowledges',
+    );
+    return KnowledgeBasePaggingResponse.fromJson(response.data);
   }
 }

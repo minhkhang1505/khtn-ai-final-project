@@ -5,7 +5,7 @@ import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar
 import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/all_prompts_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/categories_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/favorite_prompts_tab.dart';
@@ -67,59 +67,57 @@ class PromptsPage extends StatelessWidget {
                     constraints: BoxConstraints(
                       maxWidth: isWideScreen ? 1200 : double.infinity,
                     ),
-                    child: SafeArea(
-                      child: Column(
-                        children: [
-                          PromptsTabBar(
-                            controller: DefaultTabController.of(context),
-                          ),
-                          Expanded(
-                            child: TabBarView(
-                              children: [
-                                switch (viewmodel.viewState) {
-                                  PromptViewState.loading =>
-                                    LoadingIndicatorWidget(),
-                                  PromptViewState.failure => FailureStateWidget(
-                                    onRetry: () {
-                                      viewmodel.getAllPrompts();
-                                    },
-                                  ),
-                                  PromptViewState.initial => EmptyPromptWidget(
-                                    message:
-                                        "No prompts found. Please add new prompts.",
-                                  ),
-                                  PromptViewState.success => AllPromptsTab(
-                                    prompts: prompts,
-                                    onFavoriteTap: (prompt) =>
-                                        _handleFavoriteTap(context, prompt),
-                                  ),
-                                },
+                    child: Column(
+                      children: [
+                        PromptsTabBar(
+                          controller: DefaultTabController.of(context),
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            children: [
+                              switch (viewmodel.viewState) {
+                                PromptViewState.loading =>
+                                  LoadingIndicatorWidget(),
+                                PromptViewState.failure => FailureStateWidget(
+                                  onRetry: () {
+                                    viewmodel.getAllPrompts();
+                                  },
+                                ),
+                                PromptViewState.initial => EmptyPromptWidget(
+                                  message:
+                                      "No prompts found. Please add new prompts.",
+                                ),
+                                PromptViewState.success => AllPromptsTab(
+                                  prompts: prompts,
+                                  onFavoriteTap: (prompt) =>
+                                      _handleFavoriteTap(context, prompt),
+                                ),
+                              },
 
-                                CategoriesTab(categories: categories),
+                              CategoriesTab(categories: categories),
 
-                                switch (viewmodel.viewState) {
-                                  PromptViewState.loading =>
-                                    LoadingIndicatorWidget(),
-                                  PromptViewState.failure => FailureStateWidget(
-                                    onRetry: () {
-                                      viewmodel.getFavoritePrompts();
-                                    },
-                                  ),
-                                  PromptViewState.initial => EmptyPromptWidget(
-                                    message:
-                                        "No prompts found. Please add new prompts.",
-                                  ),
-                                  PromptViewState.success => FavoritePromptsTab(
-                                    prompts: favoritePrompts,
-                                    onFavoriteTap: (prompt) =>
-                                        _handleFavoriteTap(context, prompt),
-                                  ),
-                                },
-                              ],
-                            ),
+                              switch (viewmodel.viewState) {
+                                PromptViewState.loading =>
+                                  LoadingIndicatorWidget(),
+                                PromptViewState.failure => FailureStateWidget(
+                                  onRetry: () {
+                                    viewmodel.getFavoritePrompts();
+                                  },
+                                ),
+                                PromptViewState.initial => EmptyPromptWidget(
+                                  message:
+                                      "No prompts found. Please add new prompts.",
+                                ),
+                                PromptViewState.success => FavoritePromptsTab(
+                                  prompts: favoritePrompts,
+                                  onFavoriteTap: (prompt) =>
+                                      _handleFavoriteTap(context, prompt),
+                                ),
+                              },
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );

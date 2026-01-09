@@ -1,35 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
+import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge_base_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_filter.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_item.dart';
 import 'package:provider/provider.dart';
 
 /// Knowledge page - Knowledge base management
-class KnowledgePage extends StatelessWidget {
+class KnowledgePage extends StatefulWidget {
   const KnowledgePage({super.key});
 
-  void _onAddKnowledge(BuildContext context) async {
-    final result = await Navigator.pushNamed(context, '/knowledge/new');
+  @override
+  State<KnowledgePage> createState() => _KnowledgePageState();
+}
 
-    // Refresh data if knowledge was created successfully
-    if (result == true && context.mounted) {
-      final viewmodel = Provider.of<KnowledgeBaseViewmodel>(
-        context,
-        listen: false,
-      );
-      await viewmodel.refreshKnowledges();
-    }
+class _KnowledgePageState extends State<KnowledgePage> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
   }
 
-  void _onItemTap(BuildContext context, KnowledgeEntity knowledge) {
-    // Navigate to knowledge details page
-    Navigator.pushNamed(context, '/knowledge/details', arguments: knowledge);
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,8 +48,7 @@ class KnowledgePage extends StatelessWidget {
 
     return Consumer<KnowledgeBaseViewmodel>(
       builder: (context, vm, child) {
-        vm.knowledges?.forEach((knowledge) {
-        });
+        vm.knowledges?.forEach((knowledge) {});
         return Scaffold(
           appBar: CustomAppBar(
             title: 'Knowledge',
@@ -75,39 +76,70 @@ class KnowledgePage extends StatelessWidget {
                     ),
                     child: Container(
                       color: Theme.of(context).colorScheme.surface,
-                      child: SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            children: [
-                              // Filter section
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: const [FilterChipMenu()],
-                              ),
-                              Expanded(
-                                child:
-                                    vm.knowledges == null ||
-                                        vm.knowledges!.isEmpty
-                                    ? EmptyPromptWidget(
-                                        message:
-                                            "Not found any knowledge base. Please add new knowledge base.",
-                                      )
-                                    : ListView.builder(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 8,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: [
+                            // Filter section
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: const [FilterChipMenu()],
+                            ),
+                            Expanded(
+                              child:
+                                  vm.knowledges == null ||
+                                      vm.knowledges!.isEmpty
+                                  ? EmptyPromptWidget(
+                                      message:
+                                          "Not found any knowledge base. Please add new knowledge base.",
+                                    )
+                                  : RefreshIndicator(
+                                      onRefresh: _onRefresh,
+                                      color: Theme.of(context).primaryColor,
+
+                                      child: ListView.builder(
+                                        controller: _scrollController,
+                                        padding: const EdgeInsets.fromLTRB(
+                                          0,
+                                          8,
+                                          0,
+                                          90,
                                         ),
-                                        itemCount: vm.knowledges!.length,
-                                        itemBuilder: (context, index) =>
-                                            KnowledgeItem(
-                                              iconPath:
-                                                  'assets/icons/ic_url.svg',
-                                              knowledge: vm.knowledges![index],
+                                        itemCount:
+                                            vm.knowledges!.length +
+                                            (vm.loadMoreState ==
+                                                    LoadMoreKnowledgeState
+                                                        .loading
+                                                ? 1
+                                                : 0),
+                                        itemBuilder: (context, index) {
+                                          if (index == vm.knowledges!.length) {
+                                            return const Padding(
+                                              padding: EdgeInsets.all(16.0),
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            );
+                                          }
+                                          return KnowledgeItem(
+                                            iconPath:
+                                                'assets/icons/ic_knowledge.svg',
+                                            knowledge: vm.knowledges![index],
+                                            onDelete: () => _handleDelete(
+                                              context,
+                                              vm.knowledges![index].id,
                                             ),
+                                            onTap: () => onItemTap(
+                                              context,
+                                              vm.knowledges![index],
+                                            ),
+                                          );
+                                        },
                                       ),
-                              ),
-                            ],
-                          ),
+                                    ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -119,5 +151,99 @@ class KnowledgePage extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _onAddKnowledge(BuildContext context) async {
+    final result = await Navigator.pushNamed(context, '/knowledge/new');
+
+    // Refresh data if knowledge was created successfully
+    if (result == true && context.mounted) {
+      final viewmodel = Provider.of<KnowledgeBaseViewmodel>(
+        context,
+        listen: false,
+      );
+      await viewmodel.refreshKnowledges();
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent) {
+      final vm = context.read<KnowledgeBaseViewmodel>();
+
+      if (vm.loadMoreState == LoadMoreKnowledgeState.idle && vm.hasNext) {
+        vm.loadMoreKnowledges();
+      }
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    final vm = context.read<KnowledgeBaseViewmodel>();
+    await vm.refreshKnowledges();
+  }
+
+  Future<void> _handleDelete(BuildContext context, String knowledgeId) async {
+    // Show confirmation dialog first
+    final confirmed = await ErrorDialogWidget.show(
+      context,
+      title: 'Delete Knowledge',
+      errorMessage:
+          'Are you sure you want to delete this knowledge base? This action cannot be undone.',
+      showConfirmButton: true,
+      confirmText: 'Delete',
+    );
+
+    // Only proceed if user confirmed
+    if (confirmed != true || !context.mounted) return;
+
+    final vm = context.read<KnowledgeBaseViewmodel>();
+    final success = await vm.deleteKnowledge(knowledgeId, autoRefresh: true);
+
+    if (!context.mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Knowledge base deleted successfully'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to delete knowledge base'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void onItemTap(BuildContext context, KnowledgeEntity knowledge) async {
+    // Navigate to knowledge details page
+    final result = await Navigator.pushNamed(
+      context,
+      '/knowledge/details',
+      arguments: knowledge,
+    );
+
+    // Refresh data if knowledge was updated or deleted successfully
+    if (result == true && context.mounted) {
+      final viewmodel = Provider.of<KnowledgeBaseViewmodel>(
+        context,
+        listen: false,
+      );
+      // Refresh the entire knowledge list to get latest data
+      await viewmodel.refreshKnowledges();
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Knowledge list refreshed'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+    }
   }
 }

@@ -45,13 +45,16 @@ class KnowledgeBaseApiClient {
     return _dio.get(path, queryParameters: queryParameters);
   }
 
-  Future<Response> post(String path, {Map<String, dynamic>? data}) async {
+  Future<Response> post(String path, {dynamic data}) async {
     final accessToken = await localDataSource.getAccessToken();
+
+    final isFormData = data is FormData;
 
     final options = Options(
       headers: {
         if (accessToken != null && accessToken.isNotEmpty)
           'Authorization': 'Bearer $accessToken',
+        if (!isFormData) 
         'Content-Type': 'application/json',
       },
     );
@@ -72,7 +75,12 @@ class KnowledgeBaseApiClient {
         'Content-Type': 'application/json',
       },
     );
-    return _dio.patch(path, queryParameters: queryParameters, options: options);
+    return _dio.patch(
+      path,
+      queryParameters: queryParameters,
+      options: options,
+      data: data,
+    );
   }
 
   Future<Response> delete(

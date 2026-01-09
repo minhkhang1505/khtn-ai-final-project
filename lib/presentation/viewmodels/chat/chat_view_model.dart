@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/data/models/token_usage_model.dart';
-import 'package:khtn_ai_final_project/domain/usecases/chat_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/chat/chat_usecase.dart';
 
 import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';

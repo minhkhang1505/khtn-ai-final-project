@@ -24,9 +24,11 @@ class AllAgentsTab extends StatelessWidget {
         .toList();
 
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.vertical - 4,
-        horizontal: AppSpacing.horizontal - 4,
+      padding: const EdgeInsets.only(
+        top: AppSpacing.vertical - 4,
+        left: AppSpacing.horizontal - 4,
+        right: AppSpacing.horizontal - 4,
+        bottom: 96,
       ),
       separatorBuilder: (context, index) =>
           const SizedBox(height: AppSpacing.cardSpacing - 8),
