@@ -8,6 +8,7 @@ import '../../widgets/auth_prompt.dart';
 import '../../widgets/auth_primary_button.dart';
 import 'terms_checkbox.dart';
 import 'package:provider/provider.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
 
 class RegisterForm extends StatefulWidget {
   final TextEditingController fullNameController;
@@ -46,10 +47,10 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final viewModel = context.watch<AuthViewModel>();
+    final viewModel = sl<AuthViewModel>();
 
     return Container(
-      height: 680,
+      height: 480,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
         color: colorScheme.onPrimary,
@@ -67,13 +68,13 @@ class _RegisterFormState extends State<RegisterForm> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AuthTextField(
-            label: "Full name",
-            hintText: "John Doe",
-            controller: widget.fullNameController,
-            keyboardType: TextInputType.name,
-            error: widget.error.fullNameError,
-          ),
+          // AuthTextField(
+          //   label: "Full name",
+          //   hintText: "John Doe",
+          //   controller: widget.fullNameController,
+          //   keyboardType: TextInputType.name,
+          //   error: widget.error.fullNameError,
+          // ),
           AuthTextField(
             label: "Email",
             hintText: "abc@example.com",

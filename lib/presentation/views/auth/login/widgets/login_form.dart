@@ -45,7 +45,7 @@ class _LoginFormState extends State<LoginForm> {
     final colorScheme = Theme.of(context).colorScheme;
     final viewModel = context.watch<AuthViewModel>();
     return Container(
-      height: 520,
+      height: 460,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
         color: colorScheme.onPrimary,

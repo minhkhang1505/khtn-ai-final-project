@@ -12,6 +12,8 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasour
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth/user_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
+import 'package:khtn_ai_final_project/presentation/views/account/account_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/aiemail/ai_response_email_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/prompts_page.dart';
@@ -76,6 +78,7 @@ class RouteGenerator {
           settings: settings,
           builder: (_) => MultiProvider(
             providers: [
+              ChangeNotifierProvider(create: (_) => sl<ThemeProvider>()),
               ChangeNotifierProvider(create: (_) => sl<PromptViewmodel>()),
               ChangeNotifierProvider(
                 create: (_) => sl<KnowledgeBaseViewmodel>(),
@@ -83,7 +86,9 @@ class RouteGenerator {
               ChangeNotifierProvider(create: (_) => sl<BotViewModel>()),
               ChangeNotifierProvider(create: (_) => sl<AgentViewModel>()),
               ChangeNotifierProvider(create: (_) => sl<ChatViewModel>()),
-              ChangeNotifierProvider(create: (_) => sl<UserViewModel>()),
+              ChangeNotifierProvider(
+                create: (_) => sl<UserViewModel>()..loadCurrentUser(),
+              ),
             ],
             child: HomePage(promptContent: promptContent),
           ),
@@ -143,25 +148,6 @@ class RouteGenerator {
           builder: (_) => ResetPasswordPage(),
         );
 
-      // Profile routes (placeholder)
-      case AppRoutes.profile:
-        return _buildRoute(
-          settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Profile'),
-        );
-
-      case AppRoutes.editProfile:
-        return _buildRoute(
-          settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Edit Profile'),
-        );
-
-      case AppRoutes.settings:
-        return _buildRoute(
-          settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Settings'),
-        );
-
       case AppRoutes.prompts:
         return _buildRoute(
           settings: settings,
@@ -170,6 +156,14 @@ class RouteGenerator {
               create: (_) => sl<PromptViewmodel>()..getAllPrompts(),
               child: const PromptsPage(),
             );
+          },
+        );
+
+      case AppRoutes.settings:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) {
+            return AccountPage();
           },
         );
 
