@@ -50,6 +50,11 @@ class ChatAppBarViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void newChat() {
+    setSelectedAssistant(AssistantModel.defaults());
+    setConversationTitle('Chat');
+  }
+
   void openChat(ConversationModel conversation) {
     selectedAssistant = conversation.bot;
     if (selectedAssistant.name.isEmpty) {

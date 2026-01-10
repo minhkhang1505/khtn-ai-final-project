@@ -256,7 +256,7 @@ extension GetItInjectableX on _i174.GetIt {
         deleteKnowledgeBaseUsecase: gh<_i291.DeleteKnowledgeBaseUsecase>(),
       ),
     );
-    gh.factory<_i981.ChatDrawerViewModel>(
+    gh.lazySingleton<_i981.ChatDrawerViewModel>(
       () => _i981.ChatDrawerViewModel(chatUsecase: gh<_i423.ChatUseCase>()),
     );
     gh.lazySingleton<_i180.GetUserUseCase>(

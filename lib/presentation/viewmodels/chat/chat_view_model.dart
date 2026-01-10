@@ -94,7 +94,7 @@ class ChatViewModel extends ChangeNotifier {
     clearError();
     clearMessages();
     updateMetadata();
-    getConversationHistory(conversation.bot.id);
+    getConversationHistory(conversation.bot.id, conversation.bot.model);
   }
 
   /// Send a message as the user, append the user's message and the reply.
@@ -127,7 +127,7 @@ class ChatViewModel extends ChangeNotifier {
         metadata: metadata,
         assistant: assistant,
       );
-      debugPrint("😁 SendMessageRequestModel: ${request.toJson()}");
+      debugPrint("SendMessageRequestModel: ${request.toJson()}");
       final response = await chatUsecase.sendMessage(request);
 
       // Update remaining tokens
@@ -153,15 +153,13 @@ class ChatViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> getConversationHistory(String model) async {
+  Future<bool> getConversationHistory(String assistantId, String assistantModel) async {
     isLoadingSetter = true;
     try {
       final response = await chatUsecase.getConversationHistory(
         GetConversationHistoryRequestModel(
-          cursor: '',
-          limit: 100,
-          assistantId: model,
-          assistantModel: 'dify',
+          assistantId: assistantId,
+          assistantModel: assistantModel,
           conversationId: conversationId,
         ),
       );
@@ -222,7 +220,7 @@ class ChatViewModel extends ChangeNotifier {
         metadata: metadata,
         assistant: assistant,
       );
-      debugPrint("😁 ChatWithBotRequestModel: ${request.toJson()}");
+      debugPrint("ChatWithBotRequestModel: ${request.toJson()}");
       final response = await chatUsecase.chatWithBot(request);
 
       // Update remaining tokens

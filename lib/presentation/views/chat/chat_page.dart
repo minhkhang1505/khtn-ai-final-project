@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_app_bar_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_drawer_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'package:khtn_ai_final_project/presentation/views/chat/widgets/message_input.dart';
@@ -27,12 +28,15 @@ class ChatPage extends StatelessWidget {
     // Listen to ChatViewModel changes so UI updates when conversation changes
     final chatViewModel = context.watch<ChatViewModel>();
     final chatAppBarViewModel = sl<ChatAppBarViewModel>();
+    final chatDrawerViewModel = sl<ChatDrawerViewModel>();
 
     return Scaffold(
       appBar: ChatAppBar(
-        onAddNewChat: () => chatViewModel.newChat(),
-        onModelChanged: (model) {
-          // Update selected model in ModelSelectorViewModel
+        onAddNewChat: () {
+          chatViewModel.newChat();
+          chatAppBarViewModel.newChat();
+          // Reset conversation list loading state
+          chatDrawerViewModel.isLoaded = false;
         },
       ),
       drawer: ChatDrawer(
@@ -40,9 +44,13 @@ class ChatPage extends StatelessWidget {
           // If the deleted conversation is the current one, open new chat
           if (chatViewModel.conversationId == conversationId) {
             chatViewModel.newChat();
+            chatAppBarViewModel.newChat();
           }
         },
-        onAddNewChat: () => chatViewModel.newChat(),
+        onAddNewChat: () {
+          chatViewModel.newChat();
+          chatAppBarViewModel.newChat();
+        },
         onConversationSelected: (conversation) {
             // Open chat with this conversation
             chatViewModel.openChat(conversation);
@@ -50,6 +58,16 @@ class ChatPage extends StatelessWidget {
             chatAppBarViewModel.openChat(conversation);
         },
       ),
+      onDrawerChanged: (isOpened) {
+        if (isOpened) {
+          // Refresh conversations when drawer is opened
+          debugPrint('📂 Chat drawer ${chatDrawerViewModel.isLoaded}');
+          if (!chatDrawerViewModel.isLoaded) {
+            chatDrawerViewModel.getConversations();
+            debugPrint('📂 Chat drawer reload');
+          }
+        }
+      },
 
       body: Column(
         children: [

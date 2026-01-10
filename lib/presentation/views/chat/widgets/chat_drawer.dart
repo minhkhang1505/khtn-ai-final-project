@@ -113,39 +113,65 @@ class _ChatDrawerState extends State<ChatDrawer> {
                         final isUserBot = conversation.bot.name.isNotEmpty;
                         return ListTile(
                           title: Text(conversation.title),
-                          subtitle: Row(
-                            children: [
-                              // Tag bot - show "Bot" badge if this is a user-created bot
-                              if (isUserBot) ...[
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.primaryContainer,
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(
-                                      color: colorScheme.primary.withValues(alpha: 0.7),
-                                      width: 1,
+                          subtitle: Builder(
+                            builder: (context) {
+                              // Constrain tag width to avoid row overflow on long bot names
+                              final maxTagWidth = MediaQuery.of(context).size.width * 0.5;
+
+                              return Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 6,
+                                runSpacing: 4,
+                                children: [
+                                  // Tag bot - show "Bot" badge if this is a user-created bot
+                                  if (isUserBot)
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(maxWidth: maxTagWidth),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: colorScheme.primaryContainer,
+                                          borderRadius: BorderRadius.circular(4),
+                                          border: Border.all(
+                                            color: colorScheme.primary.withAlpha(179),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.smart_toy,
+                                              size: 12,
+                                              color: colorScheme.onPrimaryContainer,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Flexible(
+                                              child: Text(
+                                                conversation.bot.name,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: colorScheme.onPrimaryContainer,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
+                                  Text(
+                                    _getTimeDistance(DateTime.parse(conversation.createdAt)),
+                                    style: const TextStyle(fontSize: 12),
                                   ),
-                                  child: Text(
-                                    'Bot',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                      color: colorScheme.onPrimaryContainer,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                              ],
-                              Text(
-                                _getTimeDistance(DateTime.parse(conversation.createdAt)),
-                                style: const TextStyle(fontSize: 12),
-                              )
-                            ],
+                                ],
+                              );
+                            },
                           ),
                           trailing: IconButton(
                             icon: const Icon(

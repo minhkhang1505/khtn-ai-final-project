@@ -6,18 +6,17 @@ import 'package:khtn_ai_final_project/domain/usecases/chat/chat_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
-@injectable
+@lazySingleton
 class ChatDrawerViewModel extends ChangeNotifier {
   final ChatUseCase chatUsecase;
 
   ChatDrawerViewModel({
     required this.chatUsecase,
-  }) {
-    // Fetch conversations on initialization
-    getConversations();
-  }
+  });
 
   List<ConversationModel> conversations = [];
+
+  bool isLoaded = false;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -34,8 +33,9 @@ class ChatDrawerViewModel extends ChangeNotifier {
           assistantModel: 'dify',
         ),
       );
-
+      debugPrint('📂 Fetched ${response.items.length} conversations');
       conversations = response.items;
+      isLoaded = true;
     } catch (e) {
       return false;
     } finally {
@@ -47,6 +47,7 @@ class ChatDrawerViewModel extends ChangeNotifier {
 
   void deleteConversation(String conversationId) async {
     _isLoading = true;
+    isLoaded = false;
     notifyListeners();
     try {
       await chatUsecase.deleteConversation(
