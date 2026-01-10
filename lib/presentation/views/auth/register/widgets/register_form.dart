@@ -17,7 +17,7 @@ class RegisterForm extends StatefulWidget {
   final bool? isTermsChecked;
   final ValueChanged<bool?> onTermsChanged;
   final VoidCallback onCreateAccount;
-  final VoidCallback onGoogleSignUp;
+  // final VoidCallback onGoogleSignUp;
   final VoidCallback onSignInTap;
   final AuthViewModel error;
 
@@ -30,7 +30,7 @@ class RegisterForm extends StatefulWidget {
     required this.isTermsChecked,
     required this.onTermsChanged,
     required this.onCreateAccount,
-    required this.onGoogleSignUp,
+    // required this.onGoogleSignUp,
     required this.onSignInTap,
     required this.error,
   });
@@ -119,11 +119,11 @@ class _RegisterFormState extends State<RegisterForm> {
             text: "Create Account",
             isLoading: viewModel.isLoading,
           ),
-          const AuthDivider(),
-          GoogleAuthButton(
-            onPressed: widget.onGoogleSignUp,
-            text: "Sign in with Google",
-          ),
+          // const AuthDivider(),
+          // GoogleAuthButton(
+          //   onPressed: widget.onGoogleSignUp,
+          //   text: "Sign in with Google",
+          // ),
           AuthPrompt(
             question: "Already have an account?",
             actionText: "Sign In",

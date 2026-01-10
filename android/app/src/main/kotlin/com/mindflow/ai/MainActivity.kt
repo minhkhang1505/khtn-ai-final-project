@@ -1,4 +1,4 @@
-package com.example.khtn_ai_final_project
+package com.mindflow.ai
 
 import io.flutter.embedding.android.FlutterActivity
 

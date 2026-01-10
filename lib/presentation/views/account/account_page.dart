@@ -142,7 +142,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   Future<void> _onLogout() async {
-    final authViewModel = context.read<AuthViewModel>();
+    final authViewModel = sl<AuthViewModel>();
     final logoutResponse = await authViewModel.logout();
 
     if (!logoutResponse) {
