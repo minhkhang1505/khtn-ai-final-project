@@ -52,12 +52,40 @@ class _PromptModalContentState extends State<_PromptModalContent>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _scrollController.addListener(_onScroll);
+    _tabController.addListener(_onTabChanged);
+
+    // Load initial data for Public tab
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = context.read<PromptViewmodel>();
+      if (viewModel.prompts == null || viewModel.prompts!.isEmpty) {
+        viewModel.getAllPrompts();
+      }
+    });
+  }
+
+  void _onTabChanged() {
+    if (!_tabController.indexIsChanging) return;
+
+    final viewModel = context.read<PromptViewmodel>();
+    if (_tabController.index == 0) {
+      // Public tab
+      if (viewModel.prompts == null || viewModel.prompts!.isEmpty) {
+        viewModel.getAllPrompts();
+      }
+    } else {
+      // Private tab
+      if (viewModel.privatePrompts == null ||
+          viewModel.privatePrompts!.isEmpty) {
+        viewModel.getPrivatePrompts();
+      }
+    }
   }
 
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
   }
