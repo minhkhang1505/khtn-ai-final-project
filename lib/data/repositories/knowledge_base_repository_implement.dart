@@ -57,4 +57,26 @@ class KnowledgeBaseRepositoryImplement implements KnowledgeBaseRepository {
     );
     return response.toDomain();
   }
+
+  @override
+  Future<bool> deleteDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
+  ) {
+    return remoteDataSource.deleteDataSourceFromKnowledge(
+      knowledgeId,
+      datasourceId,
+    );
+  }
+
+  @override
+  Future<bool> updateDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
+  ) {
+    return remoteDataSource.updateDataSourceFromKnowledge(
+      knowledgeId,
+      datasourceId,
+    );
+  }
 }

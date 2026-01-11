@@ -36,6 +36,16 @@ abstract class KnowledgeBaseRemoteDataSource {
     String knowledgeId,
     DataSourceQuery query,
   );
+
+  Future<bool> deleteDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
+  );
+
+  Future<bool> updateDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
+  );
 }
 
 @LazySingleton(as: KnowledgeBaseRemoteDataSource)
@@ -186,5 +196,29 @@ class KnowledgeBaseRemoteDataSourceImpl
     }
 
     return DataSourcePagingResponse.fromJson(response.data);
+  }
+
+  @override
+  Future<bool> deleteDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
+  ) async {
+    final response = await client.delete(
+      '/kb-core/v1/knowledge/$knowledgeId/datasources/$datasourceId',
+    );
+
+    return response.statusCode == 204 || response.statusCode == 200;
+  }
+
+  @override
+  Future<bool> updateDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
+  ) async {
+    final response = await client.patch(
+      '/kb-core/v1/knowledge/$knowledgeId/datasources/$datasourceId',
+    );
+
+    return response.statusCode == 200;
   }
 }

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/data_source_response.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
 import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
+import 'package:khtn_ai_final_project/domain/usecases/datasource/delete_datasource_from_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/get_datasource_from_knowledge_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/datasource/update_datasource_from_knowledge_usecase.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/upload_multiple_file_usecase.dart';
 
@@ -13,10 +15,16 @@ enum DataSourceState { initial, loading, success, failure }
 class DatasourceViewmodel extends ChangeNotifier {
   final UploadMultipleFileUsecase uploadMultipleFileUsecase;
   final GetDataSourceFromKnowledgeUsecase getDataSourceFromKnowledgeUsecase;
+  final DeleteDataSourceFromKnowledgeUsecase
+  deleteDataSourceFromKnowledgeUsecase;
+  final UpdateDataSourceFromKnowledgeUsecase
+  updateDataSourceFromKnowledgeUsecase;
 
   DatasourceViewmodel({
     required this.uploadMultipleFileUsecase,
     required this.getDataSourceFromKnowledgeUsecase,
+    required this.deleteDataSourceFromKnowledgeUsecase,
+    required this.updateDataSourceFromKnowledgeUsecase,
   });
 
   DataSourceState _state = DataSourceState.initial;
@@ -113,5 +121,51 @@ class DatasourceViewmodel extends ChangeNotifier {
   void clearError() {
     _errorMessage = null;
     notifyListeners();
+  }
+
+  /// Delete a data source from a knowledge base
+  Future<bool> deleteDataSource(String knowledgeId, String datasourceId) async {
+    try {
+      final success = await deleteDataSourceFromKnowledgeUsecase.call(
+        knowledgeId,
+        datasourceId,
+      );
+
+      if (success) {
+        // Remove from local list if deletion was successful
+        _dataSource.removeWhere((ds) => ds.id == datasourceId);
+        _totalDataSources = _dataSource.length;
+        notifyListeners();
+      }
+
+      return success;
+    } catch (e) {
+      _errorMessage = e.toString();
+      debugPrint("Error deleting datasource: $e");
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Update a data source in a knowledge base
+  Future<bool> updateDataSource(String knowledgeId, String datasourceId) async {
+    try {
+      final success = await updateDataSourceFromKnowledgeUsecase.call(
+        knowledgeId,
+        datasourceId,
+      );
+
+      if (success) {
+        // Optionally refresh the list after successful update
+        notifyListeners();
+      }
+
+      return success;
+    } catch (e) {
+      _errorMessage = e.toString();
+      debugPrint("Error updating datasource: $e");
+      notifyListeners();
+      return false;
+    }
   }
 }
