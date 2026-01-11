@@ -235,11 +235,13 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
   }
 
   void _showAddDataSourceBottomSheet() {
+    final datasourceViewModel = context.read<DatasourceViewmodel>();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const AddDataSourceBottomSheet(),
+      builder: (context) =>
+          AddDataSourceBottomSheet(datasourceViewModel: datasourceViewModel),
     );
   }
 

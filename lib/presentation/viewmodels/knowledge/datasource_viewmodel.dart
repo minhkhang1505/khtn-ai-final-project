@@ -50,13 +50,15 @@ class DatasourceViewmodel extends ChangeNotifier {
   }
 
   Future<String> uploadFiles(List<PlatformFile> files) async {
+
     try {
       final result = await uploadMultipleFileUsecase.call(files);
-      debugPrint("Khang: Uploaded files result: $result");
-      return UploadedFile.fromJson(result.toJson()).url;
+
+      final uploadedFile = UploadedFile.fromJson(result.toJson());
+
+      return uploadedFile.url;
     } catch (e) {
-      debugPrint("Khang: Error uploading files: $e");
-      return '';
+      rethrow; // Re-throw to let caller handle the error
     }
   }
 
