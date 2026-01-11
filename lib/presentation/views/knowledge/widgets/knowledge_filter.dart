@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
+import 'package:khtn_ai_final_project/data/models/Knowledge/knowledge_query.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
 import 'package:provider/provider.dart';
 
