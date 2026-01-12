@@ -77,18 +77,6 @@ class ChatViewModel extends ChangeNotifier {
   String? get error => _error;
   String get inputMessage => _inputMessage;
 
-  String get messagesContent {
-    String temp = metadata.conversation.messages
-        .map((msg) => "${msg.role}: ${msg.content}")
-        .join('\n');
-    temp += "\n\nTotal messages: ${metadata.conversation.messages.length}";
-    temp += "\nConversation ID: ${metadata.conversation.id}";
-
-    temp = metadata.toJson().toString();
-
-    return temp;
-  }
-
   void openChat(ConversationModel conversation) {
     conversationIdSetter = conversation.id;
     clearError();
@@ -118,7 +106,14 @@ class ChatViewModel extends ChangeNotifier {
     Future.delayed(const Duration(milliseconds: 100), () {
       scrollToBottom();
     });
-    isLoadingSetter = true;
+    _isStreaming = true;
+    _isLoading = false;
+    
+    // Create empty assistant message for streaming
+    final assistantMsg = ChatMessageModel.createMessage('', 'assistant', []);
+    messages.add(assistantMsg);
+    notifyListeners();
+    scrollToBottom();
 
     try {
       final request = SendMessageRequestModel(
@@ -126,17 +121,22 @@ class ChatViewModel extends ChangeNotifier {
         files: [],
         metadata: metadata,
         assistant: assistant,
+        responseMode: 'streaming',
       );
-      debugPrint("SendMessageRequestModel: ${request.toJson()}");
-      final response = await chatUsecase.sendMessage(request);
-
-      // Update remaining tokens
-      tokenUsage.availableTokens = response.remainingUsage;
-
-      // For streaming responses, simulate by appending chunks;
-      await addStreamingAssistantMessage(response.message);
-
-      conversationIdSetter = response.conversationId;
+      
+      String fullMessage = '';
+      await for (var chunk in chatUsecase.sendMessageStream(request)) {
+        fullMessage += chunk;
+        assistantMsg.content = fullMessage;
+        notifyListeners();
+        scrollToBottom();
+      }
+      
+      // Update conversation ID after streaming completes
+      // Note: You may need to parse the final chunk or make a separate call to get conversation ID
+      if (conversationId == 'temp_id') {
+        // conversationIdSetter = parsed conversation ID from response
+      }
 
       // Scroll to bottom after a slight delay to ensure UI has updated
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -149,7 +149,9 @@ class ChatViewModel extends ChangeNotifier {
       errorSetter = e.toString();
       return false;
     } finally {
-      isLoadingSetter = false;
+      _isStreaming = false;
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -219,8 +221,8 @@ class ChatViewModel extends ChangeNotifier {
         files: [],
         metadata: metadata,
         assistant: assistant,
+        responseMode: 'streaming',
       );
-      debugPrint("ChatWithBotRequestModel: ${request.toJson()}");
       final response = await chatUsecase.chatWithBot(request);
 
       // Update remaining tokens
@@ -301,36 +303,6 @@ class ChatViewModel extends ChangeNotifier {
         curve: Curves.easeOut,
       );
     }
-  }
-
-  /// Simulate adding an assistant message in a streaming fashion
-  Future<void> addStreamingAssistantMessage(String fullText) async {
-    final msg = ChatMessageModel.createMessage(fullText, 'assistant', []);
-    _isLoading = false;
-    _isStreaming = true;
-
-    messages.add(msg);
-    notifyListeners();
-    scrollToBottom();
-
-    // Stream multiple characters at once for faster display
-    const chunkSize = 3; // Display 3 characters at a time
-    const delayMs = 30; // Delay between chunks (much faster)
-
-    for (int i = 0; i < fullText.length; i += chunkSize) {
-      await Future.delayed(const Duration(milliseconds: delayMs));
-      final end = (i + chunkSize).clamp(0, fullText.length);
-      msg.content = fullText.substring(0, end);
-      notifyListeners();
-
-      // Only scroll every few chunks to reduce overhead
-      if (i % (chunkSize * 3) == 0 || end == fullText.length) {
-        scrollToBottom();
-      }
-    }
-
-    _isStreaming = false;
-    notifyListeners();
   }
 
   void getUsage() async {

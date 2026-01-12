@@ -17,7 +17,6 @@ import 'widgets/message_list.dart';
 import 'widgets/usage_button.dart';
 import 'widgets/empty_widget.dart';
 
-
 /// Chat page - Main chat interface
 class ChatPage extends StatelessWidget {
   const ChatPage({super.key});
@@ -61,10 +60,8 @@ class ChatPage extends StatelessWidget {
       onDrawerChanged: (isOpened) {
         if (isOpened) {
           // Refresh conversations when drawer is opened
-          debugPrint('📂 Chat drawer ${chatDrawerViewModel.isLoaded}');
           if (!chatDrawerViewModel.isLoaded) {
             chatDrawerViewModel.getConversations();
-            debugPrint('📂 Chat drawer reload');
           }
         }
       },
@@ -111,7 +108,8 @@ class ChatPage extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          chatViewModel.error ?? '',
+                          //chatViewModel.error ?? '',
+                          "Sorry, our servers can't handle your message right now. Please try again later. Thanks!",
                           style: TextStyle(
                             color: colorScheme.onErrorContainer,
                             fontWeight: FontWeight.w500,
@@ -154,8 +152,6 @@ class ChatPage extends StatelessWidget {
               child: MessageInput(
                 onSend: (message, files) {
                   final assistant = chatAppBarViewModel.selectedAssistant;
-
-                  debugPrint('😁 Sending message with assistant model: ${assistant.model}');
 
                   if (assistant.model == 'agentic') {
                     chatViewModel.sendMessage(message, assistant, files);

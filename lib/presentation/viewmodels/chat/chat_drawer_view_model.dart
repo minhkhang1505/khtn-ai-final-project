@@ -33,7 +33,6 @@ class ChatDrawerViewModel extends ChangeNotifier {
           assistantModel: 'dify',
         ),
       );
-      debugPrint('📂 Fetched ${response.items.length} conversations');
       conversations = response.items;
       isLoaded = true;
     } catch (e) {
