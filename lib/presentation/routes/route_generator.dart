@@ -78,7 +78,7 @@ class RouteGenerator {
           settings: settings,
           builder: (_) => MultiProvider(
             providers: [
-              ChangeNotifierProvider(create: (_) => sl<ThemeProvider>()),
+              ChangeNotifierProvider.value(value: sl<ThemeProvider>()),
               ChangeNotifierProvider(create: (_) => sl<PromptViewmodel>()),
               ChangeNotifierProvider(
                 create: (_) => sl<KnowledgeBaseViewmodel>(),
