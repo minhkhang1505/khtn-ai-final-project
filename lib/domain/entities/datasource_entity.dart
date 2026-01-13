@@ -1,5 +1,4 @@
-/// Entity đại diện cho Data Source trong domain layer
-/// Không chứa logic liên quan đến API/Database
+
 class DataSourceEntity {
   final String id;
   final String name;
@@ -28,4 +27,14 @@ class DataSourceEntity {
 
   @override
   int get hashCode => id.hashCode;
+}
+
+class DataSourcePagingEntity {
+  final List<DataSourceEntity> data;
+  final int total;
+
+  const DataSourcePagingEntity({required this.data, required this.total});
+
+  bool get hasData => data.isNotEmpty;
+  bool get isEmpty => data.isEmpty;
 }

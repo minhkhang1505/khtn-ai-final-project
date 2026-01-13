@@ -33,6 +33,24 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
     _sourceNameController = TextEditingController();
     _urlController = TextEditingController();
     initialSourceType = DataSourceTypes.url;
+
+    // Load data sources after the frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadDataSources();
+    });
+  }
+
+  Future<void> _loadDataSources() async {
+    final knowledgeVm = context.read<KnowledgeDetailViewmodel>();
+    final datasourceVm = context.read<DatasourceViewmodel>();
+
+    final knowledgeId = knowledgeVm.knowledge.id;
+
+    await datasourceVm.getDataSourceFromKnowledge(
+      knowledgeId,
+      limit: 20,
+      offset: 0,
+    );
   }
 
   @override
@@ -120,23 +138,78 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
                             const SizedBox(height: 24),
                             Consumer<DatasourceViewmodel>(
                               builder: (context, datasourceVm, child) {
+                                if (datasourceVm.state ==
+                                    DataSourceState.loading) {
+                                  return const Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(32.0),
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+
+                                if (datasourceVm.state ==
+                                    DataSourceState.failure) {
+                                  return Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(32.0),
+                                      child: Column(
+                                        children: [
+                                          const Icon(
+                                            Icons.error_outline,
+                                            size: 48,
+                                            color: Colors.red,
+                                          ),
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            datasourceVm.errorMessage ??
+                                                'Failed to load data sources',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          const SizedBox(height: 16),
+                                          ElevatedButton(
+                                            onPressed: _loadDataSources,
+                                            child: const Text('Retry'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+
                                 if (datasourceVm.dataSource.isEmpty) {
                                   return _buildEmptyDataSourceWidget();
                                 }
+
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
                                         horizontal: 8,
                                         vertical: 8,
                                       ),
-                                      child: Text(
-                                        'Data Sources',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text(
+                                            'Data Sources',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${datasourceVm.totalDataSources} items',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.outline,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     SizedBox(
@@ -162,11 +235,13 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
   }
 
   void _showAddDataSourceBottomSheet() {
+    final datasourceViewModel = context.read<DatasourceViewmodel>();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const AddDataSourceBottomSheet(),
+      builder: (context) =>
+          AddDataSourceBottomSheet(datasourceViewModel: datasourceViewModel),
     );
   }
 
@@ -181,12 +256,6 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
         ),
       ),
     );
-  }
-
-  void _backToPromptsList() {
-    final viewModel = context.read<KnowledgeDetailViewmodel>();
-    viewModel.clearItem();
-    Navigator.pop(context);
   }
 
   Future<void> _handleSave(
@@ -250,7 +319,10 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
           SvgPicture.asset(
             'assets/icons/ic_empty_list.svg',
             height: 120,
-            color: Theme.of(context).colorScheme.outlineVariant,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).colorScheme.outlineVariant,
+              BlendMode.srcIn,
+            ),
           ),
           const SizedBox(height: 16),
           Text(

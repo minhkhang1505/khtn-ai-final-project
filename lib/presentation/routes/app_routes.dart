@@ -22,8 +22,6 @@ class AppRoutes {
   static const String verificationEmail = '/auth/register/verification-email';
 
   // Profile routes (example - can be extended)
-  static const String profile = '/profile';
-  static const String editProfile = '/profile/edit';
   static const String settings = '/settings';
   static const String aiEmail = '/account/ai_email';
 
@@ -57,8 +55,6 @@ class AppRoutes {
     login,
     register,
     forgotPassword,
-    profile,
-    editProfile,
     settings,
     details,
     createNewPrompt,

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
+import 'package:khtn_ai_final_project/data/models/Knowledge/knowledge_query.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/domain/entities/datasource_type.dart';
-import 'package:khtn_ai_final_project/domain/usecases/knowledge/delete_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/knowledge/update_knowledge_usecase.dart';
 import 'package:injectable/injectable.dart';
 
@@ -97,7 +96,7 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
         _setState(KnowledgeDetailState.failure);
         return false;
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       _setState(KnowledgeDetailState.failure);
       return false;
     }

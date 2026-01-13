@@ -22,3 +22,13 @@ extension DataSourceResponseListMapper on List<DataSourceResponse> {
     return map((response) => response.toDomain()).toList();
   }
 }
+
+/// Mapper cho DataSourcePagingResponse
+extension DataSourcePagingResponseMapper on DataSourcePagingResponse {
+  DataSourcePagingEntity toDomain() {
+    return DataSourcePagingEntity(
+      data: data.map((e) => e.toDomain()).toList(),
+      total: total,
+    );
+  }
+}

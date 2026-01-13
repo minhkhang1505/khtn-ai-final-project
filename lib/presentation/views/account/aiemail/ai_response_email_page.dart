@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/domain/entities/email_request_entity.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_text_form_field.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
@@ -28,12 +27,12 @@ class _AIResponseEmailPageState extends State<AIResponseEmailPage> {
   final _subjectController = TextEditingController();
   final _senderController = TextEditingController();
   final _receiverController = TextEditingController();
+  final _languageController = TextEditingController();
 
   // Style options
   String _selectedLength = 'long';
   String _selectedFormality = 'neutral';
   String _selectedTone = 'friendly';
-  String _selectedLanguage = 'vietnamese';
 
   // AI Assistant model selection (optional)
   AssistantModelId? _selectedAssistantModel;
@@ -53,6 +52,7 @@ class _AIResponseEmailPageState extends State<AIResponseEmailPage> {
     _subjectController.dispose();
     _senderController.dispose();
     _receiverController.dispose();
+    _languageController.dispose();
     super.dispose();
   }
 
@@ -227,7 +227,7 @@ class _AIResponseEmailPageState extends State<AIResponseEmailPage> {
             subject: _subjectController.text.trim(),
           ),
         ],
-        language: _selectedLanguage,
+        language: _languageController.text.trim(),
         receiver: _receiverController.text.trim(),
         sender: _senderController.text.trim(),
         subject: _subjectController.text.trim(),
@@ -369,12 +369,24 @@ class _AIResponseEmailPageState extends State<AIResponseEmailPage> {
                     ['friendly', 'professional', 'enthusiastic', 'empathetic'],
                     (value) => setState(() => _selectedTone = value),
                   ),
-                  const SizedBox(height: 12),
-                  _buildStyleDropdown(
-                    'Language',
-                    _selectedLanguage,
-                    ['vietnamese', 'english'],
-                    (value) => setState(() => _selectedLanguage = value),
+                  // const SizedBox(height: 12),
+                  // _buildStyleDropdown(
+                  //   'Language',
+                  //   _selectedLanguage,
+                  //   ['vietnamese', 'english'],
+                  //   (value) => setState(() => _selectedLanguage = value),
+                  // ),
+                  const SizedBox(height: 20),
+                  _buildSectionTitle('Language'),
+                  CustomTextFormField(
+                    controller: _languageController,
+                    hintText: 'e.g., language',
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Please enter the language';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 32),
                   SaveActionButtonRow(
@@ -387,11 +399,11 @@ class _AIResponseEmailPageState extends State<AIResponseEmailPage> {
                       _subjectController.clear();
                       _senderController.clear();
                       _receiverController.clear();
+                      _languageController.clear();
                       setState(() {
                         _selectedLength = 'long';
                         _selectedFormality = 'neutral';
                         _selectedTone = 'friendly';
-                        _selectedLanguage = 'vietnamese';
                         _selectedAssistantModel = null;
                       });
                     },
