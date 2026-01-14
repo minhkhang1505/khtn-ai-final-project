@@ -29,6 +29,21 @@ class _AccountPageState extends State<AccountPage> {
       if (userVM.user == null) {
         userVM.loadCurrentUser();
       }
+
+      userVM.getSubscriptionUsege();
+
+      debugPrint('[Khang-subscribe] Calling subscribe...');
+      userVM
+          .subscribe()
+          .then((result) {
+            debugPrint('[Khang-subscribe] Result: $result');
+            debugPrint(
+              '[Khang-subscribe] Subscribe state: ${userVM.subscribeState}',
+            );
+          })
+          .catchError((error) {
+            debugPrint('[Khang-subscribe] Error: $error');
+          });
     });
   }
 
