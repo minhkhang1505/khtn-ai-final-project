@@ -162,10 +162,25 @@ class KnowledgeBaseRemoteDataSourceImpl
         data: formData,
       );
 
-      return response.data;
+      debugPrint("Upload response status: ${response.statusCode}");
+      debugPrint("Upload response data type: ${response.data.runtimeType}");
+      debugPrint("Upload response data: ${response.data}");
+
+      if (response.data is Map<String, dynamic>) {
+        final uploadResponse = UploadResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+        debugPrint("Parsed files count: ${uploadResponse.files.length}");
+        if (uploadResponse.files.isNotEmpty) {
+          debugPrint("First file URL: ${uploadResponse.files.first.url}");
+        }
+        return uploadResponse;
+      } else {
+        throw Exception('Invalid response format: ${response.data}');
+      }
     } catch (e) {
       debugPrint("Lỗi upload: $e");
-      return UploadResponse(files: []);
+      rethrow;
     }
   }
 
