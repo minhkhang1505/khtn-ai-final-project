@@ -214,7 +214,9 @@ class _KnowledgeDetailScreenState extends State<KnowledgeDetailScreen> {
                                     ),
                                     SizedBox(
                                       height: 400,
-                                      child: const DataSourceList(),
+                                      child: DataSourceList(
+                                        knowledgeId: vm.knowledge.id,
+                                      ),
                                     ),
                                   ],
                                 );

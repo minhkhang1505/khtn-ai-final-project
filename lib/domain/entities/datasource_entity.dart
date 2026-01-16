@@ -1,10 +1,14 @@
-
 class DataSourceEntity {
   final String id;
   final String name;
   final String knowledgeId;
   final bool isActive;
   final String createdAt;
+  final String? updatedAt;
+  final String? description;
+  final String? type;
+  final int? size;
+  final String? syncStatus;
   final String createdBy;
 
   const DataSourceEntity({
@@ -13,6 +17,11 @@ class DataSourceEntity {
     required this.knowledgeId,
     required this.isActive,
     required this.createdAt,
+    this.updatedAt,
+    this.description,
+    this.type,
+    this.size,
+    this.syncStatus,
     required this.createdBy,
   });
 
