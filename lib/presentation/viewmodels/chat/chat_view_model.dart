@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/data/models/token_usage_model.dart';
@@ -39,6 +40,17 @@ class ChatViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool _isStreaming = false;
   String _inputMessage = '';
+
+  void _safeNotifyListeners() {
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+      });
+      return;
+    }
+    notifyListeners();
+  }
 
   // Setters
   set conversationIdSetter(String id) {
@@ -86,7 +98,11 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   /// Send a message as the user, append the user's message and the reply.
-  Future<bool> sendMessage(String content, AssistantModel assistant, List<PlatformFile> files) async {
+  Future<bool> sendMessage(
+    String content,
+    AssistantModel assistant,
+    List<PlatformFile> files,
+  ) async {
     final trimmed = content.trim();
     // Validate message
     final validationError = validateInputMessage(trimmed, files);
@@ -108,7 +124,7 @@ class ChatViewModel extends ChangeNotifier {
     });
     _isStreaming = true;
     _isLoading = false;
-    
+
     // Create empty assistant message for streaming
     final assistantMsg = ChatMessageModel.createMessage('', 'assistant', []);
     messages.add(assistantMsg);
@@ -123,7 +139,7 @@ class ChatViewModel extends ChangeNotifier {
         assistant: assistant,
         responseMode: 'streaming',
       );
-      
+
       String fullMessage = '';
       await for (var chunk in chatUsecase.sendMessageStream(request)) {
         fullMessage += chunk;
@@ -131,7 +147,7 @@ class ChatViewModel extends ChangeNotifier {
         notifyListeners();
         scrollToBottom();
       }
-      
+
       // Update conversation ID after streaming completes
       // Note: You may need to parse the final chunk or make a separate call to get conversation ID
       if (conversationId == 'temp_id') {
@@ -155,7 +171,10 @@ class ChatViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> getConversationHistory(String assistantId, String assistantModel) async {
+  Future<bool> getConversationHistory(
+    String assistantId,
+    String assistantModel,
+  ) async {
     isLoadingSetter = true;
     try {
       final response = await chatUsecase.getConversationHistory(
@@ -193,7 +212,11 @@ class ChatViewModel extends ChangeNotifier {
     return true;
   }
 
-  Future<bool> chatWithBot(String content, AssistantModel assistant, List<PlatformFile> files) async {
+  Future<bool> chatWithBot(
+    String content,
+    AssistantModel assistant,
+    List<PlatformFile> files,
+  ) async {
     final trimmed = content.trim();
     // Validate message
     final validationError = validateInputMessage(trimmed, files);
@@ -250,7 +273,6 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   String validateInputMessage(String content, List<PlatformFile> files) {
-
     if (files.isNotEmpty) {
       return "File upload not implemented yet.";
     }
@@ -330,7 +352,7 @@ class ChatViewModel extends ChangeNotifier {
   /// Set input message (for prompt injection)
   void setInputMessage(String message) {
     _inputMessage = message;
-    notifyListeners();
+    _safeNotifyListeners();
   }
 
   @override
