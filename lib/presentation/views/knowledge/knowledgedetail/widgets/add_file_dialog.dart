@@ -7,7 +7,9 @@ import 'package:provider/provider.dart';
 
 /// Dialog for adding a file data source
 class AddFileDialog extends StatefulWidget {
-  const AddFileDialog({super.key});
+  final String knowledgeId;
+
+  const AddFileDialog({super.key, required this.knowledgeId});
 
   @override
   State<AddFileDialog> createState() => _AddFileDialogState();
@@ -32,7 +34,6 @@ class _AddFileDialogState extends State<AddFileDialog> {
   }
 
   Future<void> _handleSubmit() async {
-
     if (_selectedFiles.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -52,11 +53,20 @@ class _AddFileDialogState extends State<AddFileDialog> {
     try {
       final datasourceVm = context.read<DatasourceViewmodel>();
 
-      final uploadedUrl = await datasourceVm.uploadFiles(_selectedFiles);
+      // Step 1: Upload files
+      final uploadResponse = await datasourceVm.uploadFiles(_selectedFiles);
 
       if (!mounted) return;
 
-      if (uploadedUrl.isNotEmpty) {
+      // Step 2: Import uploaded files to knowledge base
+      final importSuccess = await datasourceVm.importFilesToKnowledgeBase(
+        widget.knowledgeId,
+        uploadResponse,
+      );
+
+      if (!mounted) return;
+
+      if (importSuccess) {
         setState(() {
           _isLoading = false;
           _isSuccess = true;
@@ -67,16 +77,16 @@ class _AddFileDialogState extends State<AddFileDialog> {
 
         if (!mounted) return;
 
-        // Return the uploaded URL and prompt
+        // Return success with uploaded file info
         Navigator.pop(context, {
-          'url': uploadedUrl,
+          'success': true,
+          'files': uploadResponse.files,
           'prompt': _promptController.text.trim(),
         });
       } else {
-        throw Exception('Upload failed: empty URL returned');
+        throw Exception('Failed to import files to knowledge base');
       }
     } catch (e) {
-
       if (!mounted) return;
 
       setState(() {

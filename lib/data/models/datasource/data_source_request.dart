@@ -1,80 +1,90 @@
 class DataSourceRequest {
-    List<Datasource> datasources;
+  List<Datasource> datasources;
 
-    DataSourceRequest({
-        required this.datasources,
-    });
+  DataSourceRequest({required this.datasources});
 
-    DataSourceRequest copyWith({
-        List<Datasource>? datasources,
-    }) => 
-        DataSourceRequest(
-            datasources: datasources ?? this.datasources,
-        );
+  DataSourceRequest copyWith({List<Datasource>? datasources}) =>
+      DataSourceRequest(datasources: datasources ?? this.datasources);
+
+  Map<String, dynamic> toJson() {
+    return {'datasources': datasources.map((v) => v.toJson()).toList()};
+  }
 }
 
 class Datasource {
-    Credentials? credentials;
-    String? name;
-    String? type;
+  Credentials? credentials;
+  String? name;
+  String? type;
 
-    Datasource({
-        this.credentials,
-        this.name,
-        this.type,
-    });
+  Datasource({this.credentials, this.name, this.type});
 
-    Datasource copyWith({
-        Credentials? credentials,
-        String? name,
-        String? type,
-    }) => 
-        Datasource(
-            credentials: credentials ?? this.credentials,
-            name: name ?? this.name,
-            type: type ?? this.type,
-        );
+  Datasource copyWith({Credentials? credentials, String? name, String? type}) =>
+      Datasource(
+        credentials: credentials ?? this.credentials,
+        name: name ?? this.name,
+        type: type ?? this.type,
+      );
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (credentials != null) 'credentials': credentials!.toJson(),
+      if (name != null) 'name': name,
+      if (type != null) 'type': type,
+    };
+  }
 }
 
 class Credentials {
-    String email;
-    String file;
-    Map<String, dynamic> info;
-    String password;
-    String token;
-    String type;
-    String url;
-    String username;
+  String? email;
+  String? file;
+  Map<String, dynamic>? info;
+  String? password;
+  String? token;
+  String? type;
+  String? url;
+  String? username;
 
-    Credentials({
-        required this.email,
-        required this.file,
-        required this.info,
-        required this.password,
-        required this.token,
-        required this.type,
-        required this.url,
-        required this.username,
-    });
+  Credentials({
+    this.email,
+    this.file,
+    this.info,
+    this.password,
+    this.token,
+    this.type,
+    this.url,
+    this.username,
+  });
 
-    Credentials copyWith({
-        String? email,
-        String? file,
-        Map<String, dynamic>? info,
-        String? password,
-        String? token,
-        String? type,
-        String? url,
-        String? username,
-    }) => 
-        Credentials(
-            email: email ?? this.email,
-            file: file ?? this.file,
-            info: info ?? this.info,
-            password: password ?? this.password,
-            token: token ?? this.token,
-            type: type ?? this.type,
-            url: url ?? this.url,
-            username: username ?? this.username,
-        );
+  Credentials copyWith({
+    String? email,
+    String? file,
+    Map<String, dynamic>? info,
+    String? password,
+    String? token,
+    String? type,
+    String? url,
+    String? username,
+  }) => Credentials(
+    email: email ?? this.email,
+    file: file ?? this.file,
+    info: info ?? this.info,
+    password: password ?? this.password,
+    token: token ?? this.token,
+    type: type ?? this.type,
+    url: url ?? this.url,
+    username: username ?? this.username,
+  );
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (email != null) 'email': email,
+      if (file != null) 'file': file,
+      if (info != null) 'info': info,
+      if (password != null) 'password': password,
+      if (token != null) 'token': token,
+      if (type != null) 'type': type,
+      if (url != null) 'url': url,
+      if (username != null) 'username': username,
+    };
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:khtn_ai_final_project/data/models/Knowledge/knowledge_query.dart';
+import 'package:khtn_ai_final_project/data/models/datasource/data_source_request.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/data_source_response.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
@@ -31,5 +32,10 @@ abstract class KnowledgeBaseRepository {
   Future<bool> updateDataSourceFromKnowledge(
     String knowledgeId,
     String datasourceId,
+  );
+
+  Future<bool> uploadFilesToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
   );
 }
