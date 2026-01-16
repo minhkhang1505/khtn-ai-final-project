@@ -201,7 +201,7 @@ class _EditBotPageState extends State<EditBotPage> {
                         final selectedKnowledgeIds = await Navigator.of(context).push<List<String>>(
                           MaterialPageRoute(
                             builder: (context) => AddKnowledgePage(
-                              excludeKnowledgeIds: [],
+                              excludeKnowledgeIds: editBotViewModel.knowledges.map((k) => k.id).toList(),
                               viewModel: editBotViewModel,
                             ),
                           ),
