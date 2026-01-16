@@ -103,12 +103,14 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
                                   selectedLanguage: viewModel.selectedLanguage,
                                   isPublic: viewModel.isPublic,
                                   onCategoryChanged: (value) {
-                                    if (value != null)
+                                    if (value != null) {
                                       viewModel.setCategory(value);
+                                    }
                                   },
                                   onLanguageChanged: (value) {
-                                    if (value != null)
+                                    if (value != null) {
                                       viewModel.setLanguage(value);
+                                    }
                                   },
                                   onPublicChanged: (value) {
                                     viewModel.setIsPublic(value);

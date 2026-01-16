@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/data/models/token_usage_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat/chat_usecase.dart';
 
@@ -9,13 +10,11 @@ import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/send_message.dart';
 import 'package:khtn_ai_final_project/data/models/metadata_model.dart';
-import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_send_request_model.dart';
-import 'package:khtn_ai_final_project/data/models/conversations/conversations_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/auth/get_user_usecase.dart';
-import 'package:khtn_ai_final_project/data/models/conversations/delete_conversation_model.dart';
+
 import 'package:injectable/injectable.dart';
 
 @injectable
@@ -24,28 +23,22 @@ class ChatViewModel extends ChangeNotifier {
   final GetUserUseCase getUserUseCase;
 
   ChatViewModel({required this.chatUsecase, required this.getUserUseCase}) {
-    // Fetch conversations on init
-    getConversations();
     getUsage();
   }
 
   // State variables
   final ScrollController scrollController = ScrollController();
-  final TextEditingController inputController = TextEditingController();
 
   List<ChatMessageModel> messages = [];
-  AssistantModel assistant = AssistantModel.defaults();
+  // AssistantModel assistant = AssistantModel.defaults();
   MetadataModel metadata = MetadataModel.defaults();
-  List<ConversationModel> conversations = [];
-  List<PlatformFile> files = [];
-  String selectedModel = 'gpt-4o-mini';
   String conversationId = ''; // Default conversation ID
-  String conversationTitle = 'Chat';
   TokenUsageModel tokenUsage = TokenUsageModel.defaults();
   String cursor = '';
   String? _error;
   bool _isLoading = false;
   bool _isStreaming = false;
+  String _inputMessage = '';
 
   // Setters
   set conversationIdSetter(String id) {
@@ -53,27 +46,8 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  set conversationTitleSetter(String title) {
-    conversationTitle = title;
-    notifyListeners();
-  }
-
-  set selectedModelSetter(String model) {
-    selectedModel = model;
-    notifyListeners();
-  }
-
-  // set assistantSetter(AssistantModel assistantModel) {
-  //   assistant = assistantModel;
-  //   notifyListeners();
-  // }
   set metadataSetter(MetadataModel metadataModel) {
     metadata = metadataModel;
-    notifyListeners();
-  }
-
-  set filesSetter(List<PlatformFile> fileList) {
-    files = fileList;
     notifyListeners();
   }
 
@@ -88,10 +62,6 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // set isStreamingSetter(bool streaming) {
-  //   _isStreaming = streaming;
-  //   notifyListeners();
-  // }
   set tokenUsageSetter(TokenUsageModel usage) {
     tokenUsage = usage;
     notifyListeners();
@@ -105,43 +75,23 @@ class ChatViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get error => _error;
+  String get inputMessage => _inputMessage;
 
-  String get messagesContent {
-    String temp = metadata.conversation.messages
-        .map((msg) => "${msg.role}: ${msg.content}")
-        .join('\n');
-    temp += "\n\nTotal messages: ${metadata.conversation.messages.length}";
-    temp += "\nConversation ID: ${metadata.conversation.id}";
-
-    temp = metadata.toJson().toString();
-
-    return temp;
-  }
-
-  void setInputMessage(String content) {
-    inputController.text = content;
-    notifyListeners();
+  void openChat(ConversationModel conversation) {
+    conversationIdSetter = conversation.id;
+    clearError();
+    clearMessages();
+    updateMetadata();
+    getConversationHistory(conversation.bot.id, conversation.bot.model);
   }
 
   /// Send a message as the user, append the user's message and the reply.
-  Future<bool> sendMessage(String content) async {
+  Future<bool> sendMessage(String content, AssistantModel assistant, List<PlatformFile> files) async {
     final trimmed = content.trim();
-
-    if (files.isNotEmpty) {
-      errorSetter = "File upload not implemented yet.";
-      return false;
-    }
-
     // Validate message
-    if (trimmed.isEmpty) return false;
-
-    if (trimmed.length > 5000) {
-      errorSetter = "Message exceeds maximum length of 5000 characters.";
-      return false;
-    }
-
-    if (tokenUsage.availableTokens <= 0) {
-      errorSetter = "Insufficient tokens to send message.";
+    final validationError = validateInputMessage(trimmed, files);
+    if (validationError.isNotEmpty) {
+      errorSetter = validationError;
       return false;
     }
 
@@ -156,7 +106,14 @@ class ChatViewModel extends ChangeNotifier {
     Future.delayed(const Duration(milliseconds: 100), () {
       scrollToBottom();
     });
-    isLoadingSetter = true;
+    _isStreaming = true;
+    _isLoading = false;
+    
+    // Create empty assistant message for streaming
+    final assistantMsg = ChatMessageModel.createMessage('', 'assistant', []);
+    messages.add(assistantMsg);
+    notifyListeners();
+    scrollToBottom();
 
     try {
       final request = SendMessageRequestModel(
@@ -164,22 +121,22 @@ class ChatViewModel extends ChangeNotifier {
         files: [],
         metadata: metadata,
         assistant: assistant,
+        responseMode: 'streaming',
       );
-      final response = await chatUsecase.sendMessage(request);
-
-      // Update remaining tokens
-      tokenUsage.availableTokens = response.remainingUsage;
-
-      // For streaming responses, simulate by appending chunks;
-      await addStreamingAssistantMessage(response.message);
-
-      // If new conversation, update ID
-      if (conversationId == 'temp_id') {
-        conversationIdSetter = response.conversationId;
+      
+      String fullMessage = '';
+      await for (var chunk in chatUsecase.sendMessageStream(request)) {
+        fullMessage += chunk;
+        assistantMsg.content = fullMessage;
+        notifyListeners();
+        scrollToBottom();
       }
-
-      // Update metadata after message exchange
-      updateMetadata();
+      
+      // Update conversation ID after streaming completes
+      // Note: You may need to parse the final chunk or make a separate call to get conversation ID
+      if (conversationId == 'temp_id') {
+        // conversationIdSetter = parsed conversation ID from response
+      }
 
       // Scroll to bottom after a slight delay to ensure UI has updated
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -192,43 +149,19 @@ class ChatViewModel extends ChangeNotifier {
       errorSetter = e.toString();
       return false;
     } finally {
+      _isStreaming = false;
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<bool> getConversations() async {
-    try {
-      final response = await chatUsecase.getConversations(
-        GetConversationsRequestModel(
-          cursor: '',
-          limit: 20,
-          assistantId: selectedModel.isNotEmpty == true ? selectedModel : null,
-          assistantModel: 'dify',
-        ),
-      );
-
-      conversations = response.items;
-    } catch (e) {
-      errorSetter = e.toString();
-      return false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-    return true;
-  }
-
-  Future<bool> getConversationHistory() async {
-    _isLoading = true;
-    notifyListeners();
+  Future<bool> getConversationHistory(String assistantId, String assistantModel) async {
+    isLoadingSetter = true;
     try {
       final response = await chatUsecase.getConversationHistory(
         GetConversationHistoryRequestModel(
-          cursor: '',
-          limit: 100,
-          assistantId: selectedModel,
-          assistantModel: 'dify',
+          assistantId: assistantId,
+          assistantModel: assistantModel,
           conversationId: conversationId,
         ),
       );
@@ -246,7 +179,6 @@ class ChatViewModel extends ChangeNotifier {
         );
         messages.add(replyMsg);
       }
-      updateMetadata();
 
       // Auto-scroll to last message after loading conversation
       Future.delayed(const Duration(milliseconds: 300), () {
@@ -256,18 +188,32 @@ class ChatViewModel extends ChangeNotifier {
       errorSetter = e.toString();
       return false;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      isLoadingSetter = false;
     }
     return true;
   }
 
-  Future<bool> chatWithBot(String content) async {
+  Future<bool> chatWithBot(String content, AssistantModel assistant, List<PlatformFile> files) async {
     final trimmed = content.trim();
-    if (trimmed.isEmpty) return false;
+    // Validate message
+    final validationError = validateInputMessage(trimmed, files);
+    if (validationError.isNotEmpty) {
+      errorSetter = validationError;
+      return false;
+    }
 
-    _isLoading = true;
-    notifyListeners();
+    if (conversationId.isEmpty) {
+      // New conversation - reset metadata
+      conversationId = 'temp_id';
+    }
+
+    // Create a user message and append
+    final userMsg = ChatMessageModel.createMessage(trimmed, 'user', []);
+    messages.add(userMsg);
+    Future.delayed(const Duration(milliseconds: 100), () {
+      scrollToBottom();
+    });
+    isLoadingSetter = true;
 
     try {
       final request = ChatWithBotRequestModel(
@@ -275,8 +221,13 @@ class ChatViewModel extends ChangeNotifier {
         files: [],
         metadata: metadata,
         assistant: assistant,
+        responseMode: 'streaming',
       );
       final response = await chatUsecase.chatWithBot(request);
+
+      // Update remaining tokens
+      tokenUsage.availableTokens = response.remainingUsage;
+
       final replyMessage = ChatMessageModel.createMessage(
         response.message,
         'assistant',
@@ -288,22 +239,39 @@ class ChatViewModel extends ChangeNotifier {
       Future.delayed(const Duration(milliseconds: 100), () {
         scrollToBottom();
       });
+      return true;
     } catch (e) {
       // On error, add a simple assistant message describing failure
       errorSetter = e.toString();
       return false;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      isLoadingSetter = false;
     }
-    return true;
+  }
+
+  String validateInputMessage(String content, List<PlatformFile> files) {
+
+    if (files.isNotEmpty) {
+      return "File upload not implemented yet.";
+    }
+
+    final trimmed = content.trim();
+    if (trimmed.isEmpty) {
+      return "Message cannot be empty.";
+    }
+    if (trimmed.length > 5000) {
+      return "Message exceeds maximum length of 5000 characters.";
+    }
+    if (tokenUsage.availableTokens <= 0) {
+      return "Insufficient tokens to send message.";
+    }
+    return '';
   }
 
   /// New chat - clear messages and reset metadata
   void newChat() {
     messages.clear();
     conversationIdSetter = '';
-    conversationTitleSetter = 'Chat';
     metadataSetter = MetadataModel.defaults();
     errorSetter = null;
     notifyListeners();
@@ -312,6 +280,7 @@ class ChatViewModel extends ChangeNotifier {
   /// Add a pre-built message (useful for initializing from history)
   void addMessage(ChatMessageModel message) {
     messages.add(message);
+    updateMetadata();
     notifyListeners();
   }
 
@@ -336,36 +305,6 @@ class ChatViewModel extends ChangeNotifier {
     }
   }
 
-  /// Simulate adding an assistant message in a streaming fashion
-  Future<void> addStreamingAssistantMessage(String fullText) async {
-    final msg = ChatMessageModel.createMessage(fullText, 'assistant', []);
-    _isLoading = false;
-    _isStreaming = true;
-
-    messages.add(msg);
-    notifyListeners();
-    scrollToBottom();
-
-    // Stream multiple characters at once for faster display
-    const chunkSize = 3; // Display 3 characters at a time
-    const delayMs = 30; // Delay between chunks (much faster)
-
-    for (int i = 0; i < fullText.length; i += chunkSize) {
-      await Future.delayed(const Duration(milliseconds: delayMs));
-      final end = (i + chunkSize).clamp(0, fullText.length);
-      msg.content = fullText.substring(0, end);
-      notifyListeners();
-
-      // Only scroll every few chunks to reduce overhead
-      if (i % (chunkSize * 3) == 0 || end == fullText.length) {
-        scrollToBottom();
-      }
-    }
-
-    _isStreaming = false;
-    notifyListeners();
-  }
-
   void getUsage() async {
     try {
       final response = await getUserUseCase.getTokenUsage();
@@ -375,60 +314,6 @@ class ChatViewModel extends ChangeNotifier {
       errorSetter = e.toString();
       rethrow;
     }
-  }
-
-  void deleteConversation(String conversationId) async {
-    try {
-      isLoadingSetter = true;
-      await chatUsecase.deleteConversation(
-        DeleteConversationRequestModel(
-          conversationId: conversationId,
-          assistantId: selectedModel,
-          assistantModel: 'agentic',
-        ),
-      );
-
-      // Remove from local list
-      conversations.removeWhere((conv) => conv.id == conversationId);
-
-      // If the deleted conversation was the currently open one, open a new chat
-      if (this.conversationId == conversationId) {
-        newChat();
-      } else {
-        notifyListeners();
-      }
-      isLoadingSetter = false;
-    } catch (e) {
-      errorSetter = e.toString();
-    }
-  }
-
-  /// Add files to the current draft/files list
-  void addFiles(List<PlatformFile> newFiles) {
-    files.addAll(newFiles);
-    notifyListeners();
-    // Ensure UI scrolls to bottom to reveal any new file UI
-    // Use delayed callback to allow UI to rebuild first
-    Future.delayed(const Duration(milliseconds: 150), () {
-      scrollToBottom();
-    });
-  }
-
-  /// Remove file at index
-  void removeFileAt(int index) {
-    if (index >= 0 && index < files.length) {
-      files.removeAt(index);
-      notifyListeners();
-      // Use delayed callback to allow UI to rebuild first
-      Future.delayed(const Duration(milliseconds: 150), () {
-        scrollToBottom();
-      });
-    }
-  }
-
-  /// Clear all selected files
-  void clearFiles() {
-    filesSetter = [];
   }
 
   /// Clear conversation
@@ -442,10 +327,15 @@ class ChatViewModel extends ChangeNotifier {
     errorSetter = null;
   }
 
+  /// Set input message (for prompt injection)
+  void setInputMessage(String message) {
+    _inputMessage = message;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     scrollController.dispose();
-    inputController.dispose();
     super.dispose();
   }
 }

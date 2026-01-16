@@ -90,6 +90,8 @@ import '../../presentation/viewmodels/bot/create_bot_view_model.dart' as _i219;
 import '../../presentation/viewmodels/bot/edit_bot_view_model.dart' as _i24;
 import '../../presentation/viewmodels/chat/chat_app_bar_view_model.dart'
     as _i514;
+import '../../presentation/viewmodels/chat/chat_drawer_view_model.dart'
+    as _i981;
 import '../../presentation/viewmodels/chat/chat_view_model.dart' as _i959;
 import '../../presentation/viewmodels/knowledge/create_knowledge_base_viewmodel.dart'
     as _i1046;
@@ -346,6 +348,9 @@ extension GetItInjectableX on _i174.GetIt {
         getKnowledgesUsecase: gh<_i402.GetKnowledgesUsecase>(),
         deleteKnowledgeBaseUsecase: gh<_i291.DeleteKnowledgeBaseUsecase>(),
       ),
+    );
+    gh.lazySingleton<_i981.ChatDrawerViewModel>(
+      () => _i981.ChatDrawerViewModel(chatUsecase: gh<_i423.ChatUseCase>()),
     );
     gh.lazySingleton<_i180.GetUserUseCase>(
       () => _i180.GetUserUseCase(userRepository: gh<_i271.UserRepository>()),

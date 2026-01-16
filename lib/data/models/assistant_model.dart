@@ -2,7 +2,6 @@
 
 enum AssistantModelType {
   CLAUDE_3_HAIKU("claude-3-haiku-20240307"),
-  //CLAUDE_3_SONNET("claude-3-sonnet-20240229"), This is not available currently
   GEMINI_15_FLASH("gemini-1.5-flash-latest"),
   GEMINI_15_PRO("gemini-1.5-pro-latest"),
   GPT_4_O("gpt-4o"),
@@ -11,7 +10,7 @@ enum AssistantModelType {
 
   const AssistantModelType(this.id); 
 
-  static AssistantModelType fromId(String id) {
+  static AssistantModelType getModelFromId(String id) {
     try {
       return AssistantModelType.values.firstWhere(
         (value) => value.id == id,
@@ -21,21 +20,28 @@ enum AssistantModelType {
     }
   }
 
+  static String getModelId (AssistantModelType type) {
+    return type.id;
+  }
+
+  static List<String> get allModelIds {
+    return AssistantModelType.values.map((e) => e.id).toList();
+  }
+
   // Get display name of the model from id
   static String nameFromId(String id) {
     try {
       return AssistantModelType.values
           .firstWhere((e) => e.id == id)
-          .name;
+          .displayName;
     } catch (_) {
       return "Unknown Model";
     }
   }
 
-  String get name {
+  String get displayName {
     return switch (this) {
       AssistantModelType.CLAUDE_3_HAIKU => "Claude 3 Haiku",
-      //AssistantModelType.CLAUDE_3_SONNET => "Claude 3 Sonnet",
       AssistantModelType.GEMINI_15_FLASH => "Gemini 1.5 Flash",
       AssistantModelType.GEMINI_15_PRO => "Gemini 1.5 Pro",
       AssistantModelType.GPT_4_O => "GPT-4o",
@@ -49,7 +55,7 @@ class AssistantModel {
   String name;
   String id;
 
-  AssistantModel({required this.model, this.name = 'Default Assistant', this.id = ''});
+  AssistantModel({required this.model, this.name = 'GPT-4o Mini', this.id = 'gpt-4o-mini'});
 
   factory AssistantModel.fromJson(Map<String, dynamic> json) {
     return AssistantModel(
@@ -70,7 +76,7 @@ class AssistantModel {
   factory AssistantModel.defaults() {
     return AssistantModel(
       model: "dify",
-      name: 'GPT_4O_MINI',
+      name: 'GPT 4o Mini',
       id: 'gpt-4o-mini',
     );
   }

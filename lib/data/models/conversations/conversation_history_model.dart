@@ -1,23 +1,17 @@
 // Request Model for GET conversation history
 class GetConversationHistoryRequestModel {
   String conversationId;
-  String? cursor;
-  int limit;
   String? assistantId;
   String assistantModel;
 
   GetConversationHistoryRequestModel({
     required this.conversationId,
-    this.cursor,
-    required this.limit,
     this.assistantId,
     this.assistantModel = "dify",
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'cursor': cursor,
-      'limit': limit,
       'assistantId': assistantId,
       'assistantModel': assistantModel,
     };
@@ -75,12 +69,10 @@ class MessageAndResponseModel {
 // Response Model for GET conversation history
 class GetConversationHistoryResponseModel {
   bool hasMore;
-  int limit;
   List<MessageAndResponseModel> items;
 
   GetConversationHistoryResponseModel({
     required this.hasMore,
-    required this.limit,
     required this.items,
   });
 
@@ -100,7 +92,6 @@ class GetConversationHistoryResponseModel {
 
     return GetConversationHistoryResponseModel(
       hasMore: json['has_more'] ?? false,
-      limit: json['limit'] ?? 0,
       items: items,
     );
   }

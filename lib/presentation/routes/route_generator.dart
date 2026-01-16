@@ -7,6 +7,7 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/aiemail/ai_email_v
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_app_bar_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/create_knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasource_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
@@ -86,9 +87,8 @@ class RouteGenerator {
               ChangeNotifierProvider(create: (_) => sl<BotViewModel>()),
               ChangeNotifierProvider(create: (_) => sl<AgentViewModel>()),
               ChangeNotifierProvider(create: (_) => sl<ChatViewModel>()),
-              ChangeNotifierProvider(
-                create: (_) => sl<UserViewModel>()..loadCurrentUser(),
-              ),
+              ChangeNotifierProvider(create: (_) => sl<UserViewModel>()),
+              ChangeNotifierProvider(create: (_) => sl<ChatAppBarViewModel>()),
             ],
             child: HomePage(promptContent: promptContent),
           ),

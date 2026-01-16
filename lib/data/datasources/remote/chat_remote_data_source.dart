@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:khtn_ai_final_project/core/network/jarvis_api_client.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/send_message.dart';
@@ -8,6 +10,9 @@ import 'package:injectable/injectable.dart';
 
 abstract class ChatRemoteDataSource {
   Future<SendMessageResponseModel> sendMessage(
+    SendMessageRequestModel sendMessageRequest,
+  );
+  Stream<String> sendMessageStream(
     SendMessageRequestModel sendMessageRequest,
   );
   Future<ChatWithBotResponseModel> chatWithBot(
@@ -43,6 +48,21 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       response.data,
       response.statusCode ?? 0,
     );
+  }
+
+  //for send message with streaming
+  @override
+  Stream<String> sendMessageStream(
+    SendMessageRequestModel sendMessageRequest,
+  ) async* {
+    final response = await client.postStream(
+      '/ai-chat/messages',
+      data: sendMessageRequest.toJson(),
+    );
+    
+    await for (final chunk in response.stream) {
+      yield utf8.decode(chunk);
+    }
   }
 
   //for chat with bot
