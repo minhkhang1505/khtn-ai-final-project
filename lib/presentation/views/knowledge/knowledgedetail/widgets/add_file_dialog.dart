@@ -59,7 +59,7 @@ class _AddFileDialogState extends State<AddFileDialog> {
       if (!mounted) return;
 
       // Step 2: Import uploaded files to knowledge base
-      final importSuccess = await datasourceVm.importFilesToKnowledgeBase(
+      final importSuccess = await datasourceVm.addDatasourceFromFileToKnowledge(
         widget.knowledgeId,
         uploadResponse,
       );

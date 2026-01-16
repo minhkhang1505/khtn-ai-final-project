@@ -82,11 +82,22 @@ class KnowledgeBaseRepositoryImplement implements KnowledgeBaseRepository {
   }
 
   @override
-  Future<bool> uploadFilesToKnowledgeBase(
+  Future<bool> addDataSourceBaseFromFileToKnowledgeBase(
     String knowledgeBaseId,
     DataSourceRequest request,
   ) {
-    return remoteDataSource.uploadFilesToKnowledgeBase(
+    return remoteDataSource.addDataSourceBaseFromFileToKnowledgeBase(
+      knowledgeBaseId,
+      request,
+    );
+  }
+
+  @override
+  Future<bool> addDataSourceBaseFromWebSiteToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
+  ) {
+    return remoteDataSource.addDataSourceBaseFromWebSiteToKnowledgeBase(
       knowledgeBaseId,
       request,
     );

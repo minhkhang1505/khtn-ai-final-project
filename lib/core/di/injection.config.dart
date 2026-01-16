@@ -53,6 +53,8 @@ import '../../domain/usecases/auth/refresh_token_usecase.dart' as _i407;
 import '../../domain/usecases/auth/sign_up_usecase.dart' as _i270;
 import '../../domain/usecases/bot/bot_usecase.dart' as _i692;
 import '../../domain/usecases/chat/chat_usecase.dart' as _i423;
+import '../../domain/usecases/datasource/add_datasource_from_website_to_knowledge_usecase.dart'
+    as _i721;
 import '../../domain/usecases/datasource/delete_datasource_from_knowledge_usecase.dart'
     as _i69;
 import '../../domain/usecases/datasource/get_datasource_from_knowledge_usecase.dart'
@@ -226,6 +228,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i761.RemovePromptFromFavoriteUsecase>(
       () => _i761.RemovePromptFromFavoriteUsecase(gh<_i364.PromptRepository>()),
     );
+    gh.lazySingleton<_i721.AddDatasourceFromWebsiteToKnowledgeUsecase>(
+      () => _i721.AddDatasourceFromWebsiteToKnowledgeUsecase(
+        repository: gh<_i618.KnowledgeBaseRepository>(),
+      ),
+    );
     gh.lazySingleton<_i69.DeleteDataSourceFromKnowledgeUsecase>(
       () => _i69.DeleteDataSourceFromKnowledgeUsecase(
         repository: gh<_i618.KnowledgeBaseRepository>(),
@@ -301,6 +308,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i662.UpdatePromptUsecase>(
       () => _i662.UpdatePromptUsecase(repository: gh<_i364.PromptRepository>()),
     );
+    gh.factory<_i838.DatasourceViewmodel>(
+      () => _i838.DatasourceViewmodel(
+        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
+        getDataSourceFromKnowledgeUsecase:
+            gh<_i910.GetDataSourceFromKnowledgeUsecase>(),
+        deleteDataSourceFromKnowledgeUsecase:
+            gh<_i69.DeleteDataSourceFromKnowledgeUsecase>(),
+        updateDataSourceFromKnowledgeUsecase:
+            gh<_i887.UpdateDataSourceFromKnowledgeUsecase>(),
+        importFilesToKnowledgeUsecase:
+            gh<_i337.ImportFilesToKnowledgeUsecase>(),
+        addDatasourceFromWebsiteToKnowledgeUsecase:
+            gh<_i721.AddDatasourceFromWebsiteToKnowledgeUsecase>(),
+      ),
+    );
     gh.lazySingleton<_i212.GetSubscriptionUsecase>(
       () => _i212.GetSubscriptionUsecase(gh<_i64.SubscriptionRepository>()),
     );
@@ -334,19 +356,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1046.CreateKnowledgeBaseViewmodel>(
       () => _i1046.CreateKnowledgeBaseViewmodel(
         createKnowledgeUsecase: gh<_i42.CreateKnowledgeUsecase>(),
-      ),
-    );
-    gh.factory<_i838.DatasourceViewmodel>(
-      () => _i838.DatasourceViewmodel(
-        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
-        getDataSourceFromKnowledgeUsecase:
-            gh<_i910.GetDataSourceFromKnowledgeUsecase>(),
-        deleteDataSourceFromKnowledgeUsecase:
-            gh<_i69.DeleteDataSourceFromKnowledgeUsecase>(),
-        updateDataSourceFromKnowledgeUsecase:
-            gh<_i887.UpdateDataSourceFromKnowledgeUsecase>(),
-        importFilesToKnowledgeUsecase:
-            gh<_i337.ImportFilesToKnowledgeUsecase>(),
       ),
     );
     gh.factory<_i24.EditBotViewModel>(

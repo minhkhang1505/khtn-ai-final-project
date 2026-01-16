@@ -4,6 +4,7 @@ import 'package:khtn_ai_final_project/data/models/datasource/data_source_request
 import 'package:khtn_ai_final_project/data/models/datasource/data_source_response.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
 import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
+import 'package:khtn_ai_final_project/domain/usecases/datasource/add_datasource_from_website_to_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/delete_datasource_from_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/get_datasource_from_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/import_files_to_knowledge_usecase.dart';
@@ -22,6 +23,8 @@ class DatasourceViewmodel extends ChangeNotifier {
   final UpdateDataSourceFromKnowledgeUsecase
   updateDataSourceFromKnowledgeUsecase;
   final ImportFilesToKnowledgeUsecase importFilesToKnowledgeUsecase;
+  final AddDatasourceFromWebsiteToKnowledgeUsecase
+  addDatasourceFromWebsiteToKnowledgeUsecase;
 
   DatasourceViewmodel({
     required this.uploadMultipleFileUsecase,
@@ -29,6 +32,7 @@ class DatasourceViewmodel extends ChangeNotifier {
     required this.deleteDataSourceFromKnowledgeUsecase,
     required this.updateDataSourceFromKnowledgeUsecase,
     required this.importFilesToKnowledgeUsecase,
+    required this.addDatasourceFromWebsiteToKnowledgeUsecase,
   });
 
   DataSourceState _state = DataSourceState.initial;
@@ -133,7 +137,7 @@ class DatasourceViewmodel extends ChangeNotifier {
 
   /// Import uploaded files to a knowledge base
   /// Creates datasource entries from uploaded files
-  Future<bool> importFilesToKnowledgeBase(
+  Future<bool> addDatasourceFromFileToKnowledge(
     String knowledgeId,
     UploadResponse uploadResponse,
   ) async {
@@ -163,6 +167,51 @@ class DatasourceViewmodel extends ChangeNotifier {
     } catch (e) {
       _errorMessage = e.toString();
       debugPrint("Error importing files to knowledge base: $e");
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> addDatasourceFromWebsiteToKnowledge(
+    String knowledgeId, {
+    required String name,
+    required String url,
+    required String type,
+    required bool autoReindexEnabled,
+    int? autoReindexIntervalHours,
+  }) async {
+    try {
+      final datasource = Datasource(
+        name: name,
+        type: 'web',
+        credentials: Credentials(type: type, url: url),
+      );
+
+      // Add autoReindexEnabled and autoReindexIntervalHours if enabled
+      final datasourceMap = datasource.toJson();
+      datasourceMap['autoReindexEnabled'] = autoReindexEnabled;
+      if (autoReindexEnabled && autoReindexIntervalHours != null) {
+        datasourceMap['autoReindexIntervalHours'] = autoReindexIntervalHours;
+      }
+
+      final request = DataSourceRequest(datasources: [datasource]);
+      final requestMap = {
+        'datasources': [datasourceMap],
+      };
+
+      final success = await addDatasourceFromWebsiteToKnowledgeUsecase.call(
+        knowledgeId,
+        DataSourceRequest.fromJson(requestMap),
+      );
+
+      if (success) {
+        notifyListeners();
+      }
+
+      return success;
+    } catch (e) {
+      _errorMessage = e.toString();
+      debugPrint("Error adding website datasource to knowledge base: $e");
       notifyListeners();
       return false;
     }

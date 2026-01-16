@@ -6,6 +6,16 @@ class DataSourceRequest {
   DataSourceRequest copyWith({List<Datasource>? datasources}) =>
       DataSourceRequest(datasources: datasources ?? this.datasources);
 
+  factory DataSourceRequest.fromJson(Map<String, dynamic> json) {
+    return DataSourceRequest(
+      datasources: json['datasources'] != null
+          ? (json['datasources'] as List)
+                .map((i) => Datasource.fromJson(i))
+                .toList()
+          : [],
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {'datasources': datasources.map((v) => v.toJson()).toList()};
   }
@@ -24,6 +34,16 @@ class Datasource {
         name: name ?? this.name,
         type: type ?? this.type,
       );
+
+  factory Datasource.fromJson(Map<String, dynamic> json) {
+    return Datasource(
+      credentials: json['credentials'] != null
+          ? Credentials.fromJson(json['credentials'])
+          : null,
+      name: json['name'],
+      type: json['type'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -74,6 +94,19 @@ class Credentials {
     url: url ?? this.url,
     username: username ?? this.username,
   );
+
+  factory Credentials.fromJson(Map<String, dynamic> json) {
+    return Credentials(
+      email: json['email'],
+      file: json['file'],
+      info: json['info'],
+      password: json['password'],
+      token: json['token'],
+      type: json['type'],
+      url: json['url'],
+      username: json['username'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {

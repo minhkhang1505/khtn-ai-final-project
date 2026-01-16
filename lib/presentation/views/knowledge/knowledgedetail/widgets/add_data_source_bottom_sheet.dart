@@ -120,12 +120,14 @@ class AddDataSourceBottomSheet extends StatelessWidget {
         context: context,
         builder: (context) => ChangeNotifierProvider.value(
           value: datasourceViewModel,
-          child: const AddUrlDialog(),
+          child: AddUrlDialog(knowledgeId: knowledgeId),
         ),
       );
 
-      if (result != null) {
-        // TODO: Handle URL with result['name'] and result['url']
+      if (result == true) {
+        // URL successfully added to knowledge base
+        // Refresh the datasource list
+        await datasourceViewModel.getDataSourceFromKnowledge(knowledgeId);
       }
     } else if (dataSource == DataSourceTypes.confluence) {
       // Show Confluence dialog
