@@ -15,8 +15,10 @@ abstract class KnowledgeBaseRemoteDataSource {
     KnowledgeBaseCreationAndUpdateRequest request,
   );
   Future<bool> deleteKnowledgeBase(String knowledgeBaseId);
-  // Future<bool> addKnowledgeBaseFromFile(String knowledgeBaseId);
-  // Future<bool> addKnowledgeBaseFromUrl(String knowledgeBaseId);
+  Future<bool> addDataSourceBaseFromWebSiteToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
+  );
   // Future<bool> addKnowledgeBaseFromGDrive(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromSlack(String knowledgeBaseId);
   // Future<bool> addKnowledgeBaseFromConfluence(String knowledgeBaseId);
@@ -27,7 +29,7 @@ abstract class KnowledgeBaseRemoteDataSource {
 
   Future<UploadResponse> uploadMultipleFiles(List<PlatformFile> files);
 
-  Future<bool> uploadFilesToKnowledgeBase(
+  Future<bool> addDataSourceBaseFromFileToKnowledgeBase(
     String knowledgeBaseId,
     DataSourceRequest request,
   );
@@ -162,21 +164,48 @@ class KnowledgeBaseRemoteDataSourceImpl
         data: formData,
       );
 
-      return response.data;
+      debugPrint("Upload response status: ${response.statusCode}");
+      debugPrint("Upload response data type: ${response.data.runtimeType}");
+      debugPrint("Upload response data: ${response.data}");
+
+      if (response.data is Map<String, dynamic>) {
+        final uploadResponse = UploadResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+        debugPrint("Parsed files count: ${uploadResponse.files.length}");
+        if (uploadResponse.files.isNotEmpty) {
+          debugPrint("First file URL: ${uploadResponse.files.first.url}");
+        }
+        return uploadResponse;
+      } else {
+        throw Exception('Invalid response format: ${response.data}');
+      }
     } catch (e) {
       debugPrint("Lỗi upload: $e");
-      return UploadResponse(files: []);
+      rethrow;
     }
   }
 
   @override
-  Future<bool> uploadFilesToKnowledgeBase(
+  Future<bool> addDataSourceBaseFromFileToKnowledgeBase(
     String knowledgeBaseId,
     DataSourceRequest request,
   ) async {
     final response = await client.post(
       '/kb-core/v1/knowledge/$knowledgeBaseId/datasources',
       data: request,
+    );
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  @override
+  Future<bool> addDataSourceBaseFromWebSiteToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
+  ) async {
+    final response = await client.post(
+      '/kb-core/v1/knowledge/$knowledgeBaseId/datasources',
+      data: request.toJson(),
     );
     return response.statusCode == 200 || response.statusCode == 201;
   }

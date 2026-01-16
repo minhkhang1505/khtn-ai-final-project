@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
 import 'package:khtn_ai_final_project/data/mappers/datasource_mapper.dart';
 import 'package:khtn_ai_final_project/data/models/Knowledge/knowledge_query.dart';
+import 'package:khtn_ai_final_project/data/models/datasource/data_source_request.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/data_source_response.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
@@ -77,6 +78,28 @@ class KnowledgeBaseRepositoryImplement implements KnowledgeBaseRepository {
     return remoteDataSource.updateDataSourceFromKnowledge(
       knowledgeId,
       datasourceId,
+    );
+  }
+
+  @override
+  Future<bool> addDataSourceBaseFromFileToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
+  ) {
+    return remoteDataSource.addDataSourceBaseFromFileToKnowledgeBase(
+      knowledgeBaseId,
+      request,
+    );
+  }
+
+  @override
+  Future<bool> addDataSourceBaseFromWebSiteToKnowledgeBase(
+    String knowledgeBaseId,
+    DataSourceRequest request,
+  ) {
+    return remoteDataSource.addDataSourceBaseFromWebSiteToKnowledgeBase(
+      knowledgeBaseId,
+      request,
     );
   }
 }
