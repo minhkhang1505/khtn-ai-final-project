@@ -2,80 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/network/knowledge_base_api_client.dart';
+import 'package:khtn_ai_final_project/data/models/Knowledge/knowledge_query.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/data_source_request.dart';
+import 'package:khtn_ai_final_project/data/models/datasource/data_source_response.dart';
 import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:injectable/injectable.dart';
-
-class KnowledgeQuery {
-  double? limit;
-  double? offset;
-  KnowledgeOrder? order;
-  String? orderField;
-  String? q;
-
-  KnowledgeQuery({
-    this.limit,
-    this.offset,
-    this.order,
-    this.orderField,
-    this.q,
-  });
-
-  factory KnowledgeQuery.fromJson(Map<String, dynamic> json) {
-    return KnowledgeQuery(
-      limit: (json['limit'] as num?)?.toDouble(),
-      offset: (json['offset'] as num?)?.toDouble(),
-      order: json['order'] != null
-          ? KnowledgeOrder.values.firstWhere(
-              (e) => e.toString() == 'Order.' + (json['order'] as String),
-            )
-          : null,
-      orderField: json['orderField'] as String?,
-      q: json['q'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      if (limit != null) 'limit': limit,
-      if (offset != null) 'offset': offset,
-      if (order != null) 'order': order.toString().split('.').last,
-      if (orderField != null) 'orderField': orderField,
-      if (q != null) 'q': q,
-    };
-  }
-}
-
-enum KnowledgeOrder { ASC, DESC }
-
-class KnowledgeBaseCreationAndUpdateRequest {
-  String? description;
-  String knowledgeName;
-
-  KnowledgeBaseCreationAndUpdateRequest({
-    this.description,
-    required this.knowledgeName,
-  });
-
-  factory KnowledgeBaseCreationAndUpdateRequest.fromJson(
-    Map<String, dynamic> json,
-  ) {
-    return KnowledgeBaseCreationAndUpdateRequest(
-      description: json['description'] as String?,
-      knowledgeName: json['knowledgeName'] as String,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (description != null) {
-      data['description'] = description;
-    }
-    data['knowledgeName'] = knowledgeName;
-    return data;
-  }
-}
 
 abstract class KnowledgeBaseRemoteDataSource {
   Future<KnowledgeBasePaggingResponse> getKnowledgeBases(KnowledgeQuery query);
@@ -98,6 +30,21 @@ abstract class KnowledgeBaseRemoteDataSource {
   Future<bool> uploadFilesToKnowledgeBase(
     String knowledgeBaseId,
     DataSourceRequest request,
+  );
+
+  Future<DataSourcePagingResponse> getDataSourcesFromKnowledge(
+    String knowledgeId,
+    DataSourceQuery query,
+  );
+
+  Future<bool> deleteDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
+  );
+
+  Future<bool> updateDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
   );
 }
 
@@ -232,5 +179,46 @@ class KnowledgeBaseRemoteDataSourceImpl
       data: request,
     );
     return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  @override
+  Future<DataSourcePagingResponse> getDataSourcesFromKnowledge(
+    String knowledgeId,
+    DataSourceQuery query,
+  ) async {
+    final response = await client.get(
+      '/kb-core/v1/knowledge/$knowledgeId/datasources',
+      queryParameters: query.toJson(),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load datasources from knowledge base');
+    }
+
+    return DataSourcePagingResponse.fromJson(response.data);
+  }
+
+  @override
+  Future<bool> deleteDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
+  ) async {
+    final response = await client.delete(
+      '/kb-core/v1/knowledge/$knowledgeId/datasources/$datasourceId',
+    );
+
+    return response.statusCode == 204 || response.statusCode == 200;
+  }
+
+  @override
+  Future<bool> updateDataSourceFromKnowledge(
+    String knowledgeId,
+    String datasourceId,
+  ) async {
+    final response = await client.patch(
+      '/kb-core/v1/knowledge/$knowledgeId/datasources/$datasourceId',
+    );
+
+    return response.statusCode == 200;
   }
 }

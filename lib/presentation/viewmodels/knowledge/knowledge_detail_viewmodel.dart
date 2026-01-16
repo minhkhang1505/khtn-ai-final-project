@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/data/datasources/remote/knowledge_base_remote_data_source.dart';
+import 'package:khtn_ai_final_project/data/models/Knowledge/knowledge_query.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
 
@@ -67,7 +67,6 @@ class KnowledgeDetailViewmodel extends ChangeNotifier {
   }
 
   Future<bool> updateKnowledge() async {
-
     if (_state == KnowledgeDetailState.loading) {
       return false;
     }

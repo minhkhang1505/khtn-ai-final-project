@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
-// import 'package:khtn_ai_final_project/data/models/user_models.dart';
 import 'package:khtn_ai_final_project/core/constants/account_constants.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
+import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
+import 'package:khtn_ai_final_project/data/models/user_models.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/logout_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/widgets/widgets.dart';
@@ -18,27 +19,27 @@ class AccountPage extends StatefulWidget {
   State<AccountPage> createState() => _AccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage>
-    with TickerProviderStateMixin {
+class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     super.initState();
-    // Delay to ensure context is available
+    // Load user data if not already loaded
     Future.microtask(() {
-      final userVM = Provider.of<UserViewModel>(context, listen: false);
-      userVM.loadCurrentUser();
+      final userVM = context.read<UserViewModel>();
+      if (userVM.user == null) {
+        userVM.loadCurrentUser();
+      }
     });
   }
 
   bool _showUpgradeBanner = true;
   bool isProUser = false;
 
-  // User data will be provided by UserViewModel
-
   @override
   Widget build(BuildContext context) {
-    final themeProvider = sl<ThemeProvider>();
-    final user = context.watch<UserViewModel>().user;
+    final themeProvider = context.watch<ThemeProvider>();
+    final UserResponse? user = context.watch<UserViewModel>().user;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -77,6 +78,12 @@ class _AccountPageState extends State<AccountPage>
                         AppearanceSection(
                           isDarkMode: themeProvider.isDarkMode,
                           onThemeChanged: themeProvider.toggleTheme,
+                        ),
+                        const SizedBox(height: AppSpacing.vertical + 4),
+                        EmailSection(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/account/ai_email');
+                          },
                         ),
                         const SizedBox(height: AppSpacing.vertical + 4),
                         //lout action
@@ -141,5 +148,39 @@ class _AccountPageState extends State<AccountPage>
     if (!logoutResponse) {
       debugPrint("Logout failed");
     }
+  }
+}
+
+class EmailSection extends StatelessWidget {
+  final VoidCallback onTap;
+  const EmailSection({super.key, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: colorScheme.outlineVariant.withAlpha(150),
+            width: 1.5,
+          ),
+          color: colorScheme.surfaceContainerLow,
+          borderRadius: AppBorderRadius.large,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "AI Email",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/custom_tab_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
@@ -51,12 +52,40 @@ class _PromptModalContentState extends State<_PromptModalContent>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _scrollController.addListener(_onScroll);
+    _tabController.addListener(_onTabChanged);
+
+    // Load initial data for Public tab
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = context.read<PromptViewmodel>();
+      if (viewModel.prompts == null || viewModel.prompts!.isEmpty) {
+        viewModel.getAllPrompts();
+      }
+    });
+  }
+
+  void _onTabChanged() {
+    if (!_tabController.indexIsChanging) return;
+
+    final viewModel = context.read<PromptViewmodel>();
+    if (_tabController.index == 0) {
+      // Public tab
+      if (viewModel.prompts == null || viewModel.prompts!.isEmpty) {
+        viewModel.getAllPrompts();
+      }
+    } else {
+      // Private tab
+      if (viewModel.privatePrompts == null ||
+          viewModel.privatePrompts!.isEmpty) {
+        viewModel.getPrivatePrompts();
+      }
+    }
   }
 
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
   }
@@ -79,10 +108,61 @@ class _PromptModalContentState extends State<_PromptModalContent>
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 30, 0, 8),
-              child: Text(
-                "Prompts",
-                style: Theme.of(context).textTheme.titleLarge,
+              padding: const EdgeInsets.fromLTRB(16, 30, 16, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Prompts",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  ElevatedButton.icon(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.primaryContainer,
+                      ),
+                      foregroundColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                      padding: WidgetStateProperty.all(
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      shape: WidgetStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final result = await Navigator.pushNamed(
+                        context,
+                        '/prompts',
+                      );
+                      // If result is prompt content, close modal and set it
+                      if (result is String && result.isNotEmpty) {
+                        if (context.mounted) {
+                          Navigator.pop(context); // Close modal
+                          widget.chatViewModel.setInputMessage(result);
+                        }
+                      }
+                    },
+                    label: Text(
+                      "All",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    icon: SvgPicture.asset(
+                      'assets/icons/ic_all_prompts.svg',
+                      width: 18,
+                      height: 18,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.onPrimary,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             CustomTabbar(

@@ -59,8 +59,17 @@ class _FilterByCategoryPageState extends State<FilterByCategoryPage> {
     super.dispose();
   }
 
-  void _handleItemTap(BuildContext context, PromptEntity prompt) {
-    Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
+  void _handleItemTap(BuildContext context, PromptEntity prompt) async {
+    final result = await Navigator.pushNamed(
+      context,
+      '/prompts/details',
+      arguments: prompt,
+    );
+
+    // If result is prompt content to use, pop back to home with it
+    if (result is String && result.isNotEmpty && context.mounted) {
+      Navigator.of(context).pop(result);
+    }
   }
 
   @override

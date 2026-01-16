@@ -29,9 +29,9 @@ class CategoriesTab extends StatelessWidget {
               CategoryItem(
                 categoryName: category.name,
                 iconPath: category.iconPath,
-                onTap: () {
+                onTap: () async {
                   final viewModel = context.read<PromptViewmodel>();
-                  Navigator.push(
+                  final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ChangeNotifierProvider.value(
@@ -43,6 +43,13 @@ class CategoriesTab extends StatelessWidget {
                       ),
                     ),
                   );
+
+                  // If result is prompt content to use, pop PromptsPage with it
+                  if (result is String &&
+                      result.isNotEmpty &&
+                      context.mounted) {
+                    Navigator.of(context).pop(result);
+                  }
                 },
               ),
           ],

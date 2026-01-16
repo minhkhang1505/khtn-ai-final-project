@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
+import 'package:khtn_ai_final_project/domain/entities/datasource_type.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_file_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_drive_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_url_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_confluence_dialog.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledgedetail/widgets/add_slack_dialog.dart';
+import 'package:provider/provider.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasource_viewmodel.dart';
 
 /// Bottom sheet widget for adding data source
 class AddDataSourceBottomSheet extends StatelessWidget {
-  const AddDataSourceBottomSheet({super.key});
+  final DatasourceViewmodel datasourceViewModel;
+
+  const AddDataSourceBottomSheet({
+    super.key,
+    required this.datasourceViewModel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -81,18 +88,23 @@ class AddDataSourceBottomSheet extends StatelessWidget {
       // Show file dialog
       final result = await showDialog(
         context: context,
-        builder: (context) => const AddFileDialog(),
+        builder: (context) => ChangeNotifierProvider.value(
+          value: datasourceViewModel,
+          child: const AddFileDialog(),
+        ),
       );
 
       if (result != null) {
         // TODO: Handle file upload with result['file'] and result['prompt']
-
       }
     } else if (dataSource == DataSourceTypes.drive) {
       // Show Google Drive dialog
       final result = await showDialog(
         context: context,
-        builder: (context) => const AddDriveDialog(),
+        builder: (context) => ChangeNotifierProvider.value(
+          value: datasourceViewModel,
+          child: const AddDriveDialog(),
+        ),
       );
 
       if (result != null) {
@@ -102,7 +114,10 @@ class AddDataSourceBottomSheet extends StatelessWidget {
       // Show URL dialog
       final result = await showDialog(
         context: context,
-        builder: (context) => const AddUrlDialog(),
+        builder: (context) => ChangeNotifierProvider.value(
+          value: datasourceViewModel,
+          child: const AddUrlDialog(),
+        ),
       );
 
       if (result != null) {
@@ -112,7 +127,10 @@ class AddDataSourceBottomSheet extends StatelessWidget {
       // Show Confluence dialog
       final result = await showDialog(
         context: context,
-        builder: (context) => const AddConfluenceDialog(),
+        builder: (context) => ChangeNotifierProvider.value(
+          value: datasourceViewModel,
+          child: const AddConfluenceDialog(),
+        ),
       );
 
       if (result != null) {
@@ -122,7 +140,10 @@ class AddDataSourceBottomSheet extends StatelessWidget {
       // Show Slack dialog
       final result = await showDialog(
         context: context,
-        builder: (context) => const AddSlackDialog(),
+        builder: (context) => ChangeNotifierProvider.value(
+          value: datasourceViewModel,
+          child: const AddSlackDialog(),
+        ),
       );
 
       if (result != null) {

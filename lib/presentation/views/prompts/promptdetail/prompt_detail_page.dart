@@ -58,6 +58,18 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
                   : _backToPromptsList,
               icon: const Icon(Icons.arrow_back_ios),
             ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: ElevatedButton(
+                  onPressed:
+                      viewModel.promptDetailState == PromptDetailState.loading
+                      ? null
+                      : () => _usePromptInChat(context, viewModel),
+                  child: const Text('Use'),
+                ),
+              ),
+            ],
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {
@@ -173,5 +185,11 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
     final viewModel = context.read<PromptDetailViewModel>();
     viewModel.clearItem();
     Navigator.pop(context);
+  }
+
+  void _usePromptInChat(BuildContext context, PromptDetailViewModel viewModel) {
+    final promptContent = contentController.text;
+
+    Navigator.of(context).pop(promptContent);
   }
 }

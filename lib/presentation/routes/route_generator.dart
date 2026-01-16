@@ -3,6 +3,7 @@ import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/agent/agent_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/aiemail/ai_email_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
@@ -12,7 +13,11 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasour
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_detail_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/auth/user_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/theme_provider.dart';
+import 'package:khtn_ai_final_project/presentation/views/account/account_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/account/aiemail/ai_response_email_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/home/home_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/prompts_page.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/routes/app_routes.dart';
 import 'package:khtn_ai_final_project/presentation/views/auth/login/forgot_password/forgot_password.dart';
@@ -64,10 +69,17 @@ class RouteGenerator {
         );
 
       case AppRoutes.main:
+        // Extract prompt content from arguments if available
+        String? promptContent;
+        if (args is Map<String, dynamic>) {
+          promptContent = args['promptContent'] as String?;
+        }
+
         return _buildRoute(
           settings: settings,
           builder: (_) => MultiProvider(
             providers: [
+              ChangeNotifierProvider.value(value: sl<ThemeProvider>()),
               ChangeNotifierProvider(create: (_) => sl<PromptViewmodel>()),
               ChangeNotifierProvider(
                 create: (_) => sl<KnowledgeBaseViewmodel>(),
@@ -78,7 +90,7 @@ class RouteGenerator {
               ChangeNotifierProvider(create: (_) => sl<UserViewModel>()),
               ChangeNotifierProvider(create: (_) => sl<ChatAppBarViewModel>()),
             ],
-            child: const HomePage(),
+            child: HomePage(promptContent: promptContent),
           ),
         );
 
@@ -136,23 +148,23 @@ class RouteGenerator {
           builder: (_) => ResetPasswordPage(),
         );
 
-      // Profile routes (placeholder)
-      case AppRoutes.profile:
+      case AppRoutes.prompts:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Profile'),
-        );
-
-      case AppRoutes.editProfile:
-        return _buildRoute(
-          settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Edit Profile'),
+          builder: (context) {
+            return ChangeNotifierProvider(
+              create: (_) => sl<PromptViewmodel>()..getAllPrompts(),
+              child: const PromptsPage(),
+            );
+          },
         );
 
       case AppRoutes.settings:
         return _buildRoute(
           settings: settings,
-          builder: (_) => _buildPlaceholderPage(title: 'Settings'),
+          builder: (_) {
+            return AccountPage();
+          },
         );
 
       case AppRoutes.createNewPrompt:
@@ -174,11 +186,24 @@ class RouteGenerator {
         return _buildRoute(
           settings: settings,
           builder: (context) {
-            return ChangeNotifierProvider(
-              create: (_) =>
-                  sl<PromptDetailViewModel>(param1: prompt)
-                    ..loadPromptDetails(),
+            // Try to get existing ChatViewModel from parent context
+            // If not available, create a new one
+            ChatViewModel? chatViewModel;
+            try {
+              chatViewModel = context.read<ChatViewModel>();
+            } catch (e) {
+              chatViewModel = sl<ChatViewModel>();
+            }
 
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider.value(value: chatViewModel),
+                ChangeNotifierProvider(
+                  create: (_) =>
+                      sl<PromptDetailViewModel>(param1: prompt)
+                        ..loadPromptDetails(),
+                ),
+              ],
               child: const PromptDetailPage(),
             );
           },
@@ -262,6 +287,15 @@ class RouteGenerator {
           builder: (_) => ChangeNotifierProvider(
             create: (_) => sl<EditBotViewModel>(),
             child: EditBotPage(bot: editBot),
+          ),
+        );
+
+      case AppRoutes.aiEmail:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => sl<AiEmailViewmodel>(),
+            child: AIResponseEmailPage(),
           ),
         );
 

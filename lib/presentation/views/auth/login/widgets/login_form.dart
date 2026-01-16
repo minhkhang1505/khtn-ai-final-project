@@ -16,7 +16,7 @@ class LoginForm extends StatefulWidget {
   final ValueChanged<bool> onRememberMeChanged;
   final VoidCallback onForgotPassword;
   final VoidCallback onSignIn;
-  final VoidCallback onGoogleSignIn;
+  // final VoidCallback onGoogleSignIn;
   final VoidCallback onSignUpTap;
   final AuthViewModel loginError;
 
@@ -28,7 +28,7 @@ class LoginForm extends StatefulWidget {
     required this.onRememberMeChanged,
     required this.onForgotPassword,
     required this.onSignIn,
-    required this.onGoogleSignIn,
+    // required this.onGoogleSignIn,
     required this.onSignUpTap,
     required this.loginError,
   });
@@ -45,7 +45,7 @@ class _LoginFormState extends State<LoginForm> {
     final colorScheme = Theme.of(context).colorScheme;
     final viewModel = context.watch<AuthViewModel>();
     return Container(
-      height: 520,
+      height: 460,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
         color: colorScheme.onPrimary,
@@ -107,9 +107,9 @@ class _LoginFormState extends State<LoginForm> {
             isLoading: viewModel.isLoading,
           ),
           // Divider
-          const AuthDivider(text: "Or continue with"),
+          // const AuthDivider(text: "Or continue with"),
           // Google Sign In button
-          GoogleAuthButton(onPressed: widget.onGoogleSignIn),
+          // GoogleAuthButton(onPressed: widget.onGoogleSignIn),
           // Sign up prompt
           AuthPrompt(
             question: "Don't have an account?",

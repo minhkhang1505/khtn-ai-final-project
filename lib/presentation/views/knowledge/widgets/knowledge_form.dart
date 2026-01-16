@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
+import 'package:khtn_ai_final_project/domain/entities/datasource_type.dart';
 import 'package:khtn_ai_final_project/core/constants/knowledge_constants.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';

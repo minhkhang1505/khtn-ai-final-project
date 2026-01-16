@@ -1,4 +1,5 @@
 /// Represents a type of knowledge source with its icon and name
+/// Value Object trong domain layer
 class DataSourceType {
   final String iconAssetPath;
   final String name;
