@@ -5,12 +5,21 @@ import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
 /// sang DataSourceEntity (domain layer)
 extension DataSourceResponseMapper on DataSourceResponse {
   DataSourceEntity toDomain() {
+    final metadataMap = metadata;
+    final metaCreatedAt = metadataMap?['created_at'] as String?;
+    final metaUpdatedAt = metadataMap?['updated_at'] as String?;
+    final metaDescription = metadataMap?['description'] as String?;
     return DataSourceEntity(
       id: id ?? "",
       name: name ?? "Unnamed Source",
       knowledgeId: knowledgeId ?? "",
       isActive: status ?? false,
-      createdAt: createdAt ?? "",
+      createdAt: metaCreatedAt ?? createdAt ?? "",
+      updatedAt: metaUpdatedAt ?? updatedAt,
+      description: metaDescription ?? description,
+      type: type,
+      size: size,
+      syncStatus: syncStatus,
       createdBy: createdBy ?? "Unknown User",
     );
   }

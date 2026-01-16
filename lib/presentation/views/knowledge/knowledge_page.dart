@@ -191,6 +191,7 @@ class _KnowledgePageState extends State<KnowledgePage> {
           'Are you sure you want to delete this knowledge base? This action cannot be undone.',
       showConfirmButton: true,
       confirmText: 'Delete',
+      closeText: 'Cancel',
     );
 
     // Only proceed if user confirmed

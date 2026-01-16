@@ -22,6 +22,7 @@ class PromptDetailActionButtons extends StatelessWidget {
       showConfirmButton: true,
       confirmText: 'Delete',
       onConfirm: onDelete,
+      closeText: 'Cancel',
     );
   }
 
