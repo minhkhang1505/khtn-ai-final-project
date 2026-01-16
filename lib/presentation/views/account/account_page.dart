@@ -142,18 +142,9 @@ class _AccountPageState extends State<AccountPage> {
       context: context,
       builder: (context) => UpgradeDialog(
         upgradePlan: proPlan,
-        onUpgradeConfirmed: _onUpgradeConfirmed,
         onDismiss: () => Navigator.pop(context),
       ),
     );
-  }
-
-  void _onUpgradeConfirmed() {
-    // TODO: Implement upgrade logic
-    setState(() {
-      _showUpgradeBanner = false;
-      isProUser = true;
-    });
   }
 
   Future<void> _onLogout() async {

@@ -4,13 +4,14 @@ import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/core/network/token_interceptor.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/core/utils/guid_provider.dart';
+import 'package:khtn_ai_final_project/core/config/app_config.dart';
 
 @preResolve
 @lazySingleton
 class KnowledgeBaseApiClient {
   final AuthLocalDataSource localDataSource;
 
-  static const String baseUrl = 'https://knowledge-api.jarvis.cx/';
+  static String get baseUrl => AppConfig.knowledgeApiUrl;
   static const String _refreshTokenEndpoint = 'auth/sessions/current/refresh';
 
   final String guid;
@@ -54,8 +55,7 @@ class KnowledgeBaseApiClient {
       headers: {
         if (accessToken != null && accessToken.isNotEmpty)
           'Authorization': 'Bearer $accessToken',
-        if (!isFormData) 
-        'Content-Type': 'application/json',
+        if (!isFormData) 'Content-Type': 'application/json',
       },
     );
     return _dio.post(path, data: data, options: options);

@@ -4,12 +4,13 @@ import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/core/network/token_interceptor.dart';
 import 'package:khtn_ai_final_project/core/utils/guid_provider.dart';
+import 'package:khtn_ai_final_project/core/config/app_config.dart';
 
 @preResolve
 @lazySingleton
 class JarvisApiClient {
   final AuthLocalDataSource localDataSource;
-  static const String baseUrl = 'https://api.jarvis.cx/api/v1/';
+  static String get baseUrl => AppConfig.apiUrl;
   static const String _refreshTokenEndpoint = 'auth/sessions/current/refresh';
 
   final String guid;
@@ -39,7 +40,15 @@ class JarvisApiClient {
 
   /// GET request - Authorization skipped for /prompts endpoint
   Future<Response> get(String path, {Map<String, dynamic>? data}) async {
-    return _dio.get(path, queryParameters: data);
+    final accessToken = await localDataSource.getAccessToken();
+
+    final options = Options(
+      headers: {
+        if (accessToken != null && accessToken.isNotEmpty)
+          'Authorization': 'Bearer $accessToken',
+      },
+    );
+    return _dio.get(path, options: options, queryParameters: data);
   }
 
   Future<Response> post(String path, {Map<String, dynamic>? data}) async {
