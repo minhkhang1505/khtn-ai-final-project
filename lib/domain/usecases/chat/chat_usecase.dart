@@ -15,6 +15,10 @@ class ChatUseCase {
     return await chatRepository.sendMessage(messageRequest);
   }
 
+  Stream<String> sendMessageStream(SendMessageRequestModel messageRequest) {
+    return chatRepository.sendMessageStream(messageRequest);
+  }
+
   Future<ChatWithBotResponseModel> chatWithBot(ChatWithBotRequestModel messageRequest) async {
     return await chatRepository.chatWithBot(messageRequest);
   }

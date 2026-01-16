@@ -11,7 +11,7 @@ import 'package:khtn_ai_final_project/presentation/common/widgets/create_action_
 import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
 
 import 'widgets/create_bot_app_bar.dart';
-import 'widgets/knowledge_base_card.dart';
+
 import 'widgets/bot_information_card.dart';
 import 'widgets/ai_model_card.dart';
 

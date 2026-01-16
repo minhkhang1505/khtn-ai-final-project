@@ -55,7 +55,7 @@ class BotModel {
           json['assistant_name'] ?? json['assistantName'] ?? json['name'] ?? '',
       description: json['description'] ?? '',
       instructions: json['instructions'] ?? '',
-      model: modelValue is String ? AssistantModelType.fromId(modelValue) : null,
+      model: modelValue is String ? AssistantModelType.getModelFromId(modelValue) : null,
       config: json['config'] as Map<String, dynamic>?,
       userId: (json['user_id'] ?? json['userId'])?.toString(),
       isDefault: _asBool(json['is_default'] ?? json['isDefault']),

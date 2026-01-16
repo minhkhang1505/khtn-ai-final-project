@@ -36,6 +36,7 @@ class _LogoutDialogState extends State<LogoutDialog> {
         Navigator.of(context).pop(true);
       }
     } catch (e) {
+      debugPrint("Logout error: $e");
       setState(() {
         _error = widget.errorText ?? 'Logout failed. Please try again.';
       });

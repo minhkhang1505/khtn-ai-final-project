@@ -7,12 +7,14 @@ class ChatWithBotRequestModel {
   List<String> files;
   MetadataModel metadata;
   AssistantModel assistant;
+  String? responseMode;
 
   ChatWithBotRequestModel({
     required this.content, 
     required this.files, 
     required this.assistant, 
     required this.metadata, 
+    this.responseMode,
   });
 
   factory ChatWithBotRequestModel.fromJson(Map<String, dynamic> json) {
@@ -21,6 +23,7 @@ class ChatWithBotRequestModel {
       files: List<String>.from(json['files']),
       metadata: MetadataModel.fromJson(json['metadata']),
       assistant: AssistantModel.fromJson(json['assistant']),
+      responseMode: json['responseMode'],
     );
   }
 
@@ -30,6 +33,7 @@ class ChatWithBotRequestModel {
       'files': files,
       'metadata': metadata.toJson(),
       'assistant': assistant.toJson(),
+      if (responseMode != null) 'responseMode': responseMode,
     };
   }
 }

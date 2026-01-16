@@ -6,6 +6,7 @@ import 'package:khtn_ai_final_project/data/models/conversations/delete_conversat
 
 abstract class ChatRepository {
   Future<SendMessageResponseModel> sendMessage(SendMessageRequestModel messageRequest);
+    Stream<String> sendMessageStream(SendMessageRequestModel messageRequest);
   Future<ChatWithBotResponseModel> chatWithBot(ChatWithBotRequestModel messageRequest);
   Future<GetConversationsResponseModel> getConversations(GetConversationsRequestModel conversationRequest);
   Future<GetConversationHistoryResponseModel> getConversationHistory(GetConversationHistoryRequestModel conversationRequest);

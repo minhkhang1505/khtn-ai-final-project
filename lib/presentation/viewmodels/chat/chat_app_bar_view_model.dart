@@ -50,13 +50,17 @@ class ChatAppBarViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void newChat() {
+    setSelectedAssistant(AssistantModel.defaults());
+    setConversationTitle('Chat');
+  }
+
   void openChat(ConversationModel conversation) {
     selectedAssistant = conversation.bot;
     if (selectedAssistant.name.isEmpty) {
       selectedAssistant.name = AssistantModelType.nameFromId(selectedAssistant.id);
     }
     conversationTitle = conversation.title;
-    debugPrint("🧐 OpenChat with assistant: ${selectedAssistant.toJson()}");
     notifyListeners();
   }
 

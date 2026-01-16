@@ -16,6 +16,6 @@ class GuidProvider {
     }
 
     _guid = guid;
-    return guid!;
+    return guid;
   }
 }

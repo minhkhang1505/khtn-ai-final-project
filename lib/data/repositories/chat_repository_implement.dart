@@ -22,6 +22,13 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
+  Stream<String> sendMessageStream(
+    SendMessageRequestModel sendMessageRequest,
+  ) {
+    return remoteDataSource.sendMessageStream(sendMessageRequest);
+  }
+
+  @override
   Future<ChatWithBotResponseModel> chatWithBot(
     ChatWithBotRequestModel chatWithBotRequest,
   ) async {

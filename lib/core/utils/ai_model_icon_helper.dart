@@ -12,7 +12,8 @@ class AiModelIconHelper {
   }) {
     final key = name.toLowerCase();
 
-    String asset;
+    String asset = '${_basePath}ic_gpt.svg';
+    
     if (key.contains('gpt')) {
       asset = '${_basePath}ic_gpt.svg';
     } else if (key.contains('claude')) {
@@ -20,19 +21,13 @@ class AiModelIconHelper {
     } else if (key.contains('gemini')) {
       asset = '${_basePath}ic_gemini.svg';
     } else {
-      return Icon(
-        Icons.auto_awesome,
-        size: size,
-        color: color,
-      );
+      asset = '${_basePath}ic_bot.svg';
     }
 
     return SvgPicture.asset(
       asset,
       width: size,
       height: size,
-      colorFilter:
-          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
       // If the asset is missing or unreadable, gracefully fall back
       // to a Material icon so the UI never crashes.
       placeholderBuilder: (context) => Icon(
