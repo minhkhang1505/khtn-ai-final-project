@@ -37,6 +37,7 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_deta
 import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/agents/create_agent_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/agents/edit_agent_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/agents/agent_chat_page.dart';
 
 import 'package:khtn_ai_final_project/presentation/views/bots/bots_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/bots/create_bot_page.dart';
@@ -263,6 +264,13 @@ class RouteGenerator {
             create: (_) => sl<AgentViewModel>(),
             child: EditAgentPage(agent: editAgent),
           ),
+        );
+
+      case AppRoutes.agentChat:
+        final agent = args is Map<String, dynamic> ? args['agent'] : args;
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => AgentChatPage(agent: agent),
         );
 
       case AppRoutes.bots:

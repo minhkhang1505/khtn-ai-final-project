@@ -46,6 +46,7 @@ class AppRoutes {
   static const String agents = '/agents';
   static const String createNewAgent = '/agents/new';
   static const String editAgent = '/agents/edit';
+  static const String agentChat = '/agents/chat';
 
   /// Get all route names as a list
   /// Useful for debugging or logging
@@ -65,5 +66,6 @@ class AppRoutes {
     agents,
     createNewAgent,
     editAgent,
+    agentChat,
   ];
 }
