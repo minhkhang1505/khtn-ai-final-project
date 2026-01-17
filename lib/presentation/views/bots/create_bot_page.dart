@@ -63,13 +63,6 @@ class _CreateBotPageState extends State<CreateBotPage> {
                   ),
                   const SizedBox(height: AppSpacing.cardSpacing),
 
-                  // // Knowledge Base Section
-                  // const KnowledgeBaseCard(
-                  //   knowledges: [],
-                  //   isLoading: false,
-                  // ),
-                  // const SizedBox(height: AppSpacing.cardSpacing),
-
                   // AI model Section
                   AiModelCard(
                     errorText: createBotViewModel.modelError,
