@@ -198,18 +198,21 @@ class _EditBotPageState extends State<EditBotPage> {
                       knowledges: editBotViewModel.knowledges,
                       isLoading: editBotViewModel.isKnowledgeLoading,
                       onAddKnowledge: () async {
-                        final selectedKnowledgeIds = await Navigator.of(context).push<List<String>>(
-                          MaterialPageRoute(
-                            builder: (context) => AddKnowledgePage(
-                              excludeKnowledgeIds: [],
-                              viewModel: editBotViewModel,
-                            ),
-                          ),
-                        );
+                        final selectedKnowledgeIds = await Navigator.of(context)
+                            .push<List<String>>(
+                              MaterialPageRoute(
+                                builder: (context) => AddKnowledgePage(
+                                  excludeKnowledgeIds: [],
+                                  viewModel: editBotViewModel,
+                                ),
+                              ),
+                            );
 
-                        if (selectedKnowledgeIds != null && selectedKnowledgeIds.isNotEmpty && mounted) {
+                        if (selectedKnowledgeIds != null &&
+                            selectedKnowledgeIds.isNotEmpty &&
+                            mounted) {
                           final scaffold = ScaffoldMessenger.of(context);
-                          
+
                           // Add all selected knowledge bases
                           for (final knowledgeId in selectedKnowledgeIds) {
                             final success = await editBotViewModel
@@ -248,7 +251,7 @@ class _EditBotPageState extends State<EditBotPage> {
                       isReadOnly: true,
                       fixedModelId: widget.bot.model?.id,
                     ),
-
+                    const SizedBox(height: AppSpacing.cardSpacing),
                     // Action Buttons
                     SaveActionButtonRow(
                       onLeftButtonPress: () {
