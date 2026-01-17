@@ -1,3 +1,4 @@
+import 'package:khtn_ai_final_project/data/models/task_planning_response_model.dart';
 import 'package:khtn_ai_final_project/domain/repositories/task_planning_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -7,7 +8,7 @@ class TaskPlanningUseCase {
   
   TaskPlanningUseCase({required this.taskPlanningRepository});
 
-  Future<String> planTask(String request) async {
+  Future<TaskPlanningResponse> planTask(String request) async {
     return await taskPlanningRepository.planTask(request);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/agents_card.dart';
+import '../agent_chat_page.dart';
 import 'package:khtn_ai_final_project/data/models/agent_model.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
@@ -15,7 +16,12 @@ class ActiveAgentsTab extends StatelessWidget {
           (agent) => InkWell(
             borderRadius: AppBorderRadius.medium,
             onTap: () {
-              Navigator.pushNamed(context, '/agents/edit', arguments: agent);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AgentChatPage(agent: agent),
+                ),
+              );
             },
             child: AgentCard(agent: agent),
           ),
