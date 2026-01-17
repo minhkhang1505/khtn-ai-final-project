@@ -45,7 +45,6 @@ class CreateBotViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   Future<bool> createBot() async {
-    _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 

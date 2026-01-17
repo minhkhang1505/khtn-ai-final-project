@@ -34,12 +34,7 @@ abstract class KnowledgeBaseRepository {
     String datasourceId,
   );
 
-  Future<bool> addDataSourceBaseFromFileToKnowledgeBase(
-    String knowledgeBaseId,
-    DataSourceRequest request,
-  );
-
-  Future<bool> addDataSourceBaseFromWebSiteToKnowledgeBase(
+  Future<bool> addDataSourceToKnowledgeBase(
     String knowledgeBaseId,
     DataSourceRequest request,
   );

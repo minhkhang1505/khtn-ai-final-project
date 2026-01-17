@@ -16,7 +16,7 @@ class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: false,
       leading: IconButton(
         onPressed: onBackPressed,
-        icon: Icon(Icons.arrow_back_rounded),
+        icon: Icon(Icons.arrow_back_ios),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +33,7 @@ class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           SizedBox(height: 4),
           // Subtitle - only show on tablet and desktop
-            if (ResponsiveHelper.isDesktop(context) ||
+          if (ResponsiveHelper.isDesktop(context) ||
               ResponsiveHelper.isTablet(context))
             Text(
               bot.description.isEmpty ? 'No description' : bot.description,

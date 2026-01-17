@@ -15,24 +15,33 @@ abstract class KnowledgeBaseRemoteDataSource {
     KnowledgeBaseCreationAndUpdateRequest request,
   );
   Future<bool> deleteKnowledgeBase(String knowledgeBaseId);
-  Future<bool> addDataSourceBaseFromWebSiteToKnowledgeBase(
+
+  Future<bool> addDataSourceToKnowledgeBase(
     String knowledgeBaseId,
     DataSourceRequest request,
   );
-  // Future<bool> addKnowledgeBaseFromGDrive(String knowledgeBaseId);
-  // Future<bool> addKnowledgeBaseFromSlack(String knowledgeBaseId);
-  // Future<bool> addKnowledgeBaseFromConfluence(String knowledgeBaseId);
+
+  // Future<bool> addDataSourceBaseFromSlackToKnowledgeBase(
+  //   String knowledgeBaseId,
+  //   DataSourceRequest request,
+  // );
+
+  // Future<bool> addDataSourceBaseFromFileToKnowledgeBase(
+  //   String knowledgeBaseId,
+  //   DataSourceRequest request,
+  // );
+
+  // Future<bool> addDataSourceBaseFromConfluenceToKnowledgeBase(
+  //   String knowledgeBaseId,
+  //   DataSourceRequest request,
+  // );
+
   Future<KnowledgeModel> updateKnowledgeBase(
     String id,
     KnowledgeBaseCreationAndUpdateRequest request,
   );
 
   Future<UploadResponse> uploadMultipleFiles(List<PlatformFile> files);
-
-  Future<bool> addDataSourceBaseFromFileToKnowledgeBase(
-    String knowledgeBaseId,
-    DataSourceRequest request,
-  );
 
   Future<DataSourcePagingResponse> getDataSourcesFromKnowledge(
     String knowledgeId,
@@ -108,16 +117,7 @@ class KnowledgeBaseRemoteDataSourceImpl
   }
 
   // @override
-  // Future<bool> addKnowledgeBaseFromFile(String knowledgeBaseId) {}
-
-  // @override
-  // Future<bool> addKnowledgeBaseFromUrl(String knowledgeBaseId) {}
-
-  // @override
   // Future<bool> addKnowledgeBaseFromGDrive(String knowledgeBaseId) {}
-
-  // @override
-  // Future<bool> addKnowledgeBaseFromSlack(String knowledgeBaseId) {}
 
   // @override
   // Future<bool> addKnowledgeBaseFromConfluence(String knowledgeBaseId) {}
@@ -187,19 +187,7 @@ class KnowledgeBaseRemoteDataSourceImpl
   }
 
   @override
-  Future<bool> addDataSourceBaseFromFileToKnowledgeBase(
-    String knowledgeBaseId,
-    DataSourceRequest request,
-  ) async {
-    final response = await client.post(
-      '/kb-core/v1/knowledge/$knowledgeBaseId/datasources',
-      data: request,
-    );
-    return response.statusCode == 200 || response.statusCode == 201;
-  }
-
-  @override
-  Future<bool> addDataSourceBaseFromWebSiteToKnowledgeBase(
+  Future<bool> addDataSourceToKnowledgeBase(
     String knowledgeBaseId,
     DataSourceRequest request,
   ) async {

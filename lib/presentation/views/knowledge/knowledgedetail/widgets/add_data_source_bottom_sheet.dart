@@ -135,12 +135,12 @@ class AddDataSourceBottomSheet extends StatelessWidget {
         context: context,
         builder: (context) => ChangeNotifierProvider.value(
           value: datasourceViewModel,
-          child: const AddConfluenceDialog(),
+          child: AddConfluenceDialog(knowledgeId: knowledgeId),
         ),
       );
 
-      if (result != null) {
-        // TODO: Handle Confluence with result['name'], result['url'], result['username'], and result['apiToken']
+      if (result == true) {
+        await datasourceViewModel.getDataSourceFromKnowledge(knowledgeId);
       }
     } else if (dataSource == DataSourceTypes.slack) {
       // Show Slack dialog
@@ -148,12 +148,12 @@ class AddDataSourceBottomSheet extends StatelessWidget {
         context: context,
         builder: (context) => ChangeNotifierProvider.value(
           value: datasourceViewModel,
-          child: const AddSlackDialog(),
+          child: AddSlackDialog(knowledgeId: knowledgeId),
         ),
       );
 
-      if (result != null) {
-        // TODO: Handle Slack with result['name'] and result['botToken']
+      if (result == true) {
+        await datasourceViewModel.getDataSourceFromKnowledge(knowledgeId);
       }
     }
   }

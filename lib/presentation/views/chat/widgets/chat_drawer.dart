@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_drawer_view_model.dart';
@@ -143,10 +144,14 @@ class _ChatDrawerState extends State<ChatDrawer> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Icon(
-                                              Icons.smart_toy,
-                                              size: 12,
-                                              color: colorScheme.onPrimaryContainer,
+                                            SvgPicture.asset(
+                                              'assets/icons/ic_bot.svg',
+                                              width: 12,
+                                              height: 12,
+                                              colorFilter: ColorFilter.mode(
+                                                colorScheme.onPrimaryContainer,
+                                                BlendMode.srcIn,
+                                              ),
                                             ),
                                             const SizedBox(width: 4),
                                             Flexible(

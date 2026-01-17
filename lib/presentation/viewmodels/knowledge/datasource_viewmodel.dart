@@ -7,7 +7,6 @@ import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/add_datasource_from_website_to_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/delete_datasource_from_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/get_datasource_from_knowledge_usecase.dart';
-import 'package:khtn_ai_final_project/domain/usecases/datasource/import_files_to_knowledge_usecase.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/update_datasource_from_knowledge_usecase.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/domain/usecases/datasource/upload_multiple_file_usecase.dart';
@@ -22,17 +21,14 @@ class DatasourceViewmodel extends ChangeNotifier {
   deleteDataSourceFromKnowledgeUsecase;
   final UpdateDataSourceFromKnowledgeUsecase
   updateDataSourceFromKnowledgeUsecase;
-  final ImportFilesToKnowledgeUsecase importFilesToKnowledgeUsecase;
-  final AddDatasourceFromWebsiteToKnowledgeUsecase
-  addDatasourceFromWebsiteToKnowledgeUsecase;
+  final AddDatasourceToKnowledgeUsecase addDatasourceToKnowledgeUsecase;
 
   DatasourceViewmodel({
     required this.uploadMultipleFileUsecase,
     required this.getDataSourceFromKnowledgeUsecase,
     required this.deleteDataSourceFromKnowledgeUsecase,
     required this.updateDataSourceFromKnowledgeUsecase,
-    required this.importFilesToKnowledgeUsecase,
-    required this.addDatasourceFromWebsiteToKnowledgeUsecase,
+    required this.addDatasourceToKnowledgeUsecase,
   });
 
   DataSourceState _state = DataSourceState.initial;
@@ -153,7 +149,7 @@ class DatasourceViewmodel extends ChangeNotifier {
 
       final request = DataSourceRequest(datasources: datasources);
 
-      final success = await importFilesToKnowledgeUsecase.call(
+      final success = await addDatasourceToKnowledgeUsecase.call(
         knowledgeId,
         request,
       );
@@ -199,7 +195,7 @@ class DatasourceViewmodel extends ChangeNotifier {
         'datasources': [datasourceMap],
       };
 
-      final success = await addDatasourceFromWebsiteToKnowledgeUsecase.call(
+      final success = await addDatasourceToKnowledgeUsecase.call(
         knowledgeId,
         DataSourceRequest.fromJson(requestMap),
       );
@@ -212,6 +208,99 @@ class DatasourceViewmodel extends ChangeNotifier {
     } catch (e) {
       _errorMessage = e.toString();
       debugPrint("Error adding website datasource to knowledge base: $e");
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> addDatasourceFromSlackToKnowledge(
+    String knowledgeId, {
+    required String name,
+    required String token,
+    required bool autoReindexEnabled,
+    int? autoReindexIntervalHours,
+  }) async {
+    try {
+      final datasource = Datasource(
+        name: name,
+        type: 'slack',
+        credentials: Credentials(type: 'slack', token: token),
+      );
+
+      final datasourceMap = datasource.toJson();
+      datasourceMap['autoReindexEnabled'] = autoReindexEnabled;
+      if (autoReindexEnabled && autoReindexIntervalHours != null) {
+        datasourceMap['autoReindexIntervalHours'] = autoReindexIntervalHours;
+      }
+
+      final request = DataSourceRequest(datasources: [datasource]);
+      final requestMap = {
+        'datasources': [datasourceMap],
+      };
+
+      final success = await addDatasourceToKnowledgeUsecase.call(
+        knowledgeId,
+        DataSourceRequest.fromJson(requestMap),
+      );
+
+      if (success) {
+        notifyListeners();
+      }
+
+      return success;
+    } catch (e) {
+      _errorMessage = e.toString();
+      debugPrint("Error adding Slack datasource to knowledge base: $e");
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> addDatasourceFromConfluenceToKnowledge(
+    String knowledgeId, {
+    required String name,
+    required String username,
+    required String token,
+    required String url,
+    required bool autoReindexEnabled,
+    int? autoReindexIntervalHours,
+  }) async {
+    try {
+      final datasource = Datasource(
+        name: name,
+        type: 'confluence',
+        credentials: Credentials(
+          type: 'confluence',
+          username: username,
+          token: token,
+          url: url,
+        ),
+      );
+
+      final datasourceMap = datasource.toJson();
+      datasourceMap['autoReindexEnabled'] = autoReindexEnabled;
+      if (autoReindexEnabled && autoReindexIntervalHours != null) {
+        datasourceMap['autoReindexIntervalHours'] = autoReindexIntervalHours;
+      }
+
+      final request = DataSourceRequest(datasources: [datasource]);
+      final requestMap = {
+        'datasources': [datasourceMap],
+      };
+
+      final success = await addDatasourceToKnowledgeUsecase.call(
+        knowledgeId,
+        DataSourceRequest.fromJson(requestMap),
+      );
+
+      if (success) {
+        notifyListeners();
+      }
+
+      return success;
+    } catch (e) {
+      _errorMessage = e.toString();
+      debugPrint("Error adding Confluence datasource to knowledge base: $e");
       notifyListeners();
       return false;
     }
