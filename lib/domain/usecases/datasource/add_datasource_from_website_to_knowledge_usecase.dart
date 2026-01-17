@@ -3,15 +3,12 @@ import 'package:khtn_ai_final_project/data/models/datasource/data_source_request
 import 'package:khtn_ai_final_project/domain/repositories/knowledge_base_repository.dart';
 
 @lazySingleton
-class AddDatasourceFromWebsiteToKnowledgeUsecase {
+class AddDatasourceToKnowledgeUsecase {
   final KnowledgeBaseRepository repository;
 
-  AddDatasourceFromWebsiteToKnowledgeUsecase({required this.repository});
+  AddDatasourceToKnowledgeUsecase({required this.repository});
 
   Future<bool> call(String knowledgeId, DataSourceRequest request) async {
-    return await repository.addDataSourceBaseFromWebSiteToKnowledgeBase(
-      knowledgeId,
-      request,
-    );
+    return await repository.addDataSourceToKnowledgeBase(knowledgeId, request);
   }
 }

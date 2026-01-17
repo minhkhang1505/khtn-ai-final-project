@@ -59,8 +59,6 @@ import '../../domain/usecases/datasource/delete_datasource_from_knowledge_usecas
     as _i69;
 import '../../domain/usecases/datasource/get_datasource_from_knowledge_usecase.dart'
     as _i910;
-import '../../domain/usecases/datasource/import_files_to_knowledge_usecase.dart'
-    as _i337;
 import '../../domain/usecases/datasource/update_datasource_from_knowledge_usecase.dart'
     as _i887;
 import '../../domain/usecases/datasource/upload_multiple_file_usecase.dart'
@@ -110,6 +108,7 @@ import '../../presentation/viewmodels/theme_provider.dart' as _i338;
 import '../network/auth_api_client.dart' as _i752;
 import '../network/bot_api_client.dart' as _i18;
 import '../network/jarvis_api_client.dart' as _i963;
+import '../network/jarvis_api_client_fixed.dart' as _i505;
 import '../network/knowledge_base_api_client.dart' as _i687;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -133,6 +132,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     await gh.lazySingletonAsync<_i963.JarvisApiClient>(
       () => _i963.JarvisApiClient.create(gh<_i929.AuthLocalDataSource>()),
+      preResolve: true,
+    );
+    await gh.lazySingletonAsync<_i505.JarvisApiClient>(
+      () => _i505.JarvisApiClient.create(gh<_i929.AuthLocalDataSource>()),
       preResolve: true,
     );
     await gh.lazySingletonAsync<_i687.KnowledgeBaseApiClient>(
@@ -230,8 +233,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i761.RemovePromptFromFavoriteUsecase>(
       () => _i761.RemovePromptFromFavoriteUsecase(gh<_i364.PromptRepository>()),
     );
-    gh.lazySingleton<_i721.AddDatasourceFromWebsiteToKnowledgeUsecase>(
-      () => _i721.AddDatasourceFromWebsiteToKnowledgeUsecase(
+    gh.lazySingleton<_i721.AddDatasourceToKnowledgeUsecase>(
+      () => _i721.AddDatasourceToKnowledgeUsecase(
         repository: gh<_i618.KnowledgeBaseRepository>(),
       ),
     );
@@ -242,11 +245,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i910.GetDataSourceFromKnowledgeUsecase>(
       () => _i910.GetDataSourceFromKnowledgeUsecase(
-        repository: gh<_i618.KnowledgeBaseRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i337.ImportFilesToKnowledgeUsecase>(
-      () => _i337.ImportFilesToKnowledgeUsecase(
         repository: gh<_i618.KnowledgeBaseRepository>(),
       ),
     );
@@ -277,6 +275,19 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i505.BotRepository>(
       () => _i983.BotRepositoryImpl(gh<_i778.BotRemoteDataSource>()),
+    );
+    gh.factory<_i838.DatasourceViewmodel>(
+      () => _i838.DatasourceViewmodel(
+        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
+        getDataSourceFromKnowledgeUsecase:
+            gh<_i910.GetDataSourceFromKnowledgeUsecase>(),
+        deleteDataSourceFromKnowledgeUsecase:
+            gh<_i69.DeleteDataSourceFromKnowledgeUsecase>(),
+        updateDataSourceFromKnowledgeUsecase:
+            gh<_i887.UpdateDataSourceFromKnowledgeUsecase>(),
+        addDatasourceToKnowledgeUsecase:
+            gh<_i721.AddDatasourceToKnowledgeUsecase>(),
+      ),
     );
     gh.factoryParam<
       _i1032.KnowledgeDetailViewmodel,
@@ -309,21 +320,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i662.UpdatePromptUsecase>(
       () => _i662.UpdatePromptUsecase(repository: gh<_i364.PromptRepository>()),
-    );
-    gh.factory<_i838.DatasourceViewmodel>(
-      () => _i838.DatasourceViewmodel(
-        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
-        getDataSourceFromKnowledgeUsecase:
-            gh<_i910.GetDataSourceFromKnowledgeUsecase>(),
-        deleteDataSourceFromKnowledgeUsecase:
-            gh<_i69.DeleteDataSourceFromKnowledgeUsecase>(),
-        updateDataSourceFromKnowledgeUsecase:
-            gh<_i887.UpdateDataSourceFromKnowledgeUsecase>(),
-        importFilesToKnowledgeUsecase:
-            gh<_i337.ImportFilesToKnowledgeUsecase>(),
-        addDatasourceFromWebsiteToKnowledgeUsecase:
-            gh<_i721.AddDatasourceFromWebsiteToKnowledgeUsecase>(),
-      ),
     );
     gh.lazySingleton<_i212.GetSubscriptionUsecase>(
       () => _i212.GetSubscriptionUsecase(gh<_i64.SubscriptionRepository>()),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class DataSourceItem extends StatelessWidget {
   final DataSourceEntity dataSource;
@@ -110,7 +111,7 @@ class DataSourceItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Updated: $updatedAt',
+                    'Updated: ${_formatDateTime(updatedAt)}',
                     style: TextStyle(
                       fontSize: 12,
                       color: colorScheme.onSurfaceVariant,
@@ -153,6 +154,42 @@ class DataSourceItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatDateTime(String? dateTimeStr) {
+    if (dateTimeStr == null || dateTimeStr.trim().isEmpty) {
+      return 'N/A';
+    }
+
+    try {
+      final dateTime = DateTime.parse(dateTimeStr);
+      final now = DateTime.now();
+      final difference = now.difference(dateTime);
+
+      // If less than 1 minute ago
+      if (difference.inSeconds < 60) {
+        return 'Just now';
+      }
+      // If less than 1 hour ago
+      else if (difference.inMinutes < 60) {
+        return '${difference.inMinutes}m ago';
+      }
+      // If less than 24 hours ago
+      else if (difference.inHours < 24) {
+        return '${difference.inHours}h ago';
+      }
+      // If less than 7 days ago
+      else if (difference.inDays < 7) {
+        return '${difference.inDays}d ago';
+      }
+      // Otherwise, show the full date
+      else {
+        final formatter = DateFormat('MMM dd, yyyy');
+        return formatter.format(dateTime);
+      }
+    } catch (e) {
+      return dateTimeStr;
+    }
   }
 
   String _syncStatusLabel(String? status) {
