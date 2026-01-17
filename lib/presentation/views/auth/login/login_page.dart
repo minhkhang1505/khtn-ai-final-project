@@ -3,7 +3,7 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_mod
 import '../widgets/auth_header.dart';
 import 'widgets/login_form.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:khtn_ai_final_project/core/di/injection.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,16 +30,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleSignIn() async {
+    final viewModel = context.read<AuthViewModel>();
     if (!await _checkInternetConnection()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No internet connection. Please check your network.'),
-        ),
-      );
+      viewModel.setError('No internet connection. Please check your network.');
       return;
     }
-
-    final viewModel = sl<AuthViewModel>();
     final success = await viewModel.login(
       _emailController.text,
       _passwordController.text,
@@ -104,7 +99,6 @@ class _LoginPageState extends State<LoginPage> {
                           onSignIn: _handleSignIn,
                           // onGoogleSignIn: _handleGoogleSignIn,
                           onSignUpTap: _handleSignUp,
-                          loginError: sl<AuthViewModel>(),
                         ),
                       ],
                     ),

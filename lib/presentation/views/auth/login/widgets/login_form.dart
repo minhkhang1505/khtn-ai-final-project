@@ -18,7 +18,6 @@ class LoginForm extends StatefulWidget {
   final VoidCallback onSignIn;
   // final VoidCallback onGoogleSignIn;
   final VoidCallback onSignUpTap;
-  final AuthViewModel loginError;
 
   const LoginForm({
     super.key,
@@ -30,7 +29,6 @@ class LoginForm extends StatefulWidget {
     required this.onSignIn,
     // required this.onGoogleSignIn,
     required this.onSignUpTap,
-    required this.loginError,
   });
 
   @override
@@ -78,7 +76,7 @@ class _LoginFormState extends State<LoginForm> {
             hintText: "John@example.com",
             controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
-            error: widget.loginError.emailError,
+            error: viewModel.emailError,
           ),
           // Password field
           AuthTextField(
@@ -86,7 +84,7 @@ class _LoginFormState extends State<LoginForm> {
             hintText: "Enter your password",
             controller: widget.passwordController,
             obscureText: _obscureText,
-            error: widget.loginError.passwordError ?? widget.loginError.error,
+            error: viewModel.passwordError ?? viewModel.error,
             onSuffixIconPressed: () {
               setState(() {
                 _obscureText = !_obscureText;

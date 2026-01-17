@@ -39,7 +39,17 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool validate(String email, String password, String? confirmPassword, String? fullName) {
+  void setError(String message) {
+    _error = message;
+    notifyListeners();
+  }
+
+  bool validate(
+    String email,
+    String password,
+    String? confirmPassword,
+    String? fullName,
+  ) {
     emailError = null;
     passwordError = null;
     confirmPasswordError = null;
@@ -78,7 +88,10 @@ class AuthViewModel extends ChangeNotifier {
     }
 
     notifyListeners();
-    return emailError == null && passwordError == null && confirmPasswordError == null && fullNameError == null;
+    return emailError == null &&
+        passwordError == null &&
+        confirmPasswordError == null &&
+        fullNameError == null;
   }
 
   Future<bool> login(String email, String password) async {
@@ -121,12 +134,17 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> signUp(String email, String password, String? confirmPassword, String? fullName) async {
+  Future<bool> signUp(
+    String email,
+    String password,
+    String? confirmPassword,
+    String? fullName,
+  ) async {
     clearErrors();
     _isLoading = true;
     notifyListeners();
 
-    if(!validate(email, password, confirmPassword, fullName)) {
+    if (!validate(email, password, confirmPassword, fullName)) {
       _isLoading = false;
       notifyListeners();
       return false;
