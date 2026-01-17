@@ -6,6 +6,7 @@ class ErrorDialogWidget extends StatelessWidget {
   final VoidCallback? onClose;
   final bool showConfirmButton;
   final String confirmText;
+  final String closeText;
   final VoidCallback? onConfirm;
 
   const ErrorDialogWidget({
@@ -15,6 +16,7 @@ class ErrorDialogWidget extends StatelessWidget {
     this.onClose,
     this.showConfirmButton = false,
     this.confirmText = 'Confirm',
+    this.closeText = 'OK',
     this.onConfirm,
   });
 
@@ -25,6 +27,7 @@ class ErrorDialogWidget extends StatelessWidget {
     VoidCallback? onClose,
     bool showConfirmButton = false,
     String confirmText = 'Confirm',
+    String closeText = 'OK',
     VoidCallback? onConfirm,
   }) {
     return showDialog<bool>(
@@ -35,6 +38,7 @@ class ErrorDialogWidget extends StatelessWidget {
         onClose: onClose,
         showConfirmButton: showConfirmButton,
         confirmText: confirmText,
+        closeText: closeText,
         onConfirm: onConfirm,
       ),
     );
@@ -65,7 +69,7 @@ class ErrorDialogWidget extends StatelessWidget {
             Navigator.of(context).pop(false);
             if (onClose != null) onClose!();
           },
-          child: const Text('OK'),
+          child: Text(closeText),
         ),
       ],
     );

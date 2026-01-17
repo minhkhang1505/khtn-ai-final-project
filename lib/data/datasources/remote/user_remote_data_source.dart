@@ -20,7 +20,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<TokenUsageModel> getTokenUsage() async {
-    final response = await client.get('/tokens/usage', data: {});
+    final response = await client.get('/tokens/usage');
     return TokenUsageModel.fromJson(response.data);
   }
 }

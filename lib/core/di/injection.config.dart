@@ -20,6 +20,8 @@ import '../../data/datasources/remote/email_remote_data_source.dart' as _i453;
 import '../../data/datasources/remote/knowledge_base_remote_data_source.dart'
     as _i628;
 import '../../data/datasources/remote/prompt_remote_data_source.dart' as _i928;
+import '../../data/datasources/remote/subscription_remote_data_source.dart'
+    as _i780;
 import '../../data/datasources/remote/user_remote_data_source.dart' as _i41;
 import '../../data/repositories/ai_email_repository_implement.dart' as _i572;
 import '../../data/repositories/auth_repository_implement.dart' as _i979;
@@ -28,6 +30,8 @@ import '../../data/repositories/chat_repository_implement.dart' as _i441;
 import '../../data/repositories/knowledge_base_repository_implement.dart'
     as _i676;
 import '../../data/repositories/prompt_repository_implement.dart' as _i803;
+import '../../data/repositories/subscription_repository_implement.dart'
+    as _i178;
 import '../../data/repositories/user_repository_implement.dart' as _i1063;
 import '../../domain/entities/knowledge_entity.dart' as _i54;
 import '../../domain/entities/prompt_entity.dart' as _i777;
@@ -37,6 +41,7 @@ import '../../domain/repositories/bot_repository.dart' as _i505;
 import '../../domain/repositories/chat_repository.dart' as _i1072;
 import '../../domain/repositories/knowledge_base_repository.dart' as _i618;
 import '../../domain/repositories/prompt_repository.dart' as _i364;
+import '../../domain/repositories/subscription_repository.dart' as _i64;
 import '../../domain/repositories/user_repository.dart' as _i271;
 import '../../domain/usecases/aiemail/ai_email_usecase.dart' as _i95;
 import '../../domain/usecases/aiemail/sugguest_reply_idea_usecase.dart'
@@ -48,6 +53,8 @@ import '../../domain/usecases/auth/refresh_token_usecase.dart' as _i407;
 import '../../domain/usecases/auth/sign_up_usecase.dart' as _i270;
 import '../../domain/usecases/bot/bot_usecase.dart' as _i692;
 import '../../domain/usecases/chat/chat_usecase.dart' as _i423;
+import '../../domain/usecases/datasource/add_datasource_from_website_to_knowledge_usecase.dart'
+    as _i721;
 import '../../domain/usecases/datasource/delete_datasource_from_knowledge_usecase.dart'
     as _i69;
 import '../../domain/usecases/datasource/get_datasource_from_knowledge_usecase.dart'
@@ -68,6 +75,10 @@ import '../../domain/usecases/prompts/get_prompt_usecase.dart' as _i928;
 import '../../domain/usecases/prompts/remove_prompt_from_favorite.dart'
     as _i761;
 import '../../domain/usecases/prompts/udpate_prompt_usecase.dart' as _i662;
+import '../../domain/usecases/subscription/get_subscription_usecase.dart'
+    as _i212;
+import '../../domain/usecases/subscription/get_subscription_used_usecase.dart'
+    as _i640;
 import '../../presentation/viewmodels/agent/agent_view_model.dart' as _i1071;
 import '../../presentation/viewmodels/aiemail/ai_email_viewmodel.dart' as _i998;
 import '../../presentation/viewmodels/auth/auth_view_model.dart' as _i376;
@@ -97,6 +108,7 @@ import '../../presentation/viewmodels/theme_provider.dart' as _i338;
 import '../network/auth_api_client.dart' as _i752;
 import '../network/bot_api_client.dart' as _i18;
 import '../network/jarvis_api_client.dart' as _i963;
+import '../network/jarvis_api_client_fixed.dart' as _i505;
 import '../network/knowledge_base_api_client.dart' as _i687;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -120,6 +132,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     await gh.lazySingletonAsync<_i963.JarvisApiClient>(
       () => _i963.JarvisApiClient.create(gh<_i929.AuthLocalDataSource>()),
+      preResolve: true,
+    );
+    await gh.lazySingletonAsync<_i505.JarvisApiClient>(
+      () => _i505.JarvisApiClient.create(gh<_i929.AuthLocalDataSource>()),
       preResolve: true,
     );
     await gh.lazySingletonAsync<_i687.KnowledgeBaseApiClient>(
@@ -150,10 +166,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i778.BotRemoteDataSource>(
       () => _i778.BotRemoteDataSourceImpl(gh<_i18.BotApiClient>()),
     );
+    gh.lazySingleton<_i780.SubscriptionRemoteDataSource>(
+      () => _i780.SubscriptionRemoteDataSourceImpl(gh<_i963.JarvisApiClient>()),
+    );
     gh.lazySingleton<_i1073.AuthRepository>(
       () => _i979.AuthRepositoryImpl(
         remoteDataSource: gh<_i624.AuthRemoteDataSource>(),
         localDataSource: gh<_i929.AuthLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i64.SubscriptionRepository>(
+      () => _i178.SubscriptionRepositoryImpl(
+        gh<_i780.SubscriptionRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i271.UserRepository>(
@@ -209,6 +233,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i761.RemovePromptFromFavoriteUsecase>(
       () => _i761.RemovePromptFromFavoriteUsecase(gh<_i364.PromptRepository>()),
     );
+    gh.lazySingleton<_i721.AddDatasourceToKnowledgeUsecase>(
+      () => _i721.AddDatasourceToKnowledgeUsecase(
+        repository: gh<_i618.KnowledgeBaseRepository>(),
+      ),
+    );
     gh.lazySingleton<_i69.DeleteDataSourceFromKnowledgeUsecase>(
       () => _i69.DeleteDataSourceFromKnowledgeUsecase(
         repository: gh<_i618.KnowledgeBaseRepository>(),
@@ -247,6 +276,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i505.BotRepository>(
       () => _i983.BotRepositoryImpl(gh<_i778.BotRemoteDataSource>()),
     );
+    gh.factory<_i838.DatasourceViewmodel>(
+      () => _i838.DatasourceViewmodel(
+        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
+        getDataSourceFromKnowledgeUsecase:
+            gh<_i910.GetDataSourceFromKnowledgeUsecase>(),
+        deleteDataSourceFromKnowledgeUsecase:
+            gh<_i69.DeleteDataSourceFromKnowledgeUsecase>(),
+        updateDataSourceFromKnowledgeUsecase:
+            gh<_i887.UpdateDataSourceFromKnowledgeUsecase>(),
+        addDatasourceToKnowledgeUsecase:
+            gh<_i721.AddDatasourceToKnowledgeUsecase>(),
+      ),
+    );
     gh.factoryParam<
       _i1032.KnowledgeDetailViewmodel,
       _i54.KnowledgeEntity,
@@ -279,16 +321,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i662.UpdatePromptUsecase>(
       () => _i662.UpdatePromptUsecase(repository: gh<_i364.PromptRepository>()),
     );
-    gh.factory<_i838.DatasourceViewmodel>(
-      () => _i838.DatasourceViewmodel(
-        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
-        getDataSourceFromKnowledgeUsecase:
-            gh<_i910.GetDataSourceFromKnowledgeUsecase>(),
-        deleteDataSourceFromKnowledgeUsecase:
-            gh<_i69.DeleteDataSourceFromKnowledgeUsecase>(),
-        updateDataSourceFromKnowledgeUsecase:
-            gh<_i887.UpdateDataSourceFromKnowledgeUsecase>(),
-      ),
+    gh.lazySingleton<_i212.GetSubscriptionUsecase>(
+      () => _i212.GetSubscriptionUsecase(gh<_i64.SubscriptionRepository>()),
+    );
+    gh.lazySingleton<_i640.GetSubscriptionUsedUsecase>(
+      () => _i640.GetSubscriptionUsedUsecase(gh<_i64.SubscriptionRepository>()),
     );
     gh.factory<_i731.CreatePromptViewModel>(
       () => _i731.CreatePromptViewModel(
@@ -317,9 +354,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i95.AiEmailUsecase>(
       () => _i95.AiEmailUsecase(repository: gh<_i803.AiEmailRepository>()),
     );
-    gh.factory<_i511.UserViewModel>(
-      () => _i511.UserViewModel(getUserUseCase: gh<_i180.GetUserUseCase>()),
-    );
     gh.factory<_i1046.CreateKnowledgeBaseViewmodel>(
       () => _i1046.CreateKnowledgeBaseViewmodel(
         createKnowledgeUsecase: gh<_i42.CreateKnowledgeUsecase>(),
@@ -347,6 +381,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i514.ChatAppBarViewModel>(
       () => _i514.ChatAppBarViewModel(botUseCase: gh<_i692.BotUseCase>()),
+    );
+    gh.factory<_i511.UserViewModel>(
+      () => _i511.UserViewModel(
+        getUserUseCase: gh<_i180.GetUserUseCase>(),
+        getSubscriptionUsecase: gh<_i212.GetSubscriptionUsecase>(),
+        getSubscriptionUsedUsecase: gh<_i640.GetSubscriptionUsedUsecase>(),
+      ),
     );
     gh.factory<_i959.ChatViewModel>(
       () => _i959.ChatViewModel(

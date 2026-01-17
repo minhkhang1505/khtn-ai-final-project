@@ -207,9 +207,11 @@ class _EditBotPageState extends State<EditBotPage> {
                           ),
                         );
 
-                        if (selectedKnowledgeIds != null && selectedKnowledgeIds.isNotEmpty && mounted) {
+                        if (selectedKnowledgeIds != null &&
+                            selectedKnowledgeIds.isNotEmpty &&
+                            mounted) {
                           final scaffold = ScaffoldMessenger.of(context);
-                          
+
                           // Add all selected knowledge bases
                           for (final knowledgeId in selectedKnowledgeIds) {
                             final success = await editBotViewModel
@@ -248,7 +250,7 @@ class _EditBotPageState extends State<EditBotPage> {
                       isReadOnly: true,
                       fixedModelId: widget.bot.model?.id,
                     ),
-
+                    const SizedBox(height: AppSpacing.cardSpacing),
                     // Action Buttons
                     SaveActionButtonRow(
                       onLeftButtonPress: () {

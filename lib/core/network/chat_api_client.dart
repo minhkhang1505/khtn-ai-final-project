@@ -2,9 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/core/network/token_interceptor.dart';
 import 'package:khtn_ai_final_project/core/network/auth_api_client.dart';
+import 'package:khtn_ai_final_project/core/config/app_config.dart';
 
 class ChatApiClient {
-  static const String baseUrl = 'https://api.jarvis.cx/api/v1/ai-chat/messages';
+  static String get baseUrl => AppConfig.chatApiUrl;
   final AuthLocalDataSource localDataSource;
 
   late final Dio _dio;

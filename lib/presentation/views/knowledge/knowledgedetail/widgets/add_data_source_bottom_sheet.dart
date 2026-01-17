@@ -12,10 +12,12 @@ import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasour
 /// Bottom sheet widget for adding data source
 class AddDataSourceBottomSheet extends StatelessWidget {
   final DatasourceViewmodel datasourceViewModel;
+  final String knowledgeId;
 
   const AddDataSourceBottomSheet({
     super.key,
     required this.datasourceViewModel,
+    required this.knowledgeId,
   });
 
   @override
@@ -90,12 +92,14 @@ class AddDataSourceBottomSheet extends StatelessWidget {
         context: context,
         builder: (context) => ChangeNotifierProvider.value(
           value: datasourceViewModel,
-          child: const AddFileDialog(),
+          child: AddFileDialog(knowledgeId: knowledgeId),
         ),
       );
 
-      if (result != null) {
-        // TODO: Handle file upload with result['file'] and result['prompt']
+      if (result != null && result['success'] == true) {
+        // Files successfully uploaded and imported to knowledge base
+        // Refresh the datasource list
+        await datasourceViewModel.getDataSourceFromKnowledge(knowledgeId);
       }
     } else if (dataSource == DataSourceTypes.drive) {
       // Show Google Drive dialog
@@ -116,12 +120,14 @@ class AddDataSourceBottomSheet extends StatelessWidget {
         context: context,
         builder: (context) => ChangeNotifierProvider.value(
           value: datasourceViewModel,
-          child: const AddUrlDialog(),
+          child: AddUrlDialog(knowledgeId: knowledgeId),
         ),
       );
 
-      if (result != null) {
-        // TODO: Handle URL with result['name'] and result['url']
+      if (result == true) {
+        // URL successfully added to knowledge base
+        // Refresh the datasource list
+        await datasourceViewModel.getDataSourceFromKnowledge(knowledgeId);
       }
     } else if (dataSource == DataSourceTypes.confluence) {
       // Show Confluence dialog
@@ -129,12 +135,12 @@ class AddDataSourceBottomSheet extends StatelessWidget {
         context: context,
         builder: (context) => ChangeNotifierProvider.value(
           value: datasourceViewModel,
-          child: const AddConfluenceDialog(),
+          child: AddConfluenceDialog(knowledgeId: knowledgeId),
         ),
       );
 
-      if (result != null) {
-        // TODO: Handle Confluence with result['name'], result['url'], result['username'], and result['apiToken']
+      if (result == true) {
+        await datasourceViewModel.getDataSourceFromKnowledge(knowledgeId);
       }
     } else if (dataSource == DataSourceTypes.slack) {
       // Show Slack dialog
@@ -142,12 +148,12 @@ class AddDataSourceBottomSheet extends StatelessWidget {
         context: context,
         builder: (context) => ChangeNotifierProvider.value(
           value: datasourceViewModel,
-          child: const AddSlackDialog(),
+          child: AddSlackDialog(knowledgeId: knowledgeId),
         ),
       );
 
-      if (result != null) {
-        // TODO: Handle Slack with result['name'] and result['botToken']
+      if (result == true) {
+        await datasourceViewModel.getDataSourceFromKnowledge(knowledgeId);
       }
     }
   }

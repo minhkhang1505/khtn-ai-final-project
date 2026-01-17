@@ -1,22 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class DataSourceItem extends StatelessWidget {
   final DataSourceEntity dataSource;
-  final String iconPath;
   final VoidCallback onTap;
+  final VoidCallback? onDelete;
 
   const DataSourceItem({
     super.key,
     required this.dataSource,
-    required this.iconPath,
     required this.onTap,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final iconPath = _resolveIconPath(dataSource.type);
+    final updatedAt = (dataSource.updatedAt?.trim().isNotEmpty ?? false)
+        ? dataSource.updatedAt!
+        : dataSource.createdAt;
+    final description = dataSource.description?.trim();
+    final hasDescription = description != null && description.isNotEmpty;
+    final statusLabel = dataSource.isActive ? 'Active' : 'Inactive';
+    final statusColor = dataSource.isActive ? Colors.green : Colors.grey;
+    final syncLabel = _syncStatusLabel(dataSource.syncStatus);
+    final syncColor = _syncStatusColor(dataSource.syncStatus);
+    final syncIcon = _syncStatusIcon(dataSource.syncStatus);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -31,6 +43,7 @@ class DataSourceItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               padding: const EdgeInsets.all(6),
@@ -48,7 +61,7 @@ class DataSourceItem extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 6),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -56,26 +69,197 @@ class DataSourceItem extends StatelessWidget {
                 children: [
                   Text(
                     dataSource.name,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                    ),
                     softWrap: true,
                   ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      _StatusDot(color: statusColor),
+                      const SizedBox(width: 6),
+                      Text(
+                        statusLabel,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: statusColor,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        '•',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Icon(syncIcon, size: 14, color: syncColor),
+                      const SizedBox(width: 6),
+                      Text(
+                        syncLabel,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: syncColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
                   Text(
-                    dataSource.isActive ? 'Active' : 'Inactive',
+                    'Updated: ${_formatDateTime(updatedAt)}',
                     style: TextStyle(
-                      fontSize: 14,
-                      color: dataSource.isActive ? Colors.green : Colors.grey,
+                      fontSize: 12,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  Text(
-                    'Created at: ${dataSource.createdAt}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
+                  if (hasDescription) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      description!,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ],
               ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: onDelete,
+              icon: SvgPicture.asset(
+                'assets/icons/ic_delete.svg',
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  colorScheme.error,
+                  BlendMode.srcIn,
+                ),
+              ),
+              color: colorScheme.error,
+              tooltip: 'Delete',
+              constraints: const BoxConstraints(),
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
             ),
           ],
         ),
       ),
+    );
+  }
+
+  String _formatDateTime(String? dateTimeStr) {
+    if (dateTimeStr == null || dateTimeStr.trim().isEmpty) {
+      return 'N/A';
+    }
+
+    try {
+      final dateTime = DateTime.parse(dateTimeStr);
+      final now = DateTime.now();
+      final difference = now.difference(dateTime);
+
+      // If less than 1 minute ago
+      if (difference.inSeconds < 60) {
+        return 'Just now';
+      }
+      // If less than 1 hour ago
+      else if (difference.inMinutes < 60) {
+        return '${difference.inMinutes}m ago';
+      }
+      // If less than 24 hours ago
+      else if (difference.inHours < 24) {
+        return '${difference.inHours}h ago';
+      }
+      // If less than 7 days ago
+      else if (difference.inDays < 7) {
+        return '${difference.inDays}d ago';
+      }
+      // Otherwise, show the full date
+      else {
+        final formatter = DateFormat('MMM dd, yyyy');
+        return formatter.format(dateTime);
+      }
+    } catch (e) {
+      return dateTimeStr;
+    }
+  }
+
+  String _syncStatusLabel(String? status) {
+    switch (status) {
+      case 'syncing':
+        return 'Syncing';
+      case 'not_synced':
+        return 'Not Synced';
+      case 'synced':
+        return 'Synced';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  Color _syncStatusColor(String? status) {
+    switch (status) {
+      case 'syncing':
+        return Colors.orange;
+      case 'not_synced':
+        return Colors.amber;
+      case 'synced':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  IconData _syncStatusIcon(String? status) {
+    switch (status) {
+      case 'syncing':
+        return Icons.sync;
+      case 'not_synced':
+        return Icons.warning_amber_rounded;
+      case 'synced':
+        return Icons.check_circle_outline;
+      default:
+        return Icons.help_outline;
+    }
+  }
+
+  String _resolveIconPath(String? type) {
+    switch (type) {
+      case 'local_file':
+        return 'assets/icons/ic_file.svg';
+      case 'web':
+        return 'assets/icons/ic_url.svg';
+      case 'google_drive':
+        return 'assets/icons/ic_google_drive.svg';
+      case 'confluence':
+        return 'assets/icons/ic_confluence.svg';
+      case 'slack':
+        return 'assets/icons/ic_slack.svg';
+      default:
+        return 'assets/icons/ic_knowledge.svg';
+    }
+  }
+}
+
+class _StatusDot extends StatelessWidget {
+  final Color color;
+
+  const _StatusDot({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }

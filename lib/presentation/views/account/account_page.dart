@@ -29,6 +29,21 @@ class _AccountPageState extends State<AccountPage> {
       if (userVM.user == null) {
         userVM.loadCurrentUser();
       }
+
+      userVM.getSubscriptionUsege();
+
+      debugPrint('[Khang-subscribe] Calling subscribe...');
+      userVM
+          .subscribe()
+          .then((result) {
+            debugPrint('[Khang-subscribe] Result: $result');
+            debugPrint(
+              '[Khang-subscribe] Subscribe state: ${userVM.subscribeState}',
+            );
+          })
+          .catchError((error) {
+            debugPrint('[Khang-subscribe] Error: $error');
+          });
     });
   }
 
@@ -127,18 +142,9 @@ class _AccountPageState extends State<AccountPage> {
       context: context,
       builder: (context) => UpgradeDialog(
         upgradePlan: proPlan,
-        onUpgradeConfirmed: _onUpgradeConfirmed,
         onDismiss: () => Navigator.pop(context),
       ),
     );
-  }
-
-  void _onUpgradeConfirmed() {
-    // TODO: Implement upgrade logic
-    setState(() {
-      _showUpgradeBanner = false;
-      isProUser = true;
-    });
   }
 
   Future<void> _onLogout() async {

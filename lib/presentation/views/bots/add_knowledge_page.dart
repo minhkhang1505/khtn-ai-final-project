@@ -28,21 +28,27 @@ class _AddKnowledgePageState extends State<AddKnowledgePage> {
   @override
   void initState() {
     super.initState();
-    _loadKnowledges();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _loadKnowledges();
+    });
   }
 
   void _filterKnowledges(String query) {
     setState(() {
       _searchQuery = query.toLowerCase();
       _filteredKnowledges = _knowledges
-          .where((k) =>
-              k.knowledgeName.toLowerCase().contains(_searchQuery) ||
-              k.description.toLowerCase().contains(_searchQuery))
+          .where(
+            (k) =>
+                k.knowledgeName.toLowerCase().contains(_searchQuery) ||
+                k.description.toLowerCase().contains(_searchQuery),
+          )
           .toList();
     });
   }
 
   Future<void> _loadKnowledges() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -51,12 +57,14 @@ class _AddKnowledgePageState extends State<AddKnowledgePage> {
     try {
       await widget.viewModel.getUserKnowledges();
       final data = widget.viewModel.userKnowledges;
+      if (!mounted) return;
       setState(() {
         _knowledges = data;
         _filteredKnowledges = data;
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorMessage = e.toString();
         _isLoading = false;
@@ -101,9 +109,7 @@ class _AddKnowledgePageState extends State<AddKnowledgePage> {
               ),
 
               // Content
-              Expanded(
-                child: _buildContent(colorScheme),
-              ),
+              Expanded(child: _buildContent(colorScheme)),
 
               // Action button
               if (_selectedKnowledgeIds.isNotEmpty)
@@ -113,7 +119,9 @@ class _AddKnowledgePageState extends State<AddKnowledgePage> {
                     onPressed: () {
                       Navigator.of(context).pop(_selectedKnowledgeIds.toList());
                     },
-                    child: Text('Add ${_selectedKnowledgeIds.length} Knowledge'),
+                    child: Text(
+                      'Add ${_selectedKnowledgeIds.length} Knowledge',
+                    ),
                   ),
                 ),
             ],
@@ -125,9 +133,7 @@ class _AddKnowledgePageState extends State<AddKnowledgePage> {
 
   Widget _buildContent(ColorScheme colorScheme) {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_errorMessage != null) {
@@ -137,11 +143,7 @@ class _AddKnowledgePageState extends State<AddKnowledgePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.error_outline,
-                size: 48,
-                color: colorScheme.error,
-              ),
+              Icon(Icons.error_outline, size: 48, color: colorScheme.error),
               const SizedBox(height: 16),
               Text(
                 'Failed to load knowledge',
@@ -183,7 +185,9 @@ class _AddKnowledgePageState extends State<AddKnowledgePage> {
               ),
               const SizedBox(height: 16),
               Text(
-                _searchQuery.isNotEmpty ? 'No results found' : 'No Knowledge Available',
+                _searchQuery.isNotEmpty
+                    ? 'No results found'
+                    : 'No Knowledge Available',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -206,15 +210,17 @@ class _AddKnowledgePageState extends State<AddKnowledgePage> {
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
           child: InkWell(
-            onTap: isAdded ? null : () {
-              setState(() {
-                if (_selectedKnowledgeIds.contains(knowledge.id)) {
-                  _selectedKnowledgeIds.remove(knowledge.id);
-                } else {
-                  _selectedKnowledgeIds.add(knowledge.id);
-                }
-              });
-            },
+            onTap: isAdded
+                ? null
+                : () {
+                    setState(() {
+                      if (_selectedKnowledgeIds.contains(knowledge.id)) {
+                        _selectedKnowledgeIds.remove(knowledge.id);
+                      } else {
+                        _selectedKnowledgeIds.add(knowledge.id);
+                      }
+                    });
+                  },
             borderRadius: BorderRadius.circular(12),
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -223,16 +229,18 @@ class _AddKnowledgePageState extends State<AddKnowledgePage> {
                   color: isAdded
                       ? colorScheme.outlineVariant.withValues(alpha: 80)
                       : (_selectedKnowledgeIds.contains(knowledge.id)
-                          ? colorScheme.primary
-                          : colorScheme.outlineVariant),
-                  width: isAdded ? 1 : (_selectedKnowledgeIds.contains(knowledge.id) ? 2 : 1),
+                            ? colorScheme.primary
+                            : colorScheme.outlineVariant),
+                  width: isAdded
+                      ? 1
+                      : (_selectedKnowledgeIds.contains(knowledge.id) ? 2 : 1),
                 ),
                 borderRadius: BorderRadius.circular(12),
                 color: isAdded
                     ? colorScheme.surfaceContainerLow.withValues(alpha: 80)
                     : (_selectedKnowledgeIds.contains(knowledge.id)
-                        ? colorScheme.primaryContainer.withValues(alpha: 30)
-                        : colorScheme.surfaceContainerLow),
+                          ? colorScheme.primaryContainer.withValues(alpha: 30)
+                          : colorScheme.surfaceContainerLow),
               ),
               child: Row(
                 children: [
