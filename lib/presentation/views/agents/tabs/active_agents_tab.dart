@@ -10,6 +10,7 @@ class ActiveAgentsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final agents = AgentModel.createSampleAgents()
+        .where((agent) => agent.status == 'Active')
         .map(
           (agent) => InkWell(
             borderRadius: AppBorderRadius.medium,
@@ -29,7 +30,7 @@ class ActiveAgentsTab extends StatelessWidget {
       ),
       separatorBuilder: (context, index) =>
           const SizedBox(height: AppSpacing.cardSpacing - 8),
-      itemCount: 10,
+      itemCount: agents.length,
       itemBuilder: (context, index) {
         return agents[index % agents.length];
       },

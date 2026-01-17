@@ -1,6 +1,6 @@
 import 'workflow_step_model.dart';
 
-enum Workflow { emailTriage, dataExtraction }
+enum Workflow { emailTriage, dataExtraction, planning}
 
 extension WorkflowFeature on Workflow {
   String get feature {
@@ -9,6 +9,8 @@ extension WorkflowFeature on Workflow {
         return 'New Email';
       case Workflow.dataExtraction:
         return 'Data Extraction';
+      case Workflow.planning:
+        return 'Task Planning';
     }
   }
 }
@@ -20,6 +22,8 @@ extension WorkflowName on Workflow {
         return 'Email Triage';
       case Workflow.dataExtraction:
         return 'Data Extraction';
+      case Workflow.planning:
+        return 'Task Planning';
     }
   }
 }
@@ -70,6 +74,20 @@ class WorkflowModel {
             WorkflowStepModel(number: 1, title: 'Read Document', subtitle: 'file.read'),
             WorkflowStepModel(number: 2, title: 'Extract Data', subtitle: 'ai.extract'),
             WorkflowStepModel(number: 3, title: 'Save to DB', subtitle: 'data.save'),
+          ],
+        );
+      case Workflow.planning:
+        return WorkflowModel._(
+          workflow: workflow,
+          name: 'Task Planning',
+          description:
+              'Helps users plan and organize their tasks effectively.',
+          feature: 'Task Planning',
+          state: 'Active',
+          steps: const [
+            WorkflowStepModel(number: 1, title: 'Generate plan', subtitle: 'task.plan'),
+            WorkflowStepModel(number: 2, title: 'Generate checklist', subtitle: 'task.checklist'),
+            WorkflowStepModel(number: 3, title: 'Estimate time', subtitle: 'task.estimate'),
           ],
         );
     }
