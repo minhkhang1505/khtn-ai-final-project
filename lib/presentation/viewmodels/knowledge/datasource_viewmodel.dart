@@ -218,6 +218,7 @@ class DatasourceViewmodel extends ChangeNotifier {
     required String name,
     required String token,
     required bool autoReindexEnabled,
+    int? autoReindexIntervalHours,
   }) async {
     try {
       final datasource = Datasource(
@@ -228,6 +229,9 @@ class DatasourceViewmodel extends ChangeNotifier {
 
       final datasourceMap = datasource.toJson();
       datasourceMap['autoReindexEnabled'] = autoReindexEnabled;
+      if (autoReindexEnabled && autoReindexIntervalHours != null) {
+        datasourceMap['autoReindexIntervalHours'] = autoReindexIntervalHours;
+      }
 
       final request = DataSourceRequest(datasources: [datasource]);
       final requestMap = {
@@ -259,6 +263,7 @@ class DatasourceViewmodel extends ChangeNotifier {
     required String token,
     required String url,
     required bool autoReindexEnabled,
+    int? autoReindexIntervalHours,
   }) async {
     try {
       final datasource = Datasource(
@@ -274,6 +279,9 @@ class DatasourceViewmodel extends ChangeNotifier {
 
       final datasourceMap = datasource.toJson();
       datasourceMap['autoReindexEnabled'] = autoReindexEnabled;
+      if (autoReindexEnabled && autoReindexIntervalHours != null) {
+        datasourceMap['autoReindexIntervalHours'] = autoReindexIntervalHours;
+      }
 
       final request = DataSourceRequest(datasources: [datasource]);
       final requestMap = {

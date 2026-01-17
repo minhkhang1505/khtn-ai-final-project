@@ -19,10 +19,21 @@ class _AddSlackDialogState extends State<AddSlackDialog> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureToken = true;
   bool _autoReindexEnabled = false;
+  int _autoReindexIntervalHours = 24;
 
   bool _isLoading = false;
   bool _isSuccess = false;
   String? _errorMessage;
+
+  final List<Map<String, dynamic>> _intervalOptions = [
+    {'label': '30 min', 'hours': 0.5},
+    {'label': '1 hour', 'hours': 1},
+    {'label': '6 hours', 'hours': 6},
+    {'label': '12 hours', 'hours': 12},
+    {'label': '1 day', 'hours': 24},
+    {'label': '3 days', 'hours': 72},
+    {'label': '1 week', 'hours': 168},
+  ];
 
   @override
   void dispose() {
@@ -47,6 +58,9 @@ class _AddSlackDialogState extends State<AddSlackDialog> {
         name: _nameController.text.trim(),
         token: _botTokenController.text.trim(),
         autoReindexEnabled: _autoReindexEnabled,
+        autoReindexIntervalHours: _autoReindexEnabled
+            ? _autoReindexIntervalHours
+            : null,
       );
 
       if (!mounted) return;
@@ -174,27 +188,8 @@ class _AddSlackDialogState extends State<AddSlackDialog> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Auto Reindex switch
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Auto Reindex',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Switch(
-                        value: _autoReindexEnabled,
-                        onChanged: (value) {
-                          setState(() {
-                            _autoReindexEnabled = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                  // Auto-Reindex Section
+                  _buildAutoReindexSection(),
                   const SizedBox(height: 24),
 
                   if (_errorMessage != null)
@@ -288,6 +283,95 @@ class _AddSlackDialogState extends State<AddSlackDialog> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAutoReindexSection() {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Auto Reindex',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Automatically update content periodically',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colorScheme.onSurface.withAlpha(140),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Switch(
+              value: _autoReindexEnabled,
+              onChanged: (value) {
+                setState(() {
+                  _autoReindexEnabled = value;
+                });
+              },
+            ),
+          ],
+        ),
+        if (_autoReindexEnabled) ...[
+          const SizedBox(height: 16),
+          Text(
+            'Update Interval',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: colorScheme.onSurface.withAlpha(200),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 4,
+            runSpacing: 0,
+            children: _intervalOptions.map((option) {
+              final hours = option['hours'] as num;
+              final label = option['label'] as String;
+              final isSelected = _autoReindexIntervalHours == hours;
+
+              return FilterChip(
+                label: Text(label),
+                selected: isSelected,
+                onSelected: (selected) {
+                  if (selected) {
+                    setState(() {
+                      _autoReindexIntervalHours = hours.toInt();
+                    });
+                  }
+                },
+                selectedColor: colorScheme.primaryContainer,
+                checkmarkColor: colorScheme.primary,
+                labelStyle: TextStyle(
+                  fontSize: 12,
+                  color: isSelected
+                      ? colorScheme.onPrimaryContainer
+                      : colorScheme.onSurface,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+              );
+            }).toList(),
+          ),
+        ],
+      ],
     );
   }
 }

@@ -237,6 +237,12 @@ class DataSourceItem extends StatelessWidget {
         return 'assets/icons/ic_file.svg';
       case 'web':
         return 'assets/icons/ic_url.svg';
+      case 'google_drive':
+        return 'assets/icons/ic_google_drive.svg';
+      case 'confluence':
+        return 'assets/icons/ic_confluence.svg';
+      case 'slack':
+        return 'assets/icons/ic_slack.svg';
       default:
         return 'assets/icons/ic_knowledge.svg';
     }
