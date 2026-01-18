@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/categories.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/custom_app_bar.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/empty_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/failure_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/all_prompts_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/categories_tab.dart';

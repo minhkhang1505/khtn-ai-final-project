@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/custom_app_bar.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/agent/agent_view_model.dart';
 
 import 'tabs/workflows_tab.dart';

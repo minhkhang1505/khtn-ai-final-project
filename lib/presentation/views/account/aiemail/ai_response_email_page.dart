@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/domain/entities/email_response_entity.dart';
 import 'package:khtn_ai_final_project/domain/entities/suggest_reply_idea_response_entity.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/loading_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/aiemail/ai_email_viewmodel.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_tab_bar.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/custom_tab_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/aiemail/widgets/ai_response_email_tab.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/aiemail/widgets/ai_suggest_reply_tab.dart';
 

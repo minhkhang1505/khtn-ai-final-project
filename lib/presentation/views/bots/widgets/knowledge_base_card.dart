@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/knowledge_model.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/expanded_button.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/expanded_button.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_item.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/edit_bot_view_model.dart';

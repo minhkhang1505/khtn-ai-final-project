@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/ai_model_option_menu.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/ai_model_option_menu.dart';
 
 class AiModelCard extends StatelessWidget {
   const AiModelCard({

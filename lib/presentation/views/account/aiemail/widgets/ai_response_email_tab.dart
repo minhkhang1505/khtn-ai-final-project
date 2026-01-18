@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/email_request_entity.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_text_form_field.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/custom_text_form_field.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/save_action_button_row.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/aiemail/ai_email_viewmodel.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 

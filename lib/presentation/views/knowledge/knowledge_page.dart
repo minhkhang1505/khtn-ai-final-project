@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/knowledge_entity.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_app_bar.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/custom_app_bar.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/empty_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/error_dialog_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/failure_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/knowledge_base_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_filter.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_item.dart';

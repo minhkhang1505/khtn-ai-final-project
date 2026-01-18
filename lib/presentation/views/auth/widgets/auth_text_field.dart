@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_text_form_field.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/custom_text_form_field.dart';
 
 class AuthTextField extends StatelessWidget {
   final String label;
