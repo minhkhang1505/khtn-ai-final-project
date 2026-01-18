@@ -9,7 +9,13 @@ class BotList extends StatelessWidget {
   final ValueChanged<String>? onFavoriteToggle;
   final Future<void> Function(BotModel)? onEdit;
   final List<BotModel> bots;
-  const BotList({super.key, required this.bots, this.onTap, this.onFavoriteToggle, this.onEdit});
+  const BotList({
+    super.key,
+    required this.bots,
+    this.onTap,
+    this.onFavoriteToggle,
+    this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +28,7 @@ class BotList extends StatelessWidget {
             right: AppSpacing.horizontal - 4,
             bottom: index == bots.length - 1
                 ? AppSpacing.vertical
-                : AppSpacing.cardSpacing - 8,
+                : AppSpacing.cardSpacing,
           ),
           child: InkWell(
             borderRadius: AppBorderRadius.medium,
