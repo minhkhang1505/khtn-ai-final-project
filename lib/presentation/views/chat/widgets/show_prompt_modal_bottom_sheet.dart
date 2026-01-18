@@ -335,6 +335,7 @@ class _PromptModalContentState extends State<_PromptModalContent>
                 viewModel.addPromptToFavorite(prompt.id);
               }
             },
+            onEditTap: () => _openPromptDetail(prompt),
           );
         },
       ),
@@ -397,7 +398,8 @@ class _PromptModalContentState extends State<_PromptModalContent>
   }
 
   void _handleItemTap(BuildContext context, PromptEntity prompt) {
-    _openPromptDetail(prompt);
+    widget.chatViewModel.setInputMessage(prompt.content);
+    Navigator.pop(context);
   }
 
   Future<void> _openPromptDetail(PromptEntity prompt) async {

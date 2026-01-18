@@ -7,12 +7,14 @@ class PromptItem extends StatelessWidget {
   final PromptEntity prompt;
   final VoidCallback? onFavoriteTap;
   final VoidCallback onTap;
+  final VoidCallback? onEditTap;
 
   const PromptItem({
     super.key,
     required this.prompt,
     this.onFavoriteTap,
     required this.onTap,
+    this.onEditTap,
   });
 
   @override
@@ -133,13 +135,15 @@ class PromptItem extends StatelessWidget {
                   ),
                   Spacer(),
                   IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/prompts/details',
-                        arguments: prompt,
-                      );
-                    },
+                    onPressed:
+                        onEditTap ??
+                        () {
+                          Navigator.pushNamed(
+                            context,
+                            '/prompts/details',
+                            arguments: prompt,
+                          );
+                        },
                     icon: SvgPicture.asset(
                       'assets/icons/ic_edit.svg',
                       width: 24,
