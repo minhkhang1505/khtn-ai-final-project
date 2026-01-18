@@ -2,23 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 import 'package:khtn_ai_final_project/data/models/user_models.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth/user_view_model.dart';
+import 'package:provider/provider.dart';
 
 /// Section displaying current subscription plan
 class SubscriptionSection extends StatelessWidget {
   final SubscriptionPlan currentPlan;
   final VoidCallback? onUpgradePressed;
-  final bool isProUser;
+  bool isProUser;
 
-  const SubscriptionSection({
+  SubscriptionSection({
     super.key,
     required this.currentPlan,
     this.onUpgradePressed,
-    required this.isProUser,
+    this.isProUser = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final userVM = context.watch<UserViewModel>();
+    final subscription = userVM.subscription;
+    final subscriptionState = userVM.subscriptionState;
+
+    if (subscription != null && subscription.name != "basic") isProUser = true;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -42,7 +49,15 @@ class SubscriptionSection extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           const SizedBox(height: 16),
-          if (isProUser)
+          // Display subscription info from API if available
+          if (subscriptionState == UserViewState.loading)
+            const SizedBox(
+              height: 80,
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (subscription != null)
+            _SubscriptionTokensInfo(subscription: subscription)
+          else if (isProUser)
             ProPlanInfo(plan: currentPlan)
           else
             _CurrentPlanInfo(plan: currentPlan),
@@ -180,6 +195,91 @@ class _CurrentPlanInfo extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SubscriptionTokensInfo extends StatelessWidget {
+  final subscription;
+
+  const _SubscriptionTokensInfo({required this.subscription});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          subscription.name ?? "Free Plan",
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 12),
+        // Daily Tokens
+        _TokenCard(
+          label: "Daily Tokens",
+          value: subscription.dailyTokens.toString(),
+          colorScheme: colorScheme,
+        ),
+        const SizedBox(height: 8),
+        // Monthly Tokens
+        _TokenCard(
+          label: "Monthly Tokens",
+          value: subscription.monthlyTokens.toString(),
+          colorScheme: colorScheme,
+        ),
+        const SizedBox(height: 8),
+        // Annually Tokens
+        _TokenCard(
+          label: "Annually Tokens",
+          value: subscription.annuallyTokens.toString(),
+          colorScheme: colorScheme,
+        ),
+      ],
+    );
+  }
+}
+
+class _TokenCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final ColorScheme colorScheme;
+
+  const _TokenCard({
+    required this.label,
+    required this.value,
+    required this.colorScheme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withAlpha(100),
+        borderRadius: AppBorderRadius.small,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: colorScheme.onSurface.withAlpha(180),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -11,9 +11,11 @@ class WorkflowsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.vertical,
-        horizontal: AppSpacing.horizontal,
+      padding: const EdgeInsets.only(
+        top: AppSpacing.vertical,
+        left: AppSpacing.horizontal,
+        right: AppSpacing.horizontal,
+        bottom: 100,
       ),
       child: Center(
         child: Column(
@@ -23,7 +25,7 @@ class WorkflowsTab extends StatelessWidget {
             const SizedBox(height: AppSpacing.cardSpacing),
             WorkflowsCard(workflowType: Workflow.dataExtraction),
             const SizedBox(height: AppSpacing.cardSpacing),
-            WorkflowsCard(workflowType: Workflow.dataExtraction),
+            WorkflowsCard(workflowType: Workflow.planning),
           ],
         ),
       ),

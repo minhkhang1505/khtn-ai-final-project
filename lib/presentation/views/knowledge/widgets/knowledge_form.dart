@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
-import 'package:khtn_ai_final_project/presentation/views/knowledge/constants/knowledge_constants.dart';
+import 'package:khtn_ai_final_project/domain/entities/datasource_type.dart';
+import 'package:khtn_ai_final_project/core/constants/knowledge_constants.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/error_dialog_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/save_action_button_row.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/file_input_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form_card.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_section_header.dart';
@@ -13,14 +14,13 @@ class KnowledgeForm extends StatefulWidget {
   final String? initialSourceName;
   final String? initialSourceDescription;
   final String? initialUrl;
-  final KnowledgeSourceType? initialSourceType;
+  final DataSourceType? initialSourceType;
   final bool isEditMode;
   final VoidCallback? onEditPressed;
-  final void Function({
+  final Future<void> Function()? onDelete;
+  final Future<void> Function({
     required String sourceName,
     required String sourceDescription,
-    required String url,
-    required KnowledgeSourceType sourceType,
   })?
   onSave;
 
@@ -33,6 +33,7 @@ class KnowledgeForm extends StatefulWidget {
     this.isEditMode = false,
     this.onEditPressed,
     this.onSave,
+    this.onDelete,
   });
 
   @override
@@ -45,8 +46,8 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
   late final TextEditingController _sourceNameController;
   late final TextEditingController _sourceDescriptionController;
   late final TextEditingController _urlController;
-  late KnowledgeSourceType _selectedSourceType;
-  late KnowledgeSourceType _initialSourceType;
+  late DataSourceType _selectedSourceType;
+  late DataSourceType _initialSourceType;
   late String _initialSourceName;
   late String _initialSourceDescription;
   late String _initialUrl;
@@ -55,8 +56,7 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
   @override
   void initState() {
     super.initState();
-    _selectedSourceType =
-        widget.initialSourceType ?? KnowledgeSourceTypes.all[0];
+    _selectedSourceType = widget.initialSourceType ?? DataSourceTypes.all[0];
     _initialSourceType = _selectedSourceType;
     _initialSourceName = widget.initialSourceName ?? '';
     _initialSourceDescription = widget.initialSourceDescription ?? '';
@@ -79,6 +79,161 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
     _urlController.addListener(_checkForChanges);
   }
 
+  @override
+  void dispose() {
+    _sourceTypeController.dispose();
+    _sourceNameController.dispose();
+    _sourceDescriptionController.dispose();
+    _urlController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          KnowledgeFormCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                KnowledgeSectionHeader(
+                  title: KnowledgeConstants.addDataSourceTitle,
+                  onActionPressed: widget.onEditPressed,
+                  actionIconPath: widget.onEditPressed != null
+                      ? 'assets/icons/ic_edit.svg'
+                      : null,
+                ),
+
+                const SizedBox(height: 16),
+
+                LabeledTextField(
+                  label: KnowledgeConstants.sourceNameLabel,
+                  hintText: KnowledgeConstants.sourceNameHint,
+                  controller: _sourceNameController,
+                  validator: _validateSourceName,
+                  readOnly: !widget.isEditMode,
+                ),
+                const SizedBox(height: 16),
+                LabeledTextField(
+                  label: KnowledgeConstants.sourceDescriptionLabel,
+                  hintText: KnowledgeConstants.sourceDescriptionHint,
+                  controller: _sourceDescriptionController,
+                  minLines: 4,
+                  maxLines: null,
+                  readOnly: !widget.isEditMode,
+                ),
+              ],
+            ),
+          ),
+          ...(widget.onDelete != null
+              ? [
+                  const SizedBox(height: 12),
+
+                  KnowledgeFormCard(
+                    child: Column(
+                      children: [
+                        KnowledgeSourceDropdown(
+                          controller: _sourceTypeController,
+                          initialSelection: _selectedSourceType,
+                          enabled: widget.isEditMode,
+                          onSelected: (DataSourceType? source) {
+                            if (source != null) {
+                              setState(() {
+                                _selectedSourceType = source;
+                                _sourceTypeController.text = source.name;
+                              });
+
+                              _checkForChanges();
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        LabeledTextField(
+                          label: KnowledgeConstants.urlOrPathLabel,
+                          hintText: KnowledgeConstants.urlOrPathHint,
+                          controller: _urlController,
+                          validator: _validateUrl,
+                          keyboardType: TextInputType.url,
+                          readOnly: !widget.isEditMode,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (_selectedSourceType == DataSourceTypes.file)
+                    FileInputSection(
+                      onFilesPicked: (files) {
+                        if (files.isNotEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                files.length == 1
+                                    ? 'Selected: ${files.first.name}'
+                                    : 'Selected ${files.length} files',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  if (_selectedSourceType == DataSourceTypes.file)
+                    const SizedBox(height: 12),
+                ]
+              : [const SizedBox(height: 12)]),
+          SaveActionButtonRow(
+            onRightButtonPress: (widget.isEditMode && _hasChanges)
+                ? _handleSave
+                : null,
+            onLeftButtonPress: widget.onDelete != null
+                ? () {
+                    ErrorDialogWidget.show(
+                      context,
+                      title: 'Delete Data Source',
+                      errorMessage:
+                          'Are you sure you want to delete this data source?',
+                      showConfirmButton: true,
+                      confirmText: 'Delete',
+                      onConfirm: _handleDelete,
+                      onClose: () => Navigator.pop(context),
+                    );
+                  }
+                : null,
+            isDisabled: (widget.isEditMode && _hasChanges),
+            leftButtonLabel: "Delete",
+            rightButtonLabel: "Save",
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              // ElevatedButton(
+              //   onPressed: (widget.isEditMode && _hasChanges)
+              //       ? _handleSave
+              //       : null,
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: colorScheme.primary,
+              //     disabledBackgroundColor: colorScheme.surfaceContainerHighest,
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: AppBorderRadius.medium,
+              //     ),
+              //   ),
+              //   child: Text(
+              //     KnowledgeConstants.saveButton,
+              //     style: TextStyle(
+              //       color: (widget.isEditMode && _hasChanges)
+              //           ? colorScheme.onPrimary
+              //           : colorScheme.onSurfaceVariant,
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   void _checkForChanges() {
     final hasChanges =
         _sourceNameController.text != _initialSourceName ||
@@ -93,23 +248,14 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
     }
   }
 
-  @override
-  void dispose() {
-    _sourceTypeController.dispose();
-    _sourceNameController.dispose();
-    _sourceDescriptionController.dispose();
-    _urlController.dispose();
-    super.dispose();
-  }
-
-  void _handleSave() {
+  Future<void> _handleSave() async {
     if (_formKey.currentState?.validate() ?? false) {
-      widget.onSave?.call(
-        sourceName: _sourceNameController.text,
-        sourceDescription: _sourceDescriptionController.text,
-        url: _urlController.text,
-        sourceType: _selectedSourceType,
-      );
+      if (widget.onSave != null) {
+        await widget.onSave!(
+          sourceName: _sourceNameController.text,
+          sourceDescription: _sourceDescriptionController.text,
+        );
+      }
     }
   }
 
@@ -132,109 +278,9 @@ class _KnowledgeFormState extends State<KnowledgeForm> {
     return null;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          KnowledgeFormCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                KnowledgeSectionHeader(
-                  title: KnowledgeConstants.addDataSourceTitle,
-                  onActionPressed: widget.onEditPressed,
-                  actionIconPath: widget.onEditPressed != null
-                      ? 'assets/icons/ic_edit.svg'
-                      : null,
-                ),
-                const SizedBox(height: 24),
-                KnowledgeSourceDropdown(
-                  controller: _sourceTypeController,
-                  initialSelection: _selectedSourceType,
-                  enabled: widget.isEditMode,
-                  onSelected: (KnowledgeSourceType? source) {
-                    if (source != null) {
-                      setState(() {
-                        _selectedSourceType = source;
-                        _sourceTypeController.text = source.name;
-                      });
-
-                      _checkForChanges();
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                LabeledTextField(
-                  label: KnowledgeConstants.sourceNameLabel,
-                  hintText: KnowledgeConstants.sourceNameHint,
-                  controller: _sourceNameController,
-                  validator: _validateSourceName,
-                  readOnly: !widget.isEditMode,
-                ),
-                const SizedBox(height: 16),
-                LabeledTextField(
-                  label: KnowledgeConstants.sourceDescriptionLabel,
-                  hintText: KnowledgeConstants.sourceDescriptionHint,
-                  controller: _sourceDescriptionController,
-                  minLines: 4,
-                  maxLines: null,
-                  readOnly: !widget.isEditMode,
-                ),
-                const SizedBox(height: 16),
-                LabeledTextField(
-                  label: KnowledgeConstants.urlOrPathLabel,
-                  hintText: KnowledgeConstants.urlOrPathHint,
-                  controller: _urlController,
-                  validator: _validateUrl,
-                  keyboardType: TextInputType.url,
-                  readOnly: !widget.isEditMode,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          if (_selectedSourceType == KnowledgeSourceTypes.file)
-            FileInputSection(
-              onFilePicked: (file) {
-                if (file != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Đã chọn file: ${file.name}')),
-                  );
-                }
-              },
-            ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                onPressed: (widget.isEditMode && _hasChanges)
-                    ? _handleSave
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.primary,
-                  disabledBackgroundColor: colorScheme.surfaceContainerHighest,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.medium,
-                  ),
-                ),
-                child: Text(
-                  KnowledgeConstants.saveButton,
-                  style: TextStyle(
-                    color: (widget.isEditMode && _hasChanges)
-                        ? colorScheme.onPrimary
-                        : colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+  Future<void> _handleDelete() async {
+    if (widget.onDelete != null) {
+      await widget.onDelete!();
+    }
   }
 }

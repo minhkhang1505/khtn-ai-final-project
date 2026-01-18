@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import '../widgets/auth_header.dart';
 import 'widgets/register_form.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -36,34 +37,51 @@ class _RegisterPageState extends State<RegisterPage>
   }
 
   void _handleCreateAccount() async {
-
     if (!await _checkInternetConnection()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('No internet connection. Please check your network.'),
         ),
       );
-      return; 
+      return;
     }
 
-    final viewModel = context.read<AuthViewModel>();
+    final viewModel = sl<AuthViewModel>();
     final success = await viewModel.signUp(
       _emailController.text,
       _passwordController.text,
       _confirmPasswordController.text,
       _fullNameController.text,
     );
+
+    if (!mounted) return;
+
     if (success) {
-      Navigator.pushNamed(context, '/main');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Account created successfully! Please sign in.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pushNamed(context, '/auth/login');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            viewModel.error ?? 'Registration failed. Please try again.',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
-  void _handleGoogleSignUp() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Google sign up is not implemented yet.")),
-    );
-    // TODO: Implement Google sign up logic
-  }
+  // void _handleGoogleSignUp() {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(content: Text("Google sign up is not implemented yet.")),
+  //   );
+  //   // TODO: Implement Google sign up logic
+  // }
 
   void _handleSignIn() {
     Navigator.pushNamed(context, '/auth/login');
@@ -106,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage>
                             });
                           },
                           onCreateAccount: _handleCreateAccount,
-                          onGoogleSignUp: _handleGoogleSignUp,
+                          // onGoogleSignUp: _handleGoogleSignUp,
                           onSignInTap: _handleSignIn,
                           error: context.watch<AuthViewModel>(),
                         ),

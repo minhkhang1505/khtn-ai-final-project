@@ -16,7 +16,16 @@ class AllAgentsTab extends StatelessWidget {
           (agent) => InkWell(
             borderRadius: AppBorderRadius.medium,
             onTap: () {
-              Navigator.pushNamed(context, '/agents/edit', arguments: agent);
+              if (agent.status == 'Active') {
+                Navigator.pushNamed(context, '/agents/chat', arguments: agent);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('This agent do not support now'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
             },
             child: AgentCard(agent: agent),
           ),
@@ -24,9 +33,11 @@ class AllAgentsTab extends StatelessWidget {
         .toList();
 
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.vertical - 4,
-        horizontal: AppSpacing.horizontal - 4,
+      padding: const EdgeInsets.only(
+        top: AppSpacing.vertical - 4,
+        left: AppSpacing.horizontal - 4,
+        right: AppSpacing.horizontal - 4,
+        bottom: 96,
       ),
       separatorBuilder: (context, index) =>
           const SizedBox(height: AppSpacing.cardSpacing - 8),

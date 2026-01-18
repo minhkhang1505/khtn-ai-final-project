@@ -1,6 +1,5 @@
 // Response model for prompts
 import 'package:khtn_ai_final_project/core/constants/categories.dart';
-import 'package:khtn_ai_final_project/domain/entities/category.dart';
 
 class PromptPaggingResponse {
   bool hasNext;

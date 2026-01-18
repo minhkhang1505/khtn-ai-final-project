@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/empty_widget.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +39,7 @@ class FavoritePromptsTab extends StatelessWidget {
       onRefresh: () => _onRefresh(context),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
         children: [
           for (var prompt in favoritePrompts)
             PromptItem(

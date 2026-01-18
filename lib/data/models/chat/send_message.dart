@@ -14,6 +14,7 @@ class SendMessageRequestModel {
     required this.files, 
     required this.assistant, 
     required this.metadata, 
+    this.responseMode,
   });
 
   factory SendMessageRequestModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class SendMessageRequestModel {
       files: List<String>.from(json['files']),
       metadata: MetadataModel.fromJson(json['metadata']),
       assistant: AssistantModel.fromJson(json['assistant']),
+      responseMode: json['responseMode'],
     );
   }
 
@@ -31,6 +33,7 @@ class SendMessageRequestModel {
       'files': files,
       'metadata': metadata.toJson(),
       'assistant': assistant.toJson(),
+      if (responseMode != null) 'responseMode': responseMode,
     };
   }
 }

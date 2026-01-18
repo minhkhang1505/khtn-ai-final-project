@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/views/chat/widgets/message_input.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_app_bar_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_drawer_view_model.dart';
 import 'package:provider/provider.dart';
 
+import 'package:khtn_ai_final_project/presentation/views/chat/widgets/message_input.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/message_popup.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/loading_widget.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
+
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 
 import 'widgets/chat_app_bar.dart';
 import 'widgets/chat_drawer.dart';
 import 'widgets/message_list.dart';
 import 'widgets/usage_button.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/message_popup.dart';
+import 'widgets/empty_widget.dart';
 
 /// Chat page - Main chat interface
 class ChatPage extends StatelessWidget {
@@ -18,38 +24,61 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final vm = context.read<ChatViewModel>();
+    // Listen to ChatViewModel changes so UI updates when conversation changes
+    final chatViewModel = context.watch<ChatViewModel>();
+    final chatAppBarViewModel = sl<ChatAppBarViewModel>();
+    final chatDrawerViewModel = sl<ChatDrawerViewModel>();
+
     return Scaffold(
-      appBar: ChatAppBar(onAddNewChat: () => vm.newChat()),
-      drawer: ChatDrawer(),
+      appBar: ChatAppBar(
+        onAddNewChat: () {
+          chatViewModel.newChat();
+          chatAppBarViewModel.newChat();
+          // Reset conversation list loading state
+          chatDrawerViewModel.isLoaded = false;
+        },
+      ),
+      drawer: ChatDrawer(
+        onDeleted: (String conversationId) {
+          // If the deleted conversation is the current one, open new chat
+          if (chatViewModel.conversationId == conversationId) {
+            chatViewModel.newChat();
+            chatAppBarViewModel.newChat();
+          }
+        },
+        onAddNewChat: () {
+          chatViewModel.newChat();
+          chatAppBarViewModel.newChat();
+        },
+        onConversationSelected: (conversation) {
+            // Open chat with this conversation
+            chatViewModel.openChat(conversation);
+            // Set the selected model in model selector`
+            chatAppBarViewModel.openChat(conversation);
+        },
+      ),
+      onDrawerChanged: (isOpened) {
+        if (isOpened) {
+          // Refresh conversations when drawer is opened
+          if (!chatDrawerViewModel.isLoaded) {
+            chatDrawerViewModel.getConversations();
+          }
+        }
+      },
+
       body: Column(
         children: [
           // Message list or welcome message
           Expanded(
-            child: vm.conversationId.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Hello! Start a new conversation🎉',
-                        style: TextStyle(
-                          fontSize: 30,
-                          color: colorScheme.primary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
+            child: chatViewModel.conversationId.isEmpty
+                ? const EmptyWidget()
                 : // Message list
-                  MessageList(scrollController: vm.scrollController),
+                  MessageList(scrollController: chatViewModel.scrollController),
           ),
 
           // Loading indicator
-          if (context.watch<ChatViewModel>().isLoading)
-            const Padding(
-              padding: EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
-            ),
+          if (context.watch<ChatViewModel>().isBusy)
+            const LoadingIndicatorWidget(),
 
           // Error message
           if (context.watch<ChatViewModel>().error != null)
@@ -65,8 +94,8 @@ class ChatPage extends StatelessWidget {
                 ),
                 child: InkWell(
                   onTap: () {
-                    if (vm.error != null && vm.error!.isNotEmpty) {
-                      MessagePopup.show(context, message: vm.error!);
+                    if (chatViewModel.error != null && chatViewModel.error!.isNotEmpty) {
+                      MessagePopup.show(context, message: chatViewModel.error!, title: 'Error');
                     }
                   },
                   child: Row(
@@ -79,7 +108,8 @@ class ChatPage extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          vm.error ?? '',
+                          //chatViewModel.error ?? '',
+                          "Sorry, our servers can't handle your message right now. Please try again later. Thanks!",
                           style: TextStyle(
                             color: colorScheme.onErrorContainer,
                             fontWeight: FontWeight.w500,
@@ -95,7 +125,7 @@ class ChatPage extends StatelessWidget {
                           size: 18,
                           color: colorScheme.onErrorContainer,
                         ),
-                        onPressed: () => vm.clearError(),
+                        onPressed: () => chatViewModel.clearError(),
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                       ),
@@ -120,11 +150,14 @@ class ChatPage extends StatelessWidget {
             child: Padding(
               padding: ResponsiveHelper.horizontalPadding(context),
               child: MessageInput(
-                controller: vm.inputController,
-                onSend: (message) {
-                  vm.clearError();
-                  vm.sendMessage(message);
-                  vm.clearFiles();
+                onSend: (message, files) {
+                  final assistant = chatAppBarViewModel.selectedAssistant;
+
+                  if (assistant.model == 'agentic') {
+                    chatViewModel.sendMessage(message, assistant, files);
+                  } else {
+                    chatViewModel.chatWithBot(message, assistant, files);
+                  }
                 },
               ),
             ),

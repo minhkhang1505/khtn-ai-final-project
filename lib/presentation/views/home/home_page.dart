@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/chat/chat_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/bots/bots_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/agents/agents_page.dart';
+import 'package:khtn_ai_final_project/presentation/views/home/widgets/ios_bottom_nav_bar.dart';
+import 'package:khtn_ai_final_project/presentation/views/home/widgets/non_ios_bottom_nav_bar.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/knowledge_page.dart';
-import 'package:khtn_ai_final_project/presentation/views/prompts/prompts_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/account/account_page.dart';
+import 'package:provider/provider.dart';
 
-/// Main page with bottom navigation bar
-///
-/// Contains 6 tabs: Chat, Bots, Agents, Knowledge, Prompts, Account
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String? promptContent;
+
+  const HomePage({super.key, this.promptContent});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,15 +21,28 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  // List of pages corresponding to bottom nav items
-  // final List<Widget> _pages = const <Widget>[
-  //   ChatPage(),
-  //   BotsPage(),
-  //   AgentsPage(),
-  //   KnowledgePage(),
-  //   PromptsPage(),
-  //   AccountPage(),
-  // ];
+  final List<Map<String, String>> _navItems = [
+    {'icon': 'assets/icons/ic_chat.svg', 'label': 'Chat'},
+    {'icon': 'assets/icons/ic_bot.svg', 'label': 'Bots'},
+    {'icon': 'assets/icons/ic_agent.svg', 'label': 'Agents'},
+    {'icon': 'assets/icons/ic_knowledge.svg', 'label': 'Knowledge'},
+    {'icon': 'assets/icons/ic_account.svg', 'label': 'Account'},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Handle prompt content from arguments if navigating fresh (not from pop)
+    if (widget.promptContent != null && widget.promptContent!.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final chatViewModel = context.read<ChatViewModel>();
+        chatViewModel.setInputMessage(widget.promptContent!);
+        setState(() {
+          _selectedIndex = 0;
+        });
+      });
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -36,21 +50,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget _buildIcon(String assetPath, bool isSelected) {
-    return SvgPicture.asset(
-      assetPath,
-      width: 24,
-      height: 24,
-      colorFilter: ColorFilter.mode(
-        isSelected ? Theme.of(context).colorScheme.primary : Colors.grey,
-        BlendMode.srcIn,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final isIos = Theme.of(context).platform == TargetPlatform.iOS;
+
     return Scaffold(
+      extendBody: true,
       body: IndexedStack(
         index: _selectedIndex,
         children: const [
@@ -58,51 +63,20 @@ class _HomePageState extends State<HomePage> {
           BotsPage(),
           AgentsPage(),
           KnowledgePage(),
-          PromptsPage(),
           AccountPage(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // Fixed type for more than 3 items
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: _buildIcon('assets/icons/ic_chat.svg', false),
-            activeIcon: _buildIcon('assets/icons/ic_chat.svg', true),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: _buildIcon('assets/icons/ic_bot.svg', false),
-            activeIcon: _buildIcon('assets/icons/ic_bot.svg', true),
-            label: 'Bots',
-          ),
-          BottomNavigationBarItem(
-            icon: _buildIcon('assets/icons/ic_agent.svg', false),
-            activeIcon: _buildIcon('assets/icons/ic_agent.svg', true),
-            label: 'Agents',
-          ),
-          BottomNavigationBarItem(
-            icon: _buildIcon('assets/icons/ic_knowledge.svg', false),
-            activeIcon: _buildIcon('assets/icons/ic_knowledge.svg', true),
-            label: 'Knowledge',
-          ),
-          BottomNavigationBarItem(
-            icon: _buildIcon('assets/icons/ic_prompt.svg', false),
-            activeIcon: _buildIcon('assets/icons/ic_prompt.svg', true),
-            label: 'Prompts',
-          ),
-          BottomNavigationBarItem(
-            icon: _buildIcon('assets/icons/ic_account.svg', false),
-            activeIcon: _buildIcon('assets/icons/ic_account.svg', true),
-            label: 'Account',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.grey,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: isIos
+          ? IosBottomNavBar(
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              navItems: _navItems,
+            )
+          : NonIosBottomNavBar(
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              navItems: _navItems,
+            ),
     );
   }
 }

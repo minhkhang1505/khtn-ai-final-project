@@ -29,25 +29,33 @@ class AgentModel {
     return [
       AgentModel(
         id: '1',
-        name: 'Email Assistant',
-        description: 'Handles email workflows automatically.',
-        workflows: const [Workflow.emailTriage],
+        name: 'Planning Bot',
+        description: 'Assists customers to plan their tasks.',
+        workflows: const [Workflow.planning],
         status: 'Active',
       ),
       AgentModel(
         id: '2',
+        name: 'Email Assistant',
+        description: 'Handles email workflows automatically.',
+        workflows: const [Workflow.emailTriage],
+        status: 'Inactive',
+      ),
+      AgentModel(
+        id: '3',
         name: 'Data Extractor',
         description: 'Extracts data from documents.',
         workflows: const [Workflow.dataExtraction],
         status: 'Inactive',
       ),
       AgentModel(
-        id: '3',
+        id: '4',
         name: 'Customer Support Bot',
         description: 'Assists customers with common inquiries.',
         workflows: const [Workflow.emailTriage, Workflow.dataExtraction],
-        status: 'Active',
+        status: 'Inactive',
       ),
+      
     ];
   }
 }

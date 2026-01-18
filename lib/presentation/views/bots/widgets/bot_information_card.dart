@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/ai_model_option_menu.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/category_option_menu.dart';
 
 class BotInformationCard extends StatelessWidget {
-  const BotInformationCard({super.key});
+  const BotInformationCard({
+    super.key,
+    this.assistantNameController,
+    this.instructionsController,
+    this.descriptionController,
+    this.assistantNameError,
+  });
+
+  final TextEditingController? assistantNameController;
+  final TextEditingController? instructionsController;
+  final TextEditingController? descriptionController;
+  final String? assistantNameError;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -46,6 +56,7 @@ class BotInformationCard extends StatelessWidget {
 
             // Bot Name input
             TextField(
+              controller: assistantNameController,
               decoration: InputDecoration(
                 hintText: 'e.g., Customer Support Assistant',
                 hintStyle: TextStyle(
@@ -57,25 +68,57 @@ class BotInformationCard extends StatelessWidget {
                   horizontal: 12,
                   vertical: 14,
                 ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: AppBorderRadius.medium,
+                  borderSide: BorderSide(
+                    color: assistantNameError != null
+                        ? colorScheme.error
+                        : Colors.transparent,
+                    width: 1.5,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: AppBorderRadius.medium,
+                  borderSide: BorderSide(
+                    color: assistantNameError != null
+                        ? colorScheme.error
+                        : Colors.transparent,
+                    width: 1.5,
+                  ),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: AppBorderRadius.medium,
-                  borderSide: BorderSide.none,
+                  borderSide: const BorderSide(
+                    color: Colors.transparent,
+                    width: 1.5,
+                  ),
                 ),
               ),
             ),
+            if (assistantNameError != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                assistantNameError!,
+                style: TextStyle(
+                  color: colorScheme.error,
+                  fontSize: 12,
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
 
-            // Description label
+            // Instructions label
             const Text(
-              'Description',
+              'Instructions (optional)',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
 
-            // Description input
+            // Instructions input
             TextField(
+              controller: instructionsController,
               decoration: InputDecoration(
-                hintText: 'What does this bot do?',
+                hintText: 'Describe how your bot should behave and respond.',
                 hintStyle: TextStyle(
                   color: colorScheme.onSurface.withAlpha(140),
                 ),
@@ -94,54 +137,35 @@ class BotInformationCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Category label and AI model
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Category *',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      CategoryOptionMenu(
-                        onChanged: (category) {
-                          // Handle category change if needed
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 16),
-                // AI Model dropdown
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'AI Model *',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      AiModelOptionMenu(
-                        onChanged: (model) {
-                          // Handle model change if needed
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            // Description label
+            const Text(
+              'Description (optional)',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
+            const SizedBox(height: 8),
+
+            // Description input
+            TextField(
+              controller: descriptionController,
+              decoration: InputDecoration(
+                hintText: 'A brief description for your bot. (optional)',
+                hintStyle: TextStyle(
+                  color: colorScheme.onSurface.withAlpha(140),
+                ),
+                filled: true,
+                fillColor: colorScheme.surfaceContainerHigh.withAlpha(120),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 14,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: AppBorderRadius.medium,
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              maxLines: 1,
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
-import 'package:khtn_ai_final_project/data/models/bot_model.dart';
+import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 
 class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final VoidCallback? onBackPressed;
   final BotModel bot;
 
-  const EditBotAppBar({super.key, required this.bot});
+  const EditBotAppBar({super.key, required this.bot, this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +15,7 @@ class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: true,
       centerTitle: false,
       leading: IconButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
+        onPressed: onBackPressed,
         icon: Icon(Icons.arrow_back_ios),
       ),
       title: Column(
@@ -25,7 +24,7 @@ class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
           Column(
             children: [
               Text(
-                bot.name,
+                bot.assistantName,
                 style: AppBarInfo.titleTextStyle,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -36,25 +35,12 @@ class EditBotAppBar extends StatelessWidget implements PreferredSizeWidget {
           // Subtitle - only show on tablet and desktop
           if (ResponsiveHelper.isDesktop(context) ||
               ResponsiveHelper.isTablet(context))
-            Text(bot.description, style: AppBarInfo.subtitleTextStyle),
+            Text(
+              bot.description.isEmpty ? 'No description' : bot.description,
+              style: AppBarInfo.subtitleTextStyle,
+            ),
         ],
       ),
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 16),
-          child: Chip(
-            label: Text(
-              bot.status,
-              style: TextStyle(
-                color: bot.status == 'Active' ? Colors.green : Colors.red,
-              ),
-            ),
-            backgroundColor: bot.status == 'Active'
-                ? Colors.green.withValues(alpha: 0.2)
-                : Colors.red.withValues(alpha: 0.2),
-          ),
-        ),
-      ],
     );
   }
 

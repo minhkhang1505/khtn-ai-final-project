@@ -5,7 +5,7 @@ import 'widgets/workflow_card.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 import 'widgets/edit_agent_app_bar.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/save_action_button_row.dart';
 import 'widgets/workflow_selector_sheet.dart';
 import 'widgets/agent_status_card.dart';
 import 'package:khtn_ai_final_project/data/models/workflow_model.dart';
@@ -176,10 +176,10 @@ class _EditAgentPageState extends State<EditAgentPage> {
 
                   // Action Buttons
                   SaveActionButtonRow(
-                    onCancel: () {
+                    onLeftButtonPress: () {
                       Navigator.pop(context);
                     },
-                    onSave: () {
+                    onRightButtonPress: () {
                       // TODO: Implement save functionality
                     },
                   ),

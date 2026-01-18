@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/auth_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/auth/auth_view_model.dart';
 import '../widgets/auth_header.dart';
 import 'widgets/login_form.dart';
-import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,17 +30,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleSignIn() async {
-
-    if (!await _checkInternetConnection()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No internet connection. Please check your network.'),
-        ),
-      );
-      return; 
-    }
-
     final viewModel = context.read<AuthViewModel>();
+    if (!await _checkInternetConnection()) {
+      viewModel.setError('No internet connection. Please check your network.');
+      return;
+    }
     final success = await viewModel.login(
       _emailController.text,
       _passwordController.text,
@@ -52,12 +46,12 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _handleGoogleSignIn() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Google sign in is not implemented yet.")),
-    );
-    // TODO: Implement Google sign in logic
-  }
+  // void _handleGoogleSignIn() {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(content: Text("Google sign in is not implemented yet.")),
+  //   );
+  //   // TODO: Implement Google sign in logic
+  // }
 
   void _handleForgotPassword() {
     Navigator.pushNamed(context, '/auth/forgot-password');
@@ -103,9 +97,8 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           onForgotPassword: _handleForgotPassword,
                           onSignIn: _handleSignIn,
-                          onGoogleSignIn: _handleGoogleSignIn,
+                          // onGoogleSignIn: _handleGoogleSignIn,
                           onSignUpTap: _handleSignUp,
-                          loginError: context.watch<AuthViewModel>(),
                         ),
                       ],
                     ),

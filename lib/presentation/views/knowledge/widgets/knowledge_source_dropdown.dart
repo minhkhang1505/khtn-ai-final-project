@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:khtn_ai_final_project/domain/models/knowledge_source_type.dart';
+import 'package:khtn_ai_final_project/domain/entities/datasource_type.dart';
 
 /// A reusable dropdown widget for selecting knowledge source types
 class KnowledgeSourceDropdown extends StatelessWidget {
   final TextEditingController controller;
-  final KnowledgeSourceType? initialSelection;
-  final ValueChanged<KnowledgeSourceType?>? onSelected;
+  final DataSourceType? initialSelection;
+  final ValueChanged<DataSourceType?>? onSelected;
   final bool enabled;
 
   const KnowledgeSourceDropdown({
@@ -27,7 +27,7 @@ class KnowledgeSourceDropdown extends StatelessWidget {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const Spacer(),
-        DropdownMenu<KnowledgeSourceType>(
+        DropdownMenu<DataSourceType>(
           controller: controller,
           enabled: enabled,
           enableFilter: false,
@@ -57,10 +57,10 @@ class KnowledgeSourceDropdown extends StatelessWidget {
               ),
             ),
           ),
-          initialSelection: initialSelection ?? KnowledgeSourceTypes.all[0],
+          initialSelection: initialSelection ?? DataSourceTypes.all[0],
           onSelected: enabled ? onSelected : null,
-          dropdownMenuEntries: KnowledgeSourceTypes.all.map((source) {
-            return DropdownMenuEntry<KnowledgeSourceType>(
+          dropdownMenuEntries: DataSourceTypes.all.map((source) {
+            return DropdownMenuEntry<DataSourceType>(
               value: source,
               label: source.name,
               leadingIcon: SvgPicture.asset(

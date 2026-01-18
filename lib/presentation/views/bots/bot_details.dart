@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/data/models/bot_model.dart';
+import 'package:khtn_ai_final_project/data/models/bot/bot_model.dart';
 import 'widgets/edit_bot_app_bar.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
 

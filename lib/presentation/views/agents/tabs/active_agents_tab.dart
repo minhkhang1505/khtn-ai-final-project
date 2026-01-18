@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/agents_card.dart';
+import '../agent_chat_page.dart';
 import 'package:khtn_ai_final_project/data/models/agent_model.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
@@ -10,24 +11,32 @@ class ActiveAgentsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final agents = AgentModel.createSampleAgents()
+        .where((agent) => agent.status == 'Active')
         .map(
           (agent) => InkWell(
             borderRadius: AppBorderRadius.medium,
             onTap: () {
-              Navigator.pushNamed(context, '/agents/edit', arguments: agent);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AgentChatPage(agent: agent),
+                ),
+              );
             },
             child: AgentCard(agent: agent),
           ),
         )
         .toList();
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.vertical - 4,
-        horizontal: AppSpacing.horizontal - 4,
+      padding: const EdgeInsets.only(
+        top: AppSpacing.vertical - 4,
+        left: AppSpacing.horizontal - 4,
+        right: AppSpacing.horizontal - 4,
+        bottom: 96,
       ),
       separatorBuilder: (context, index) =>
           const SizedBox(height: AppSpacing.cardSpacing - 8),
-      itemCount: 10,
+      itemCount: agents.length,
       itemBuilder: (context, index) {
         return agents[index % agents.length];
       },

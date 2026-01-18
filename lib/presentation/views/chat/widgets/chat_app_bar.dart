@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:khtn_ai_final_project/core/di/injection.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_app_bar_view_model.dart';
 import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
+import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
 import 'bot_option_menu.dart';
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onAddNewChat;
+  final ValueChanged<AssistantModel>? onModelChanged;
   
-  const ChatAppBar({super.key, required this.onAddNewChat});
+  const ChatAppBar({super.key, required this.onAddNewChat, this.onModelChanged});
 
   void _onAddNewChat() {
     onAddNewChat();
@@ -18,12 +20,13 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final vm = context.read<ChatViewModel>();
+    final chatAppBarViewModel = sl<ChatAppBarViewModel>();
+
     return AppBar(
       automaticallyImplyLeading: true,
       title: (ResponsiveHelper.isDesktop(context) || ResponsiveHelper.isTablet(context))
           ? Text(
-              vm.conversationTitle,
+              chatAppBarViewModel.conversationTitle,
               style: AppBarInfo.titleTextStyle,
             )
           : null,
@@ -38,7 +41,13 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                   maxWidth: 200, 
                   minWidth: 50, 
                 ),
-                child: BotOptionMenu(),
+                child: BotOptionMenu(
+                  onSelected: (assistant) {
+                    if (onModelChanged != null) {
+                      onModelChanged!(assistant);
+                    }
+                  }
+                ),
               ),
             ),
 
@@ -57,24 +66,6 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onPressed: () {
                   _onAddNewChat();
                 },
-                // () async {
-                //   final confirm = await showDialog<bool>(
-                //     context: context,
-                //     builder: (ctx) => AlertDialog(
-                //       title: const Text('Draft dialog data'),
-                //       content: Text(vm.messagesContent),
-                //       actions: [
-                //         TextButton(
-                //           onPressed: () => Navigator.of(ctx).pop(false),
-                //           child: const Text('Cancel'),
-                //         ),
-                //         TextButton(
-                //           onPressed: () => Navigator.of(ctx).pop(true),
-                //           child: const Text('Delete', style: TextStyle(color: Colors.red)),
-                //         ),
-                //       ],
-                //     ),
-                //   );
               ),
             ),
           ],

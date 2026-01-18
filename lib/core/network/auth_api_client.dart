@@ -1,16 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:khtn_ai_final_project/data/datasources/local/auth_local_data_source.dart';
 import 'package:khtn_ai_final_project/core/network/token_interceptor.dart';
+import 'package:khtn_ai_final_project/core/config/app_config.dart';
 
+@lazySingleton
 class AuthApiClient {
-  static const String baseUrl = 'https://auth-api.jarvis.cx/api/v1/';
+  static String get baseUrl => AppConfig.authApiUrl;
   static const String _refreshTokenEndpoint = 'auth/sessions/current/refresh';
 
-  final AuthLocalDataSource localDataSource = AuthLocalDataSourceImpl();
+  final AuthLocalDataSource localDataSource;
   late final Dio _dio;
 
-  AuthApiClient() {
+  AuthApiClient(this.localDataSource) {
     _dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,

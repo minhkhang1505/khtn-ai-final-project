@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 
 /// Usage button that displays remaining tokens and shows details on tap
 class UsageButton extends StatelessWidget {
@@ -84,19 +84,6 @@ class UsageButton extends StatelessWidget {
         ),
         actions: [
           if (!vm.tokenUsage.unlimited)
-            TextButton.icon(
-              onPressed: () {
-                // Placeholder for upgrade action
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Upgrade flow not implemented yet'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.upgrade),
-              label: const Text('Upgrade plan'),
-            ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('Close'),

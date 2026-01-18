@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/core/constants/categories.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/empty_widget.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/prompt_viewmodel.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/empty_widget.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
 import 'package:provider/provider.dart';
 
@@ -59,8 +59,17 @@ class _FilterByCategoryPageState extends State<FilterByCategoryPage> {
     super.dispose();
   }
 
-  void _handleItemTap(BuildContext context, PromptEntity prompt) {
-    Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
+  void _handleItemTap(BuildContext context, PromptEntity prompt) async {
+    final result = await Navigator.pushNamed(
+      context,
+      '/prompts/details',
+      arguments: prompt,
+    );
+
+    // If result is prompt content to use, pop back to home with it
+    if (result is String && result.isNotEmpty && context.mounted) {
+      Navigator.of(context).pop(result);
+    }
   }
 
   @override

@@ -296,6 +296,12 @@ pod install
 cd ..
 ```
 
+if you want to update injection.config.dart file, run this command:
+
+```bash
+flutter pub run build_runner build --delete-conflicting-outputs
+```
+
 #### For Android:
 
 No additional setup needed if Android Studio is properly configured.

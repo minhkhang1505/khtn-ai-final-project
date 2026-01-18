@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/core/utils/responsive_helper.dart';
-import 'package:khtn_ai_final_project/presentation/viewmodels/chat_view_model.dart';
+import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
 
 /// Message list widget - Displays chat messages
@@ -29,7 +29,6 @@ class _MessageListState extends State<MessageList> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Selector<ChatViewModel, List<ChatMessageModel>>(
       selector: (_, vm) => vm.messages,
       builder: (context, messages, child) {
