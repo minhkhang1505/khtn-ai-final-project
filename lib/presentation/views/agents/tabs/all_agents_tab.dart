@@ -16,7 +16,16 @@ class AllAgentsTab extends StatelessWidget {
           (agent) => InkWell(
             borderRadius: AppBorderRadius.medium,
             onTap: () {
-              Navigator.pushNamed(context, '/agents/edit', arguments: agent);
+              if (agent.status == 'Active') {
+                Navigator.pushNamed(context, '/agents/chat', arguments: agent);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('This agent do not support now'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
             },
             child: AgentCard(agent: agent),
           ),

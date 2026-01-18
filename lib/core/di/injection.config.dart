@@ -22,7 +22,10 @@ import '../../data/datasources/remote/knowledge_base_remote_data_source.dart'
 import '../../data/datasources/remote/prompt_remote_data_source.dart' as _i928;
 import '../../data/datasources/remote/subscription_remote_data_source.dart'
     as _i780;
+import '../../data/datasources/remote/task_planning_remote_data_source.dart'
+    as _i707;
 import '../../data/datasources/remote/user_remote_data_source.dart' as _i41;
+import '../../data/models/agent_model.dart' as _i620;
 import '../../data/repositories/ai_email_repository_implement.dart' as _i572;
 import '../../data/repositories/auth_repository_implement.dart' as _i979;
 import '../../data/repositories/bot_repository_implement.dart' as _i983;
@@ -32,6 +35,8 @@ import '../../data/repositories/knowledge_base_repository_implement.dart'
 import '../../data/repositories/prompt_repository_implement.dart' as _i803;
 import '../../data/repositories/subscription_repository_implement.dart'
     as _i178;
+import '../../data/repositories/task_planning_repository_implement.dart'
+    as _i28;
 import '../../data/repositories/user_repository_implement.dart' as _i1063;
 import '../../domain/entities/knowledge_entity.dart' as _i54;
 import '../../domain/entities/prompt_entity.dart' as _i777;
@@ -42,6 +47,7 @@ import '../../domain/repositories/chat_repository.dart' as _i1072;
 import '../../domain/repositories/knowledge_base_repository.dart' as _i618;
 import '../../domain/repositories/prompt_repository.dart' as _i364;
 import '../../domain/repositories/subscription_repository.dart' as _i64;
+import '../../domain/repositories/task_planning_repository.dart' as _i197;
 import '../../domain/repositories/user_repository.dart' as _i271;
 import '../../domain/usecases/aiemail/ai_email_usecase.dart' as _i95;
 import '../../domain/usecases/aiemail/sugguest_reply_idea_usecase.dart'
@@ -79,6 +85,10 @@ import '../../domain/usecases/subscription/get_subscription_usecase.dart'
     as _i212;
 import '../../domain/usecases/subscription/get_subscription_used_usecase.dart'
     as _i640;
+import '../../domain/usecases/task_planning/task_planning_usecase.dart'
+    as _i246;
+import '../../presentation/viewmodels/agent/agent_chat_view_model.dart'
+    as _i474;
 import '../../presentation/viewmodels/agent/agent_view_model.dart' as _i1071;
 import '../../presentation/viewmodels/aiemail/ai_email_viewmodel.dart' as _i998;
 import '../../presentation/viewmodels/auth/auth_view_model.dart' as _i376;
@@ -120,8 +130,16 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.factory<_i1071.AgentViewModel>(() => _i1071.AgentViewModel());
     gh.singleton<_i338.ThemeProvider>(() => _i338.ThemeProvider());
+    gh.lazySingleton<_i707.TaskPlanningRemoteDataSource>(
+      () => _i707.TaskPlanningRemoteDataSourceImpl(),
+    );
     gh.lazySingleton<_i929.AuthLocalDataSource>(
       () => _i929.AuthLocalDataSourceImpl(),
+    );
+    gh.lazySingleton<_i197.TaskPlanningRepository>(
+      () => _i28.TaskPlanningRepositoryImpl(
+        gh<_i707.TaskPlanningRemoteDataSource>(),
+      ),
     );
     gh.lazySingleton<_i752.AuthApiClient>(
       () => _i752.AuthApiClient(gh<_i929.AuthLocalDataSource>()),
@@ -145,6 +163,17 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i624.AuthRemoteDataSource>(
       () => _i624.AuthRemoteDataSourceImpl(gh<_i752.AuthApiClient>()),
+    );
+    gh.lazySingleton<_i246.TaskPlanningUseCase>(
+      () => _i246.TaskPlanningUseCase(
+        taskPlanningRepository: gh<_i197.TaskPlanningRepository>(),
+      ),
+    );
+    gh.factory<_i474.AgentChatViewModel>(
+      () => _i474.AgentChatViewModel(
+        agent: gh<_i620.AgentModel>(),
+        taskPlanningUseCase: gh<_i246.TaskPlanningUseCase>(),
+      ),
     );
     gh.lazySingleton<_i41.UserRemoteDataSource>(
       () => _i41.UserRemoteDataSourceImpl(gh<_i963.JarvisApiClient>()),

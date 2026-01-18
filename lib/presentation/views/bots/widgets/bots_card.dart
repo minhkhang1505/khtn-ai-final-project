@@ -90,40 +90,6 @@ class BotCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-
-                // Edit Bot button
-                // ElevatedButton(
-                //   onPressed: () async {
-                //     if (onEdit != null) {
-                //       await onEdit!();
-                //     } else {
-                //       // Navigate to Edit Bot page
-                //       await Navigator.pushNamed(context, '/bots/edit', arguments: bot);
-                //     }
-                //   },
-                //   style: ButtonStyle(
-                //     backgroundColor: WidgetStateProperty.resolveWith<Color?>((
-                //       Set<WidgetState> states,
-                //     ) {
-                //       if (states.contains(WidgetState.pressed)) {
-                //         return Colors.grey.shade300;
-                //       }
-                //       if (states.contains(WidgetState.hovered)) {
-                //         return Colors.grey.shade400;
-                //       }
-                //       return Colors.transparent;
-                //     }),
-                //     elevation: WidgetStateProperty.all(0),
-                //     overlayColor: WidgetStateProperty.all(Colors.transparent),
-                //     shape: WidgetStateProperty.all(const CircleBorder()),
-                //     padding: WidgetStateProperty.all(const EdgeInsets.all(0)),
-                //   ),
-                //   child: Icon(
-                //     Icons.settings,
-                //     size: 24,
-                //     color: colorScheme.outline,
-                //   ),
-                // ),
               ],
             ),
             // Description of Bot

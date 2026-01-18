@@ -25,7 +25,7 @@ class WorkflowsTab extends StatelessWidget {
             const SizedBox(height: AppSpacing.cardSpacing),
             WorkflowsCard(workflowType: Workflow.dataExtraction),
             const SizedBox(height: AppSpacing.cardSpacing),
-            WorkflowsCard(workflowType: Workflow.dataExtraction),
+            WorkflowsCard(workflowType: Workflow.planning),
           ],
         ),
       ),
