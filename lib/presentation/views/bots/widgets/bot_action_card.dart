@@ -33,85 +33,48 @@ class BotActionCard extends StatelessWidget {
       color: colorScheme.surfaceContainerLow.withAlpha(10),
       margin: const EdgeInsets.all(0),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'Actions',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
             ),
             const SizedBox(height: 16),
 
-            // Favorite button
             Row(
               children: [
                 Expanded(
-                  child: FavoriteButtonToggle(
-                    isFavoriteNotifier: isFavoriteNotifier ?? ValueNotifier<bool>(false),
-                    onToggle: onFavoriteToggle,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      if (onCanceled != null) {
-                        onCanceled!();
-                      }
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppBorderRadius.medium,
-                      ),
-                      side: BorderSide(
-                        color: colorScheme.outline,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 24,
-                      ),
-                    ),
-                    child: const Text(
-                      'Chat now',
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                  child: SizedBox(
+                    height: 56,
+                    child: FavoriteButtonToggle(
+                      isFavoriteNotifier:
+                          isFavoriteNotifier ?? ValueNotifier<bool>(false),
+                      onToggle: onFavoriteToggle,
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
-
                 Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      if (onDeleted != null) {
-                        onDeleted!();
-                      }
-                    },
-                    icon: const Icon(Icons.delete_outline),
-                    label: const Text('Delete'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.error,
-                      foregroundColor: colorScheme.onError, 
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppBorderRadius.medium,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 24,
-                      ),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.w600,
+                  child: SizedBox(
+                    height: 56,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        if (onDeleted != null) {
+                          onDeleted!();
+                        }
+                      },
+                      icon: const Icon(Icons.delete_outline, size: 20),
+                      label: const Text('Delete'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.error,
+                        foregroundColor: colorScheme.onError,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: AppBorderRadius.medium,
+                        ),
+                        padding: EdgeInsets.zero,
+                        textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                       ),
                     ),
                   ),
