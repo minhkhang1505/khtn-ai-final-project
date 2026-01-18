@@ -1,23 +1,22 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:khtn_ai_final_project/core/di/injection.dart';
 import 'package:khtn_ai_final_project/core/constants/categories.dart';
+import 'package:khtn_ai_final_project/presentation/views/chat/widgets/category_picker_page.dart';
 import 'package:khtn_ai_final_project/presentation/views/common/widgets/custom_tab_bar.dart';
+import 'package:khtn_ai_final_project/presentation/views/chat/widgets/prompt_category_tab.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
-import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/category_item.dart';
-import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
+import 'package:khtn_ai_final_project/presentation/views/prompts/widgets/prompt_item.dart';
 import 'package:provider/provider.dart';
 
 class ShowPromptModalBottomSheet extends StatelessWidget {
   const ShowPromptModalBottomSheet({super.key});
 
   static Future<void> show(BuildContext context) {
-    // Lấy ChatViewModel từ parent context trước khi mở modal
     final chatViewModel = context.read<ChatViewModel>();
 
     return showModalBottomSheet<void>(
@@ -193,7 +192,15 @@ class _PromptModalContentState extends State<_PromptModalContent>
                 children: [
                   _buildPromptList(prompts, viewModel, isPrivate: false),
                   _buildPromptList(privatePrompts, viewModel, isPrivate: true),
-                  _buildCategoryTab(viewModel, categoryPrompts),
+                  PromptCategoryTab(
+                    viewModel: viewModel,
+                    categoryPrompts: categoryPrompts,
+                    scrollController: _scrollController,
+                    selectedCategoryName: _selectedCategoryName,
+                    onPickCategory: () => _openCategoryPicker(viewModel),
+                    onRefresh: _onRefresh,
+                    onPromptTap: (prompt) => _handleItemTap(context, prompt),
+                  ),
                   _buildPromptList(
                     favoritePrompts,
                     viewModel,
@@ -230,10 +237,7 @@ class _PromptModalContentState extends State<_PromptModalContent>
             : null,
         filled: true,
         fillColor: colorScheme.surfaceContainerHigh.withAlpha(120),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 0, // Giảm chiều cao từ 10 xuống 4
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
@@ -264,101 +268,12 @@ class _PromptModalContentState extends State<_PromptModalContent>
     }
   }
 
-  Widget _buildCategoryTab(
-    PromptViewmodel viewModel,
-    List<PromptEntity> categoryPrompts,
-  ) {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: _buildCategoryPromptList(categoryPrompts, viewModel),
-        ),
-        Positioned(
-          left: 10,
-          right: 10,
-          bottom: 16,
-          child: ElevatedButton.icon(
-            onPressed: () => _openCategoryPicker(viewModel),
-            icon: const Icon(Icons.arrow_drop_up, size: 20),
-            label: Text('Category: $_selectedCategoryName'),
-
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(
-                context,
-              ).colorScheme.surface.withAlpha(230),
-
-              foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-
-              elevation: 4,
-              shadowColor: Colors.black.withAlpha(100),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.primary,
-                  width: 1.5,
-                ),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              minimumSize: const Size(0, 36),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCategoryPromptList(
-    List<PromptEntity> prompts,
-    PromptViewmodel viewModel,
-  ) {
-    final loadMoreState = viewModel.categoryLoadMoreState;
-    return RefreshIndicator(
-      onRefresh: _onRefresh,
-      color: Theme.of(context).primaryColor,
-      child: ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
-        controller: _scrollController,
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
-        itemCount: prompts.length + 1,
-        itemBuilder: (context, index) {
-          if (index == prompts.length) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Center(
-                child: switch (loadMoreState) {
-                  LoadMoreState.loading => const CircularProgressIndicator(),
-                  LoadMoreState.noMoreData => const Text(
-                    "No more prompts to load.",
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
-                  ),
-                  LoadMoreState.idle => const SizedBox.shrink(),
-                },
-              ),
-            );
-          }
-          final prompt = prompts[index];
-          return PromptItem(
-            onTap: () => _handleItemTap(context, prompt),
-            prompt: prompt,
-            onFavoriteTap: () {
-              if (prompt.isFavorite) {
-                viewModel.removeFromFavorite(prompt.id);
-              } else {
-                viewModel.addPromptToFavorite(prompt.id);
-              }
-            },
-          );
-        },
-      ),
-    );
-  }
-
   Future<void> _openCategoryPicker(PromptViewmodel viewModel) async {
     final result = await Navigator.push<CategoryType>(
       context,
       MaterialPageRoute(
         builder: (context) =>
-            _CategoryPickerPage(selectedCategory: _selectedCategory),
+            CategoryPickerPage(selectedCategory: _selectedCategory),
       ),
     );
 
@@ -482,57 +397,29 @@ class _PromptModalContentState extends State<_PromptModalContent>
   }
 
   void _handleItemTap(BuildContext context, PromptEntity prompt) {
-    // get the content of the prompt and send it as a message, put it in the chat input box
-    widget.chatViewModel.setInputMessage(prompt.content);
-    Navigator.pop(context);
+    _openPromptDetail(prompt);
   }
-}
 
-class _CategoryPickerPage extends StatelessWidget {
-  final CategoryType selectedCategory;
+  Future<void> _openPromptDetail(PromptEntity prompt) async {
+    await Navigator.pushNamed(context, '/prompts/details', arguments: prompt);
 
-  const _CategoryPickerPage({required this.selectedCategory});
+    if (!mounted) return;
+    await _refreshCurrentTab();
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.transparent),
-          onPressed: () {},
-        ),
-        title: const Text('Select Category'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final isWide = constraints.maxWidth >= 800;
-          final crossAxisCount = isWide ? 4 : 2;
-
-          return GridView.count(
-            primary: false,
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            crossAxisCount: crossAxisCount,
-            childAspectRatio: 1.7,
-            children: [
-              for (final category in categories)
-                CategoryItem(
-                  categoryName: category.name,
-                  iconPath: category.iconPath,
-                  onTap: () => Navigator.pop(context, category.id),
-                ),
-            ],
-          );
-        },
-      ),
-    );
+  Future<void> _refreshCurrentTab() async {
+    final viewModel = context.read<PromptViewmodel>();
+    if (_tabController.index == 0) {
+      await viewModel.getAllPrompts(query: _searchController.text);
+    } else if (_tabController.index == 1) {
+      await viewModel.getPrivatePrompts(query: _searchController.text);
+    } else if (_tabController.index == 2) {
+      await viewModel.getPromptByCategory(
+        _selectedCategory,
+        query: _searchController.text,
+      );
+    } else if (_tabController.index == 3) {
+      await viewModel.getFavoritePrompts(query: _searchController.text);
+    }
   }
 }
