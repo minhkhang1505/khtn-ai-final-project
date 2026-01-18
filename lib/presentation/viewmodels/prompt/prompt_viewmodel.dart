@@ -84,6 +84,11 @@ class PromptViewmodel extends ChangeNotifier {
   final List<PromptEntity> _categoryPrompts = [];
   List<PromptEntity>? get categoryPrompts => _categoryPrompts;
 
+  String? _allQuery;
+  String? _privateQuery;
+  String? _favoriteQuery;
+  String? _categoryQuery;
+
   double limit = 10;
 
   Future<bool> _fetchPrompts({
@@ -91,8 +96,23 @@ class PromptViewmodel extends ChangeNotifier {
     bool isFavorite = false,
     bool resetOffset = false,
     bool isPublic = true,
+    String? query,
   }) async {
     try {
+      if (query != null) {
+        final trimmed = query.trim();
+        final normalized = trimmed.isEmpty ? null : trimmed;
+        if (isFavorite) {
+          _favoriteQuery = normalized;
+        } else if (category != null) {
+          _categoryQuery = normalized;
+        } else if (!isPublic) {
+          _privateQuery = normalized;
+        } else {
+          _allQuery = normalized;
+        }
+      }
+
       // Determine current state variables
       LoadMoreState currentLoadMoreState;
       if (isFavorite) {
@@ -174,6 +194,13 @@ class PromptViewmodel extends ChangeNotifier {
         category: category,
         isFavorite: isFavorite,
         isPublic: isPublic,
+        query: isFavorite
+            ? _favoriteQuery
+            : category != null
+            ? _categoryQuery
+            : (!isPublic)
+            ? _privateQuery
+            : _allQuery,
       );
 
       final response = await getPromptUseCase.call(requestObject);
@@ -240,18 +267,19 @@ class PromptViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<bool> getAllPrompts() => _fetchPrompts(resetOffset: true);
+  Future<bool> getAllPrompts({String? query}) =>
+      _fetchPrompts(resetOffset: true, query: query);
 
-  Future<bool> getPrivatePrompts() =>
-      _fetchPrompts(isPublic: false, resetOffset: true);
+  Future<bool> getPrivatePrompts({String? query}) =>
+      _fetchPrompts(isPublic: false, resetOffset: true, query: query);
 
-  Future<bool> getPromptByCategory(CategoryType category) {
+  Future<bool> getPromptByCategory(CategoryType category, {String? query}) {
     _currentSelectedCategory = category;
-    return _fetchPrompts(category: category, resetOffset: true);
+    return _fetchPrompts(category: category, resetOffset: true, query: query);
   }
 
-  Future<bool> getFavoritePrompts() =>
-      _fetchPrompts(isFavorite: true, resetOffset: true);
+  Future<bool> getFavoritePrompts({String? query}) =>
+      _fetchPrompts(isFavorite: true, resetOffset: true, query: query);
 
   Future<bool> refreshPrompts() {
     _prompts.clear();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/custom_back_button.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/custom_back_button.dart';
 
 /// Auth-specific back button
 /// This is a convenience wrapper around CustomBackButton for auth screens

@@ -69,6 +69,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       centerTitle: false,
       automaticallyImplyLeading: false,
+      scrolledUnderElevation: 0,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       toolbarHeight: toolbarHeight,
       leading: title == "AI Prompts"
           ? IconButton(

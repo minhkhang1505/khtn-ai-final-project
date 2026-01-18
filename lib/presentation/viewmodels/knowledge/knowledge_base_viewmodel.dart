@@ -43,6 +43,7 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
   final loadMore = false;
   var offset = 0.0;
   final limit = 10.0;
+  String? _searchQuery;
 
   void _setState(KnowledgeBaseState newState) {
     _state = newState;
@@ -54,8 +55,14 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
     bool isLoadMore = false,
     KnowledgeOrder order = KnowledgeOrder.DESC,
     String? orderField,
+    String? query,
   }) async {
     if (_state == KnowledgeBaseState.loading && !isLoadMore) return false;
+
+    if (query != null) {
+      final trimmedQuery = query.trim();
+      _searchQuery = trimmedQuery.isEmpty ? null : trimmedQuery;
+    }
 
     if (resetOffset) {
       offset = 0.0;
@@ -77,6 +84,7 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
           limit: limit,
           order: order,
           orderField: orderField,
+          q: _searchQuery,
         ),
       );
 
@@ -102,7 +110,8 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<bool> getAllKnowledges() => _fetchKnowledges();
+  Future<bool> getAllKnowledges({String? query}) =>
+      _fetchKnowledges(resetOffset: true, query: query);
 
   Future<bool> loadMoreKnowledges() async {
     if (_loadMoreState == LoadMoreKnowledgeState.loading || !hasNext) {
@@ -131,6 +140,17 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
   Future<bool> sortKnowledgesByField(String orderField) =>
       _fetchKnowledges(orderField: orderField, resetOffset: true);
 
+  Future<bool> applySort({
+    KnowledgeOrder order = KnowledgeOrder.DESC,
+    String? orderField,
+  }) {
+    return _fetchKnowledges(
+      order: order,
+      orderField: orderField,
+      resetOffset: true,
+    );
+  }
+
   /// Force reloading from the first page and clearing current cached list.
   Future<bool> refreshKnowledges() {
     return _fetchKnowledges(resetOffset: true);
@@ -151,7 +171,6 @@ class KnowledgeBaseViewmodel extends ChangeNotifier {
   }
 
   Future<bool> deleteKnowledge(String id, {bool autoRefresh = false}) async {
-
     if (_state == DeleteKnowledgeState.loading) {
       return false;
     }

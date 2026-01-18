@@ -7,8 +7,8 @@ import 'package:khtn_ai_final_project/core/constants/app_constants.dart';
 import 'package:khtn_ai_final_project/data/models/agent_model.dart';
 
 import 'package:khtn_ai_final_project/presentation/viewmodels/bot/create_bot_view_model.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/create_action_button_row.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/create_action_button_row.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/loading_widget.dart';
 
 import 'widgets/create_bot_app_bar.dart';
 

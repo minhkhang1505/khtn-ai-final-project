@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:khtn_ai_final_project/domain/entities/prompt_entity.dart';
 import 'package:khtn_ai_final_project/core/theme/app_radius.dart';
 
@@ -21,7 +22,7 @@ class PromptItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 4, 0, 16),
+        padding: const EdgeInsets.fromLTRB(16, 4, 0, 4),
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
           borderRadius: AppBorderRadius.large,
@@ -81,7 +82,7 @@ class PromptItem extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 4,
-                  child: Row(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
@@ -112,14 +113,45 @@ class PromptItem extends StatelessWidget {
               ),
             ],
             SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
-              decoration: BoxDecoration(
-                border: Border.all(color: colorScheme.onPrimaryFixedVariant),
-                color: colorScheme.primaryContainer.withAlpha(20),
-                borderRadius: AppBorderRadius.extraLargeIncreased,
+            Padding(
+              padding: const EdgeInsets.only(right: 9.0),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 1,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: colorScheme.onPrimaryFixedVariant,
+                      ),
+                      color: colorScheme.primaryContainer.withAlpha(20),
+                      borderRadius: AppBorderRadius.extraLargeIncreased,
+                    ),
+                    child: Text(prompt.category),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/prompts/details',
+                        arguments: prompt,
+                      );
+                    },
+                    icon: SvgPicture.asset(
+                      'assets/icons/ic_edit.svg',
+                      width: 24,
+                      height: 24,
+                      colorFilter: ColorFilter.mode(
+                        colorScheme.primary,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              child: Text(prompt.category),
             ),
           ],
         ),
