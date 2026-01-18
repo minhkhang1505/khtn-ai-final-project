@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/failure_widget.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/loading_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/failure_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/error_dialog_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/loading_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/prompt/prompt_detail_view_model.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/newprompt/widgets/prompt_details_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/prompts/promptdetail/widgets/prompt_detail_action_buttons.dart';
@@ -58,18 +58,18 @@ class _PromptDetailPageState extends State<PromptDetailPage> {
                   : _backToPromptsList,
               icon: const Icon(Icons.arrow_back_ios),
             ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: ElevatedButton(
-                  onPressed:
-                      viewModel.promptDetailState == PromptDetailState.loading
-                      ? null
-                      : () => _usePromptInChat(context, viewModel),
-                  child: const Text('Use'),
-                ),
-              ),
-            ],
+            // actions: [
+            //   Padding(
+            //     padding: const EdgeInsets.only(right: 16.0),
+            //     child: ElevatedButton(
+            //       onPressed:
+            //           viewModel.promptDetailState == PromptDetailState.loading
+            //           ? null
+            //           : () => _usePromptInChat(context, viewModel),
+            //       child: const Text('Use'),
+            //     ),
+            //   ),
+            // ],
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {

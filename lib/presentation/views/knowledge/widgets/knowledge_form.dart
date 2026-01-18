@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/datasource_type.dart';
 import 'package:khtn_ai_final_project/core/constants/knowledge_constants.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/save_action_button_row.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/error_dialog_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/save_action_button_row.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/file_input_section.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_form_card.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/knowledge_section_header.dart';

@@ -82,22 +82,17 @@ class _FilterChipMenuState extends State<FilterChipMenu> {
         }
       },
       child: Chip(
-        label: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              selected.iconPath,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.onSurface,
-                BlendMode.srcIn,
-              ),
+        label: Tooltip(
+          message: selected.label,
+          child: SvgPicture.asset(
+            selected.iconPath,
+            width: 20,
+            height: 20,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).colorScheme.onSurface,
+              BlendMode.srcIn,
             ),
-            SizedBox(width: 8),
-            Text(selected.label),
-          ],
+          ),
         ),
       ),
     );
@@ -113,11 +108,11 @@ class _FilterChipMenuState extends State<FilterChipMenu> {
       if (newFilter.id == 'all') {
         await vm.refreshKnowledges();
       } else if (newFilter.id == 'createdAt') {
-        await vm.sortKnowledgesByField('createdAt');
+        await vm.applySort(orderField: 'createdAt');
       } else if (newFilter.id == 'ascending') {
-        await vm.sortKnowledgesBy(KnowledgeOrder.ASC);
+        await vm.applySort(order: KnowledgeOrder.ASC);
       } else if (newFilter.id == 'descending') {
-        await vm.sortKnowledgesBy(KnowledgeOrder.DESC);
+        await vm.applySort(order: KnowledgeOrder.DESC);
       }
     } catch (e) {
       if (mounted) {

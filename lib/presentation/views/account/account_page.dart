@@ -57,6 +57,9 @@ class _AccountPageState extends State<AccountPage> {
 
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
         centerTitle: false,
         automaticallyImplyLeading: false,
         title: AccountHeader(isProUser: isProUser, user: user),

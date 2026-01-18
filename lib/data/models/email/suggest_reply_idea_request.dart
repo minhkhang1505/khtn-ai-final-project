@@ -68,25 +68,62 @@ class AssistantDto {
   };
 
   static Id _idFromJson(String value) {
-    return Id.values.firstWhere(
-      (e) => e.toString().split('.').last == value,
-      orElse: () => Id.CLAUDE_3_HAIKU_20240307,
-    );
+    switch (value) {
+      case 'claude-3-haiku-20240307':
+        return Id.CLAUDE_3_HAIKU_20240307;
+      case 'claude-3-sonnet-20240229':
+        return Id.CLAUDE_3_SONNET_20240229;
+      case 'gemini-1.5-flash-latest':
+        return Id.GEMINI_15_FLASH_LATEST;
+      case 'gemini-1.5-pro-latest':
+        return Id.GEMINI_15_PRO_LATEST;
+      case 'gpt-4o':
+        return Id.GPT_4_O;
+      case 'gpt-4o-mini':
+        return Id.GPT_4_O_MINI;
+      default:
+        return Id.values.firstWhere(
+          (e) => e.toString().split('.').last == value,
+          orElse: () => Id.CLAUDE_3_HAIKU_20240307,
+        );
+    }
   }
 
   static String _idToJson(Id value) {
-    return value.toString().split('.').last;
+    switch (value) {
+      case Id.CLAUDE_3_HAIKU_20240307:
+        return 'claude-3-haiku-20240307';
+      case Id.CLAUDE_3_SONNET_20240229:
+        return 'claude-3-sonnet-20240229';
+      case Id.GEMINI_15_FLASH_LATEST:
+        return 'gemini-1.5-flash-latest';
+      case Id.GEMINI_15_PRO_LATEST:
+        return 'gemini-1.5-pro-latest';
+      case Id.GPT_4_O:
+        return 'gpt-4o';
+      case Id.GPT_4_O_MINI:
+        return 'gpt-4o-mini';
+    }
   }
 
   static Model _modelFromJson(String value) {
-    return Model.values.firstWhere(
-      (e) => e.toString().split('.').last == value,
-      orElse: () => Model.DIFY,
-    );
+    switch (value) {
+      case 'dify':
+      case 'DIFY':
+        return Model.DIFY;
+      default:
+        return Model.values.firstWhere(
+          (e) => e.toString().split('.').last == value,
+          orElse: () => Model.DIFY,
+        );
+    }
   }
 
   static String _modelToJson(Model value) {
-    return value.toString().split('.').last;
+    switch (value) {
+      case Model.DIFY:
+        return 'dify';
+    }
   }
 }
 

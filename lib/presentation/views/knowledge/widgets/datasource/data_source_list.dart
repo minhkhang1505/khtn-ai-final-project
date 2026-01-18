@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khtn_ai_final_project/domain/entities/datasource_entity.dart';
-import 'package:khtn_ai_final_project/presentation/common/widgets/error_dialog_widget.dart';
+import 'package:khtn_ai_final_project/presentation/views/common/widgets/error_dialog_widget.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/knowledge/datasource_viewmodel.dart';
 import 'package:khtn_ai_final_project/presentation/views/knowledge/widgets/datasource/data_source_item.dart';
 import 'package:provider/provider.dart';
