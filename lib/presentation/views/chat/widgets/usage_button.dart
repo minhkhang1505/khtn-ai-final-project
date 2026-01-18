@@ -84,19 +84,6 @@ class UsageButton extends StatelessWidget {
         ),
         actions: [
           if (!vm.tokenUsage.unlimited)
-            TextButton.icon(
-              onPressed: () {
-                // Placeholder for upgrade action
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Upgrade flow not implemented yet'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.upgrade),
-              label: const Text('Upgrade plan'),
-            ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('Close'),

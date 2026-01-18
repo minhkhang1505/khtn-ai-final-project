@@ -77,7 +77,7 @@ class ChatPage extends StatelessWidget {
           ),
 
           // Loading indicator
-          if (context.watch<ChatViewModel>().isLoading)
+          if (context.watch<ChatViewModel>().isBusy)
             const LoadingIndicatorWidget(),
 
           // Error message

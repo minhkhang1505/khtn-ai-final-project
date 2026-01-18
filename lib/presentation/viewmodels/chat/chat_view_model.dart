@@ -124,12 +124,7 @@ class ChatViewModel extends ChangeNotifier {
     });
     _isStreaming = true;
     _isLoading = false;
-
-    // Create empty assistant message for streaming
-    final assistantMsg = ChatMessageModel.createMessage('', 'assistant', []);
-    messages.add(assistantMsg);
     notifyListeners();
-    scrollToBottom();
 
     try {
       final request = SendMessageRequestModel(
@@ -141,9 +136,21 @@ class ChatViewModel extends ChangeNotifier {
       );
 
       String fullMessage = '';
+      ChatMessageModel? assistantMsg;
+      bool firstChunk = true;
+
       await for (var chunk in chatUsecase.sendMessageStream(request)) {
+        // Create assistant message on first chunk
+        if (firstChunk) {
+          assistantMsg = ChatMessageModel.createMessage('', 'assistant', []);
+          messages.add(assistantMsg);
+          firstChunk = false;
+        }
+
         fullMessage += chunk;
-        assistantMsg.content = fullMessage;
+        if (assistantMsg != null) {
+          assistantMsg.content = fullMessage;
+        }
         notifyListeners();
         scrollToBottom();
       }
@@ -236,7 +243,9 @@ class ChatViewModel extends ChangeNotifier {
     Future.delayed(const Duration(milliseconds: 100), () {
       scrollToBottom();
     });
-    isLoadingSetter = true;
+    _isStreaming = true;
+    _isLoading = false;
+    notifyListeners();
 
     try {
       final request = ChatWithBotRequestModel(
@@ -256,7 +265,8 @@ class ChatViewModel extends ChangeNotifier {
         'assistant',
         [],
       );
-      addMessage(replyMessage);
+      messages.add(replyMessage);
+      updateMetadata();
 
       // Scroll to bottom after a slight delay to ensure UI has updated
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -268,7 +278,9 @@ class ChatViewModel extends ChangeNotifier {
       errorSetter = e.toString();
       return false;
     } finally {
-      isLoadingSetter = false;
+      _isStreaming = false;
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
