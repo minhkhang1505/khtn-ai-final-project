@@ -9,7 +9,7 @@ import 'package:khtn_ai_final_project/data/models/conversations/conversation_mod
 @lazySingleton
 class ChatAppBarViewModel extends ChangeNotifier {
   final BotUseCase botUseCase;
-  
+
   ChatAppBarViewModel({required this.botUseCase}) {
     initialize();
   }
@@ -25,18 +25,28 @@ class ChatAppBarViewModel extends ChangeNotifier {
   final List<BotModel> userBots = [];
 
   void fetchBaseModels() {
-    baseModels =  AssistantModelType.values.toList();
+    baseModels = AssistantModelType.values.toList();
   }
 
   Future<void> fetchAvailableModels() async {
-    // Fetch user-created bots
-    final request = GetBotsRequestModel(
-      q: '',
-      offset: 0,
-      limit: 10,
-    );
-    final bots = await botUseCase.getBots(request);
-    userBots.addAll(bots.data.bots);
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      // Clear existing bots before fetching new ones
+      userBots.clear();
+
+      // Fetch user-created bots
+      final request = GetBotsRequestModel(q: '', offset: 0, limit: 10);
+      final bots = await botUseCase.getBots(request);
+      userBots.addAll(bots.data.bots);
+    } catch (e) {
+      // Handle error silently or log it
+      debugPrint('Error fetching available models: $e');
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> initialize() async {
@@ -58,7 +68,9 @@ class ChatAppBarViewModel extends ChangeNotifier {
   void openChat(ConversationModel conversation) {
     selectedAssistant = conversation.bot;
     if (selectedAssistant.name.isEmpty) {
-      selectedAssistant.name = AssistantModelType.nameFromId(selectedAssistant.id);
+      selectedAssistant.name = AssistantModelType.nameFromId(
+        selectedAssistant.id,
+      );
     }
     conversationTitle = conversation.title;
     notifyListeners();
