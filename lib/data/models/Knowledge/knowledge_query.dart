@@ -1,4 +1,3 @@
-
 class KnowledgeQuery {
   double? limit;
   double? offset;
@@ -23,7 +22,8 @@ class KnowledgeQuery {
               (e) => e.toString() == 'Order.' + (json['order'] as String),
             )
           : null,
-      orderField: json['orderField'] as String?,
+      orderField:
+          (json['order_field'] as String?) ?? json['orderField'] as String?,
       q: json['q'] as String?,
     );
   }
@@ -33,7 +33,7 @@ class KnowledgeQuery {
       if (limit != null) 'limit': limit,
       if (offset != null) 'offset': offset,
       if (order != null) 'order': order.toString().split('.').last,
-      if (orderField != null) 'orderField': orderField,
+      if (orderField != null) 'order_field': orderField,
       if (q != null) 'q': q,
     };
   }
