@@ -29,7 +29,7 @@ class AgentModel {
     return [
       AgentModel(
         id: '1',
-        name: 'Planning Bot',
+        name: 'Planning Assistant',
         description: 'Assists customers to plan their tasks.',
         workflows: const [Workflow.planning],
         status: 'Active',
@@ -50,7 +50,7 @@ class AgentModel {
       ),
       AgentModel(
         id: '4',
-        name: 'Customer Support Bot',
+        name: 'Customer Support Assistant',
         description: 'Assists customers with common inquiries.',
         workflows: const [Workflow.emailTriage, Workflow.dataExtraction],
         status: 'Inactive',

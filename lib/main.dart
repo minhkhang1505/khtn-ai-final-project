@@ -48,17 +48,19 @@ class _MyAppState extends State<MyApp> {
     TextTheme textTheme = createTextTheme(context, "Roboto", "Inter");
     MaterialTheme theme = MaterialTheme(textTheme);
 
-    return MaterialApp(
-      title: 'KHTN AI Final Project',
-      debugShowCheckedModeBanner: false,
-      theme: theme.light(),
-      darkTheme: theme.dark(),
-      themeMode: _themeProvider.themeMode,
-      // Navigation configuration
-      navigatorKey: NavigationService.navigatorKey,
-      initialRoute: AppRoutes.splash,
-      onGenerateRoute: RouteGenerator.generateRoute,
-      navigatorObservers: [routeObserver],
+    return RepaintBoundary(
+      child: MaterialApp(
+        title: 'KHTN AI Final Project',
+        debugShowCheckedModeBanner: false,
+        theme: theme.light(),
+        darkTheme: theme.dark(),
+        themeMode: _themeProvider.themeMode,
+        // Navigation configuration
+        navigatorKey: NavigationService.navigatorKey,
+        initialRoute: AppRoutes.splash,
+        onGenerateRoute: RouteGenerator.generateRoute,
+        navigatorObservers: [routeObserver],
+      ),
     );
   }
 }

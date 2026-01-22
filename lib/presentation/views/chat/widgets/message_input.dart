@@ -1,6 +1,13 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:khtn_ai_final_project/presentation/views/chat/widgets/custom_input_message.dart';
 import 'package:provider/provider.dart';
 import 'package:khtn_ai_final_project/presentation/viewmodels/chat/chat_view_model.dart';
@@ -52,10 +59,149 @@ class _MessageInputState extends State<MessageInput> {
     return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 
+  Future<void> _capturePhoto() async {
+    final ImagePicker picker = ImagePicker();
+    try {
+      // Capture photo with reduced quality to minimize file size (avoid 413 error)
+      final XFile? photo = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80, // Reduce quality from 100 to 80 to compress file
+      );
+      if (photo != null) {
+        // Create a PlatformFile with the file path
+        final file = File(photo.path);
+        final bytes = await file.readAsBytes();
+        
+        final platformFile = PlatformFile(
+          name: photo.name,
+          size: bytes.length,
+          bytes: bytes,
+          path: photo.path, // Important: set the path so the upload works
+        );
+        
+        _viewModel.addFiles([platformFile]);
+        debugPrint("Photo captured: ${photo.name} from path: ${photo.path}, size: ${_formatFileSize(bytes.length)}");
+      }
+    } catch (e) {
+      debugPrint("Error capturing photo: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error capturing photo: $e'),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _captureScreenshot() async {
+    try {
+      // Wait for the current frame to complete to avoid paint assertion errors
+      await Future.delayed(const Duration(milliseconds: 100));
+      
+      // Find the RenderObject at the root of the widget tree
+      final renderObject = context.findRenderObject();
+      
+      if (renderObject == null) {
+        throw Exception('Could not capture screenshot: RenderObject not found');
+      }
+      
+      // Find the first RenderRepaintBoundary ancestor
+      RenderRepaintBoundary? boundary;
+      
+      // Try to find an existing RepaintBoundary in the tree
+      context.visitAncestorElements((element) {
+        final renderObj = element.renderObject;
+        if (renderObj is RenderRepaintBoundary) {
+          boundary = renderObj;
+          return false; // Stop searching
+        }
+        return true; // Continue searching
+      });
+      
+      // If no boundary found, navigate to the root and wrap it
+      if (boundary == null) {
+        // Find the root RenderObject
+        var current = renderObject;
+        while (current.parent is RenderObject) {
+          current = current.parent as RenderObject;
+        }
+        
+        // If the root is already a RepaintBoundary, use it
+        if (current is RenderRepaintBoundary) {
+          boundary = current;
+        } else {
+          throw Exception('No RepaintBoundary found in widget tree. Please wrap your app with RepaintBoundary.');
+        }
+      }
+      
+      // At this point, boundary must be non-null
+      final repaintBoundary = boundary!;
+      
+      // Ensure the boundary doesn't need to paint before capturing
+      if (repaintBoundary.debugNeedsPaint) {
+        throw Exception('Widget is still being painted. Please try again.');
+      }
+      
+      // Capture the image with the boundary
+      final image = await repaintBoundary.toImage(pixelRatio: 1.5);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      
+      if (byteData == null) {
+        throw Exception('Failed to convert image to bytes');
+      }
+      
+      final bytes = byteData.buffer.asUint8List();
+      
+      // Generate a filename with timestamp
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final fileName = 'screenshot_$timestamp.png';
+      
+      // Save to temporary directory
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/$fileName';
+      final file = File(filePath);
+      await file.writeAsBytes(bytes);
+      
+      final platformFile = PlatformFile(
+        name: fileName,
+        size: bytes.length,
+        bytes: bytes,
+        path: filePath,
+      );
+      
+      _viewModel.addFiles([platformFile]);
+      debugPrint("Screenshot captured: $fileName from path: $filePath, size: ${_formatFileSize(bytes.length)}");
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Screenshot captured!'),
+            duration: Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint("Error capturing screenshot: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error capturing screenshot: $e'),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: _viewModel,
+      listenable: Listenable.merge([_viewModel, _controller]),
       builder: (context, child) => _buildContent(context),
     );
   }
@@ -65,6 +211,10 @@ class _MessageInputState extends State<MessageInput> {
     final chatViewModel = context.watch<ChatViewModel>();
     final isBusy = chatViewModel.isBusy;
     final inputMessage = chatViewModel.inputMessage;
+    
+    // Calculate hasText directly from controller
+    final hasText = _controller.text.trim().isNotEmpty;
+    final canSend = hasText;
 
     // Update controller text if inputMessage changes
     if (inputMessage.isNotEmpty && _controller.text != inputMessage) {
@@ -194,6 +344,7 @@ class _MessageInputState extends State<MessageInput> {
                 },
                 child: CustomInputMessage(
                   controller: _controller,
+                  canSend: canSend,
                   onAttachFile: () async {
                     if (isBusy) return;
                     // Handle add button press - allow multiple file selection
@@ -208,6 +359,12 @@ class _MessageInputState extends State<MessageInput> {
                     } else {
                       debugPrint("No file selected");
                     }
+                  },
+                  onCapturePhoto: () {
+                    _capturePhoto();
+                  },
+                  onCaptureScreenshot: () {
+                    _captureScreenshot();
                   },
                   onSend: (message) {
                     _handleSend();
