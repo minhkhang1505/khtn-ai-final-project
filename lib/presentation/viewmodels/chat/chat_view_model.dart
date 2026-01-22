@@ -106,16 +106,29 @@ class ChatViewModel extends ChangeNotifier {
 
   Future<UploadResponse> uploadFiles(List<PlatformFile> files) async {
     try {
+      if (files.isEmpty) {
+        debugPrint("uploadFiles: No files to upload");
+        return UploadResponse(files: []);
+      }
+
+      debugPrint("uploadFiles: Uploading ${files.length} file(s)");
+      for (var file in files) {
+        debugPrint("  - ${file.name} (${file.size} bytes)");
+      }
+
       final result = await uploadMultipleFileUsecase.call(files);
 
+      debugPrint("uploadFiles: Response received with ${result.files.length} file(s)");
+      
       if (result.files.isEmpty) {
-        throw Exception('No files were uploaded');
+        debugPrint("uploadFiles: API returned empty files list");
+        throw Exception('No files were uploaded - API returned empty response');
       }
 
       return result;
     } catch (e) {
       debugPrint("Error in uploadFiles: $e");
-      rethrow; // Re-throw to let caller handle the error
+      rethrow;
     }
   }
 
@@ -335,8 +348,9 @@ class ChatViewModel extends ChangeNotifier {
 
   String validateInputMessage(String content, List<PlatformFile> files) {
     final trimmed = content.trim();
+    // Allow sending if there's text (files are optional with text)
     if (trimmed.isEmpty && files.isEmpty) {
-      return "Please enter a message or select files to send.";
+      return "Please enter a message to send.";
     }
     if (trimmed.length > 5000) {
       return "Message exceeds maximum length of 5000 characters.";
