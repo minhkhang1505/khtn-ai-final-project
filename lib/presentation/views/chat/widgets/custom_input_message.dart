@@ -14,11 +14,17 @@ class CustomInputMessage extends StatefulWidget {
   final void Function(String) onSend;
   final TextEditingController? controller;
   final void Function() onAttachFile;
+  final void Function()? onCapturePhoto;
+  final void Function()? onCaptureScreenshot;
+  final bool canSend;
   const CustomInputMessage({
     super.key,
     required this.onSend,
     this.controller,
     required this.onAttachFile,
+    this.onCapturePhoto,
+    this.onCaptureScreenshot,
+    this.canSend = true,
   });
 
   @override
@@ -219,10 +225,34 @@ class _CustomInputMessageState extends State<CustomInputMessage> {
                         height: ICON_SIZE,
                         colorFilter: ColorFilter.mode(
                           isBusy
-                              ? colorScheme.onSurface.withOpacity(0.38)
+                              ? colorScheme.onSurface.withAlpha(38)
                               : colorScheme.primary,
                           BlendMode.srcIn,
                         ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: isBusy || widget.onCapturePhoto == null
+                          ? null
+                          : widget.onCapturePhoto,
+                      icon: Icon(
+                        Icons.camera_alt_rounded,
+                        size: ICON_SIZE,
+                        color: isBusy || widget.onCapturePhoto == null
+                            ? colorScheme.onSurface.withAlpha(38)
+                            : colorScheme.primary,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: isBusy || widget.onCaptureScreenshot == null
+                          ? null
+                          : widget.onCaptureScreenshot,
+                      icon: Icon(
+                        Icons.screenshot_outlined,
+                        size: ICON_SIZE,
+                        color: isBusy || widget.onCaptureScreenshot == null
+                            ? colorScheme.onSurface.withAlpha(38)
+                            : colorScheme.primary,
                       ),
                     ),
                     IconButton(
@@ -235,7 +265,7 @@ class _CustomInputMessageState extends State<CustomInputMessage> {
                         height: ICON_SIZE,
                         colorFilter: ColorFilter.mode(
                           isBusy
-                              ? colorScheme.onSurface.withOpacity(0.38)
+                              ? colorScheme.onSurface.withAlpha(38)
                               : colorScheme.primary,
                           BlendMode.srcIn,
                         ),
@@ -245,8 +275,10 @@ class _CustomInputMessageState extends State<CustomInputMessage> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.send_rounded),
-                  color: colorScheme.primary,
-                  onPressed: isBusy ? null : _handleSend,
+                  color: widget.canSend && !isBusy
+                      ? colorScheme.primary
+                      : colorScheme.onSurface.withAlpha(38),
+                  onPressed: (isBusy || !widget.canSend) ? null : _handleSend,
                 ),
               ],
             ),

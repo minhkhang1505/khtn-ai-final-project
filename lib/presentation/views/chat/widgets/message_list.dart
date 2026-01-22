@@ -64,10 +64,41 @@ class MessageBubble extends StatefulWidget {
 class _MessageBubbleState extends State<MessageBubble> {
   bool _isHovered = false;
 
+  String _getFileName(String fileUrl) {
+    try {
+      // Extract filename from URL
+      final uri = Uri.parse(fileUrl);
+      final pathSegments = uri.pathSegments;
+      if (pathSegments.isNotEmpty) {
+        final fileName = pathSegments.last;
+        // Handle URL encoding
+        return Uri.decodeComponent(fileName);
+      }
+      return 'File';
+    } catch (e) {
+      return 'File';
+    }
+  }
+
+  bool _isImage(String fileUrl) {
+    final lower = fileUrl.toLowerCase();
+    return lower.endsWith('.png') ||
+        lower.endsWith('.jpg') ||
+        lower.endsWith('.jpeg') ||
+        lower.endsWith('.gif') ||
+        lower.endsWith('.webp');
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final msg = widget.message;
+    final ChatViewModel chatViewModel = context.read<ChatViewModel>();
+    final fileNames = chatViewModel.attachedFiles.isNotEmpty
+        ? chatViewModel.attachedFiles
+            .map((file) => file.name)
+            .toList()
+        : null;
 
     return Align(
       alignment: msg.role == 'user'
@@ -117,6 +148,112 @@ class _MessageBubbleState extends State<MessageBubble> {
                 ),
               ),
             ),
+            // Display files if message has any - below the message box
+            if (msg.files?.isNotEmpty ?? false) ...[
+              const SizedBox(height: 4),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: (msg.files ?? [])
+                      .asMap()
+                      .entries
+                      .map(
+                        (entry) {
+                          final index = entry.key;
+                          final fileUrl = entry.value;
+                          final displayName =
+                              (fileNames != null && index < fileNames.length)
+                                  ? fileNames[index]
+                                  : _getFileName(fileUrl);
+                          final isImage = _isImage(displayName);
+
+                          if (isImage) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    fileUrl,
+                                    width: 140,
+                                    height: 140,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      width: 140,
+                                      height: 140,
+                                      color: colorScheme.surfaceContainerHighest,
+                                      alignment: Alignment.center,
+                                      child: Icon(
+                                        Icons.broken_image,
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(maxWidth: 140),
+                                  child: Text(
+                                    displayName,
+                                    style: TextStyle(
+                                      color: colorScheme.onSurface,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: colorScheme.outline.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.insert_drive_file,
+                                  size: 16,
+                                  color: colorScheme.primary,
+                                ),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  child: Text(
+                                    displayName,
+                                    style: TextStyle(
+                                      color: colorScheme.onSurface,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                      .toList(),
+                ),
+              ),
+            ],
             // Copy button - only visible on hover
             AnimatedOpacity(
               opacity: _isHovered ? 1.0 : 0.0,

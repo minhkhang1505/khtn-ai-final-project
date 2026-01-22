@@ -25,7 +25,6 @@ import '../../data/datasources/remote/subscription_remote_data_source.dart'
 import '../../data/datasources/remote/task_planning_remote_data_source.dart'
     as _i707;
 import '../../data/datasources/remote/user_remote_data_source.dart' as _i41;
-import '../../data/models/agent_model.dart' as _i620;
 import '../../data/repositories/ai_email_repository_implement.dart' as _i572;
 import '../../data/repositories/auth_repository_implement.dart' as _i979;
 import '../../data/repositories/bot_repository_implement.dart' as _i983;
@@ -87,8 +86,6 @@ import '../../domain/usecases/subscription/get_subscription_used_usecase.dart'
     as _i640;
 import '../../domain/usecases/task_planning/task_planning_usecase.dart'
     as _i246;
-import '../../presentation/viewmodels/agent/agent_chat_view_model.dart'
-    as _i474;
 import '../../presentation/viewmodels/agent/agent_view_model.dart' as _i1071;
 import '../../presentation/viewmodels/aiemail/ai_email_viewmodel.dart' as _i998;
 import '../../presentation/viewmodels/auth/auth_view_model.dart' as _i376;
@@ -167,12 +164,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i246.TaskPlanningUseCase>(
       () => _i246.TaskPlanningUseCase(
         taskPlanningRepository: gh<_i197.TaskPlanningRepository>(),
-      ),
-    );
-    gh.factory<_i474.AgentChatViewModel>(
-      () => _i474.AgentChatViewModel(
-        agent: gh<_i620.AgentModel>(),
-        taskPlanningUseCase: gh<_i246.TaskPlanningUseCase>(),
       ),
     );
     gh.lazySingleton<_i41.UserRemoteDataSource>(
@@ -422,6 +413,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i959.ChatViewModel(
         chatUsecase: gh<_i423.ChatUseCase>(),
         getUserUseCase: gh<_i180.GetUserUseCase>(),
+        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
       ),
     );
     gh.factory<_i998.AiEmailViewmodel>(
