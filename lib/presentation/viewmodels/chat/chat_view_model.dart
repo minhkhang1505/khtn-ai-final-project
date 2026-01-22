@@ -6,6 +6,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_model.dart';
 import 'package:khtn_ai_final_project/data/models/token_usage_model.dart';
 import 'package:khtn_ai_final_project/domain/usecases/chat/chat_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/datasource/upload_multiple_file_usecase.dart';
+import 'package:khtn_ai_final_project/domain/usecases/auth/get_user_usecase.dart';
+
 
 import 'package:khtn_ai_final_project/data/models/chat/chat_model.dart';
 import 'package:khtn_ai_final_project/data/models/assistant_model.dart';
@@ -14,7 +17,7 @@ import 'package:khtn_ai_final_project/data/models/metadata_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_send_request_model.dart';
 import 'package:khtn_ai_final_project/data/models/conversations/conversation_history_model.dart';
 import 'package:khtn_ai_final_project/data/models/chat/chat_with_bot_model.dart';
-import 'package:khtn_ai_final_project/domain/usecases/auth/get_user_usecase.dart';
+import 'package:khtn_ai_final_project/data/models/datasource/multi_file_response.dart';
 
 import 'package:injectable/injectable.dart';
 
@@ -22,8 +25,9 @@ import 'package:injectable/injectable.dart';
 class ChatViewModel extends ChangeNotifier {
   final ChatUseCase chatUsecase;
   final GetUserUseCase getUserUseCase;
+  final UploadMultipleFileUsecase uploadMultipleFileUsecase;
 
-  ChatViewModel({required this.chatUsecase, required this.getUserUseCase}) {
+  ChatViewModel({required this.chatUsecase, required this.getUserUseCase, required this.uploadMultipleFileUsecase}) {
     getUsage();
   }
 
@@ -97,6 +101,21 @@ class ChatViewModel extends ChangeNotifier {
     getConversationHistory(conversation.bot.id, conversation.bot.model);
   }
 
+  Future<UploadResponse> uploadFiles(List<PlatformFile> files) async {
+    try {
+      final result = await uploadMultipleFileUsecase.call(files);
+
+      if (result.files.isEmpty) {
+        throw Exception('No files were uploaded');
+      }
+
+      return result;
+    } catch (e) {
+      debugPrint("Error in uploadFiles: $e");
+      rethrow; // Re-throw to let caller handle the error
+    }
+  }
+
   /// Send a message as the user, append the user's message and the reply.
   Future<bool> sendMessage(
     String content,
@@ -116,8 +135,18 @@ class ChatViewModel extends ChangeNotifier {
       conversationId = 'temp_id';
     }
 
+    // Upload files and get URLs (only if files exist)
+    List<String> fileUrls = [];
+    if (files.isNotEmpty) {
+      debugPrint("Uploading files...");
+      final uploadResponse = await uploadFiles(files);
+      fileUrls = uploadResponse.files.map((file) => file.url).toList();
+      debugPrint("Files uploaded: $fileUrls");
+    }
+
+
     // Create a user message and append
-    final userMsg = ChatMessageModel.createMessage(trimmed, 'user', []);
+    final userMsg = ChatMessageModel.createMessage(trimmed, 'user', fileUrls);
     messages.add(userMsg);
     Future.delayed(const Duration(milliseconds: 100), () {
       scrollToBottom();
@@ -129,7 +158,7 @@ class ChatViewModel extends ChangeNotifier {
     try {
       final request = SendMessageRequestModel(
         content: trimmed,
-        files: [],
+        files: fileUrls,
         metadata: metadata,
         assistant: assistant,
         responseMode: 'streaming',
@@ -155,17 +184,82 @@ class ChatViewModel extends ChangeNotifier {
         scrollToBottom();
       }
 
-      // Update conversation ID after streaming completes
-      // Note: You may need to parse the final chunk or make a separate call to get conversation ID
-      if (conversationId == 'temp_id') {
-        // conversationIdSetter = parsed conversation ID from response
-      }
-
       // Scroll to bottom after a slight delay to ensure UI has updated
       Future.delayed(const Duration(milliseconds: 100), () {
         scrollToBottom();
       });
 
+      return true;
+    } catch (e) {
+      // On error, add a simple assistant message describing failure
+      errorSetter = e.toString();
+      return false;
+    } finally {
+      _isStreaming = false;
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> chatWithBot(
+    String content,
+    AssistantModel assistant,
+    List<PlatformFile> files,
+  ) async {
+    final trimmed = content.trim();
+    // Validate message
+    final validationError = validateInputMessage(trimmed, files);
+    if (validationError.isNotEmpty) {
+      errorSetter = validationError;
+      return false;
+    }
+
+    List<String> fileUrls = [];
+    if (files.isNotEmpty) {
+      final uploadResponse = await uploadFiles(files);
+      fileUrls = uploadResponse.files.map((file) => file.url).toList();
+    }
+
+    if (conversationId.isEmpty) {
+      // New conversation - reset metadata
+      conversationId = 'temp_id';
+    }
+
+    // Create a user message and append
+    final userMsg = ChatMessageModel.createMessage(trimmed, 'user', fileUrls);
+    messages.add(userMsg);
+    Future.delayed(const Duration(milliseconds: 100), () {
+      scrollToBottom();
+    });
+    _isStreaming = true;
+    _isLoading = false;
+    notifyListeners();
+
+    try {
+      final request = ChatWithBotRequestModel(
+        content: trimmed,
+        files: fileUrls,
+        metadata: metadata,
+        assistant: assistant,
+        responseMode: 'streaming',
+      );
+      final response = await chatUsecase.chatWithBot(request);
+
+      // Update remaining tokens
+      tokenUsage.availableTokens = response.remainingUsage;
+
+      final replyMessage = ChatMessageModel.createMessage(
+        response.message,
+        'assistant',
+        [],
+      );
+      messages.add(replyMessage);
+      updateMetadata();
+
+      // Scroll to bottom after a slight delay to ensure UI has updated
+      Future.delayed(const Duration(milliseconds: 100), () {
+        scrollToBottom();
+      });
       return true;
     } catch (e) {
       // On error, add a simple assistant message describing failure
@@ -219,79 +313,10 @@ class ChatViewModel extends ChangeNotifier {
     return true;
   }
 
-  Future<bool> chatWithBot(
-    String content,
-    AssistantModel assistant,
-    List<PlatformFile> files,
-  ) async {
-    final trimmed = content.trim();
-    // Validate message
-    final validationError = validateInputMessage(trimmed, files);
-    if (validationError.isNotEmpty) {
-      errorSetter = validationError;
-      return false;
-    }
-
-    if (conversationId.isEmpty) {
-      // New conversation - reset metadata
-      conversationId = 'temp_id';
-    }
-
-    // Create a user message and append
-    final userMsg = ChatMessageModel.createMessage(trimmed, 'user', []);
-    messages.add(userMsg);
-    Future.delayed(const Duration(milliseconds: 100), () {
-      scrollToBottom();
-    });
-    _isStreaming = true;
-    _isLoading = false;
-    notifyListeners();
-
-    try {
-      final request = ChatWithBotRequestModel(
-        content: trimmed,
-        files: [],
-        metadata: metadata,
-        assistant: assistant,
-        responseMode: 'streaming',
-      );
-      final response = await chatUsecase.chatWithBot(request);
-
-      // Update remaining tokens
-      tokenUsage.availableTokens = response.remainingUsage;
-
-      final replyMessage = ChatMessageModel.createMessage(
-        response.message,
-        'assistant',
-        [],
-      );
-      messages.add(replyMessage);
-      updateMetadata();
-
-      // Scroll to bottom after a slight delay to ensure UI has updated
-      Future.delayed(const Duration(milliseconds: 100), () {
-        scrollToBottom();
-      });
-      return true;
-    } catch (e) {
-      // On error, add a simple assistant message describing failure
-      errorSetter = e.toString();
-      return false;
-    } finally {
-      _isStreaming = false;
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
   String validateInputMessage(String content, List<PlatformFile> files) {
-    if (files.isNotEmpty) {
-      return "File upload not implemented yet.";
-    }
-
     final trimmed = content.trim();
-    if (trimmed.isEmpty) {
-      return "Message cannot be empty.";
+    if (trimmed.isEmpty && files.isEmpty) {
+      return "Please enter a message or select files to send.";
     }
     if (trimmed.length > 5000) {
       return "Message exceeds maximum length of 5000 characters.";

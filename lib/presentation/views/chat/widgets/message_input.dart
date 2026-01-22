@@ -55,7 +55,7 @@ class _MessageInputState extends State<MessageInput> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: _viewModel,
+      listenable: Listenable.merge([_viewModel, _controller]),
       builder: (context, child) => _buildContent(context),
     );
   }
@@ -65,6 +65,10 @@ class _MessageInputState extends State<MessageInput> {
     final chatViewModel = context.watch<ChatViewModel>();
     final isBusy = chatViewModel.isBusy;
     final inputMessage = chatViewModel.inputMessage;
+    
+    // Calculate hasText directly from controller
+    final hasText = _controller.text.trim().isNotEmpty;
+    final canSend = hasText;
 
     // Update controller text if inputMessage changes
     if (inputMessage.isNotEmpty && _controller.text != inputMessage) {
@@ -194,6 +198,7 @@ class _MessageInputState extends State<MessageInput> {
                 },
                 child: CustomInputMessage(
                   controller: _controller,
+                  canSend: canSend,
                   onAttachFile: () async {
                     if (isBusy) return;
                     // Handle add button press - allow multiple file selection

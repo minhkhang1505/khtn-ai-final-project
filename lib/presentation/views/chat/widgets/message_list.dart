@@ -64,6 +64,22 @@ class MessageBubble extends StatefulWidget {
 class _MessageBubbleState extends State<MessageBubble> {
   bool _isHovered = false;
 
+  String _getFileName(String fileUrl) {
+    try {
+      // Extract filename from URL
+      final uri = Uri.parse(fileUrl);
+      final pathSegments = uri.pathSegments;
+      if (pathSegments.isNotEmpty) {
+        final fileName = pathSegments.last;
+        // Handle URL encoding
+        return Uri.decodeComponent(fileName);
+      }
+      return 'File';
+    } catch (e) {
+      return 'File';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -117,6 +133,58 @@ class _MessageBubbleState extends State<MessageBubble> {
                 ),
               ),
             ),
+            // Display files if message has any - below the message box
+            if (msg.files?.isNotEmpty ?? false) ...[
+              const SizedBox(height: 4),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: (msg.files ?? [])
+                      .map(
+                        (fileUrl) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: colorScheme.outline.withOpacity(0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.insert_drive_file,
+                                size: 16,
+                                color: colorScheme.primary,
+                              ),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  _getFileName(fileUrl),
+                                  style: TextStyle(
+                                    color: colorScheme.onSurface,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            ],
             // Copy button - only visible on hover
             AnimatedOpacity(
               opacity: _isHovered ? 1.0 : 0.0,

@@ -14,11 +14,13 @@ class CustomInputMessage extends StatefulWidget {
   final void Function(String) onSend;
   final TextEditingController? controller;
   final void Function() onAttachFile;
+  final bool canSend;
   const CustomInputMessage({
     super.key,
     required this.onSend,
     this.controller,
     required this.onAttachFile,
+    this.canSend = true,
   });
 
   @override
@@ -245,8 +247,10 @@ class _CustomInputMessageState extends State<CustomInputMessage> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.send_rounded),
-                  color: colorScheme.primary,
-                  onPressed: isBusy ? null : _handleSend,
+                  color: widget.canSend && !isBusy
+                      ? colorScheme.primary
+                      : colorScheme.onSurface.withOpacity(0.38),
+                  onPressed: (isBusy || !widget.canSend) ? null : _handleSend,
                 ),
               ],
             ),

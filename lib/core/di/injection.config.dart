@@ -422,6 +422,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i959.ChatViewModel(
         chatUsecase: gh<_i423.ChatUseCase>(),
         getUserUseCase: gh<_i180.GetUserUseCase>(),
+        uploadMultipleFileUsecase: gh<_i645.UploadMultipleFileUsecase>(),
       ),
     );
     gh.factory<_i998.AiEmailViewmodel>(
