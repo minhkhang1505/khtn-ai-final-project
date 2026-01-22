@@ -1,5 +1,7 @@
 // ignore_for_file: unused_field
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:file_picker/file_picker.dart';
@@ -38,6 +40,7 @@ class ChatViewModel extends ChangeNotifier {
   // AssistantModel assistant = AssistantModel.defaults();
   MetadataModel metadata = MetadataModel.defaults();
   String conversationId = ''; // Default conversation ID
+  List<PlatformFile> attachedFiles = [];
   TokenUsageModel tokenUsage = TokenUsageModel.defaults();
   String cursor = '';
   String? _error;
@@ -137,16 +140,24 @@ class ChatViewModel extends ChangeNotifier {
 
     // Upload files and get URLs (only if files exist)
     List<String> fileUrls = [];
+    List<String> fileNames = [];
     if (files.isNotEmpty) {
-      debugPrint("Uploading files...");
+      attachedFiles = files;
+
       final uploadResponse = await uploadFiles(files);
       fileUrls = uploadResponse.files.map((file) => file.url).toList();
+      fileNames = uploadResponse.files.map((file) => file.name).toList();
       debugPrint("Files uploaded: $fileUrls");
     }
 
 
     // Create a user message and append
-    final userMsg = ChatMessageModel.createMessage(trimmed, 'user', fileUrls);
+    final userMsg = ChatMessageModel.createMessage(
+      trimmed,
+      'user',
+      fileUrls,
+      fileNames: fileNames,
+    );
     messages.add(userMsg);
     Future.delayed(const Duration(milliseconds: 100), () {
       scrollToBottom();
@@ -215,9 +226,13 @@ class ChatViewModel extends ChangeNotifier {
     }
 
     List<String> fileUrls = [];
+    List<String> fileNames = [];
     if (files.isNotEmpty) {
+      attachedFiles = files;
+
       final uploadResponse = await uploadFiles(files);
       fileUrls = uploadResponse.files.map((file) => file.url).toList();
+      fileNames = uploadResponse.files.map((file) => file.name).toList();
     }
 
     if (conversationId.isEmpty) {
@@ -226,7 +241,12 @@ class ChatViewModel extends ChangeNotifier {
     }
 
     // Create a user message and append
-    final userMsg = ChatMessageModel.createMessage(trimmed, 'user', fileUrls);
+    final userMsg = ChatMessageModel.createMessage(
+      trimmed,
+      'user',
+      fileUrls,
+      fileNames: fileNames,
+    );
     messages.add(userMsg);
     Future.delayed(const Duration(milliseconds: 100), () {
       scrollToBottom();
